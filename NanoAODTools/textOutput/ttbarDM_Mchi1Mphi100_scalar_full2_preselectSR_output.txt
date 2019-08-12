@@ -1,0 +1,20 @@
+Will write selected trees to outDir2016AnalysisSR
+Pre-select 105382 entries out of 105382 (100.00%)
+Traceback (most recent call last):
+  File "python/postprocessing/2016Analysis/preselectSR.py", line 166, in <module>
+    p1.run()
+  File "/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/python/PhysicsTools/NanoAODTools/postprocessing/framework/postprocessor.py", line 187, in run
+    (nall, npass, timeLoop) = eventLoop(self.modules, inFile, outFile, inTree, outTree, eventRange=eventRange, maxEvents=self.maxEntries)
+  File "/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/python/PhysicsTools/NanoAODTools/postprocessing/framework/eventloop.py", line 62, in eventLoop
+    ret = m.analyze(e) 
+  File "python/postprocessing/2016Analysis/preselectSR.py", line 54, in analyze
+    looseMuons = filter(lambda lep : lep.pt > 10 and lep.looseId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
+  File "python/postprocessing/2016Analysis/preselectSR.py", line 54, in <lambda>
+    looseMuons = filter(lambda lep : lep.pt > 10 and lep.looseId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
+  File "/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/python/PhysicsTools/NanoAODTools/postprocessing/framework/datamodel.py", line 59, in __getattr__
+    val = getattr(self._event,self._prefix+name)
+  File "/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/python/PhysicsTools/NanoAODTools/postprocessing/framework/datamodel.py", line 14, in __getattr__
+    return self._tree.readBranch(name)
+  File "/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/python/PhysicsTools/NanoAODTools/postprocessing/framework/treeReaderArrayTools.py", line 63, in readBranch
+    if not branch: raise RuntimeError, "Unknown branch %s" % branchName
+RuntimeError: Unknown branch Muon_looseId

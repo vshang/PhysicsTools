@@ -32,6 +32,7 @@ class preselectAnalysis(Module):
         self.out.branch("nfjets", "I")
         self.out.branch("missing_pt", "F")
         self.out.branch("minDeltaPhi", "F")
+        self.out.branch("nbjetsHF", "I")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -72,10 +73,12 @@ to next event)"""
         #Jet categories are defined and counted 
         centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 0, jets) #Define central jets 
         bJets = filter(lambda j : j.btagCSVV2 > 0.8484, centralJets) #Define b-jets
+        bJetsHF = filter(lambda j : j.hadronFlavour == 5, centralJets) #Define b-jets by hadron flavour
         forwardJets = filter(lambda j : j.pt > 30 and 2.4 < abs(j.eta) < 5 and cleanJet(j) and j.jetId > 0, jets) #Define forward jets
 
         njets = len(centralJets)
         nbjets = len(bJets)
+        nbjetsHF = len(bJetsHF)
         nfjets = len(forwardJets)
 
         #Calculate minDeltaPhi(j_(1,2), missing pt) preselection variable
@@ -89,42 +92,42 @@ to next event)"""
                 minDeltaPhi = min(deltaPhi1, deltaPhi2)
 
         #Preselection cuts defined here
-        SL1e0fSR = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets == 1 and nfjets == 0 and event.MET_pt >= 160
-        SL1m0fSR = nVetoElectrons == 0 and nTightMuons == 1 and nLooseMuons == 1 and njets >= 2 and nbjets == 1 and nfjets == 0 and event.MET_pt >= 160
-        SL1e1fSR = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets == 1 and nfjets >= 1 and event.MET_pt >= 160
-        SL1m1fSR = nVetoElectrons == 0 and nTightMuons == 1 and nLooseMuons == 1 and njets >= 2 and nbjets == 1 and nfjets >= 1 and event.MET_pt >= 160
-        SL1e2bSR = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets >= 2 and event.MET_pt >= 160
-        SL1m2bSR = nVetoElectrons == 0 and nTightMuons == 1 and nLooseMuons == 1 and njets >= 2 and nbjets >= 2 and event.MET_pt >= 160
-        AH0l0fSR = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets == 1 and nfjets == 0 and event.MET_pt >= 250 and minDeltaPhi > 0.4 
-        AH0l1fSR = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets == 1 and nfjets >= 1 and event.MET_pt >= 250 and minDeltaPhi > 0.4
-        AH0l2bSR = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets >= 2 and event.MET_pt >= 250 and minDeltaPhi > 0.4
+        # SL1e0fSR = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets == 1 and nfjets == 0 and event.MET_pt >= 160
+        # SL1m0fSR = nVetoElectrons == 0 and nTightMuons == 1 and nLooseMuons == 1 and njets >= 2 and nbjets == 1 and nfjets == 0 and event.MET_pt >= 160
+        # SL1e1fSR = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets == 1 and nfjets >= 1 and event.MET_pt >= 160
+        # SL1m1fSR = nVetoElectrons == 0 and nTightMuons == 1 and nLooseMuons == 1 and njets >= 2 and nbjets == 1 and nfjets >= 1 and event.MET_pt >= 160
+        # SL1e2bSR = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets >= 2 and event.MET_pt >= 160
+        # SL1m2bSR = nVetoElectrons == 0 and nTightMuons == 1 and nLooseMuons == 1 and njets >= 2 and nbjets >= 2 and event.MET_pt >= 160
+        # AH0l0fSR = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets == 1 and nfjets == 0 and event.MET_pt >= 250 and minDeltaPhi > 0.4 
+        # AH0l1fSR = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets == 1 and nfjets >= 1 and event.MET_pt >= 250 and minDeltaPhi > 0.4
+        # AH0l2bSR = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets >= 2 and event.MET_pt >= 250 and minDeltaPhi > 0.4
         
         SL = (nTightElectrons + nTightMuons) == 1 and (nVetoElectrons + nLooseMuons) == 1 and njets >= 2 and event.MET_pt >= 160
         AH = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and event.MET_pt >= 250
 
         #Signal region chosen here
-        if self.signalRegion == "SL1e0fSR":
-            signalRegionPreselect = SL1e0fSR
-        elif self.signalRegion == "SL1m0fSR":
-            signalRegionPreselect = SL1m0fSR
-        elif self.signalRegion == "SL1e1fSR":
-            signalRegionPreselect = SL1e1fSR
-        elif self.signalRegion == "SL1m1fSR":
-            signalRegionPreselect = SL1m1fSR
-        elif self.signalRegion == "SL1e2bSR":
-            signalRegionPreselect = SL1e2bSR
-        elif self.signalRegion == "SL1m2bSR":
-            signalRegionPreselect = SL1m2bSR
-        elif self.signalRegion == "AH0l0fSR":
-            signalRegionPreselect = AH0l0fSR
-        elif self.signalRegion == "AH0l1fSR":
-            signalRegionPreselect = AH0l1fSR
-        elif self.signalRegion == "AH0l2bSR":
-            signalRegionPreselect = AH0l2bSR
-        elif self.signalRegion == "SL":
+        # if self.signalRegion == "SL1e0fSR":
+        #     signalRegionPreselect = SL1e0fSR
+        # elif self.signalRegion == "SL1m0fSR":
+        #     signalRegionPreselect = SL1m0fSR
+        # elif self.signalRegion == "SL1e1fSR":
+        #     signalRegionPreselect = SL1e1fSR
+        # elif self.signalRegion == "SL1m1fSR":
+        #     signalRegionPreselect = SL1m1fSR
+        # elif self.signalRegion == "SL1e2bSR":
+        #     signalRegionPreselect = SL1e2bSR
+        # elif self.signalRegion == "SL1m2bSR":
+        #     signalRegionPreselect = SL1m2bSR
+        # elif self.signalRegion == "AH0l0fSR":
+        #     signalRegionPreselect = AH0l0fSR
+        # elif self.signalRegion == "AH0l1fSR":
+        #     signalRegionPreselect = AH0l1fSR
+        # elif self.signalRegion == "AH0l2bSR":
+        #     signalRegionPreselect = AH0l2bSR
+        if self.signalRegion == "SL":
             signalRegionPreselect = SL
         elif self.signalRegion == "AH":
-            signalRegionPreselect == AH
+            signalRegionPreselect = AH
         else:
             signalRegionPreselect = True
 
@@ -139,6 +142,7 @@ to next event)"""
             self.out.fillBranch("nfjets", nfjets)
             self.out.fillBranch("missing_pt", event.MET_pt)
             self.out.fillBranch("minDeltaPhi", minDeltaPhi)
+            self.out.fillBranch("nbjetsHF", nbjetsHF)
             return True
         else:
             return False
