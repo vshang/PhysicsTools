@@ -14,5 +14,7 @@ eventTree = f.Get('Events')
 nEntries = eventTree.GetEntries()
 for i in range(nEntries):
     eventTree.GetEntry(i)
-    eventID = eventTree.event
-    print eventID
+    eventID = int(eventTree.event)
+    lumi = eventTree.luminosityBlock
+    run = eventTree.run
+    print (eventID, lumi, run)

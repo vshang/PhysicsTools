@@ -45,8 +45,8 @@ to next event)"""
         jets = Collection(event, "Jet")
 
         #Tight/Veto electrons are defined and counted
-        vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased != 0 and ((lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.1), electrons)
-        tightElectrons = filter(lambda lep : lep.pt > 30 and lep.cutBased == 4, vetoElectrons)
+        vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased_Sum16 != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.1), electrons)
+        tightElectrons = filter(lambda lep : lep.pt > 30 and lep.cutBased_Sum16 == 4, vetoElectrons)
 
         nVetoElectrons = len(vetoElectrons)
         nTightElectrons = len(tightElectrons)
@@ -146,6 +146,7 @@ to next event)"""
             return True
         else:
             return False
+#########################################################################################################################################
 
 #Select PostProcessor options here
 preselection=None
