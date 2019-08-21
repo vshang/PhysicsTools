@@ -53,13 +53,13 @@ class optimizeAnalysis(Module):
         bjetVector = ROOT.vector("TLorentzVector")()
 
         #Tight/veto leptons are defined
-        vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased != 0 and ((lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.1), electrons)
-        tightElectrons = filter(lambda lep : lep.pt > 30 and lep.cutBased == 4, vetoElectrons)
+        vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased_Sum16 != 0 and ((lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
+        tightElectrons = filter(lambda lep : lep.pt > 30 and lep.cutBased_Sum16 == 4, vetoElectrons)
 
         looseMuons = filter(lambda lep : lep.pt > 10 and lep.looseId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
         tightMuons = filter(lambda lep : lep.pt > 30 and lep.tightId and lep.pfRelIso04_all < 0.15, looseMuons)
         
-        #Jets are not considered if they are within Delta R < 0.4 of a loose/veto lepton
+        #Jets (and tau jets) are not considered if they are within Delta R < 0.4 of a loose/veto lepton
         def cleanJet(jet):
             for vetoElectron in vetoElectrons:
                 if vetoElectron.p4().DeltaR(jet.p4()) < 0.4:

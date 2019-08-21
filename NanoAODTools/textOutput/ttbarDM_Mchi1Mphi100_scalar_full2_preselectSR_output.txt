@@ -1,20 +1,30 @@
 Will write selected trees to outDir2016AnalysisSR
 Pre-select 105382 entries out of 105382 (100.00%)
-Traceback (most recent call last):
-  File "python/postprocessing/2016Analysis/preselectSR.py", line 166, in <module>
-    p1.run()
-  File "/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/python/PhysicsTools/NanoAODTools/postprocessing/framework/postprocessor.py", line 187, in run
-    (nall, npass, timeLoop) = eventLoop(self.modules, inFile, outFile, inTree, outTree, eventRange=eventRange, maxEvents=self.maxEntries)
-  File "/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/python/PhysicsTools/NanoAODTools/postprocessing/framework/eventloop.py", line 62, in eventLoop
-    ret = m.analyze(e) 
-  File "python/postprocessing/2016Analysis/preselectSR.py", line 54, in analyze
-    looseMuons = filter(lambda lep : lep.pt > 10 and lep.looseId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
-  File "python/postprocessing/2016Analysis/preselectSR.py", line 54, in <lambda>
-    looseMuons = filter(lambda lep : lep.pt > 10 and lep.looseId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
-  File "/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/python/PhysicsTools/NanoAODTools/postprocessing/framework/datamodel.py", line 59, in __getattr__
-    val = getattr(self._event,self._prefix+name)
-  File "/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/python/PhysicsTools/NanoAODTools/postprocessing/framework/datamodel.py", line 14, in __getattr__
-    return self._tree.readBranch(name)
-  File "/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/python/PhysicsTools/NanoAODTools/postprocessing/framework/treeReaderArrayTools.py", line 63, in readBranch
-    if not branch: raise RuntimeError, "Unknown branch %s" % branchName
-RuntimeError: Unknown branch Muon_looseId
+Processed    10000/  105382 entries,  9.49% (elapsed time    10.9s, curr speed    0.916 kHz, avg speed    0.916 kHz), accepted      367/   10001 events ( 3.67%)
+Processed    20000/  105382 entries, 18.98% (elapsed time    19.7s, curr speed    1.139 kHz, avg speed    1.015 kHz), accepted      721/   20001 events ( 3.60%)
+Processed    30000/  105382 entries, 28.47% (elapsed time    29.1s, curr speed    1.063 kHz, avg speed    1.031 kHz), accepted     1056/   30001 events ( 3.52%)
+Processed    40000/  105382 entries, 37.96% (elapsed time    38.8s, curr speed    1.030 kHz, avg speed    1.030 kHz), accepted     1417/   40001 events ( 3.54%)
+Processed    50000/  105382 entries, 47.45% (elapsed time    47.3s, curr speed    1.174 kHz, avg speed    1.056 kHz), accepted     1787/   50001 events ( 3.57%)
+Processed    60000/  105382 entries, 56.94% (elapsed time    56.6s, curr speed    1.083 kHz, avg speed    1.061 kHz), accepted     2147/   60001 events ( 3.58%)
+Processed    70000/  105382 entries, 66.43% (elapsed time    65.9s, curr speed    1.073 kHz, avg speed    1.062 kHz), accepted     2502/   70001 events ( 3.57%)
+Processed    80000/  105382 entries, 75.91% (elapsed time    74.6s, curr speed    1.148 kHz, avg speed    1.072 kHz), accepted     2881/   80001 events ( 3.60%)
+Processed    90000/  105382 entries, 85.40% (elapsed time    85.2s, curr speed    0.948 kHz, avg speed    1.057 kHz), accepted     3245/   90001 events ( 3.61%)
+Processed   100000/  105382 entries, 94.89% (elapsed time    97.7s, curr speed    0.795 kHz, avg speed    1.023 kHz), accepted     3601/  100001 events ( 3.60%)
+Processed 105382 preselected entries from samples/ttbarDM_Mchi1Mphi100_scalar_full2.root (105382 entries). Finally selected 3785 entries
+Done outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full2_SL.root
+922.703791262 Hz
+Will write selected trees to outDir2016AnalysisSR
+Pre-select 105382 entries out of 105382 (100.00%)
+Processed    10000/  105382 entries,  9.49% (elapsed time    10.8s, curr speed    0.926 kHz, avg speed    0.926 kHz), accepted      169/   10001 events ( 1.69%)
+Processed    20000/  105382 entries, 18.98% (elapsed time    20.2s, curr speed    1.066 kHz, avg speed    0.991 kHz), accepted      367/   20001 events ( 1.83%)
+Processed    30000/  105382 entries, 28.47% (elapsed time    30.3s, curr speed    0.990 kHz, avg speed    0.991 kHz), accepted      590/   30001 events ( 1.97%)
+Processed    40000/  105382 entries, 37.96% (elapsed time    39.7s, curr speed    1.059 kHz, avg speed    1.007 kHz), accepted      812/   40001 events ( 2.03%)
+Processed    50000/  105382 entries, 47.45% (elapsed time    48.9s, curr speed    1.086 kHz, avg speed    1.022 kHz), accepted     1006/   50001 events ( 2.01%)
+Processed    60000/  105382 entries, 56.94% (elapsed time    59.9s, curr speed    0.914 kHz, avg speed    1.002 kHz), accepted     1219/   60001 events ( 2.03%)
+Processed    70000/  105382 entries, 66.43% (elapsed time    69.0s, curr speed    1.094 kHz, avg speed    1.014 kHz), accepted     1411/   70001 events ( 2.02%)
+Processed    80000/  105382 entries, 75.91% (elapsed time    78.3s, curr speed    1.081 kHz, avg speed    1.022 kHz), accepted     1632/   80001 events ( 2.04%)
+Processed    90000/  105382 entries, 85.40% (elapsed time    88.3s, curr speed    0.999 kHz, avg speed    1.020 kHz), accepted     1840/   90001 events ( 2.04%)
+Processed   100000/  105382 entries, 94.89% (elapsed time    97.6s, curr speed    1.068 kHz, avg speed    1.024 kHz), accepted     2035/  100001 events ( 2.03%)
+Processed 105382 preselected entries from samples/ttbarDM_Mchi1Mphi100_scalar_full2.root (105382 entries). Finally selected 2146 entries
+Done outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full2_AH.root
+966.275444709 Hz
