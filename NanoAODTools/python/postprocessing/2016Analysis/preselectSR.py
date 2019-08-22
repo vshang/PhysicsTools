@@ -113,39 +113,39 @@ to next event)"""
         passMETfilters = event.Flag_goodVertices and event.Flag_HBHENoiseFilter and event.Flag_HBHENoiseIsoFilter and event.Flag_EcalDeadCellTriggerPrimitiveFilter and event.Flag_eeBadScFilter and event.Flag_globalTightHalo2016Filter and event.Flag_BadPFMuonFilter and event.Flag_chargedHadronTrackResolutionFilter
 
         #Preselection cuts defined here
+        SL = (nTightElectrons + nTightMuons) == 1 and (nVetoElectrons + nLooseMuons) == 1 and njets >= 2 and nbjets >= 1 and event.MET_pt >= 160
+        AH = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets >= 1 and event.MET_pt >= 250  and ntaus == 0 and minDeltaPhi > 0.4 and centralJets[0].jetId >= 3 and centralJets[0].chHEF > 0.1 and passMETfilters
+
         # SL1e0fSR = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets == 1 and nfjets == 0 and event.MET_pt >= 160
         # SL1m0fSR = nVetoElectrons == 0 and nTightMuons == 1 and nLooseMuons == 1 and njets >= 2 and nbjets == 1 and nfjets == 0 and event.MET_pt >= 160
         # SL1e1fSR = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets == 1 and nfjets >= 1 and event.MET_pt >= 160
         # SL1m1fSR = nVetoElectrons == 0 and nTightMuons == 1 and nLooseMuons == 1 and njets >= 2 and nbjets == 1 and nfjets >= 1 and event.MET_pt >= 160
         # SL1e2bSR = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets >= 2 and event.MET_pt >= 160
         # SL1m2bSR = nVetoElectrons == 0 and nTightMuons == 1 and nLooseMuons == 1 and njets >= 2 and nbjets >= 2 and event.MET_pt >= 160
-        # AH0l0fSR = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets == 1 and nfjets == 0 and event.MET_pt >= 250 and minDeltaPhi > 0.4 
-        # AH0l1fSR = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets == 1 and nfjets >= 1 and event.MET_pt >= 250 and minDeltaPhi > 0.4
-        # AH0l2bSR = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets >= 2 and event.MET_pt >= 250 and minDeltaPhi > 0.4
-        
-        SL = (nTightElectrons + nTightMuons) == 1 and (nVetoElectrons + nLooseMuons) == 1 and njets >= 2 and nbjets >= 1 and event.MET_pt >= 160
-        AH = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets >= 1 and event.MET_pt >= 250  and ntaus == 0 and minDeltaPhi > 0.4 and centralJets[0].jetId >= 3 and centralJets[0].chHEF > 0.1 and passMETfilters
+        AH0l0fSR = AH and nbjets == 1 and nfjets == 0
+        AH0l1fSR = AH and nbjets == 1 and nfjets >= 1
+        AH0l2bSR = AH and nbjets >= 2
 
         #Signal region chosen here
-        # if self.signalRegion == "SL1e0fSR":
-        #     signalRegionPreselect = SL1e0fSR
-        # elif self.signalRegion == "SL1m0fSR":
-        #     signalRegionPreselect = SL1m0fSR
-        # elif self.signalRegion == "SL1e1fSR":
-        #     signalRegionPreselect = SL1e1fSR
-        # elif self.signalRegion == "SL1m1fSR":
-        #     signalRegionPreselect = SL1m1fSR
-        # elif self.signalRegion == "SL1e2bSR":
-        #     signalRegionPreselect = SL1e2bSR
-        # elif self.signalRegion == "SL1m2bSR":
-        #     signalRegionPreselect = SL1m2bSR
-        # elif self.signalRegion == "AH0l0fSR":
-        #     signalRegionPreselect = AH0l0fSR
-        # elif self.signalRegion == "AH0l1fSR":
-        #     signalRegionPreselect = AH0l1fSR
-        # elif self.signalRegion == "AH0l2bSR":
-        #     signalRegionPreselect = AH0l2bSR
-        if self.signalRegion == "SL":
+        if self.signalRegion == "SL1e0fSR":
+            signalRegionPreselect = SL1e0fSR
+        elif self.signalRegion == "SL1m0fSR":
+            signalRegionPreselect = SL1m0fSR
+        elif self.signalRegion == "SL1e1fSR":
+            signalRegionPreselect = SL1e1fSR
+        elif self.signalRegion == "SL1m1fSR":
+            signalRegionPreselect = SL1m1fSR
+        elif self.signalRegion == "SL1e2bSR":
+            signalRegionPreselect = SL1e2bSR
+        elif self.signalRegion == "SL1m2bSR":
+            signalRegionPreselect = SL1m2bSR
+        elif self.signalRegion == "AH0l0fSR":
+            signalRegionPreselect = AH0l0fSR
+        elif self.signalRegion == "AH0l1fSR":
+            signalRegionPreselect = AH0l1fSR
+        elif self.signalRegion == "AH0l2bSR":
+            signalRegionPreselect = AH0l2bSR
+        elif self.signalRegion == "SL":
             signalRegionPreselect = SL
         elif self.signalRegion == "AH":
             signalRegionPreselect = AH
@@ -176,7 +176,7 @@ outputDir = "outDir2016AnalysisSR"
 #outputDir = "outDirDump"
 inputbranches="python/postprocessing/2016Analysis/keep_and_dropSR_in.txt"
 outputbranches="python/postprocessing/2016Analysis/keep_and_dropSR_out.txt"
-inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
+inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root", "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
 
 #Applies pre-selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
 # p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL1e0fSR")],postfix="_SL1e0fSR",noOut=False,outputbranchsel=outputbranches)
@@ -185,17 +185,17 @@ inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
 # p4=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL1m1fSR")],postfix="_SL1m1fSR",noOut=False,outputbranchsel=outputbranches)
 # p5=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL1e2bSR")],postfix="_SL1e2bSR",noOut=False,outputbranchsel=outputbranches)
 # p6=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL1m2bSR")],postfx="_SL1m2bSR",noOut=False,outputbranchsel=outputbranches)
-# p7=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l0fSR")],postfix="_AH0l0fSR",noOut=False,outputbranchsel=outputbranches)
-# p8=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l1fSR")],postfix="_AH0l1fSR",noOut=False,outputbranchsel=outputbranches)
-# p9=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l2bSR")],postfix="_AH0l2bSR",noOut=False,outputbranchsel=outputbranches)
-p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL")],postfix="_SL",noOut=False,outputbranchsel=outputbranches)
-p2=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH")],postfix="_AH",noOut=False,outputbranchsel=outputbranches)
-p1.run()
-p2.run()
-# p3.run()
+p7=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l0fSR")],postfix="_AH0l0fSR",noOut=False,outputbranchsel=outputbranches)
+p8=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l1fSR")],postfix="_AH0l1fSR",noOut=False,outputbranchsel=outputbranches)
+p9=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l2bSR")],postfix="_AH0l2bSR",noOut=False,outputbranchsel=outputbranches)
+# p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL")],postfix="_SL",noOut=False,outputbranchsel=outputbranches)
+# p2=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH")],postfix="_AH",noOut=False,outputbranchsel=outputbranches)
+# p1.run()
+# p2.run()
+# # p3.run()
 # p4.run()
 # p5.run()
 # p6.run()
-# p7.run()
-# p8.run()
-# p9.run()
+p7.run()
+p8.run()
+p9.run()
