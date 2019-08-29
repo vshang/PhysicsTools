@@ -36,7 +36,7 @@ class optimizeAnalysis(Module):
         if self.signalRegion == "SLe" or self.signalRegion == "SLm":
             self.out.branch("M_T", "F")
             self.out.branch("M_T2W", "F")
-        if self.signalRegion == "AH2b":
+        if True:#self.signalRegion == "AH2b":
             self.out.branch("jet1p_TH_T", "F")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
@@ -87,28 +87,24 @@ class optimizeAnalysis(Module):
 
         #Calculate jet1p_T/H_T
         H_T = 0
-        jet1pTHT = 0
 
         for jet in centralJets:
             H_T += jet.pt
             if jet.btagCSVV2 < 0.8484:
                 ljetVector.push_back(jet.p4())
 
-        if H_T > 0: 
-            jet1pTHT = jet1.pt/H_T
+        jet1pTHT = jet1.pt/H_T
 
         #Calculate M_T^b
-        MTb = 0
-        if nbjets > 0:
-            bjet1 = bJets[0]
+        bjet1 = bJets[0]
 
-            for bjet in bJets:
-                bjetVector.push_back(bjet.p4())
+        for bjet in bJets:
+            bjetVector.push_back(bjet.p4())
             if bjet.btagCSVV2 > bjet1.btagCSVV2:
                 bjet1 = bjet
 
-            deltaPhiMTb = bjet1.phi - event.MET_phi
-            MTb = math.sqrt(2 * event.MET_pt * bjet1.pt * (1 - math.cos(deltaPhiMTb)))
+        deltaPhiMTb = bjet1.phi - event.MET_phi
+        MTb = math.sqrt(2 * event.MET_pt * bjet1.pt * (1 - math.cos(deltaPhiMTb)))
 
         #Calculate M_T and M_T2^W for SL case
         M_T = 0
@@ -136,12 +132,12 @@ class optimizeAnalysis(Module):
 
         #Signal region chosen here
         signalRegionOptimize = True
-        if self.signalRegion == "SLe" or self.signalRegion == "SLm":
-            signalRegionOptimize = singleLeptonAccept
-        elif self.signalRegion == "AH":
-            signalRegionOptimize = allHadronicAccept
-        elif self.signalRegion == "AH2b":
-            signalRegionOptimize = allHadronicAccept2b
+        # if self.signalRegion == "SLe" or self.signalRegion == "SLm":
+        #     signalRegionOptimize = singleLeptonAccept
+        # elif self.signalRegion == "AH":
+        #     signalRegionOptimize = allHadronicAccept
+        # elif self.signalRegion == "AH2b":
+        #     signalRegionOptimize = allHadronicAccept2b
 
         if signalRegionOptimize: #True if event satisfies all optimization selections for specified signal region
             #fill output branches
@@ -152,7 +148,7 @@ class optimizeAnalysis(Module):
             if self.signalRegion == "SLe" or self.signalRegion == "SLm":
                 self.out.fillBranch("M_T", M_T)
                 self.out.fillBranch("M_T2W", MT2W)
-            if self.signalRegion == "AH2b":
+            if True:#self.signalRegion == "AH2b":
                 self.out.fillBranch("jet1p_TH_T", jet1pTHT)
             return True
         else:

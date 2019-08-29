@@ -2,7 +2,7 @@ from  ROOT import *
 
 #Select miniAOD and nanoAOD root files to compare
 miniAOD = 'samples/flatTuple_1.root'
-nanoAOD = 'samples/ttbarDM_Mchi1Mphi100_scalar_full.root'
+nanoAOD = 'samples/ttbarDM_Mchi1Mphi100_scalar_full1.root'
 
 #Load root files
 f_mini = TFile.Open(miniAOD)
@@ -35,6 +35,7 @@ nDiff_mu = 0
 nDiff_MET = 0
 nDiff_jet = 0
 nDiff_bjet = 0
+nDiff_fjet = 0
 
 #Loop through every event in miniAOD file and compare to same event in nanoAOD file.
 #Statements are printed when differences exist between miniAOD/nanoAOD files.
@@ -48,6 +49,7 @@ for i in range (nEvents):
     diffExist_MET = False
     diffExist_jet = False
     diffExist_bjet = False
+    diffExist_fjet = False
     #First get event ID of miniAOD event
     miniEvents.GetEntry(i)
     eventID = miniEvents.EVENT_event
@@ -110,11 +112,13 @@ for i in range (nEvents):
             print 'miniAOD MET_pt:', METptMini, '||', 'nanoAOD MET_pt:', METptNano, '||', '%% MET_pt difference', METptDiff*100
 
         #####################################################################
-        #Count number of jets and bjets
+        #Count number of jets, bjets, and fjets
         njetsMini = 0
         njetsNano = 0
         nbjetsMini = 0
         nbjetsNano = 0
+        nfjetsMini = 0
+        nfjetsNano = 0
 
         jetRangeMini = len(miniEvents.jetAK4_pt)
         jetRangeNano = len(nanoEvents.Jet_pt)
@@ -123,20 +127,28 @@ for i in range (nEvents):
                 njetsMini += 1
                 if miniEvents.jetAK4_csv[i] > 0.8484:
                     nbjetsMini += 1
+            if miniEvents.jetAK4_pt[i] > 30 and abs(miniEvents.jetAK4_eta[i]) > 2.4 and abs(miniEvents.jetAK4_eta[i]) < 5.0:
+                nfjetsMini += 1
         for i in range(jetRangeNano):
             if nanoEvents.Jet_pt[i] > 30 and abs(nanoEvents.Jet_eta[i]) < 2.4:
                 njetsNano += 1
                 if nanoEvents.Jet_btagCSVV2[i] > 0.8484:
                     nbjetsNano += 1
+            if nanoEvents.Jet_pt[i] > 30 and abs(nanoEvents.Jet_eta[i]) > 2.4 and abs(nanoEvents.Jet_eta[i]) < 5.0:
+                nfjetsNano += 1
 
         #Check if number of jets for AH region match
         if ( njetsMini >= 3 and njetsNano < 3 ) or ( njetsMini < 3 and njetsNano >= 3 ):
             diffExist_jet = True
             print 'Number of miniAOD jets:', njetsMini, '||', 'Number of nanoAOD jets:', njetsNano
         #Check if number of bjets for AH region match
-        if nbjetsMini != nbjetsNano:
+        if ( nbjetsMini == 1 and  nbjetsNano != 1 ) or ( nbjetsMini != 1 and  nbjetsNano == 1 ) or ( nbjetsMini >= 2 and  nbjetsNano < 2 ) or ( nbjetsMini < 2 and  nbjetsNano >= 2 ):
             diffExist_bjet = True
             print 'Number of miniAOD bjets:', nbjetsMini, '||', 'Number of nanoAOD bjets:', nbjetsNano
+        #Check if number of fjets for AH region match
+        if ( nfjetsMini == 0 and nfjetsNano != 0 ) or ( nfjetsMini != 0 and nfjetsNano == 0):
+            diffExist_fjet = True
+            print 'Number of miniAOD fjets:', nfjetsMini, '||', 'Number of nanoAOD fjets:', nfjetsNano
 
         #####################################################################
 
@@ -157,7 +169,11 @@ for i in range (nEvents):
         nDiffExist = True
         nDiff_jet += 1
     if diffExist_bjet:
+        nDiffExist = True
         nDiff_bjet += 1
+    if diffExist_fjet:
+        nDiffExist = True
+        nDiff_fjet += 1
     #Only print event index and eventID if differences exist between miniAOD/nanoAOD event branches
     if nDiffExist:
         nDiff += 1
@@ -173,3 +189,4 @@ print 'Total number of events with discrepancy in loose muon selection:', nDiff_
 print 'Total number of events with discrepancy in MET_pt cut:', nDiff_MET, 'Percent of events with discrepancy in MET_pt cut:', (nDiff_MET/float(nEvents))*100
 print 'Total number of events with discrepancy in njets cut:', nDiff_jet, 'Percent of events with discrepancy in njets cut:', (nDiff_jet/float(nEvents))*100
 print 'Total number of events with discrepancy in nbjets cut:', nDiff_bjet, 'Percent of events with discrepancy in nbjets cut:', (nDiff_bjet/float(nEvents))*100
+print 'Total number of events with discrepancy in nfjets cut:', nDiff_fjet, 'Percent of events with discrepancy in nfjets cut:', (nDiff_fjet/float(nEvents))*100

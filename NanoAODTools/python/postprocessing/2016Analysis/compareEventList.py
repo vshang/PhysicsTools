@@ -1,7 +1,7 @@
 #Select event list text files to compare
-nanoAOD1 = 'textOutput/ttbarDM_Mchi1Mphi100_scalar_full1_AH_eventList.txt'
-nanoAOD2 = 'textOutput/ttbarDM_Mchi1Mphi100_scalar_full2_AH_eventList.txt'
-miniAOD = 'textOutput/miniAOD_ttbarDM_Mchi1Mphi100_scalar_full_AH_eventList.txt'
+nanoAOD1 = 'textOutput/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l2bSR_optimized_eventList.txt'
+nanoAOD2 = 'textOutput/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l2bSR_optimized_eventList.txt'
+miniAOD = 'textOutput/miniAOD_ttbarDM_Mchi1Mphi100_scalar_full_AH0l2bSR_optimized_eventList.txt'
 
 #Create list of full nanoAOD events containing (eventID, lumi, run) 
 with open(nanoAOD1, 'r') as f:
