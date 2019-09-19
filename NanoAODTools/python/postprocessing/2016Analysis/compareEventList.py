@@ -1,7 +1,7 @@
 #Select event list text files to compare
-nanoAOD1 = 'textOutput/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l2bSR_optimized_eventList.txt'
-nanoAOD2 = 'textOutput/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l2bSR_optimized_eventList.txt'
-miniAOD = 'textOutput/miniAOD_ttbarDM_Mchi1Mphi100_scalar_full_AH0l2bSR_optimized_eventList.txt'
+nanoAOD1 = 'textOutput/ttbarDM_Mchi1Mphi100_scalar_full1_SL1m_18092019_eventList.txt'
+nanoAOD2 = 'textOutput/ttbarDM_Mchi1Mphi100_scalar_full2_SL1m_18092019_eventList.txt'
+miniAOD = 'textOutput/miniAOD_ttbarDM_Mchi1Mphi100_scalar_full_SL1m_eventList.txt'
 
 #Create list of full nanoAOD events containing (eventID, lumi, run) 
 with open(nanoAOD1, 'r') as f:
@@ -17,7 +17,8 @@ with open(miniAOD, 'r') as f:
         line = str(line).replace(' ', '')
         line = line.split('*')
         miniEventList.append(line)
-miniEventList = [str((int(i[2]), int(i[3]), int(i[4]))) for i in miniEventList]
+#miniEventList = [str((int(i[2]), int(i[3]), int(i[4]))) for i in miniEventList]
+miniEventList = [str((int(i[2]), int(i[3]), 1)) for i in miniEventList]
 
 #Count number of missing events in nanoAOD/miniAOD file
 nMissingNano = 0
