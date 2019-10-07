@@ -12,6 +12,24 @@ sameCanvas = True
 #Set date for file names
 date = '10042019'
 
+#Set cross sections, lumi, and overall scale factor here
+ttbarXSec = 672.3
+tChanXSec = 268.3
+tWChanXSec = 55.49
+lumi = 35.9
+scaleFactor = 20
+
+#Set total number of events in samples here
+nEvents_ttbar = 363143.0 
+nEvents_tChan = 500000.0
+nEvents_tWChan = 200000.0
+
+#Weights are calculated here
+ttbarWeight = ttbarXSec*lumi*scaleFactor/nEvents_ttbar
+tChanWeight = tChanXSec*lumi*scaleFactor/nEvents_tChan
+tWChanWeight = tWChanXSec*lumi*scaleFactor/nEvents_tWChan
+#print ttbarWeight, tChanWeight, tWChanWeight
+
 #Remove stats box from histograms
 gStyle.SetOptStat(0)
 
@@ -66,21 +84,21 @@ for suffix in suffixList:
     #Fill ttbar histograms
     for i in range(ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarSL1b_njets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].njets)
-        h_ttbarSL1b_nfjets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].nfjets)
+        h_ttbarSL1b_njets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].njets, ttbarWeight)
+        h_ttbarSL1b_nfjets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].nfjets, ttbarWeight)
     for i in range(ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarSL1b_njets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].njets)
-        h_ttbarSL1b_nfjets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].nfjets)
+        h_ttbarSL1b_njets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].njets, ttbarWeight)
+        h_ttbarSL1b_nfjets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].nfjets, ttbarWeight)
     #Fill tbar histograms
     for i in range(tChanEvents['tChan' + suffix + '_eventTree'].GetEntries()):
         tChanEvents['tChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarSL1b_njets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].njets)
-        h_tbarSL1b_nfjets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].nfjets)
+        h_tbarSL1b_njets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].njets, tChanWeight)
+        h_tbarSL1b_nfjets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].nfjets, tChanWeight)
     for i in range(tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntries()):
         tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarSL1b_njets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].njets)
-        h_tbarSL1b_nfjets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].nfjets)
+        h_tbarSL1b_njets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].njets, tWChanWeight)
+        h_tbarSL1b_nfjets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].nfjets, tWChanWeight)
 
 #Fill SL2b histograms
 for suffix in suffixList:
@@ -89,21 +107,21 @@ for suffix in suffixList:
     #Fill ttbar histograms
     for i in range(ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarSL2b_njets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].njets)
-        h_ttbarSL2b_nfjets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].nfjets)
+        h_ttbarSL2b_njets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].njets, ttbarWeight)
+        h_ttbarSL2b_nfjets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].nfjets, ttbarWeight)
     for i in range(ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarSL2b_njets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].njets)
-        h_ttbarSL2b_nfjets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].nfjets)
+        h_ttbarSL2b_njets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].njets, ttbarWeight)
+        h_ttbarSL2b_nfjets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].nfjets, ttbarWeight)
     #Fill tbar histograms
     for i in range(tChanEvents['tChan' + suffix + '_eventTree'].GetEntries()):
         tChanEvents['tChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarSL2b_njets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].njets)
-        h_tbarSL2b_nfjets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].nfjets)
+        h_tbarSL2b_njets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].njets, tChanWeight)
+        h_tbarSL2b_nfjets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].nfjets, tChanWeight)
     for i in range(tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntries()):
         tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarSL2b_njets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].njets)
-        h_tbarSL2b_nfjets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].nfjets)
+        h_tbarSL2b_njets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].njets, tWChanWeight)
+        h_tbarSL2b_nfjets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].nfjets, tWChanWeight)
 
 #Draw SL1b njets distribution plot
 print("Creating SL1b njets distribution plot...")
@@ -270,21 +288,21 @@ for suffix in suffixList:
     #Fill ttbar histograms
     for i in range(ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarAH1b_njets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].njets)
-        h_ttbarAH1b_nfjets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].nfjets)
+        h_ttbarAH1b_njets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].njets, ttbarWeight)
+        h_ttbarAH1b_nfjets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].nfjets, ttbarWeight)
     for i in range(ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarAH1b_njets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].njets)
-        h_ttbarAH1b_nfjets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].nfjets)
+        h_ttbarAH1b_njets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].njets, ttbarWeight)
+        h_ttbarAH1b_nfjets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].nfjets, ttbarWeight)
     #Fill tbar histograms
     for i in range(tChanEvents['tChan' + suffix + '_eventTree'].GetEntries()):
         tChanEvents['tChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarAH1b_njets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].njets)
-        h_tbarAH1b_nfjets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].nfjets)
+        h_tbarAH1b_njets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].njets, tChanWeight)
+        h_tbarAH1b_nfjets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].nfjets, tChanWeight)
     for i in range(tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntries()):
         tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarAH1b_njets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].njets)
-        h_tbarAH1b_nfjets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].nfjets)
+        h_tbarAH1b_njets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].njets, tWChanWeight)
+        h_tbarAH1b_nfjets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].nfjets, tWChanWeight)
 
 #Fill AH2b histograms
 for suffix in suffixList:
@@ -293,21 +311,21 @@ for suffix in suffixList:
     #Fill ttbar histograms
     for i in range(ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarAH2b_njets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].njets)
-        h_ttbarAH2b_nfjets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].nfjets)
+        h_ttbarAH2b_njets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].njets, ttbarWeight)
+        h_ttbarAH2b_nfjets.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].nfjets, ttbarWeight)
     for i in range(ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarAH2b_njets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].njets)
-        h_ttbarAH2b_nfjets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].nfjets)
+        h_ttbarAH2b_njets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].njets, ttbarWeight)
+        h_ttbarAH2b_nfjets.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].nfjets, ttbarWeight)
     #Fill tbar histograms
     for i in range(tChanEvents['tChan' + suffix + '_eventTree'].GetEntries()):
         tChanEvents['tChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarAH2b_njets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].njets)
-        h_tbarAH2b_nfjets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].nfjets)
+        h_tbarAH2b_njets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].njets, tChanWeight)
+        h_tbarAH2b_nfjets.Fill(tChanEvents['tChan' + suffix + '_eventTree'].nfjets, tChanWeight)
     for i in range(tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntries()):
         tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarAH2b_njets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].njets)
-        h_tbarAH2b_nfjets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].nfjets)
+        h_tbarAH2b_njets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].njets, tWChanWeight)
+        h_tbarAH2b_nfjets.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].nfjets, tWChanWeight)
 
 #Draw AH1b njets distribution plot
 print("Creating AH1b njets distribution plot...")

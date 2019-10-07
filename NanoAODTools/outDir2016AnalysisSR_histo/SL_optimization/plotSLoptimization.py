@@ -12,6 +12,24 @@ sameCanvas = True
 #Set date for file names
 date = '10042019'
 
+#Set cross sections, lumi, and overall scale factor here
+ttbarXSec = 672.3
+tChanXSec = 268.3
+tWChanXSec = 55.49
+lumi = 35.9
+scaleFactor = 20
+
+#Set total number of events in samples here
+nEvents_ttbar = 363143.0 
+nEvents_tChan = 500000.0
+nEvents_tWChan = 200000.0
+
+#Weights are calculated here
+ttbarWeight = ttbarXSec*lumi*scaleFactor/nEvents_ttbar
+tChanWeight = tChanXSec*lumi*scaleFactor/nEvents_tChan
+tWChanWeight = tWChanXSec*lumi*scaleFactor/nEvents_tWChan
+#print ttbarWeight, tChanWeight, tWChanWeight
+
 #Remove stats box from histograms
 gStyle.SetOptStat(0)
 
@@ -70,8 +88,8 @@ print("Creating SL1b histograms..")
 #Define SL nbjets = 1 histograms
 h_ttbarSL1b_MT = TH1F('h_ttbarSL1b_MT', 'SL1b M_{T}^{W} distribution; M_{T} (GeV); Events', 10, 0, 400)
 h_tbarSL1b_MT = TH1F('h_tbarSL1b_MT', 'SL1b M_{T}^{W} distribution; M_{T} (GeV); Events', 10, 0, 400)
-h_ttbarSL1b_MT2W = TH1F('h_ttbarSL1b_MT2W', 'SL1b M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events', 10, 0, 480)
-h_tbarSL1b_MT2W = TH1F('h_tbarSL1b_MT2W', 'SL1b M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events', 10, 0, 480)
+h_ttbarSL1b_MT2W = TH1F('h_ttbarSL1b_MT2W', 'SL1b M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events', 10, 80, 480)
+h_tbarSL1b_MT2W = TH1F('h_tbarSL1b_MT2W', 'SL1b M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events', 10, 80, 480)
 h_ttbarSL1b_minDeltaPhi = TH1F('h_ttbarSL1b_minDeltaPhi', 'SL1b min\Delta\phi(j_{1,2}, p_{T}^{miss}) distribution; min\Delta\phi(jet_{1,2}, p_{T}^{miss}); Events', 10, 0, 3)
 h_tbarSL1b_minDeltaPhi = TH1F('h_tbarSL1b_minDeltaPhi', 'SL1b min\Delta\phi(j_{1,2}, p_{T}^{miss}) distribution; min\Delta\phi(jet_{1,2}, p_{T}^{miss}); Events', 10, 0, 3)
 h_ttbarSL1b_MTb = TH1F('h_ttbarSL1b_MTb', 'SL1b M_{T}^{b} distribution; M_{T}^{b} (GeV); Events', 20, 0, 1000)
@@ -84,49 +102,49 @@ for suffix in suffixList:
     #Fill h_ttbarSL1b_MT
     for i in range(ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarSL1b_MT.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].M_T)
+        h_ttbarSL1b_MT.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].M_T, ttbarWeight)
     for i in range(ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarSL1b_MT.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].M_T)
+        h_ttbarSL1b_MT.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].M_T, ttbarWeight)
     #Fill h_tbarSL1b_MT
     for i in range(tChanEvents['tChan' + suffix + '_eventTree'].GetEntries()):
         tChanEvents['tChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarSL1b_MT.Fill(tChanEvents['tChan' + suffix + '_eventTree'].M_T)
+        h_tbarSL1b_MT.Fill(tChanEvents['tChan' + suffix + '_eventTree'].M_T, tChanWeight)
     for i in range(tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntries()):
         tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarSL1b_MT.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].M_T)
+        h_tbarSL1b_MT.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].M_T, tWChanWeight)
     #Fill h_ttbarSL1b_MT2W
     for i in range(ttbarEvents['ttbar1' + suffix + '_MT_eventTree'].GetEntries()):
         ttbarEvents['ttbar1' + suffix + '_MT_eventTree'].GetEntry(i)
-        h_ttbarSL1b_MT2W.Fill(ttbarEvents['ttbar1' + suffix + '_MT_eventTree'].M_T2W)
+        h_ttbarSL1b_MT2W.Fill(ttbarEvents['ttbar1' + suffix + '_MT_eventTree'].M_T2W, ttbarWeight)
     for i in range(ttbarEvents['ttbar2' + suffix + '_MT_eventTree'].GetEntries()):
         ttbarEvents['ttbar2' + suffix + '_MT_eventTree'].GetEntry(i)
-        h_ttbarSL1b_MT2W.Fill(ttbarEvents['ttbar2' + suffix + '_MT_eventTree'].M_T2W)
+        h_ttbarSL1b_MT2W.Fill(ttbarEvents['ttbar2' + suffix + '_MT_eventTree'].M_T2W, ttbarWeight)
     #Fill h_tbarSL1b_MT2W
     for i in range(tChanEvents['tChan' + suffix + '_MT_eventTree'].GetEntries()):
         tChanEvents['tChan' + suffix + '_MT_eventTree'].GetEntry(i)
-        h_tbarSL1b_MT2W.Fill(tChanEvents['tChan' + suffix + '_MT_eventTree'].M_T2W)
+        h_tbarSL1b_MT2W.Fill(tChanEvents['tChan' + suffix + '_MT_eventTree'].M_T2W, tChanWeight)
     for i in range(tWChanEvents['tWChan' + suffix + '_MT_eventTree'].GetEntries()):
         tWChanEvents['tWChan' + suffix + '_MT_eventTree'].GetEntry(i)
-        h_tbarSL1b_MT2W.Fill(tWChanEvents['tWChan' + suffix + '_MT_eventTree'].M_T2W)
+        h_tbarSL1b_MT2W.Fill(tWChanEvents['tWChan' + suffix + '_MT_eventTree'].M_T2W, tWChanWeight)
     #Fill h_ttbarSL1b_minDeltaPhi and h_ttbarSL1b_MTb
     for i in range(ttbarEvents['ttbar1' + suffix + '_MTandMT2W_eventTree'].GetEntries()):
         ttbarEvents['ttbar1' + suffix + '_MTandMT2W_eventTree'].GetEntry(i)
-        h_ttbarSL1b_minDeltaPhi.Fill(ttbarEvents['ttbar1' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12)
-        h_ttbarSL1b_MTb.Fill(ttbarEvents['ttbar1' + suffix + '_MTandMT2W_eventTree'].M_Tb)
+        h_ttbarSL1b_minDeltaPhi.Fill(ttbarEvents['ttbar1' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12), ttbarWeight
+        h_ttbarSL1b_MTb.Fill(ttbarEvents['ttbar1' + suffix + '_MTandMT2W_eventTree'].M_Tb, ttbarWeight)
     for i in range(ttbarEvents['ttbar2' + suffix + '_MTandMT2W_eventTree'].GetEntries()):
         ttbarEvents['ttbar2' + suffix + '_MTandMT2W_eventTree'].GetEntry(i)
-        h_ttbarSL1b_minDeltaPhi.Fill(ttbarEvents['ttbar2' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12)
-        h_ttbarSL1b_MTb.Fill(ttbarEvents['ttbar2' + suffix + '_MTandMT2W_eventTree'].M_Tb)
+        h_ttbarSL1b_minDeltaPhi.Fill(ttbarEvents['ttbar2' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12, ttbarWeight)
+        h_ttbarSL1b_MTb.Fill(ttbarEvents['ttbar2' + suffix + '_MTandMT2W_eventTree'].M_Tb, ttbarWeight)
     #Fill h_tbarSL1b_minDeltaPhi and h_tbarSL1b_MTb
     for i in range(tChanEvents['tChan' + suffix + '_MTandMT2W_eventTree'].GetEntries()):
         tChanEvents['tChan' + suffix + '_MTandMT2W_eventTree'].GetEntry(i)
-        h_tbarSL1b_minDeltaPhi.Fill(tChanEvents['tChan' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12)
-        h_tbarSL1b_MTb.Fill(tChanEvents['tChan' + suffix + '_MTandMT2W_eventTree'].M_Tb)
+        h_tbarSL1b_minDeltaPhi.Fill(tChanEvents['tChan' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12, tChanWeight)
+        h_tbarSL1b_MTb.Fill(tChanEvents['tChan' + suffix + '_MTandMT2W_eventTree'].M_Tb, tChanWeight)
     for i in range(tWChanEvents['tWChan' + suffix + '_MTandMT2W_eventTree'].GetEntries()):
         tWChanEvents['tWChan' + suffix + '_MTandMT2W_eventTree'].GetEntry(i)
-        h_tbarSL1b_minDeltaPhi.Fill(tWChanEvents['tWChan' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12)
-        h_tbarSL1b_MTb.Fill(tWChanEvents['tWChan' + suffix + '_MTandMT2W_eventTree'].M_Tb)
+        h_tbarSL1b_minDeltaPhi.Fill(tWChanEvents['tWChan' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12, tWChanWeight)
+        h_tbarSL1b_MTb.Fill(tWChanEvents['tWChan' + suffix + '_MTandMT2W_eventTree'].M_Tb, tWChanWeight)
 
 #Draw SL1b  M_T distribution plot
 print("Creating SL1b M_T distribution plot...")
@@ -212,7 +230,7 @@ h_tbarSL1b_minDeltaPhi.SetLineWidth(1)
 h_tbarSL1b_minDeltaPhi.SetFillColor(kBlue)
 h_tbarSL1b_minDeltaPhi.SetFillStyle(3003)
 h_tbarSL1b_minDeltaPhi.SetMinimum(0)
-h_tbarSL1b_minDeltaPhi.SetMaximum(1000)
+h_tbarSL1b_minDeltaPhi.SetMaximum(160)
 #Set ttbar histogram options
 h_ttbarSL1b_minDeltaPhi.SetLineColor(kRed)
 h_ttbarSL1b_minDeltaPhi.SetLineStyle(2)
@@ -220,7 +238,7 @@ h_ttbarSL1b_minDeltaPhi.SetLineWidth(1)
 h_ttbarSL1b_minDeltaPhi.SetFillColor(kRed)
 h_ttbarSL1b_minDeltaPhi.SetFillStyle(3003)
 h_ttbarSL1b_minDeltaPhi.SetMinimum(0)
-h_ttbarSL1b_minDeltaPhi.SetMaximum(1000)
+h_ttbarSL1b_minDeltaPhi.SetMaximum(160)
 #Add legend
 legend_SL1bminDeltaPhi = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL1bminDeltaPhi.AddEntry(h_tbarSL1b_minDeltaPhi, 'Scalar, t+DM', 'l')
@@ -247,7 +265,7 @@ h_tbarSL1b_MTb.SetLineColor(kBlue)
 h_tbarSL1b_MTb.SetLineWidth(1)
 h_tbarSL1b_MTb.SetFillColor(kBlue)
 h_tbarSL1b_MTb.SetFillStyle(3003)
-h_tbarSL1b_MTb.SetMinimum(10)
+h_tbarSL1b_MTb.SetMinimum(0.4)
 h_tbarSL1b_MTb.SetMaximum(1000)
 #Set ttbar histogram options
 h_ttbarSL1b_MTb.SetLineColor(kRed)
@@ -255,7 +273,7 @@ h_ttbarSL1b_MTb.SetLineStyle(2)
 h_ttbarSL1b_MTb.SetLineWidth(1)
 h_ttbarSL1b_MTb.SetFillColor(kRed)
 h_ttbarSL1b_MTb.SetFillStyle(3003)
-h_ttbarSL1b_MTb.SetMinimum(10)
+h_ttbarSL1b_MTb.SetMinimum(0.4)
 h_ttbarSL1b_MTb.SetMaximum(1000)
 #Add legend
 legend_SL1bMTb = TLegend(0.46, 0.73, 0.75, 0.87)
@@ -279,8 +297,8 @@ print("Creating SL2b histograms..")
 #Define SL nbjets = 2 histograms
 h_ttbarSL2b_MT = TH1F('h_ttbarSL2b_MT', 'SL2b M_{T}^{W} distribution; M_{T} (GeV); Events', 10, 0, 400)
 h_tbarSL2b_MT = TH1F('h_tbarSL2b_MT', 'SL2b M_{T}^{W} distribution; M_{T} (GeV); Events', 10, 0, 400)
-h_ttbarSL2b_MT2W = TH1F('h_ttbarSL2b_MT2W', 'SL2b M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events', 10, 0, 480)
-h_tbarSL2b_MT2W = TH1F('h_tbarSL2b_MT2W', 'SL2b M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events', 10, 0, 480)
+h_ttbarSL2b_MT2W = TH1F('h_ttbarSL2b_MT2W', 'SL2b M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events', 10, 80, 480)
+h_tbarSL2b_MT2W = TH1F('h_tbarSL2b_MT2W', 'SL2b M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events', 10, 80, 480)
 h_ttbarSL2b_minDeltaPhi = TH1F('h_ttbarSL2b_minDeltaPhi', 'SL2b min\Delta\phi(j_{1,2}, p_{T}^{miss}) distribution; min\Delta\phi(jet_{1,2}, p_{T}^{miss}); Events', 10, 0, 3)
 h_tbarSL2b_minDeltaPhi = TH1F('h_tbarSL2b_minDeltaPhi', 'SL2b min\Delta\phi(j_{1,2}, p_{T}^{miss}) distribution; min\Delta\phi(jet_{1,2}, p_{T}^{miss}); Events', 10, 0, 3)
 h_ttbarSL2b_MTb = TH1F('h_ttbarSL2b_MTb', 'SL2b M_{T}^{b} distribution; M_{T}^{b} (GeV); Events', 20, 0, 1000)
@@ -293,49 +311,49 @@ for suffix in suffixList:
     #Fill h_ttbarSL2b_MT
     for i in range(ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarSL2b_MT.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].M_T)
+        h_ttbarSL2b_MT.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].M_T, ttbarWeight)
     for i in range(ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarSL2b_MT.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].M_T)
+        h_ttbarSL2b_MT.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].M_T, ttbarWeight)
     #Fill h_tbarSL2b_MT
     for i in range(tChanEvents['tChan' + suffix + '_eventTree'].GetEntries()):
         tChanEvents['tChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarSL2b_MT.Fill(tChanEvents['tChan' + suffix + '_eventTree'].M_T)
+        h_tbarSL2b_MT.Fill(tChanEvents['tChan' + suffix + '_eventTree'].M_T, tChanWeight)
     for i in range(tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntries()):
         tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarSL2b_MT.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].M_T)
+        h_tbarSL2b_MT.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].M_T, tWChanWeight)
     #Fill h_ttbarSL2b_MT2W
     for i in range(ttbarEvents['ttbar1' + suffix + '_MT_eventTree'].GetEntries()):
         ttbarEvents['ttbar1' + suffix + '_MT_eventTree'].GetEntry(i)
-        h_ttbarSL2b_MT2W.Fill(ttbarEvents['ttbar1' + suffix + '_MT_eventTree'].M_T2W)
+        h_ttbarSL2b_MT2W.Fill(ttbarEvents['ttbar1' + suffix + '_MT_eventTree'].M_T2W, ttbarWeight)
     for i in range(ttbarEvents['ttbar2' + suffix + '_MT_eventTree'].GetEntries()):
         ttbarEvents['ttbar2' + suffix + '_MT_eventTree'].GetEntry(i)
-        h_ttbarSL2b_MT2W.Fill(ttbarEvents['ttbar2' + suffix + '_MT_eventTree'].M_T2W)
+        h_ttbarSL2b_MT2W.Fill(ttbarEvents['ttbar2' + suffix + '_MT_eventTree'].M_T2W, ttbarWeight)
     #Fill h_tbarSL2b_MT2W
     for i in range(tChanEvents['tChan' + suffix + '_MT_eventTree'].GetEntries()):
         tChanEvents['tChan' + suffix + '_MT_eventTree'].GetEntry(i)
-        h_tbarSL2b_MT2W.Fill(tChanEvents['tChan' + suffix + '_MT_eventTree'].M_T2W)
+        h_tbarSL2b_MT2W.Fill(tChanEvents['tChan' + suffix + '_MT_eventTree'].M_T2W, tChanWeight)
     for i in range(tWChanEvents['tWChan' + suffix + '_MT_eventTree'].GetEntries()):
         tWChanEvents['tWChan' + suffix + '_MT_eventTree'].GetEntry(i)
-        h_tbarSL2b_MT2W.Fill(tWChanEvents['tWChan' + suffix + '_MT_eventTree'].M_T2W)
+        h_tbarSL2b_MT2W.Fill(tWChanEvents['tWChan' + suffix + '_MT_eventTree'].M_T2W, tWChanWeight)
     #Fill h_ttbarSL2b_minDeltaPhi and h_ttbarSL2b_MTb
     for i in range(ttbarEvents['ttbar1' + suffix + '_MTandMT2W_eventTree'].GetEntries()):
         ttbarEvents['ttbar1' + suffix + '_MTandMT2W_eventTree'].GetEntry(i)
-        h_ttbarSL2b_minDeltaPhi.Fill(ttbarEvents['ttbar1' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12)
-        h_ttbarSL2b_MTb.Fill(ttbarEvents['ttbar1' + suffix + '_MTandMT2W_eventTree'].M_Tb)
+        h_ttbarSL2b_minDeltaPhi.Fill(ttbarEvents['ttbar1' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12, ttbarWeight)
+        h_ttbarSL2b_MTb.Fill(ttbarEvents['ttbar1' + suffix + '_MTandMT2W_eventTree'].M_Tb, ttbarWeight)
     for i in range(ttbarEvents['ttbar2' + suffix + '_MTandMT2W_eventTree'].GetEntries()):
         ttbarEvents['ttbar2' + suffix + '_MTandMT2W_eventTree'].GetEntry(i)
-        h_ttbarSL2b_minDeltaPhi.Fill(ttbarEvents['ttbar2' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12)
-        h_ttbarSL2b_MTb.Fill(ttbarEvents['ttbar2' + suffix + '_MTandMT2W_eventTree'].M_Tb)
+        h_ttbarSL2b_minDeltaPhi.Fill(ttbarEvents['ttbar2' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12, ttbarWeight)
+        h_ttbarSL2b_MTb.Fill(ttbarEvents['ttbar2' + suffix + '_MTandMT2W_eventTree'].M_Tb, ttbarWeight)
     #Fill h_tbarSL2b_minDeltaPhi and h_tbarSL2b_MTb
     for i in range(tChanEvents['tChan' + suffix + '_MTandMT2W_eventTree'].GetEntries()):
         tChanEvents['tChan' + suffix + '_MTandMT2W_eventTree'].GetEntry(i)
-        h_tbarSL2b_minDeltaPhi.Fill(tChanEvents['tChan' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12)
-        h_tbarSL2b_MTb.Fill(tChanEvents['tChan' + suffix + '_MTandMT2W_eventTree'].M_Tb)
+        h_tbarSL2b_minDeltaPhi.Fill(tChanEvents['tChan' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12, tChanWeight)
+        h_tbarSL2b_MTb.Fill(tChanEvents['tChan' + suffix + '_MTandMT2W_eventTree'].M_Tb, tChanWeight)
     for i in range(tWChanEvents['tWChan' + suffix + '_MTandMT2W_eventTree'].GetEntries()):
         tWChanEvents['tWChan' + suffix + '_MTandMT2W_eventTree'].GetEntry(i)
-        h_tbarSL2b_minDeltaPhi.Fill(tWChanEvents['tWChan' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12)
-        h_tbarSL2b_MTb.Fill(tWChanEvents['tWChan' + suffix + '_MTandMT2W_eventTree'].M_Tb)
+        h_tbarSL2b_minDeltaPhi.Fill(tWChanEvents['tWChan' + suffix + '_MTandMT2W_eventTree'].minDeltaPhi12, tWChanWeight)
+        h_tbarSL2b_MTb.Fill(tWChanEvents['tWChan' + suffix + '_MTandMT2W_eventTree'].M_Tb, tWChanWeight)
 
 #Draw SL2b  M_T distribution plot
 print("Creating SL2b M_T distribution plot...")
@@ -421,7 +439,7 @@ h_tbarSL2b_minDeltaPhi.SetLineWidth(1)
 h_tbarSL2b_minDeltaPhi.SetFillColor(kBlue)
 h_tbarSL2b_minDeltaPhi.SetFillStyle(3003)
 h_tbarSL2b_minDeltaPhi.SetMinimum(0)
-h_tbarSL2b_minDeltaPhi.SetMaximum(400)
+h_tbarSL2b_minDeltaPhi.SetMaximum(80)
 #Set ttbar histogram options
 h_ttbarSL2b_minDeltaPhi.SetLineColor(kRed)
 h_ttbarSL2b_minDeltaPhi.SetLineStyle(2)
@@ -429,7 +447,7 @@ h_ttbarSL2b_minDeltaPhi.SetLineWidth(1)
 h_ttbarSL2b_minDeltaPhi.SetFillColor(kRed)
 h_ttbarSL2b_minDeltaPhi.SetFillStyle(3003)
 h_ttbarSL2b_minDeltaPhi.SetMinimum(0)
-h_ttbarSL2b_minDeltaPhi.SetMaximum(400)
+h_ttbarSL2b_minDeltaPhi.SetMaximum(80)
 #Add legend
 legend_SL2bminDeltaPhi = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL2bminDeltaPhi.AddEntry(h_tbarSL2b_minDeltaPhi, 'Scalar, t+DM', 'l')
@@ -456,16 +474,16 @@ h_tbarSL2b_MTb.SetLineColor(kBlue)
 h_tbarSL2b_MTb.SetLineWidth(1)
 h_tbarSL2b_MTb.SetFillColor(kBlue)
 h_tbarSL2b_MTb.SetFillStyle(3003)
-h_tbarSL2b_MTb.SetMinimum(10)
-h_tbarSL2b_MTb.SetMaximum(500)
+h_tbarSL2b_MTb.SetMinimum(0.3)
+h_tbarSL2b_MTb.SetMaximum(200)
 #Set ttbar histogram options
 h_ttbarSL2b_MTb.SetLineColor(kRed)
 h_ttbarSL2b_MTb.SetLineStyle(2)
 h_ttbarSL2b_MTb.SetLineWidth(1)
 h_ttbarSL2b_MTb.SetFillColor(kRed)
 h_ttbarSL2b_MTb.SetFillStyle(3003)
-h_ttbarSL2b_MTb.SetMinimum(10)
-h_ttbarSL2b_MTb.SetMaximum(500)
+h_ttbarSL2b_MTb.SetMinimum(0.3)
+h_ttbarSL2b_MTb.SetMaximum(200)
 #Add legend
 legend_SL2bMTb = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL2bMTb.AddEntry(h_tbarSL2b_MTb, 'Scalar, t+DM', 'l')

@@ -12,6 +12,24 @@ sameCanvas = True
 #Set date for file names
 date = '10042019'
 
+#Set cross sections, lumi, and overall scale factor here
+ttbarXSec = 672.3
+tChanXSec = 268.3
+tWChanXSec = 55.49
+lumi = 35.9
+scaleFactor = 20
+
+#Set total number of events in samples here
+nEvents_ttbar = 363143.0 
+nEvents_tChan = 500000.0
+nEvents_tWChan = 200000.0
+
+#Weights are calculated here
+ttbarWeight = ttbarXSec*lumi*scaleFactor/nEvents_ttbar
+tChanWeight = tChanXSec*lumi*scaleFactor/nEvents_tChan
+tWChanWeight = tWChanXSec*lumi*scaleFactor/nEvents_tWChan
+#print ttbarWeight, tChanWeight, tWChanWeight
+
 #Remove stats box from histograms
 gStyle.SetOptStat(0)
 
@@ -61,21 +79,21 @@ for suffix in suffixList:
     #Fill ttbar histograms
     for i in range(ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarAH1b_minDeltaPhi.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].minDeltaPhi12)
-        h_ttbarAH1b_MTb.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].M_Tb)
+        h_ttbarAH1b_minDeltaPhi.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].minDeltaPhi12, ttbarWeight)
+        h_ttbarAH1b_MTb.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].M_Tb, ttbarWeight)
     for i in range(ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarAH1b_minDeltaPhi.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].minDeltaPhi12)
-        h_ttbarAH1b_MTb.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].M_Tb)
+        h_ttbarAH1b_minDeltaPhi.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].minDeltaPhi12, ttbarWeight)
+        h_ttbarAH1b_MTb.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].M_Tb, ttbarWeight)
     #Fill tbar histograms
     for i in range(tChanEvents['tChan' + suffix + '_eventTree'].GetEntries()):
         tChanEvents['tChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarAH1b_minDeltaPhi.Fill(tChanEvents['tChan' + suffix + '_eventTree'].minDeltaPhi12)
-        h_tbarAH1b_MTb.Fill(tChanEvents['tChan' + suffix + '_eventTree'].M_Tb)
+        h_tbarAH1b_minDeltaPhi.Fill(tChanEvents['tChan' + suffix + '_eventTree'].minDeltaPhi12, tChanWeight)
+        h_tbarAH1b_MTb.Fill(tChanEvents['tChan' + suffix + '_eventTree'].M_Tb, tChanWeight)
     for i in range(tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntries()):
         tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarAH1b_minDeltaPhi.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].minDeltaPhi12)
-        h_tbarAH1b_MTb.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].M_Tb)
+        h_tbarAH1b_minDeltaPhi.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].minDeltaPhi12, tWChanWeight)
+        h_tbarAH1b_MTb.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].M_Tb, tWChanWeight)
 
 #Draw AH1b minDeltaPhi distribution plot
 print("Creating AH1b minDeltaPhi distribution plot...")
@@ -168,25 +186,25 @@ for suffix in suffixList:
     #Fill ttbar histograms
     for i in range(ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarAH2b_minDeltaPhi.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].minDeltaPhi12)
-        h_ttbarAH2b_MTb.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].M_Tb)
-        h_ttbarAH2b_jet1pTHT.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].jet1p_TH_T)
+        h_ttbarAH2b_minDeltaPhi.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].minDeltaPhi12, ttbarWeight)
+        h_ttbarAH2b_MTb.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].M_Tb, ttbarWeight)
+        h_ttbarAH2b_jet1pTHT.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].jet1p_TH_T, ttbarWeight)
     for i in range(ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntries()):
         ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarAH2b_minDeltaPhi.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].minDeltaPhi12)
-        h_ttbarAH2b_MTb.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].M_Tb)
-        h_ttbarAH2b_jet1pTHT.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].jet1p_TH_T)
+        h_ttbarAH2b_minDeltaPhi.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].minDeltaPhi12, ttbarWeight)
+        h_ttbarAH2b_MTb.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].M_Tb, ttbarWeight)
+        h_ttbarAH2b_jet1pTHT.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].jet1p_TH_T, ttbarWeight)
     #Fill tbar histograms
     for i in range(tChanEvents['tChan' + suffix + '_eventTree'].GetEntries()):
         tChanEvents['tChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarAH2b_minDeltaPhi.Fill(tChanEvents['tChan' + suffix + '_eventTree'].minDeltaPhi12)
-        h_tbarAH2b_MTb.Fill(tChanEvents['tChan' + suffix + '_eventTree'].M_Tb)
-        h_tbarAH2b_jet1pTHT.Fill(tChanEvents['tChan' + suffix + '_eventTree'].jet1p_TH_T)
+        h_tbarAH2b_minDeltaPhi.Fill(tChanEvents['tChan' + suffix + '_eventTree'].minDeltaPhi12, tChanWeight)
+        h_tbarAH2b_MTb.Fill(tChanEvents['tChan' + suffix + '_eventTree'].M_Tb, tChanWeight)
+        h_tbarAH2b_jet1pTHT.Fill(tChanEvents['tChan' + suffix + '_eventTree'].jet1p_TH_T, tChanWeight)
     for i in range(tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntries()):
         tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarAH2b_minDeltaPhi.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].minDeltaPhi12)
-        h_tbarAH2b_MTb.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].M_Tb)
-        h_tbarAH2b_jet1pTHT.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].jet1p_TH_T)
+        h_tbarAH2b_minDeltaPhi.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].minDeltaPhi12, tWChanWeight)
+        h_tbarAH2b_MTb.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].M_Tb, tWChanWeight)
+        h_tbarAH2b_jet1pTHT.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].jet1p_TH_T, tWChanWeight)
 
 #Draw AH2b minDeltaPhi distribution plot 
 print("Creating minDeltaPhi distribution plot...")
