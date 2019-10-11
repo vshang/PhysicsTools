@@ -103,8 +103,8 @@ if sameCanvas:
     c.cd(1)
 else:
     c1b_minDeltaPhi = TCanvas('c1b_MT', 'AH1b min\Delta\phi(j_{1,2}, p_{T}^{miss}) distribution')
-h_tbarAH1b_minDeltaPhi.Draw('hist')
-h_ttbarAH1b_minDeltaPhi.Draw('hist same')
+h_ttbarAH1b_minDeltaPhi.Draw('hist')
+h_tbarAH1b_minDeltaPhi.Draw('hist same')
 #Set ttbar histogram options
 h_ttbarAH1b_minDeltaPhi.SetLineColor(kRed)
 h_ttbarAH1b_minDeltaPhi.SetLineStyle(2)
@@ -139,8 +139,8 @@ if sameCanvas:
 else:
     c1b_MTb = TCanvas('c1b_MTb', 'AH1b M_{T}^{b} distribution')
     c1b_MTb.SetLogy(1)
-h_tbarAH1b_MTb.Draw('hist')
-h_ttbarAH1b_MTb.Draw('hist same')
+h_ttbarAH1b_MTb.Draw('hist')
+h_tbarAH1b_MTb.Draw('hist same')
 #Set ttbar histogram options
 h_ttbarAH1b_MTb.SetLineColor(kRed)
 h_ttbarAH1b_MTb.SetLineStyle(2)
@@ -212,8 +212,8 @@ if sameCanvas:
     c.cd(4)
 else:
     c2b_minDeltaPhi = TCanvas('c2b_minDeltaPhi', 'AH2b min\Delta\phi(j_{1,2}, p_{T}^{miss}) distribution')
-h_tbarAH2b_minDeltaPhi.Draw('hist')
-h_ttbarAH2b_minDeltaPhi.Draw('hist same')
+h_ttbarAH2b_minDeltaPhi.Draw('hist')
+h_tbarAH2b_minDeltaPhi.Draw('hist same')
 #Set ttbar histogram options
 h_ttbarAH2b_minDeltaPhi.SetLineColor(kRed)
 h_ttbarAH2b_minDeltaPhi.SetLineStyle(2)
@@ -248,8 +248,8 @@ if sameCanvas:
 else:
     c2b_MTb = TCanvas('c2b_MTb', 'AH2b M_{T}^{b} distribution')
     c2b_MTb.SetLogy(1)
-h_tbarAH2b_MTb.Draw('hist')
-h_ttbarAH2b_MTb.Draw('hist same')
+h_ttbarAH2b_MTb.Draw('hist')
+h_tbarAH2b_MTb.Draw('hist same')
 #Set ttbar histogram options
 h_ttbarAH2b_MTb.SetLineColor(kRed)
 h_ttbarAH2b_MTb.SetLineStyle(2)
@@ -282,8 +282,8 @@ if sameCanvas:
     c.cd(6)
 else:
     c2b_jet1pTHT = TCanvas('c2b_jet1pTHT', 'AH2b jet_{1}p_{T}/H_{T} distribution')
-h_tbarAH2b_jet1pTHT.Draw('hist')
-h_ttbarAH2b_jet1pTHT.Draw('hist same')
+h_ttbarAH2b_jet1pTHT.Draw('hist')
+h_tbarAH2b_jet1pTHT.Draw('hist same')
 #Set ttbar histogram options
 h_ttbarAH2b_jet1pTHT.SetLineColor(kRed)
 h_ttbarAH2b_jet1pTHT.SetLineStyle(2)

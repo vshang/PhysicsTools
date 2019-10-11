@@ -131,8 +131,8 @@ if sameCanvas:
     cSL.cd(1)
 else:
     cSL1b_njets = TCanvas('cSL1b_njets', 'SL1b central jets distribution')
-h_tbarSL1b_njets.Draw('hist')
-h_ttbarSL1b_njets.Draw('hist same')
+h_ttbarSL1b_njets.Draw('hist')
+h_tbarSL1b_njets.Draw('hist same')
 #Set ttbar histogram options
 h_ttbarSL1b_njets.SetLineColor(kRed)
 h_ttbarSL1b_njets.SetLineStyle(2)
@@ -165,8 +165,8 @@ if sameCanvas:
     cSL.cd(2)
 else:
     cSL1b_nfjets = TCanvas('cSL1b_nfjets', 'SL1b forward jets distribution')
-h_tbarSL1b_nfjets.Draw('hist')
-h_ttbarSL1b_nfjets.Draw('hist same')
+h_ttbarSL1b_nfjets.Draw('hist')
+h_tbarSL1b_nfjets.Draw('hist same')
 #Set ttbar histogram options
 h_ttbarSL1b_nfjets.SetLineColor(kRed)
 h_ttbarSL1b_nfjets.SetLineStyle(2)
@@ -199,8 +199,8 @@ if sameCanvas:
     cSL.cd(3)
 else:
     cSL2b_njets = TCanvas('cSL2b_njets', 'SL2b central jets distribution')
-h_tbarSL2b_njets.Draw('hist')
-h_ttbarSL2b_njets.Draw('hist same')
+h_ttbarSL2b_njets.Draw('hist')
+h_tbarSL2b_njets.Draw('hist same')
 #Set ttbar histogram options
 h_ttbarSL2b_njets.SetLineColor(kRed)
 h_ttbarSL2b_njets.SetLineStyle(2)
@@ -233,8 +233,8 @@ if sameCanvas:
     cSL.cd(4)
 else:
     cSL2b_nfjets = TCanvas('cSL2b_nfjets', 'SL2b forward jets distribution')
-h_tbarSL2b_nfjets.Draw('hist')
-h_ttbarSL2b_nfjets.Draw('hist same')
+h_ttbarSL2b_nfjets.Draw('hist')
+h_tbarSL2b_nfjets.Draw('hist same')
 #Set ttbar histogram options
 h_ttbarSL2b_nfjets.SetLineColor(kRed)
 h_ttbarSL2b_nfjets.SetLineStyle(2)
@@ -335,8 +335,8 @@ if sameCanvas:
     cAH.cd(1)
 else:
     cAH1b_njets = TCanvas('cAH1b_njets', 'AH1b central jets distribution')
-h_tbarAH1b_njets.Draw('hist')
-h_ttbarAH1b_njets.Draw('hist same')
+h_ttbarAH1b_njets.Draw('hist')
+h_tbarAH1b_njets.Draw('hist same')
 #Set ttbar histogram options
 h_ttbarAH1b_njets.SetLineColor(kRed)
 h_ttbarAH1b_njets.SetLineStyle(2)
@@ -369,8 +369,8 @@ if sameCanvas:
     cAH.cd(2)
 else:
     cAH1b_nfjets = TCanvas('cAH1b_nfjets', 'AH1b forward jets distribution')
-h_tbarAH1b_nfjets.Draw('hist')
-h_ttbarAH1b_nfjets.Draw('hist same')
+h_ttbarAH1b_nfjets.Draw('hist')
+h_tbarAH1b_nfjets.Draw('hist same')
 #Set ttbar histogram options
 h_ttbarAH1b_nfjets.SetLineColor(kRed)
 h_ttbarAH1b_nfjets.SetLineStyle(2)
@@ -403,8 +403,8 @@ if sameCanvas:
     cAH.cd(3)
 else:
     cAH2b_njets = TCanvas('cAH2b_njets', 'AH2b central jets distribution')
-h_tbarAH2b_njets.Draw('hist')
-h_ttbarAH2b_njets.Draw('hist same')
+h_ttbarAH2b_njets.Draw('hist')
+h_tbarAH2b_njets.Draw('hist same')
 #Set ttbar histogram options
 h_ttbarAH2b_njets.SetLineColor(kRed)
 h_ttbarAH2b_njets.SetLineStyle(2)
@@ -437,8 +437,8 @@ if sameCanvas:
     cAH.cd(4)
 else:
     cAH2b_nfjets = TCanvas('cAH2b_nfjets', 'AH2b forward jets distribution')
-h_tbarAH2b_nfjets.Draw('hist')
-h_ttbarAH2b_nfjets.Draw('hist same')
+h_ttbarAH2b_nfjets.Draw('hist')
+h_tbarAH2b_nfjets.Draw('hist same')
 #Set ttbar histogram options
 h_ttbarAH2b_nfjets.SetLineColor(kRed)
 h_ttbarAH2b_nfjets.SetLineStyle(2)

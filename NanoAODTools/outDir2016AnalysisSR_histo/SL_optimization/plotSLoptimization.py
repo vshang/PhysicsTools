@@ -154,8 +154,8 @@ if sameCanvas:
     c1b.cd(1)
 else:
     c1b_MT = TCanvas('c1b_MT', 'SL1b M_{T} distribution')
-h_tbarSL1b_MT.Draw('hist')
-h_ttbarSL1b_MT.Draw('hist same')
+h_ttbarSL1b_MT.Draw('hist')
+h_tbarSL1b_MT.Draw('hist same')
 #Set tbar histogram options
 h_tbarSL1b_MT.SetLineColor(kBlue)
 h_tbarSL1b_MT.SetLineWidth(1)
@@ -188,8 +188,8 @@ if sameCanvas:
     c1b.cd(2)
 else:
     c1b_MT2W = TCanvas('c1b_MT2W', 'SL1b M_{T2}^W distribution')
-h_tbarSL1b_MT2W.Draw('hist')
-h_ttbarSL1b_MT2W.Draw('hist same')
+h_ttbarSL1b_MT2W.Draw('hist')
+h_tbarSL1b_MT2W.Draw('hist same')
 #Set tbar histogram options
 h_tbarSL1b_MT2W.SetLineColor(kBlue)
 h_tbarSL1b_MT2W.SetLineWidth(1)
@@ -222,15 +222,15 @@ if sameCanvas:
     c1b.cd(3)
 else:
     c1b_minDeltaPhi = TCanvas('c1b_minDeltaPhi', 'SL1b min\Delta\phi(j_{1,2}, p_{T}^{miss}) distribution')
-h_tbarSL1b_minDeltaPhi.Draw('hist')
-h_ttbarSL1b_minDeltaPhi.Draw('hist same')
+h_ttbarSL1b_minDeltaPhi.Draw('hist')
+h_tbarSL1b_minDeltaPhi.Draw('hist same')
 #Set tbar histogram options
 h_tbarSL1b_minDeltaPhi.SetLineColor(kBlue)
 h_tbarSL1b_minDeltaPhi.SetLineWidth(1)
 h_tbarSL1b_minDeltaPhi.SetFillColor(kBlue)
 h_tbarSL1b_minDeltaPhi.SetFillStyle(3003)
 h_tbarSL1b_minDeltaPhi.SetMinimum(0)
-h_tbarSL1b_minDeltaPhi.SetMaximum(160)
+h_tbarSL1b_minDeltaPhi.SetMaximum(300)
 #Set ttbar histogram options
 h_ttbarSL1b_minDeltaPhi.SetLineColor(kRed)
 h_ttbarSL1b_minDeltaPhi.SetLineStyle(2)
@@ -238,7 +238,7 @@ h_ttbarSL1b_minDeltaPhi.SetLineWidth(1)
 h_ttbarSL1b_minDeltaPhi.SetFillColor(kRed)
 h_ttbarSL1b_minDeltaPhi.SetFillStyle(3003)
 h_ttbarSL1b_minDeltaPhi.SetMinimum(0)
-h_ttbarSL1b_minDeltaPhi.SetMaximum(160)
+h_ttbarSL1b_minDeltaPhi.SetMaximum(300)
 #Add legend
 legend_SL1bminDeltaPhi = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL1bminDeltaPhi.AddEntry(h_tbarSL1b_minDeltaPhi, 'Scalar, t+DM', 'l')
@@ -258,8 +258,8 @@ if sameCanvas:
 else:
     c1b_MTb = TCanvas('c1b_MTb', 'SL1b M_{T}^{b} distribution')
     c1b_MTb.SetLogy(1)
-h_tbarSL1b_MTb.Draw('hist')
-h_ttbarSL1b_MTb.Draw('hist same')
+h_ttbarSL1b_MTb.Draw('hist')
+h_tbarSL1b_MTb.Draw('hist same')
 #Set tbar histogram options
 h_tbarSL1b_MTb.SetLineColor(kBlue)
 h_tbarSL1b_MTb.SetLineWidth(1)
@@ -363,8 +363,8 @@ if sameCanvas:
     c2b.cd(1)
 else:
     c2b_MT = TCanvas('c2b_MT', 'SL2b M_{T} distribution')
-h_ttbarSL2b_MT.Draw('hist')
-h_tbarSL2b_MT.Draw('hist same')
+h_tbarSL2b_MT.Draw('hist')
+h_ttbarSL2b_MT.Draw('hist same')
 #Set tbar histogram options
 h_tbarSL2b_MT.SetLineColor(kBlue)
 h_tbarSL2b_MT.SetLineWidth(1)
@@ -397,8 +397,8 @@ if sameCanvas:
     c2b.cd(2)
 else:
     c2b_MT2W = TCanvas('c2b_MT2W', 'SL2b M_{T2}^W distribution')
-h_tbarSL2b_MT2W.Draw('hist')
-h_ttbarSL2b_MT2W.Draw('hist same')
+h_ttbarSL2b_MT2W.Draw('hist')
+h_tbarSL2b_MT2W.Draw('hist same')
 #Set tbar histogram options
 h_tbarSL2b_MT2W.SetLineColor(kBlue)
 h_tbarSL2b_MT2W.SetLineWidth(1)
@@ -431,15 +431,15 @@ if sameCanvas:
     c2b.cd(3)
 else:
     c2b_minDeltaPhi = TCanvas('c2b_minDeltaPhi', 'SL2b min\Delta\phi(j_{1,2}, p_{T}^{miss}) distribution')
-h_tbarSL2b_minDeltaPhi.Draw('hist')
-h_ttbarSL2b_minDeltaPhi.Draw('hist same')
+h_ttbarSL2b_minDeltaPhi.Draw('hist')
+h_tbarSL2b_minDeltaPhi.Draw('hist same')
 #Set tbar histogram options
 h_tbarSL2b_minDeltaPhi.SetLineColor(kBlue)
 h_tbarSL2b_minDeltaPhi.SetLineWidth(1)
 h_tbarSL2b_minDeltaPhi.SetFillColor(kBlue)
 h_tbarSL2b_minDeltaPhi.SetFillStyle(3003)
 h_tbarSL2b_minDeltaPhi.SetMinimum(0)
-h_tbarSL2b_minDeltaPhi.SetMaximum(80)
+h_tbarSL2b_minDeltaPhi.SetMaximum(250)
 #Set ttbar histogram options
 h_ttbarSL2b_minDeltaPhi.SetLineColor(kRed)
 h_ttbarSL2b_minDeltaPhi.SetLineStyle(2)
@@ -447,7 +447,7 @@ h_ttbarSL2b_minDeltaPhi.SetLineWidth(1)
 h_ttbarSL2b_minDeltaPhi.SetFillColor(kRed)
 h_ttbarSL2b_minDeltaPhi.SetFillStyle(3003)
 h_ttbarSL2b_minDeltaPhi.SetMinimum(0)
-h_ttbarSL2b_minDeltaPhi.SetMaximum(80)
+h_ttbarSL2b_minDeltaPhi.SetMaximum(250)
 #Add legend
 legend_SL2bminDeltaPhi = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL2bminDeltaPhi.AddEntry(h_tbarSL2b_minDeltaPhi, 'Scalar, t+DM', 'l')
@@ -467,15 +467,15 @@ if sameCanvas:
 else:
     c2b_MTb = TCanvas('c2b_MTb', 'SL2b M_{T}^{b} distribution')
     c2b_MTb.SetLogy(1)
-h_tbarSL2b_MTb.Draw('hist')
-h_ttbarSL2b_MTb.Draw('hist same')
+h_ttbarSL2b_MTb.Draw('hist')
+h_tbarSL2b_MTb.Draw('hist same')
 #Set tbar histogram options
 h_tbarSL2b_MTb.SetLineColor(kBlue)
 h_tbarSL2b_MTb.SetLineWidth(1)
 h_tbarSL2b_MTb.SetFillColor(kBlue)
 h_tbarSL2b_MTb.SetFillStyle(3003)
 h_tbarSL2b_MTb.SetMinimum(0.3)
-h_tbarSL2b_MTb.SetMaximum(200)
+h_tbarSL2b_MTb.SetMaximum(1000)
 #Set ttbar histogram options
 h_ttbarSL2b_MTb.SetLineColor(kRed)
 h_ttbarSL2b_MTb.SetLineStyle(2)
@@ -483,7 +483,7 @@ h_ttbarSL2b_MTb.SetLineWidth(1)
 h_ttbarSL2b_MTb.SetFillColor(kRed)
 h_ttbarSL2b_MTb.SetFillStyle(3003)
 h_ttbarSL2b_MTb.SetMinimum(0.3)
-h_ttbarSL2b_MTb.SetMaximum(200)
+h_ttbarSL2b_MTb.SetMaximum(1000)
 #Add legend
 legend_SL2bMTb = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL2bMTb.AddEntry(h_tbarSL2b_MTb, 'Scalar, t+DM', 'l')

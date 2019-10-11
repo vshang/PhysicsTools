@@ -68,9 +68,26 @@ class optimizeAnalysis(Module):
                 if looseMuon.p4().DeltaR(jet.p4()) < 0.4:
                     return False
             return True
+
+        #Manually implement loose Jet ID requirements (https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID13TeVRun2016)
+        def looseJet(jet):
+            if abs(jet.eta) < 2.7:
+                if jet.neHEF > 0.99 or jet.neEmEF > 0.99 or jet.nConstituents < 2:
+                    return False
+                if abs(jet.eta) < 2.4:
+                    if jet.chHEF == 0 or jet.chEmEF > 0.99:
+                        return False
+            elif 2.7 < abs(jet.eta) < 3.0:
+                if jet.neHEF < 0.01 or jet.neHEF > 0.98:
+                    return False
+            elif abs(jet.eta) > 3:
+                if jet.neEmEF > 0.9:
+                    return False
+            return True
         
         #Jet categories are defined and counted 
-        centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 0, jets) #Define central jets 
+        #centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 0, jets) #Define central jets 
+        centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and looseJet(j), jets)
         bJets = filter(lambda j : j.btagCSVV2 > 0.8484, centralJets) #Define b-jets
 
         njets = len(centralJets)
@@ -125,9 +142,9 @@ class optimizeAnalysis(Module):
         
              
         #Optimization cuts defined here
-        singleLeptonAccept = True #M_T >= 160 #and MT2W >= 200 #and minDeltaPhi12 >= 1.2 and MTb >= 180 
-        allHadronicAccept = True #minDeltaPhi12 >= 1 and MTb >= 180
-        allHadronicAccept2b = True #minDeltaPhi12 >= 1 and MTb >= 180 and jet1pTHT <= 0.5
+        singleLeptonAccept = M_T >= 160 and MT2W >= 200 and minDeltaPhi12 >= 1.2 and MTb >= 180 
+        allHadronicAccept = minDeltaPhi12 >= 1 and MTb >= 180
+        allHadronicAccept2b = minDeltaPhi12 >= 1 and MTb >= 180 and jet1pTHT <= 0.5
 
         #Signal region chosen here
         #signalRegionOptimize = True
@@ -155,29 +172,29 @@ class optimizeAnalysis(Module):
 
 #Select PostProcessor options here
 preselection=None
-outputDir = "outDir2016AnalysisSR"
+outputDir = "outDir2016AnalysisSR/ttbarDM"
 inputbranches="python/postprocessing/2016Analysis/keep_and_dropSR_in.txt"
 outputbranches="python/postprocessing/2016Analysis/keep_and_dropSR_out.txt"
 #Change input files to output of preselectSR.py for each signal region
-inputFiles1=["outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full1_SL1e0fSR.root", "outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full2_SL1e0fSR.root"]
-inputFiles2=["outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full1_SL1m0fSR.root", "outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full2_SL1m0fSR.root"]
-inputFiles3=["outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full1_SL1e1fSR.root", "outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full2_SL1e1fSR.root"]
-inputFiles4=["outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full1_SL1m1fSR.root", "outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full2_SL1m1fSR.root"]
-inputFiles5=["outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full1_SL1e2bSR.root", "outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full2_SL1e2bSR.root"]
-inputFiles6=["outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full1_SL1m2bSR.root", "outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full2_SL1m2bSR.root"]
-inputFiles7=["outDir2016AnalysisSR/tDM_tChan_Mchi1Mphi100_scalar_full_AH0l0fSR.root", "outDir2016AnalysisSR/tDM_tWChan_Mchi1Mphi100_scalar_full_AH0l0fSR.root"]
-inputFiles8=["outDir2016AnalysisSR/tDM_tChan_Mchi1Mphi100_scalar_full_AH0l1fSR.root", "outDir2016AnalysisSR/tDM_tWChan_Mchi1Mphi100_scalar_full_AH0l1fSR.root"]
-inputFiles9=["outDir2016AnalysisSR/tDM_tChan_Mchi1Mphi100_scalar_full_AH0l2bSR.root", "outDir2016AnalysisSR/tDM_tWChan_Mchi1Mphi100_scalar_full_AH0l2bSR.root"]
+inputFiles1=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1e0fSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1e0fSR.root"]
+inputFiles2=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1m0fSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1m0fSR.root"]
+inputFiles3=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1e1fSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1e1fSR.root"]
+inputFiles4=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1m1fSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1m1fSR.root"]
+inputFiles5=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1e2bSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1e2bSR.root"]
+inputFiles6=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1m2bSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1m2bSR.root"]
+inputFiles7=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l0fSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l0fSR_looseJetId.root"]
+inputFiles8=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l1fSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l1fSR_looseJetId.root"]
+inputFiles9=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l2bSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l2bSR_looseJetId.root"]
 #Applies optimization selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
-p1=PostProcessor(outputDir,inputFiles1,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1e")],postfix="",noOut=False,outputbranchsel=outputbranches)
-p2=PostProcessor(outputDir,inputFiles2,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1m")],postfix="",noOut=False,outputbranchsel=outputbranches)
-p3=PostProcessor(outputDir,inputFiles3,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1e")],postfix="",noOut=False,outputbranchsel=outputbranches)
-p4=PostProcessor(outputDir,inputFiles4,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1m")],postfix="",noOut=False,outputbranchsel=outputbranches)
-p5=PostProcessor(outputDir,inputFiles5,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1e")],postfix="",noOut=False,outputbranchsel=outputbranches)
-p6=PostProcessor(outputDir,inputFiles6,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1m")],postfix="",noOut=False,outputbranchsel=outputbranches)
-p7=PostProcessor(outputDir,inputFiles7,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH")],postfix="",noOut=False,outputbranchsel=outputbranches)
-p8=PostProcessor(outputDir,inputFiles8,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH")],postfix="",noOut=False,outputbranchsel=outputbranches)
-p9=PostProcessor(outputDir,inputFiles9,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH2b")],postfix="",noOut=False,outputbranchsel=outputbranches)
+# p1=PostProcessor(outputDir,inputFiles1,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1e")],postfix="",noOut=False,outputbranchsel=outputbranches)
+# p2=PostProcessor(outputDir,inputFiles2,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1m")],postfix="",noOut=False,outputbranchsel=outputbranches)
+# p3=PostProcessor(outputDir,inputFiles3,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1e")],postfix="",noOut=False,outputbranchsel=outputbranches)
+# p4=PostProcessor(outputDir,inputFiles4,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1m")],postfix="",noOut=False,outputbranchsel=outputbranches)
+# p5=PostProcessor(outputDir,inputFiles5,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1e")],postfix="",noOut=False,outputbranchsel=outputbranches)
+# p6=PostProcessor(outputDir,inputFiles6,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1m")],postfix="",noOut=False,outputbranchsel=outputbranches)
+p7=PostProcessor(outputDir,inputFiles7,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
+p8=PostProcessor(outputDir,inputFiles8,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
+p9=PostProcessor(outputDir,inputFiles9,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH2b")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
 # p1.run()
 # p2.run()
 # p3.run()
