@@ -86,8 +86,8 @@ class optimizeAnalysis(Module):
             return True
         
         #Jet categories are defined and counted 
-        #centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 0, jets) #Define central jets 
-        centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and looseJet(j), jets)
+        centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 0, jets) #Define central jets 
+        #centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and looseJet(j), jets)
         bJets = filter(lambda j : j.btagCSVV2 > 0.8484, centralJets) #Define b-jets
 
         njets = len(centralJets)
@@ -185,6 +185,7 @@ inputFiles6=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1
 inputFiles7=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l0fSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l0fSR_looseJetId.root"]
 inputFiles8=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l1fSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l1fSR_looseJetId.root"]
 inputFiles9=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l2bSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l2bSR_looseJetId.root"]
+inputFilesAH=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH.root"]
 #Applies optimization selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
 # p1=PostProcessor(outputDir,inputFiles1,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1e")],postfix="",noOut=False,outputbranchsel=outputbranches)
 # p2=PostProcessor(outputDir,inputFiles2,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1m")],postfix="",noOut=False,outputbranchsel=outputbranches)
@@ -192,15 +193,16 @@ inputFiles9=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0
 # p4=PostProcessor(outputDir,inputFiles4,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1m")],postfix="",noOut=False,outputbranchsel=outputbranches)
 # p5=PostProcessor(outputDir,inputFiles5,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1e")],postfix="",noOut=False,outputbranchsel=outputbranches)
 # p6=PostProcessor(outputDir,inputFiles6,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1m")],postfix="",noOut=False,outputbranchsel=outputbranches)
-p7=PostProcessor(outputDir,inputFiles7,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
-p8=PostProcessor(outputDir,inputFiles8,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
-p9=PostProcessor(outputDir,inputFiles9,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH2b")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
-# p1.run()
+# p7=PostProcessor(outputDir,inputFiles7,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
+# p8=PostProcessor(outputDir,inputFiles8,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
+# p9=PostProcessor(outputDir,inputFiles9,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH2b")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
+p1=PostProcessor(outputDir,inputFilesAH,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
+p1.run()
 # p2.run()
 # p3.run()
 # p4.run()
 # p5.run()
 # p6.run()
-p7.run()
-p8.run()
-p9.run()
+# p7.run()
+# p8.run()
+# p9.run()

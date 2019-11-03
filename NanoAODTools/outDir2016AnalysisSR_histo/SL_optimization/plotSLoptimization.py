@@ -1,16 +1,16 @@
 from ROOT import *
 
 #Select root files here
-ttbar1 = 'outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full1'
-ttbar2 = 'outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full2'
-tChan = 'outDir2016AnalysisSR/tDM_tChan_Mchi1Mphi100_scalar_full'
-tWChan = 'outDir2016AnalysisSR/tDM_tWChan_Mchi1Mphi100_scalar_full'
+ttbar1 = 'outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1'
+ttbar2 = 'outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2'
+tChan = 'outDir2016AnalysisSR/tDM_tChan/tDM_tChan_Mchi1Mphi100_scalar_full'
+tWChan = 'outDir2016AnalysisSR/tDM_tWChan/tDM_tWChan_Mchi1Mphi100_scalar_full'
 
 #Set sameCanvas to True for all nbjets = 1 on same Canvas and nbjets >= 2 plots on same Canvas, False if you want seperate plots
-sameCanvas = True
+sameCanvas = False
 
 #Set date for file names
-date = '10042019'
+date = '10302019'
 
 #Set cross sections, lumi, and overall scale factor here
 ttbarXSec = 672.3
@@ -34,7 +34,8 @@ tWChanWeight = tWChanXSec*lumi*scaleFactor/nEvents_tWChan
 gStyle.SetOptStat(0)
 
 #Define list of suffixes to use and dictionary of files for ttbar, tChan, and tWChan
-suffixList = ['_SL1e0fSR', '_SL1m0fSR', '_SL1e1fSR', '_SL1m1fSR', '_SL1e2bSR', '_SL1m2bSR']
+#suffixList = ['_SL1e0fSR', '_SL1m0fSR', '_SL1e1fSR', '_SL1m1fSR', '_SL1e2bSR', '_SL1m2bSR']
+suffixList = ['_SL1e0fSR', '_SL1e1fSR', '_SL1e2bSR']
 ttbarFiles = {}
 tChanFiles = {}
 tWChanFiles = {}
@@ -245,7 +246,7 @@ legend_SL1bminDeltaPhi.AddEntry(h_tbarSL1b_minDeltaPhi, 'Scalar, t+DM', 'l')
 legend_SL1bminDeltaPhi.AddEntry(h_ttbarSL1b_minDeltaPhi, 'Scalar, tt+DM', 'l')
 legend_SL1bminDeltaPhi.Draw('same')
 legend_SL1bminDeltaPhi.SetBorderSize(0)
-#Save SL1b M_T2^W distribution plot individually if desired
+#Save SL1b minDeltaPhi distribution plot individually if desired
 if not sameCanvas:
     c1b_minDeltaPhi.SaveAs("outDir2016AnalysisSR_histo/SL_optimization/" + date + "/SL1b_minDeltaPhi_histo" + date + ".pdf")
 print("Finished creating SL1b minDeltaPhi distribution plot")
@@ -281,7 +282,7 @@ legend_SL1bMTb.AddEntry(h_tbarSL1b_MTb, 'Scalar, t+DM', 'l')
 legend_SL1bMTb.AddEntry(h_ttbarSL1b_MTb, 'Scalar, tt+DM', 'l')
 legend_SL1bMTb.Draw('same')
 legend_SL1bMTb.SetBorderSize(0)
-#Save SL1b M_T2^W distribution plot individually if desired
+#Save SL1b MTb distribution plot individually if desired
 if not sameCanvas:
     c1b_MTb.SaveAs("outDir2016AnalysisSR_histo/SL_optimization/" + date + "/SL1b_MTb_histo" + date + ".pdf")
 print("Finished creating SL1b MTb distribution plot")
@@ -454,7 +455,7 @@ legend_SL2bminDeltaPhi.AddEntry(h_tbarSL2b_minDeltaPhi, 'Scalar, t+DM', 'l')
 legend_SL2bminDeltaPhi.AddEntry(h_ttbarSL2b_minDeltaPhi, 'Scalar, tt+DM', 'l')
 legend_SL2bminDeltaPhi.Draw('same')
 legend_SL2bminDeltaPhi.SetBorderSize(0)
-#Save SL2b M_T2^W distribution plot individually if desired
+#Save SL2b minDeltaPhi distribution plot individually if desired
 if not sameCanvas:
     c2b_minDeltaPhi.SaveAs("outDir2016AnalysisSR_histo/SL_optimization/" + date + "/SL2b_minDeltaPhi_histo" + date + ".pdf")
 print("Finished creating SL2b minDeltaPhi distribution plot")
@@ -490,9 +491,9 @@ legend_SL2bMTb.AddEntry(h_tbarSL2b_MTb, 'Scalar, t+DM', 'l')
 legend_SL2bMTb.AddEntry(h_ttbarSL2b_MTb, 'Scalar, tt+DM', 'l')
 legend_SL2bMTb.Draw('same')
 legend_SL2bMTb.SetBorderSize(0)
-#Save SL2b M_T2^W distribution plot individually if desired
+#Save SL2b MTb distribution plot individually if desired
 if not sameCanvas:
-    c2b_MTb.SaveAs("outDir2016AnalysisSR_histo/SL_optimization/" + date + "SL2b_MTb_histo" + date + ".pdf")
+    c2b_MTb.SaveAs("outDir2016AnalysisSR_histo/SL_optimization/" + date + "/SL2b_MTb_histo" + date + ".pdf")
 print("Finished creating SL2b MTb distribution plot")
 
 #Save SL2b distribution plots on same canvas if desired

@@ -2,7 +2,7 @@ from ROOT import *
 
 #Select root file here
 #rootfile = 'outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full_SL.root'
-rootfile = 'outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l2bSR_looseJetId_optimized.root'
+rootfile = 'outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH_optimized.root'
 
 #Load root file
 f = TFile.Open(rootfile, '')

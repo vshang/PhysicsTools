@@ -1,16 +1,16 @@
 from ROOT import *
 
 #Select root files here
-ttbar1 = 'outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full1'
-ttbar2 = 'outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full2'
-tChan = 'outDir2016AnalysisSR/tDM_tChan_Mchi1Mphi100_scalar_full'
-tWChan = 'outDir2016AnalysisSR/tDM_tWChan_Mchi1Mphi100_scalar_full'
+ttbar1 = 'outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1'
+ttbar2 = 'outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2'
+tChan = 'outDir2016AnalysisSR/tDM_tChan/tDM_tChan_Mchi1Mphi100_scalar_full'
+tWChan = 'outDir2016AnalysisSR/tDM_tWChan/tDM_tWChan_Mchi1Mphi100_scalar_full'
 
 #Set sameCanvas to True for all nbjets = 1 on same Canvas and nbjets >= 2 plots on same Canvas, False if you want seperate plots
-sameCanvas = True
+sameCanvas = False
 
 #Set date for file names
-date = '10042019'
+date = '10302019'
 
 #Set cross sections, lumi, and overall scale factor here
 ttbarXSec = 672.3
@@ -156,7 +156,7 @@ legend_SL1bnjets.Draw('same')
 legend_SL1bnjets.SetBorderSize(0)
 #Save SL1b njets distribution plot individually if desired
 if not sameCanvas:
-    c1b_njets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/njetsSL1b_histo" + date + ".pdf")
+    cSL1b_njets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/njetsSL1b_histo" + date + ".pdf")
 print("Finished creating SL1b njets distribution plot")
 
 #Draw SL1b nfjets distribution plot
@@ -190,7 +190,7 @@ legend_SL1bnfjets.Draw('same')
 legend_SL1bnfjets.SetBorderSize(0)
 #Save SL1b nfjets distribution plot individually if desired
 if not sameCanvas:
-    c1b_nfjets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/nfjetsSL1b_histo" + date + ".pdf")
+    cSL1b_nfjets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/nfjetsSL1b_histo" + date + ".pdf")
 print("Finished creating SL1b nfjets distribution plot")
 
 #Draw SL2b njets distribution plot
@@ -224,7 +224,7 @@ legend_SL2bnjets.Draw('same')
 legend_SL2bnjets.SetBorderSize(0)
 #Save SL2b njets distribution plot individually if desired
 if not sameCanvas:
-    c1b_njets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/njetsSL2b_histo" + date + ".pdf")
+    cSL2b_njets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/njetsSL2b_histo" + date + ".pdf")
 print("Finished creating SL2b njets distribution plot")
 
 #Draw SL2b nfjets distribution plot
@@ -258,7 +258,7 @@ legend_SL2bnfjets.Draw('same')
 legend_SL2bnfjets.SetBorderSize(0)
 #Save SL2b nfjets distribution plot individually if desired
 if not sameCanvas:
-    c1b_nfjets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/nfjetsSL2b_histo" + date + ".pdf")
+    cSL2b_nfjets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/nfjetsSL2b_histo" + date + ".pdf")
 print("Finished creating SL2b nfjets distribution plot")
 
 #Save SL optimized jet distribution plots on same canvas if desired
@@ -360,7 +360,7 @@ legend_AH1bnjets.Draw('same')
 legend_AH1bnjets.SetBorderSize(0)
 #Save AH1b njets distribution plot individually if desired
 if not sameCanvas:
-    c1b_njets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/njetsAH1b_histo" + date + ".pdf")
+    cAH1b_njets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/njetsAH1b_histo" + date + ".pdf")
 print("Finished creating AH1b njets distribution plot")
 
 #Draw AH1b nfjets distribution plot
@@ -394,7 +394,7 @@ legend_AH1bnfjets.Draw('same')
 legend_AH1bnfjets.SetBorderSize(0)
 #Save AH1b nfjets distribution plot individually if desired
 if not sameCanvas:
-    c1b_nfjets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/nfjetsAH1b_histo" + date + ".pdf")
+    cAH1b_nfjets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/nfjetsAH1b_histo" + date + ".pdf")
 print("Finished creating AH1b nfjets distribution plot")
 
 #Draw AH2b njets distribution plot
@@ -428,7 +428,7 @@ legend_AH2bnjets.Draw('same')
 legend_AH2bnjets.SetBorderSize(0)
 #Save AH2b njets distribution plot individually if desired
 if not sameCanvas:
-    c1b_njets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/njetsAH2b_histo" + date + ".pdf")
+    cAH2b_njets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/njetsAH2b_histo" + date + ".pdf")
 print("Finished creating AH2b njets distribution plot")
 
 #Draw AH2b nfjets distribution plot
@@ -462,7 +462,7 @@ legend_AH2bnfjets.Draw('same')
 legend_AH2bnfjets.SetBorderSize(0)
 #Save AH2b nfjets distribution plot individually if desired
 if not sameCanvas:
-    c1b_nfjets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/nfjetsAH2b_histo" + date + ".pdf")
+    cAH2b_nfjets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/nfjetsAH2b_histo" + date + ".pdf")
 print("Finished creating AH2b nfjets distribution plot")
 
 #Save AH optimized jet distribution plots on same canvas if desired
