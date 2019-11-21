@@ -3,43 +3,10 @@ import ROOT
 import math
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 from importlib import import_module
-#from PhysicsTools.NanoAODTools.postprocessing.framework.postprocessor import PostProcessor
+from PhysicsTools.NanoAODTools.postprocessing.framework.postprocessor import PostProcessor
 
 from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collection 
 from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
-
-class exampleSR(Module):
-    def __init__(self, jetSelection):
-        self.jetSel = jetSelection
-        pass
-    def beginJob(self):
-        pass
-    def endJob(self):
-        pass
-    def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
-        self.out = wrappedOutputTree
-        self.out.branch("EventMass",  "F");
-    def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
-        pass
-    def analyze(self, event):
-        """process event, return True (go to next module) or False (fail, go to next event)"""
-        electrons = Collection(event, "Electron")
-        muons = Collection(event, "Muon")
-        jets = Collection(event, "Jet")
-        eventSum = ROOT.TLorentzVector()
-        for lep in muons :
-            eventSum += lep.p4()
-        for lep in electrons :
-            eventSum += lep.p4()
-        for j in filter(self.jetSel,jets):
-            eventSum += j.p4()
-        self.out.fillBranch("EventMass",eventSum.M())
-        return True
-
-
-# define modules using the syntax 'name = lambda : constructor' to avoid having them loaded when not needed
-
-exampleModuleConstr = lambda : exampleSR(jetSelection= lambda j : j.pt > 30) 
 
 class preselectAnalysis(Module):
     def __init__(self, signalRegion):
@@ -79,14 +46,17 @@ to next event)"""
         jets = Collection(event, "Jet")
 
         #Tight/Veto electrons are defined and counted
-        vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased_Sum16 != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
-        tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased_Sum16 == 4, vetoElectrons)
+        #vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased_Sum16 != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
+        #tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased_Sum16 == 4, vetoElectrons)
+        vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
+        tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased == 4, vetoElectrons)
 
         nVetoElectrons = len(vetoElectrons)
         nTightElectrons = len(tightElectrons)
         
         #Tight/Loose muons are defined and counted
-        looseMuons = filter(lambda lep : lep.pt > 10 and lep.looseId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
+        #looseMuons = filter(lambda lep : lep.pt > 10 and lep.looseId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
+        looseMuons = filter(lambda lep : lep.pt > 10 and lep.softId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
         tightMuons = filter(lambda lep : lep.pt > 30 and lep.tightId and lep.pfRelIso04_all < 0.15, looseMuons)
 
         nLooseMuons = len(looseMuons)
@@ -145,7 +115,8 @@ to next event)"""
 
         #Tau candidates are counted
         tauCandidates = Collection(event, "Tau")
-        skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM >= 31 and cleanJet(tau), tauCandidates)
+        #skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM >= 31 and cleanJet(tau), tauCandidates)
+        skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM2017v2 >= 31 and cleanJet(tau), tauCandidates)
         ntaus = len(skimmedTaus)
 
         #Define MET filters contained in miniAOD analysis (https://github.com/zucchett/SFrame/blob/master/DM/src/DMSearches.cxx#L1542)
@@ -159,11 +130,11 @@ to next event)"""
         #Preselection cuts defined here
         # SL1e = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets >= 1 and event.MET_pt >= 160 and passMETfilters and (singleIsoEle or singleEle)
         # SL1m = nTightMuons == 1 and nLooseMuons == 1 and nVetoElectrons == 0 and njets >= 2 and nbjets >= 1 and event.MET_pt >= 160 and passMETfilters and singleIsoMu
-        AH = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets >= 1 and event.MET_pt >= 250  and ntaus == 0 and minDeltaPhi > 0.4 and centralJets[0].jetId >= 3 and centralJets[0].chHEF > 0.1 and passMETfilters
+        # AH = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets >= 1 and event.MET_pt >= 250  and ntaus == 0 and minDeltaPhi > 0.4 and centralJets[0].jetId >= 3 and centralJets[0].chHEF > 0.1 and passMETfilters
 
         SL1e = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and event.MET_pt >= 160 and passMETfilters and (singleIsoEle or singleEle)
         SL1m = nTightMuons == 1 and nLooseMuons == 1 and nVetoElectrons == 0 and njets >= 2 and event.MET_pt >= 160 and passMETfilters and singleIsoMu
-        # AH = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and event.MET_pt >= 250 and ntaus == 0 and minDeltaPhi > 0.4 and centralJets[0].jetId >= 3 and centralJets[0].chHEF > 0.1 and passMETfilters
+        AH = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and event.MET_pt >= 250 and ntaus == 0 and minDeltaPhi > 0.4 and centralJets[0].jetId >= 3 and centralJets[0].chHEF > 0.1 and passMETfilters
         SL = SL1e or SL1m
 
         # SL1e0fSR = SL1e and nbjets == 1 and nfjets == 0
@@ -223,17 +194,20 @@ to next event)"""
         else:
             return False
 
+        #return True
+
 preselectAH = lambda : preselectAnalysis("AH")
+preselectSL = lambda : preselectAnalysis("SL")
 
 #########################################################################################################################################
 
 #Select PostProcessor options here
-# preselection=None
-# #outputDir = "outDir2016AnalysisSR/ttbarDM"
-# outputDir = "."
-# inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-# outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-# inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root", "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]#, "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+#preselection=None
+#outputDir = "outDir2016AnalysisSR/ttbarDM"
+#outputDir = "."
+#inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+#outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+#inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root", "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]#, "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 
 #Applies pre-selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
 # p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL1e0fSR")],postfix="_SL1e0fSR",noOut=False,outputbranchsel=outputbranches)

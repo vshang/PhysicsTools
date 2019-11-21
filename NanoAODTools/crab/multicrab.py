@@ -2,15 +2,17 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'Test_30' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'Test_2' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  analysis      = '4topSkim_wJec' #Name of the analysis (e.g. VBFHN, LQtop, ...)
- unitsPerJob   = 2 #Units (usually number of root files) per job
+ unitsPerJob   = 1 #Units (usually number of root files) per job
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
  datasetnames  = [ #Name of the folder created by crab and corresponding to its datasetinputs
-'TTWJetsToLNu'
+#'TTWJetsToLNu'
+'ttbarDM1'
                  ]
  datasetinputs = [ #Name of in the input dataset
-'/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/RunIISummer16NanoAODv4-PUMoriond17_Nano14Dec2018_102X_mcRun2_asymptotic_v6_ext1-v1/NANOAODSIM'
+#'/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/RunIISummer16NanoAODv4-PUMoriond17_Nano14Dec2018_102X_mcRun2_asymptotic_v6_ext1-v1/NANOAODSIM'
+'root://cmsxrootd.hep.wisc.edu//store/user/vshang/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1.root'
                  ]
 
  #####
@@ -46,7 +48,8 @@ if __name__ == '__main__':
   config.JobType.sendPythonFolder = True
   config.JobType.allowUndistributedCMSSW = True
   config.section_('Data')
-  config.Data.inputDataset        = datasetinputs[d]
+  #config.Data.inputDataset        = datasetinputs[d]
+  config.Data.userInputFiles      = [datasetinputs[d]]
   config.Data.inputDBS            = 'global'
   config.Data.splitting           = 'FileBased'
   #config.Data.splitting           = 'Automatic'
@@ -57,4 +60,5 @@ if __name__ == '__main__':
   config.Data.publication         = False
   config.section_('Site')
   config.Site.storageSite         = '%s' % (storageSite) 
+  #config.Site.whitelist           = ['T2_US_Wisconsin']
   submit(config)
