@@ -7,10 +7,10 @@ tChan = 'outDir2016AnalysisSR/tDM_tChan/tDM_tChan_Mchi1Mphi100_scalar_full'
 tWChan = 'outDir2016AnalysisSR/tDM_tWChan/tDM_tWChan_Mchi1Mphi100_scalar_full'
 
 #Set sameCanvas to True for all nbjets = 1 on same Canvas and nbjets >= 2 plots on same Canvas, False if you want seperate plots
-sameCanvas = False
+sameCanvas = True
 
 #Set date for file names
-date = '10302019'
+date = '11212019'
 
 #Set cross sections, lumi, and overall scale factor here
 ttbarXSec = 672.3
@@ -140,20 +140,21 @@ h_ttbarSL1b_njets.SetLineWidth(1)
 h_ttbarSL1b_njets.SetFillColor(kRed)
 h_ttbarSL1b_njets.SetFillStyle(3003)
 h_ttbarSL1b_njets.SetMinimum(0)
-h_ttbarSL1b_njets.SetMaximum(1500)
+h_ttbarSL1b_njets.SetMaximum(1000)
 #Set tbar histogram options
 h_tbarSL1b_njets.SetLineColor(kBlue)
 h_tbarSL1b_njets.SetLineWidth(1)
 h_tbarSL1b_njets.SetFillColor(kBlue)
 h_tbarSL1b_njets.SetFillStyle(3003)
 h_tbarSL1b_njets.SetMinimum(0)
-h_tbarSL1b_njets.SetMaximum(1500)
+h_tbarSL1b_njets.SetMaximum(1000)
 #Add legend
 legend_SL1bnjets = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL1bnjets.AddEntry(h_tbarSL1b_njets, 'Scalar, t+DM', 'l')
 legend_SL1bnjets.AddEntry(h_ttbarSL1b_njets, 'Scalar, tt+DM', 'l')
 legend_SL1bnjets.Draw('same')
 legend_SL1bnjets.SetBorderSize(0)
+legend_SL1bnjets.SetFillStyle(0)
 #Save SL1b njets distribution plot individually if desired
 if not sameCanvas:
     cSL1b_njets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/njetsSL1b_histo" + date + ".pdf")
@@ -174,20 +175,21 @@ h_ttbarSL1b_nfjets.SetLineWidth(1)
 h_ttbarSL1b_nfjets.SetFillColor(kRed)
 h_ttbarSL1b_nfjets.SetFillStyle(3003)
 h_ttbarSL1b_nfjets.SetMinimum(0)
-h_ttbarSL1b_nfjets.SetMaximum(2000)
+h_ttbarSL1b_nfjets.SetMaximum(1200)
 #Set tbar histogram options
 h_tbarSL1b_nfjets.SetLineColor(kBlue)
 h_tbarSL1b_nfjets.SetLineWidth(1)
 h_tbarSL1b_nfjets.SetFillColor(kBlue)
 h_tbarSL1b_nfjets.SetFillStyle(3003)
 h_tbarSL1b_nfjets.SetMinimum(0)
-h_tbarSL1b_nfjets.SetMaximum(2000)
+h_tbarSL1b_nfjets.SetMaximum(1200)
 #Add legend
 legend_SL1bnfjets = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL1bnfjets.AddEntry(h_tbarSL1b_nfjets, 'Scalar, t+DM', 'l')
 legend_SL1bnfjets.AddEntry(h_ttbarSL1b_nfjets, 'Scalar, tt+DM', 'l')
 legend_SL1bnfjets.Draw('same')
 legend_SL1bnfjets.SetBorderSize(0)
+legend_SL1bnfjets.SetFillStyle(0)
 #Save SL1b nfjets distribution plot individually if desired
 if not sameCanvas:
     cSL1b_nfjets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/nfjetsSL1b_histo" + date + ".pdf")
@@ -208,20 +210,21 @@ h_ttbarSL2b_njets.SetLineWidth(1)
 h_ttbarSL2b_njets.SetFillColor(kRed)
 h_ttbarSL2b_njets.SetFillStyle(3003)
 h_ttbarSL2b_njets.SetMinimum(0)
-h_ttbarSL2b_njets.SetMaximum(500)
+h_ttbarSL2b_njets.SetMaximum(300)
 #Set tbar histogram options
 h_tbarSL2b_njets.SetLineColor(kBlue)
 h_tbarSL2b_njets.SetLineWidth(1)
 h_tbarSL2b_njets.SetFillColor(kBlue)
 h_tbarSL2b_njets.SetFillStyle(3003)
 h_tbarSL2b_njets.SetMinimum(0)
-h_tbarSL2b_njets.SetMaximum(500)
+h_tbarSL2b_njets.SetMaximum(300)
 #Add legend
 legend_SL2bnjets = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL2bnjets.AddEntry(h_tbarSL2b_njets, 'Scalar, t+DM', 'l')
 legend_SL2bnjets.AddEntry(h_ttbarSL2b_njets, 'Scalar, tt+DM', 'l')
 legend_SL2bnjets.Draw('same')
 legend_SL2bnjets.SetBorderSize(0)
+legend_SL2bnjets.SetFillStyle(0)
 #Save SL2b njets distribution plot individually if desired
 if not sameCanvas:
     cSL2b_njets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/njetsSL2b_histo" + date + ".pdf")
@@ -242,20 +245,21 @@ h_ttbarSL2b_nfjets.SetLineWidth(1)
 h_ttbarSL2b_nfjets.SetFillColor(kRed)
 h_ttbarSL2b_nfjets.SetFillStyle(3003)
 h_ttbarSL2b_nfjets.SetMinimum(0)
-h_ttbarSL2b_nfjets.SetMaximum(1000)
+h_ttbarSL2b_nfjets.SetMaximum(800)
 #Set tbar histogram options
 h_tbarSL2b_nfjets.SetLineColor(kBlue)
 h_tbarSL2b_nfjets.SetLineWidth(1)
 h_tbarSL2b_nfjets.SetFillColor(kBlue)
 h_tbarSL2b_nfjets.SetFillStyle(3003)
 h_tbarSL2b_nfjets.SetMinimum(0)
-h_tbarSL2b_nfjets.SetMaximum(1000)
+h_tbarSL2b_nfjets.SetMaximum(800)
 #Add legend
 legend_SL2bnfjets = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL2bnfjets.AddEntry(h_tbarSL2b_nfjets, 'Scalar, t+DM', 'l')
 legend_SL2bnfjets.AddEntry(h_ttbarSL2b_nfjets, 'Scalar, tt+DM', 'l')
 legend_SL2bnfjets.Draw('same')
 legend_SL2bnfjets.SetBorderSize(0)
+legend_SL2bnfjets.SetFillStyle(0)
 #Save SL2b nfjets distribution plot individually if desired
 if not sameCanvas:
     cSL2b_nfjets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/nfjetsSL2b_histo" + date + ".pdf")
@@ -344,20 +348,21 @@ h_ttbarAH1b_njets.SetLineWidth(1)
 h_ttbarAH1b_njets.SetFillColor(kRed)
 h_ttbarAH1b_njets.SetFillStyle(3003)
 h_ttbarAH1b_njets.SetMinimum(0)
-h_ttbarAH1b_njets.SetMaximum(8000)
+h_ttbarAH1b_njets.SetMaximum(12000)
 #Set tbar histogram options
 h_tbarAH1b_njets.SetLineColor(kBlue)
 h_tbarAH1b_njets.SetLineWidth(1)
 h_tbarAH1b_njets.SetFillColor(kBlue)
 h_tbarAH1b_njets.SetFillStyle(3003)
 h_tbarAH1b_njets.SetMinimum(0)
-h_tbarAH1b_njets.SetMaximum(8000)
+h_tbarAH1b_njets.SetMaximum(12000)
 #Add legend
 legend_AH1bnjets = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_AH1bnjets.AddEntry(h_tbarAH1b_njets, 'Scalar, t+DM', 'l')
 legend_AH1bnjets.AddEntry(h_ttbarAH1b_njets, 'Scalar, tt+DM', 'l')
 legend_AH1bnjets.Draw('same')
 legend_AH1bnjets.SetBorderSize(0)
+legend_AH1bnjets.SetFillStyle(0)
 #Save AH1b njets distribution plot individually if desired
 if not sameCanvas:
     cAH1b_njets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/njetsAH1b_histo" + date + ".pdf")
@@ -378,20 +383,21 @@ h_ttbarAH1b_nfjets.SetLineWidth(1)
 h_ttbarAH1b_nfjets.SetFillColor(kRed)
 h_ttbarAH1b_nfjets.SetFillStyle(3003)
 h_ttbarAH1b_nfjets.SetMinimum(0)
-h_ttbarAH1b_nfjets.SetMaximum(15000)
+h_ttbarAH1b_nfjets.SetMaximum(19000)
 #Set tbar histogram options
 h_tbarAH1b_nfjets.SetLineColor(kBlue)
 h_tbarAH1b_nfjets.SetLineWidth(1)
 h_tbarAH1b_nfjets.SetFillColor(kBlue)
 h_tbarAH1b_nfjets.SetFillStyle(3003)
 h_tbarAH1b_nfjets.SetMinimum(0)
-h_tbarAH1b_nfjets.SetMaximum(15000)
+h_tbarAH1b_nfjets.SetMaximum(19000)
 #Add legend
 legend_AH1bnfjets = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_AH1bnfjets.AddEntry(h_tbarAH1b_nfjets, 'Scalar, t+DM', 'l')
 legend_AH1bnfjets.AddEntry(h_ttbarAH1b_nfjets, 'Scalar, tt+DM', 'l')
 legend_AH1bnfjets.Draw('same')
 legend_AH1bnfjets.SetBorderSize(0)
+legend_AH1bnfjets.SetFillStyle(0)
 #Save AH1b nfjets distribution plot individually if desired
 if not sameCanvas:
     cAH1b_nfjets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/nfjetsAH1b_histo" + date + ".pdf")
@@ -412,20 +418,21 @@ h_ttbarAH2b_njets.SetLineWidth(1)
 h_ttbarAH2b_njets.SetFillColor(kRed)
 h_ttbarAH2b_njets.SetFillStyle(3003)
 h_ttbarAH2b_njets.SetMinimum(0)
-h_ttbarAH2b_njets.SetMaximum(1500)
+h_ttbarAH2b_njets.SetMaximum(1100)
 #Set tbar histogram options
 h_tbarAH2b_njets.SetLineColor(kBlue)
 h_tbarAH2b_njets.SetLineWidth(1)
 h_tbarAH2b_njets.SetFillColor(kBlue)
 h_tbarAH2b_njets.SetFillStyle(3003)
 h_tbarAH2b_njets.SetMinimum(0)
-h_tbarAH2b_njets.SetMaximum(1500)
+h_tbarAH2b_njets.SetMaximum(1100)
 #Add legend
 legend_AH2bnjets = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_AH2bnjets.AddEntry(h_tbarAH2b_njets, 'Scalar, t+DM', 'l')
 legend_AH2bnjets.AddEntry(h_ttbarAH2b_njets, 'Scalar, tt+DM', 'l')
 legend_AH2bnjets.Draw('same')
 legend_AH2bnjets.SetBorderSize(0)
+legend_AH2bnjets.SetFillStyle(0)
 #Save AH2b njets distribution plot individually if desired
 if not sameCanvas:
     cAH2b_njets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/njetsAH2b_histo" + date + ".pdf")
@@ -446,20 +453,21 @@ h_ttbarAH2b_nfjets.SetLineWidth(1)
 h_ttbarAH2b_nfjets.SetFillColor(kRed)
 h_ttbarAH2b_nfjets.SetFillStyle(3003)
 h_ttbarAH2b_nfjets.SetMinimum(0)
-h_ttbarAH2b_nfjets.SetMaximum(2500)
+h_ttbarAH2b_nfjets.SetMaximum(2600)
 #Set tbar histogram options
 h_tbarAH2b_nfjets.SetLineColor(kBlue)
 h_tbarAH2b_nfjets.SetLineWidth(1)
 h_tbarAH2b_nfjets.SetFillColor(kBlue)
 h_tbarAH2b_nfjets.SetFillStyle(3003)
 h_tbarAH2b_nfjets.SetMinimum(0)
-h_tbarAH2b_nfjets.SetMaximum(2500)
+h_tbarAH2b_nfjets.SetMaximum(2600)
 #Add legend
 legend_AH2bnfjets = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_AH2bnfjets.AddEntry(h_tbarAH2b_nfjets, 'Scalar, t+DM', 'l')
 legend_AH2bnfjets.AddEntry(h_ttbarAH2b_nfjets, 'Scalar, tt+DM', 'l')
 legend_AH2bnfjets.Draw('same')
 legend_AH2bnfjets.SetBorderSize(0)
+legend_AH2bnfjets.SetFillStyle(0)
 #Save AH2b nfjets distribution plot individually if desired
 if not sameCanvas:
     cAH2b_nfjets.SaveAs("outDir2016AnalysisSR_histo/optimized_jets/" + date + "/nfjetsAH2b_histo" + date + ".pdf")

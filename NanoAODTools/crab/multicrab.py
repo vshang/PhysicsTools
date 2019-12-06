@@ -2,8 +2,8 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'Test_2' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
- analysis      = '4topSkim_wJec' #Name of the analysis (e.g. VBFHN, LQtop, ...)
+ task          = 'Test_4' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ analysis      = 'localTest' #Name of the analysis (e.g. VBFHN, LQtop, ...)
  unitsPerJob   = 1 #Units (usually number of root files) per job
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
  datasetnames  = [ #Name of the folder created by crab and corresponding to its datasetinputs
@@ -12,7 +12,9 @@ if __name__ == '__main__':
                  ]
  datasetinputs = [ #Name of in the input dataset
 #'/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/RunIISummer16NanoAODv4-PUMoriond17_Nano14Dec2018_102X_mcRun2_asymptotic_v6_ext1-v1/NANOAODSIM'
-'root://cmsxrootd.hep.wisc.edu//store/user/vshang/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1.root'
+#'root://cmsxrootd.hep.wisc.edu///store/user/vshang/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1.root' #Test 3
+#'file:/hdfs/store/user/vshang/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1.root' #Test 1
+#'file:/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/samples/ttbarDM_Mchi1Mphi100_scalar_full1.root' #Test 2
                  ]
 
  #####

@@ -7,11 +7,14 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.postprocessor import Pos
 
 from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collection 
 from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
+from PhysicsTools.NanoAODTools.postprocessing.corrections.leptonSFs import *
 
 class preselectAnalysis(Module):
     def __init__(self, signalRegion):
         self.signalRegion = signalRegion
         self.nEvent = 0
+        self.eleSFs = ElectronSFs(year=2016)
+        self.muSFs = MuonSFs(year=2016)
         pass
 
     def beginJob(self):
@@ -34,6 +37,8 @@ class preselectAnalysis(Module):
         self.out.branch("minDeltaPhi", "F")
         self.out.branch("nbjetsHF", "I")
         self.out.branch("ntaus", "I")
+        self.out.branch("leptonWeight", "F")
+        self.out.branch("eventWeight", "F")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -46,17 +51,17 @@ to next event)"""
         jets = Collection(event, "Jet")
 
         #Tight/Veto electrons are defined and counted
-        #vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased_Sum16 != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
-        #tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased_Sum16 == 4, vetoElectrons)
-        vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
-        tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased == 4, vetoElectrons)
+        vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased_Sum16 != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
+        tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased_Sum16 == 4, vetoElectrons)
+        #vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
+        #tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased == 4, vetoElectrons)
 
         nVetoElectrons = len(vetoElectrons)
         nTightElectrons = len(tightElectrons)
         
         #Tight/Loose muons are defined and counted
-        #looseMuons = filter(lambda lep : lep.pt > 10 and lep.looseId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
-        looseMuons = filter(lambda lep : lep.pt > 10 and lep.softId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
+        looseMuons = filter(lambda lep : lep.pt > 10 and lep.looseId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
+        #looseMuons = filter(lambda lep : lep.pt > 10 and lep.softId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
         tightMuons = filter(lambda lep : lep.pt > 30 and lep.tightId and lep.pfRelIso04_all < 0.15, looseMuons)
 
         nLooseMuons = len(looseMuons)
@@ -115,8 +120,8 @@ to next event)"""
 
         #Tau candidates are counted
         tauCandidates = Collection(event, "Tau")
-        #skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM >= 31 and cleanJet(tau), tauCandidates)
-        skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM2017v2 >= 31 and cleanJet(tau), tauCandidates)
+        skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM >= 31 and cleanJet(tau), tauCandidates)
+        #skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM2017v2 >= 31 and cleanJet(tau), tauCandidates)
         ntaus = len(skimmedTaus)
 
         #Define MET filters contained in miniAOD analysis (https://github.com/zucchett/SFrame/blob/master/DM/src/DMSearches.cxx#L1542)
@@ -126,6 +131,15 @@ to next event)"""
         singleIsoEle = event.HLT_Ele27_eta2p1_WPTight_Gsf or event.HLT_Ele32_WPTight_Gsf or event.HLT_Ele32_eta2p1_WPTight_Gsf or event.HLT_Ele27_WPLoose_Gsf or event.HLT_Ele27_WPTight_Gsf
         singleEle = event.HLT_Ele105_CaloIdVT_GsfTrkIdT or event.HLT_Ele115_CaloIdVT_GsfTrkIdT
         singleIsoMu = event.HLT_IsoMu27 or event.HLT_IsoTkMu27 or event.HLT_IsoMu24 or event.HLT_IsoTkMu24
+
+        #Calculate lepton scale factor weight
+        leptonWeight = 1
+        for tightElectron in tightElectrons:
+            leptonWeight *= self.eleSFs.getSF(tightElectron.pt, tightElectron.eta)
+        for tightMuon in tightMuons:
+            leptonWeight *= self.muSFs.getSF(tightMuon.pt, tightMuon.eta)
+        #Calculate total event weight
+        eventWeight = 1*leptonWeight
 
         #Preselection cuts defined here
         # SL1e = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets >= 1 and event.MET_pt >= 160 and passMETfilters and (singleIsoEle or singleEle)
@@ -190,6 +204,8 @@ to next event)"""
             self.out.fillBranch("minDeltaPhi", minDeltaPhi)
             self.out.fillBranch("nbjetsHF", nbjetsHF)
             self.out.fillBranch("ntaus", ntaus)
+            self.out.fillBranch("leptonWeight", leptonWeight)
+            self.out.fillBranch("eventWeight", eventWeight)
             return True
         else:
             return False
@@ -202,12 +218,12 @@ preselectSL = lambda : preselectAnalysis("SL")
 #########################################################################################################################################
 
 #Select PostProcessor options here
-#preselection=None
-#outputDir = "outDir2016AnalysisSR/ttbarDM"
+preselection=None
+outputDir = "outDir2016AnalysisSR/ttbarDM"
 #outputDir = "."
-#inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-#outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-#inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root", "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]#, "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#, "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root", "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 
 #Applies pre-selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
 # p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL1e0fSR")],postfix="_SL1e0fSR",noOut=False,outputbranchsel=outputbranches)
@@ -219,9 +235,9 @@ preselectSL = lambda : preselectAnalysis("SL")
 # p7=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l0fSR")],postfix="_AH0l0fSR_looseJetId",noOut=False,outputbranchsel=outputbranches)
 # p8=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l1fSR")],postfix="_AH0l1fSR_looseJetId",noOut=False,outputbranchsel=outputbranches)
 # p9=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l2bSR")],postfix="_AH0l2bSR_looseJetId",noOut=False,outputbranchsel=outputbranches)
-# p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH")],postfix="_AH",noOut=False,outputbranchsel=outputbranches)
-# p2=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL")],postfix="_SL",noOut=False,outputbranchsel=outputbranches)
-# p1.run()
+#p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH")],postfix="_AH",noOut=False,outputbranchsel=outputbranches)
+p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL")],postfix="_SL_withLeptonSFs",noOut=False,outputbranchsel=outputbranches)
+p1.run()
 # p2.run()
 # p3.run()
 # p4.run()

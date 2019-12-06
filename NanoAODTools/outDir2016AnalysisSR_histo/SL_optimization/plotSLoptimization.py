@@ -7,10 +7,10 @@ tChan = 'outDir2016AnalysisSR/tDM_tChan/tDM_tChan_Mchi1Mphi100_scalar_full'
 tWChan = 'outDir2016AnalysisSR/tDM_tWChan/tDM_tWChan_Mchi1Mphi100_scalar_full'
 
 #Set sameCanvas to True for all nbjets = 1 on same Canvas and nbjets >= 2 plots on same Canvas, False if you want seperate plots
-sameCanvas = False
+sameCanvas = True
 
 #Set date for file names
-date = '10302019'
+date = '11212019'
 
 #Set cross sections, lumi, and overall scale factor here
 ttbarXSec = 672.3
@@ -35,7 +35,7 @@ gStyle.SetOptStat(0)
 
 #Define list of suffixes to use and dictionary of files for ttbar, tChan, and tWChan
 #suffixList = ['_SL1e0fSR', '_SL1m0fSR', '_SL1e1fSR', '_SL1m1fSR', '_SL1e2bSR', '_SL1m2bSR']
-suffixList = ['_SL1e0fSR', '_SL1e1fSR', '_SL1e2bSR']
+suffixList = ['_SL1e0fSR', '_SL1e2bSR']
 ttbarFiles = {}
 tChanFiles = {}
 tWChanFiles = {}
@@ -178,6 +178,7 @@ legend_SL1bMT.AddEntry(h_tbarSL1b_MT, 'Scalar, t+DM', 'l')
 legend_SL1bMT.AddEntry(h_ttbarSL1b_MT, 'Scalar, tt+DM', 'l')
 legend_SL1bMT.Draw('same')
 legend_SL1bMT.SetBorderSize(0)
+legend_SL1bMT.SetFillStyle(0)
 #Save SL1b M_T distribution plot individually if desired
 if not sameCanvas:
     c1b_MT.SaveAs("outDir2016AnalysisSR_histo/SL_optimization/" + date + "/SL1b_MT_histo" + date + ".pdf")
@@ -197,7 +198,7 @@ h_tbarSL1b_MT2W.SetLineWidth(1)
 h_tbarSL1b_MT2W.SetFillColor(kBlue)
 h_tbarSL1b_MT2W.SetFillStyle(3003)
 h_tbarSL1b_MT2W.SetMinimum(0)
-h_tbarSL1b_MT2W.SetMaximum(2600)
+h_tbarSL1b_MT2W.SetMaximum(2700)
 #Set ttbar histogram options
 h_ttbarSL1b_MT2W.SetLineColor(kRed)
 h_ttbarSL1b_MT2W.SetLineStyle(2)
@@ -205,13 +206,14 @@ h_ttbarSL1b_MT2W.SetLineWidth(1)
 h_ttbarSL1b_MT2W.SetFillColor(kRed)
 h_ttbarSL1b_MT2W.SetFillStyle(3003)
 h_ttbarSL1b_MT2W.SetMinimum(0)
-h_ttbarSL1b_MT2W.SetMaximum(2600)
+h_ttbarSL1b_MT2W.SetMaximum(2700)
 #Add legend
 legend_SL1bMT2W = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL1bMT2W.AddEntry(h_tbarSL1b_MT2W, 'Scalar, t+DM', 'l')
 legend_SL1bMT2W.AddEntry(h_ttbarSL1b_MT2W, 'Scalar, tt+DM', 'l')
 legend_SL1bMT2W.Draw('same')
 legend_SL1bMT2W.SetBorderSize(0)
+legend_SL1bMT2W.SetFillStyle(0)
 #Save SL1b M_T2^W distribution plot individually if desired
 if not sameCanvas:
     c1b_MT2W.SaveAs("outDir2016AnalysisSR_histo/SL_optimization/" + date + "/SL1b_MT2W_histo" + date + ".pdf")
@@ -231,7 +233,7 @@ h_tbarSL1b_minDeltaPhi.SetLineWidth(1)
 h_tbarSL1b_minDeltaPhi.SetFillColor(kBlue)
 h_tbarSL1b_minDeltaPhi.SetFillStyle(3003)
 h_tbarSL1b_minDeltaPhi.SetMinimum(0)
-h_tbarSL1b_minDeltaPhi.SetMaximum(300)
+h_tbarSL1b_minDeltaPhi.SetMaximum(160)
 #Set ttbar histogram options
 h_ttbarSL1b_minDeltaPhi.SetLineColor(kRed)
 h_ttbarSL1b_minDeltaPhi.SetLineStyle(2)
@@ -239,13 +241,14 @@ h_ttbarSL1b_minDeltaPhi.SetLineWidth(1)
 h_ttbarSL1b_minDeltaPhi.SetFillColor(kRed)
 h_ttbarSL1b_minDeltaPhi.SetFillStyle(3003)
 h_ttbarSL1b_minDeltaPhi.SetMinimum(0)
-h_ttbarSL1b_minDeltaPhi.SetMaximum(300)
+h_ttbarSL1b_minDeltaPhi.SetMaximum(160)
 #Add legend
 legend_SL1bminDeltaPhi = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL1bminDeltaPhi.AddEntry(h_tbarSL1b_minDeltaPhi, 'Scalar, t+DM', 'l')
 legend_SL1bminDeltaPhi.AddEntry(h_ttbarSL1b_minDeltaPhi, 'Scalar, tt+DM', 'l')
 legend_SL1bminDeltaPhi.Draw('same')
 legend_SL1bminDeltaPhi.SetBorderSize(0)
+legend_SL1bminDeltaPhi.SetFillStyle(0)
 #Save SL1b minDeltaPhi distribution plot individually if desired
 if not sameCanvas:
     c1b_minDeltaPhi.SaveAs("outDir2016AnalysisSR_histo/SL_optimization/" + date + "/SL1b_minDeltaPhi_histo" + date + ".pdf")
@@ -282,6 +285,7 @@ legend_SL1bMTb.AddEntry(h_tbarSL1b_MTb, 'Scalar, t+DM', 'l')
 legend_SL1bMTb.AddEntry(h_ttbarSL1b_MTb, 'Scalar, tt+DM', 'l')
 legend_SL1bMTb.Draw('same')
 legend_SL1bMTb.SetBorderSize(0)
+legend_SL1bMTb.SetFillStyle(0)
 #Save SL1b MTb distribution plot individually if desired
 if not sameCanvas:
     c1b_MTb.SaveAs("outDir2016AnalysisSR_histo/SL_optimization/" + date + "/SL1b_MTb_histo" + date + ".pdf")
@@ -387,6 +391,7 @@ legend_SL2bMT.AddEntry(h_tbarSL2b_MT, 'Scalar, t+DM', 'l')
 legend_SL2bMT.AddEntry(h_ttbarSL2b_MT, 'Scalar, tt+DM', 'l')
 legend_SL2bMT.Draw('same')
 legend_SL2bMT.SetBorderSize(0)
+legend_SL2bMT.SetFillStyle(0)
 #Save SL2b M_T distribution plot individually if desired
 if not sameCanvas:
     c2b_MT.SaveAs("outDir2016AnalysisSR_histo/SL_optimization/" + date + "/SL2b_MT_histo" + date + ".pdf")
@@ -421,6 +426,7 @@ legend_SL2bMT2W.AddEntry(h_tbarSL2b_MT2W, 'Scalar, t+DM', 'l')
 legend_SL2bMT2W.AddEntry(h_ttbarSL2b_MT2W, 'Scalar, tt+DM', 'l')
 legend_SL2bMT2W.Draw('same')
 legend_SL2bMT2W.SetBorderSize(0)
+legend_SL2bMT2W.SetFillStyle(0)
 #Save SL2b M_T2^W distribution plot individually if desired
 if not sameCanvas:
     c2b_MT2W.SaveAs("outDir2016AnalysisSR_histo/SL_optimization/" + date + "/SL2b_MT2W_histo" + date + ".pdf")
@@ -440,7 +446,7 @@ h_tbarSL2b_minDeltaPhi.SetLineWidth(1)
 h_tbarSL2b_minDeltaPhi.SetFillColor(kBlue)
 h_tbarSL2b_minDeltaPhi.SetFillStyle(3003)
 h_tbarSL2b_minDeltaPhi.SetMinimum(0)
-h_tbarSL2b_minDeltaPhi.SetMaximum(250)
+h_tbarSL2b_minDeltaPhi.SetMaximum(80)
 #Set ttbar histogram options
 h_ttbarSL2b_minDeltaPhi.SetLineColor(kRed)
 h_ttbarSL2b_minDeltaPhi.SetLineStyle(2)
@@ -448,13 +454,14 @@ h_ttbarSL2b_minDeltaPhi.SetLineWidth(1)
 h_ttbarSL2b_minDeltaPhi.SetFillColor(kRed)
 h_ttbarSL2b_minDeltaPhi.SetFillStyle(3003)
 h_ttbarSL2b_minDeltaPhi.SetMinimum(0)
-h_ttbarSL2b_minDeltaPhi.SetMaximum(250)
+h_ttbarSL2b_minDeltaPhi.SetMaximum(80)
 #Add legend
 legend_SL2bminDeltaPhi = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL2bminDeltaPhi.AddEntry(h_tbarSL2b_minDeltaPhi, 'Scalar, t+DM', 'l')
 legend_SL2bminDeltaPhi.AddEntry(h_ttbarSL2b_minDeltaPhi, 'Scalar, tt+DM', 'l')
 legend_SL2bminDeltaPhi.Draw('same')
 legend_SL2bminDeltaPhi.SetBorderSize(0)
+legend_SL2bminDeltaPhi.SetFillStyle(0)
 #Save SL2b minDeltaPhi distribution plot individually if desired
 if not sameCanvas:
     c2b_minDeltaPhi.SaveAs("outDir2016AnalysisSR_histo/SL_optimization/" + date + "/SL2b_minDeltaPhi_histo" + date + ".pdf")
@@ -476,7 +483,7 @@ h_tbarSL2b_MTb.SetLineWidth(1)
 h_tbarSL2b_MTb.SetFillColor(kBlue)
 h_tbarSL2b_MTb.SetFillStyle(3003)
 h_tbarSL2b_MTb.SetMinimum(0.3)
-h_tbarSL2b_MTb.SetMaximum(1000)
+h_tbarSL2b_MTb.SetMaximum(200)
 #Set ttbar histogram options
 h_ttbarSL2b_MTb.SetLineColor(kRed)
 h_ttbarSL2b_MTb.SetLineStyle(2)
@@ -484,13 +491,14 @@ h_ttbarSL2b_MTb.SetLineWidth(1)
 h_ttbarSL2b_MTb.SetFillColor(kRed)
 h_ttbarSL2b_MTb.SetFillStyle(3003)
 h_ttbarSL2b_MTb.SetMinimum(0.3)
-h_ttbarSL2b_MTb.SetMaximum(1000)
+h_ttbarSL2b_MTb.SetMaximum(200)
 #Add legend
 legend_SL2bMTb = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_SL2bMTb.AddEntry(h_tbarSL2b_MTb, 'Scalar, t+DM', 'l')
 legend_SL2bMTb.AddEntry(h_ttbarSL2b_MTb, 'Scalar, tt+DM', 'l')
 legend_SL2bMTb.Draw('same')
 legend_SL2bMTb.SetBorderSize(0)
+legend_SL2bMTb.SetFillStyle(0)
 #Save SL2b MTb distribution plot individually if desired
 if not sameCanvas:
     c2b_MTb.SaveAs("outDir2016AnalysisSR_histo/SL_optimization/" + date + "/SL2b_MTb_histo" + date + ".pdf")

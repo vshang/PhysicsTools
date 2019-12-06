@@ -1,16 +1,16 @@
 from ROOT import *
 
 #Select root files here
-ttbar1 = 'outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full1'
-ttbar2 = 'outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full2'
-tChan = 'outDir2016AnalysisSR/tDM_tChan_Mchi1Mphi100_scalar_full'
-tWChan = 'outDir2016AnalysisSR/tDM_tWChan_Mchi1Mphi100_scalar_full'
+ttbar1 = 'outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1'
+ttbar2 = 'outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2'
+tChan = 'outDir2016AnalysisSR/tDM_tChan/tDM_tChan_Mchi1Mphi100_scalar_full'
+tWChan = 'outDir2016AnalysisSR/tDM_tWChan/tDM_tWChan_Mchi1Mphi100_scalar_full'
 
 #Set sameCanvas to True for all nbjets = 1 on same Canvas and nbjets >= 2 plots on same Canvas, False if you want seperate plots
 sameCanvas = True
 
 #Set date for file names
-date = '10042019'
+date = '11212019'
 
 #Set cross sections, lumi, and overall scale factor here
 ttbarXSec = 672.3
@@ -34,7 +34,8 @@ tWChanWeight = tWChanXSec*lumi*scaleFactor/nEvents_tWChan
 gStyle.SetOptStat(0)
 
 #Define list of suffixes to use and dictionary of files for ttbar, tChan, and tWChan
-suffixList = ['_AH0l0fSR', '_AH0l1fSR', '_AH0l2bSR']
+#suffixList = ['_AH0l0fSR', '_AH0l1fSR', '_AH0l2bSR']
+suffixList = ['_AH0l0fSR', '_AH0l2bSR']
 ttbarFiles = {}
 tChanFiles = {}
 tWChanFiles = {}
@@ -112,20 +113,21 @@ h_ttbarAH1b_minDeltaPhi.SetLineWidth(1)
 h_ttbarAH1b_minDeltaPhi.SetFillColor(kRed)
 h_ttbarAH1b_minDeltaPhi.SetFillStyle(3003)
 h_ttbarAH1b_minDeltaPhi.SetMinimum(0)
-h_ttbarAH1b_minDeltaPhi.SetMaximum(5000)
+h_ttbarAH1b_minDeltaPhi.SetMaximum(4700)
 #Set tbar histogram options
 h_tbarAH1b_minDeltaPhi.SetLineColor(kBlue)
 h_tbarAH1b_minDeltaPhi.SetLineWidth(1)
 h_tbarAH1b_minDeltaPhi.SetFillColor(kBlue)
 h_tbarAH1b_minDeltaPhi.SetFillStyle(3003)
 h_tbarAH1b_minDeltaPhi.SetMinimum(0)
-h_tbarAH1b_minDeltaPhi.SetMaximum(5000)
+h_tbarAH1b_minDeltaPhi.SetMaximum(4700)
 #Add legend
 legend_AH1bminDeltaPhi = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_AH1bminDeltaPhi.AddEntry(h_tbarAH1b_minDeltaPhi, 'Scalar, t+DM', 'l')
 legend_AH1bminDeltaPhi.AddEntry(h_ttbarAH1b_minDeltaPhi, 'Scalar, tt+DM', 'l')
 legend_AH1bminDeltaPhi.Draw('same')
 legend_AH1bminDeltaPhi.SetBorderSize(0)
+legend_AH1bminDeltaPhi.SetFillStyle(0)
 #Save AH1b minDeltaPhi distribution plot individually if desired
 if not sameCanvas:
     c1b_minDeltaPhi.SaveAs("outDir2016AnalysisSR_histo/AH_optimization/" + date + "/AH1b_minDeltaPhi_histo" + date + ".pdf")
@@ -162,6 +164,7 @@ legend_AH1bMTb.AddEntry(h_tbarAH1b_MTb, 'Scalar, t+DM', 'l')
 legend_AH1bMTb.AddEntry(h_ttbarAH1b_MTb, 'Scalar, tt+DM', 'l')
 legend_AH1bMTb.Draw('same')
 legend_AH1bMTb.SetBorderSize(0)
+legend_AH1bMTb.SetFillStyle(0)
 #Save AH1b M_T2^W distribution plot individually if desired
 if not sameCanvas:
     c1b_MTb.SaveAs("outDir2016AnalysisSR_histo/AH_optimization/" + date + "/AH1b_MTb_histo" + date + ".pdf")
@@ -172,8 +175,8 @@ print("Finished creating AH1b MTb distribution plot")
 
 print("Creating AH2b histograms..")
 #Define AH nbjets = 2 histograms
-h_ttbarAH2b_minDeltaPhi = TH1F('h_ttbarAH2b_minDeltaPhi', 'AH2b min\Delta\phi(j_{1,2}, p_{T}^{miss}) distribution; min\Delta\phi(jet_{1,2}, p_{T}^{miss}); Events', 10, 0, 3)
-h_tbarAH2b_minDeltaPhi = TH1F('h_tbarAH2b_minDeltaPhi', 'AH2b min\Delta\phi(j_{1,2}, p_{T}^{miss}) distribution; min\Delta\phi(jet_{1,2}, p_{T}^{miss}); Events', 10, 0, 3)
+h_ttbarAH2b_minDeltaPhi = TH1F('h_ttbarAH2b_minDeltaPhi', 'AH2b min\Delta\phi(j_{1,2}, p_{T}^{miss}) distribution; min\Delta\phi(jet_{1,2}, p_{T}^{miss}); Events', 15, 0, 3)
+h_tbarAH2b_minDeltaPhi = TH1F('h_tbarAH2b_minDeltaPhi', 'AH2b min\Delta\phi(j_{1,2}, p_{T}^{miss}) distribution; min\Delta\phi(jet_{1,2}, p_{T}^{miss}); Events', 15, 0, 3)
 h_ttbarAH2b_MTb = TH1F('h_ttbarAH2b_MTb', 'AH2b M_{T}^{b} distribution; M_{T}^{b} (GeV); Events', 20, 0, 1000)
 h_tbarAH2b_MTb = TH1F('h_tbarAH2b_MTb', 'AH2b M_{T}^{b} distribution; M_{T}^{b} (GeV); Events', 20, 0, 1000)
 h_ttbarAH2b_jet1pTHT = TH1F('h_ttbarAH2b_jet1pTHT', 'AH2b jet_{1}p_{T}/H_{T} distribution; jet_{1}p_{T}/H_{T}; Events', 20, 0, 1)
@@ -221,20 +224,21 @@ h_ttbarAH2b_minDeltaPhi.SetLineWidth(1)
 h_ttbarAH2b_minDeltaPhi.SetFillColor(kRed)
 h_ttbarAH2b_minDeltaPhi.SetFillStyle(3003)
 h_ttbarAH2b_minDeltaPhi.SetMinimum(0)
-h_ttbarAH2b_minDeltaPhi.SetMaximum(3000)
+h_ttbarAH2b_minDeltaPhi.SetMaximum(1700)
 #Set tbar histogram options
 h_tbarAH2b_minDeltaPhi.SetLineColor(kBlue)
 h_tbarAH2b_minDeltaPhi.SetLineWidth(1)
 h_tbarAH2b_minDeltaPhi.SetFillColor(kBlue)
 h_tbarAH2b_minDeltaPhi.SetFillStyle(3003)
 h_tbarAH2b_minDeltaPhi.SetMinimum(0)
-h_tbarAH2b_minDeltaPhi.SetMaximum(3000)
+h_tbarAH2b_minDeltaPhi.SetMaximum(1700)
 #Add legend
 legend_AH2bminDeltaPhi = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_AH2bminDeltaPhi.AddEntry(h_tbarAH2b_minDeltaPhi, 'Scalar, t+DM', 'l')
 legend_AH2bminDeltaPhi.AddEntry(h_ttbarAH2b_minDeltaPhi, 'Scalar, tt+DM', 'l')
 legend_AH2bminDeltaPhi.Draw('same')
 legend_AH2bminDeltaPhi.SetBorderSize(0)
+legend_AH2bminDeltaPhi.SetFillStyle(0)
 #Save AH2b M_T2^W distribution plot individually if desired
 if not sameCanvas:
     c2b_minDeltaPhi.SaveAs("outDir2016AnalysisSR_histo/AH_optimization/" + date + "/AH2b_minDeltaPhi_histo" + date + ".pdf")
@@ -271,6 +275,7 @@ legend_AH2bMTb.AddEntry(h_tbarAH2b_MTb, 'Scalar, t+DM', 'l')
 legend_AH2bMTb.AddEntry(h_ttbarAH2b_MTb, 'Scalar, tt+DM', 'l')
 legend_AH2bMTb.Draw('same')
 legend_AH2bMTb.SetBorderSize(0)
+legend_AH2bMTb.SetFillStyle(0)
 #Save AH2b M_T2^W distribution plot individually if desired
 if not sameCanvas:
     c2b_MTb.SaveAs("outDir2016AnalysisSR_histo/AH_optimization/" + date + "AH2b_MTb_histo" + date + ".pdf")
@@ -291,20 +296,21 @@ h_ttbarAH2b_jet1pTHT.SetLineWidth(1)
 h_ttbarAH2b_jet1pTHT.SetFillColor(kRed)
 h_ttbarAH2b_jet1pTHT.SetFillStyle(3003)
 h_ttbarAH2b_jet1pTHT.SetMinimum(0)
-h_ttbarAH2b_jet1pTHT.SetMaximum(2000)
+h_ttbarAH2b_jet1pTHT.SetMaximum(1500)
 #Set tbar histogram options
 h_tbarAH2b_jet1pTHT.SetLineColor(kBlue)
 h_tbarAH2b_jet1pTHT.SetLineWidth(1)
 h_tbarAH2b_jet1pTHT.SetFillColor(kBlue)
 h_tbarAH2b_jet1pTHT.SetFillStyle(3003)
 h_tbarAH2b_jet1pTHT.SetMinimum(0)
-h_tbarAH2b_jet1pTHT.SetMaximum(2000)
+h_tbarAH2b_jet1pTHT.SetMaximum(1500)
 #Add legend
 legend_AH2bjet1pTHT = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_AH2bjet1pTHT.AddEntry(h_tbarAH2b_jet1pTHT, 'Scalar, t+DM', 'l')
 legend_AH2bjet1pTHT.AddEntry(h_ttbarAH2b_jet1pTHT, 'Scalar, tt+DM', 'l')
 legend_AH2bjet1pTHT.Draw('same')
 legend_AH2bjet1pTHT.SetBorderSize(0)
+legend_AH2bjet1pTHT.SetFillStyle(0)
 #Save AH2b M_T2^W distribution plot individually if desired
 if not sameCanvas:
     c2b_jet1pTHT.SaveAs("outDir2016AnalysisSR_histo/AH_optimization/" + date + "AH2b_jet1pTHT_histo" + date + ".pdf")
