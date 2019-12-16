@@ -1,5 +1,5 @@
+from helper import modulepath, ensureTFile
 import os, re
-from ROOT import TFile, TH1
 
 class ScaleFactor:
     
@@ -8,7 +8,7 @@ class ScaleFactor:
         self.name     = name
         self.ptvseta  = ptvseta
         self.filename = filename
-        self.file     = TFile(filename, '')
+        self.file     = ensureTFile(filename)
         self.hist     = self.file.Get(histname)
         if not self.hist:
           print '>>> ScaleFactor(%s).__init__: histogram "%s" does not exist in "%s"'%(self.name,histname,filename)

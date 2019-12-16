@@ -8,6 +8,7 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.postprocessor import Pos
 from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collection 
 from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 from PhysicsTools.NanoAODTools.postprocessing.corrections.leptonSFs import *
+from PhysicsTools.NanoAODTools.postprocessing.corrections.BTaggingTool import *
 
 class preselectAnalysis(Module):
     def __init__(self, signalRegion):
@@ -15,7 +16,7 @@ class preselectAnalysis(Module):
         self.nEvent = 0
         self.eleSFs = ElectronSFs(year=2016)
         self.muSFs = MuonSFs(year=2016)
-        pass
+        self.btagTool = BTagWeightTool('CSVv2','medium',channel='ttbar',year=2016)
 
     def beginJob(self):
         pass
@@ -38,6 +39,7 @@ class preselectAnalysis(Module):
         self.out.branch("nbjetsHF", "I")
         self.out.branch("ntaus", "I")
         self.out.branch("leptonWeight", "F")
+        self.out.branch("bjetWeight", "F")
         self.out.branch("eventWeight", "F")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
@@ -138,8 +140,10 @@ to next event)"""
             leptonWeight *= self.eleSFs.getSF(tightElectron.pt, tightElectron.eta)
         for tightMuon in tightMuons:
             leptonWeight *= self.muSFs.getSF(tightMuon.pt, tightMuon.eta)
+        #Calculate b-jet scale factor weight
+        bjetWeight = self.btagTool.getWeight(centralJets)
         #Calculate total event weight
-        eventWeight = 1*leptonWeight
+        eventWeight = 1*leptonWeight*bjetWeight
 
         #Preselection cuts defined here
         # SL1e = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets >= 1 and event.MET_pt >= 160 and passMETfilters and (singleIsoEle or singleEle)
@@ -205,6 +209,7 @@ to next event)"""
             self.out.fillBranch("nbjetsHF", nbjetsHF)
             self.out.fillBranch("ntaus", ntaus)
             self.out.fillBranch("leptonWeight", leptonWeight)
+            self.out.fillBranch("bjetWeight", bjetWeight)
             self.out.fillBranch("eventWeight", eventWeight)
             return True
         else:
@@ -236,7 +241,7 @@ inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#, "samples/ttbarDM
 # p8=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l1fSR")],postfix="_AH0l1fSR_looseJetId",noOut=False,outputbranchsel=outputbranches)
 # p9=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l2bSR")],postfix="_AH0l2bSR_looseJetId",noOut=False,outputbranchsel=outputbranches)
 #p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH")],postfix="_AH",noOut=False,outputbranchsel=outputbranches)
-p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL")],postfix="_SL_withLeptonSFs",noOut=False,outputbranchsel=outputbranches)
+p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL")],postfix="_SL_withBjetSFs",noOut=False,outputbranchsel=outputbranches)
 p1.run()
 # p2.run()
 # p3.run()
