@@ -14,6 +14,14 @@ class ElectronSFs:
         if year==2016:
             self.sftool_10to20GeV = ScaleFactor(pathElectrons+'EGM2D_BtoH_low_RecoSF_Legacy2016.root','EGamma_SF2D')
             self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'EGM2D_BtoH_GT20GeV_RecoSF_Legacy2016.root','EGamma_SF2D')
+
+        if year==2017:
+            self.sftool_10to20GeV = ScaleFactor(pathElectrons+'egammaEffi.txt_EGM2D_runBCDEF_passingRECO_lowEt.root','EGamma_SF2D')
+            self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root','EGamma_SF2D')
+
+        if year==2018:
+            self.sftool_10to20GeV = ScaleFactor(pathElectrons+'egammaEffi.txt_EGM2D_updatedAll.root','EGamma_SF2D')
+            self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'egammaEffi.txt_EGM2D_updatedAll.root','EGamma_SF2D')
         
     def getSF(self, pt, eta):
         #Get SF for single electron trigger.

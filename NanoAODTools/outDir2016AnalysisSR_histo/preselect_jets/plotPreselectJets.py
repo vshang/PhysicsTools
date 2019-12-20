@@ -1,16 +1,16 @@
 from ROOT import *
 
 #Select root files here
-ttbar1 = 'outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full1'
-ttbar2 = 'outDir2016AnalysisSR/ttbarDM_Mchi1Mphi100_scalar_full2'
-tChan = 'outDir2016AnalysisSR/tDM_tChan_Mchi1Mphi100_scalar_full'
-tWChan = 'outDir2016AnalysisSR/tDM_tWChan_Mchi1Mphi100_scalar_full'
+ttbar1 = 'outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1'
+ttbar2 = 'outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2'
+tChan = 'outDir2016AnalysisSR/tDM_tChan/tDM_tChan_Mchi1Mphi100_scalar_full'
+tWChan = 'outDir2016AnalysisSR/tDM_tWChan/tDM_tWChan_Mchi1Mphi100_scalar_full'
 
 #Set sameCanvas to True for all plots on same Canvas, False if you want seperate plots
-sameCanvas = True
+sameCanvas = False
 
 #Set date for file names
-date = '10042019'
+date = '12192019'
 
 #t-channel events weighted by cross-section (in units of 10^-2 pb)
 tChanWeight = 26.83
