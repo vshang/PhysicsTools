@@ -110,20 +110,20 @@ to next event)"""
 
         #Calculate minDeltaPhi preselection variable of all central jets
         minDeltaPhi = 0
-        if self.signalRegion == "AH0l0fSR" or self.signalRegion == "AH0l1fSR" or self.signalRegion == "AH0l2bSR" or self.signalRegion == "AH":
-            if len(centralJets) > 1: #Should always be true for both SL and AH signal regions
-                jet1 = centralJets[0]
-                minDeltaPhi = min(abs(jet1.phi - event.MET_phi), 2 * math.pi - abs(jet1.phi - event.MET_phi)) #phi angle between jet1 and missing pt
-                for i in range(1, len(centralJets)):
-                    jet2 = centralJets[i]
-                    minDeltaPhi2 = min(abs(jet2.phi - event.MET_phi), 2 * math.pi - abs(jet2.phi - event.MET_phi)) #phi angle between jet2 and missing pt
-                    if minDeltaPhi2 < minDeltaPhi: #Choose lowest minDeltaPhi out of all central jets
-                        minDeltaPhi = minDeltaPhi2
+        #if self.signalRegion == "AH0l0fSR" or self.signalRegion == "AH0l1fSR" or self.signalRegion == "AH0l2bSR" or self.signalRegion == "AH":
+        if len(centralJets) > 1: #Should always be true for both SL and AH signal regions
+            jet1 = centralJets[0]
+            minDeltaPhi = min(abs(jet1.phi - event.MET_phi), 2 * math.pi - abs(jet1.phi - event.MET_phi)) #phi angle between jet1 and missing pt
+            for i in range(1, len(centralJets)):
+                jet2 = centralJets[i]
+                minDeltaPhi2 = min(abs(jet2.phi - event.MET_phi), 2 * math.pi - abs(jet2.phi - event.MET_phi)) #phi angle between jet2 and missing pt
+                if minDeltaPhi2 < minDeltaPhi: #Choose lowest minDeltaPhi out of all central jets
+                    minDeltaPhi = minDeltaPhi2
 
         #Tau candidates are counted
         tauCandidates = Collection(event, "Tau")
-        skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM >= 31 and cleanJet(tau), tauCandidates)
-        #skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM2017v2 >= 31 and cleanJet(tau), tauCandidates)
+        #skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM >= 31 and cleanJet(tau), tauCandidates)
+        skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM2017v2 >= 31 and cleanJet(tau), tauCandidates)
         ntaus = len(skimmedTaus)
 
         #Define MET filters contained in miniAOD analysis (https://github.com/zucchett/SFrame/blob/master/DM/src/DMSearches.cxx#L1542)
@@ -146,13 +146,13 @@ to next event)"""
         eventWeight = 1*leptonWeight*bjetWeight
 
         #Preselection cuts defined here
-        # SL1e = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets >= 1 and event.MET_pt >= 160 and passMETfilters and (singleIsoEle or singleEle)
-        # SL1m = nTightMuons == 1 and nLooseMuons == 1 and nVetoElectrons == 0 and njets >= 2 and nbjets >= 1 and event.MET_pt >= 160 and passMETfilters and singleIsoMu
-        # AH = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets >= 1 and event.MET_pt >= 250  and ntaus == 0 and minDeltaPhi > 0.4 and centralJets[0].jetId >= 3 and centralJets[0].chHEF > 0.1 and passMETfilters
+        SL1e = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets >= 1 and event.MET_pt >= 160 and passMETfilters and (singleIsoEle or singleEle)
+        SL1m = nTightMuons == 1 and nLooseMuons == 1 and nVetoElectrons == 0 and njets >= 2 and nbjets >= 1 and event.MET_pt >= 160 and passMETfilters and singleIsoMu
+        AH = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and nbjets >= 1 and event.MET_pt >= 250  and ntaus == 0 and minDeltaPhi > 0.4 and centralJets[0].jetId >= 3 and centralJets[0].chHEF > 0.1 and passMETfilters
 
-        SL1e = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and event.MET_pt >= 160 and passMETfilters and (singleIsoEle or singleEle)
-        SL1m = nTightMuons == 1 and nLooseMuons == 1 and nVetoElectrons == 0 and njets >= 2 and event.MET_pt >= 160 and passMETfilters and singleIsoMu
-        AH = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and event.MET_pt >= 250 and ntaus == 0 and minDeltaPhi > 0.4 and centralJets[0].jetId >= 3 and centralJets[0].chHEF > 0.1 and passMETfilters
+        # SL1e = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and event.MET_pt >= 160 and passMETfilters and (singleIsoEle or singleEle)
+        # SL1m = nTightMuons == 1 and nLooseMuons == 1 and nVetoElectrons == 0 and njets >= 2 and event.MET_pt >= 160 and passMETfilters and singleIsoMu
+        # AH = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and event.MET_pt >= 250 and ntaus == 0 and minDeltaPhi > 0.4 and centralJets[0].jetId >= 3 and centralJets[0].chHEF > 0.1 and passMETfilters
         SL = SL1e or SL1m
 
         # SL1e0fSR = SL1e and nbjets == 1 and nfjets == 0
@@ -166,7 +166,9 @@ to next event)"""
         # AH0l2bSR = AH and nbjets >= 2
 
         #Signal region chosen here
-        if self.signalRegion == "SL1e0fSR":
+        if self.signalRegion == "All":
+            signalRegionPreselect = True
+        elif self.signalRegion == "SL1e0fSR":
             signalRegionPreselect = SL1e0fSR
         elif self.signalRegion == "SL1m0fSR":
             signalRegionPreselect = SL1m0fSR
@@ -193,7 +195,7 @@ to next event)"""
         elif self.signalRegion == "SL":
             signalRegionPreselect = SL
         else:
-            signalRegionPreselect = True
+            signalRegionPreselect = False
 
         if signalRegionPreselect: #True if event satisfies all pre-selection cuts for specified signal region
             #fill output branches
@@ -219,16 +221,17 @@ to next event)"""
 
 preselectAH = lambda : preselectAnalysis("AH")
 preselectSL = lambda : preselectAnalysis("SL")
+preselectAll = lambda : preselectAnalysis("All")
 
 #########################################################################################################################################
 
 #Select PostProcessor options here
 preselection=None
-outputDir = "outDir2016AnalysisSR/ttbarDM"
+outputDir = "outDir2016AnalysisSR/ttbarDM/TTTo2L2Nu"
 #outputDir = "."
 inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
 outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#, "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root", "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+inputFiles=["samples/ttbarDM/TTTo2L2Nu/B40C2CF7-900D-B142-B62F-56D01B233EFA.root"]#, "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root", "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 
 #Applies pre-selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
 # p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL1e0fSR")],postfix="_SL1e0fSR",noOut=False,outputbranchsel=outputbranches)
@@ -241,7 +244,7 @@ inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#, "samples/ttbarDM
 # p8=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l1fSR")],postfix="_AH0l1fSR_looseJetId",noOut=False,outputbranchsel=outputbranches)
 # p9=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l2bSR")],postfix="_AH0l2bSR_looseJetId",noOut=False,outputbranchsel=outputbranches)
 #p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH")],postfix="_AH",noOut=False,outputbranchsel=outputbranches)
-p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL")],postfix="_SL_withBjetSFs",noOut=False,outputbranchsel=outputbranches)
+p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("All")],postfix="_All",noOut=False,outputbranchsel=outputbranches)
 p1.run()
 # p2.run()
 # p3.run()

@@ -33,11 +33,11 @@ class optimizeAnalysis(Module):
         self.out.branch("M_Tb", "F")
         self.out.branch("njets", "I")
         self.out.branch("bjets", "I")
-        if 'SL' in self.signalRegion:
-            self.out.branch("M_T", "F")
-            self.out.branch("M_T2W", "F")
-        if 'AH' in self.signalRegion:
-            self.out.branch("jet1p_TH_T", "F")
+        #if 'SL' in self.signalRegion:
+        self.out.branch("M_T", "F")
+        self.out.branch("M_T2W", "F")
+        #if 'AH' in self.signalRegion:
+        self.out.branch("jet1p_TH_T", "F")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -94,41 +94,53 @@ class optimizeAnalysis(Module):
         nbjets = len(bJets)
 
         #Calculate minDeltaPhi(j_(1,2), missing pt) preselection variable
-        jet1 = centralJets[0] #jet1 (jet2) is the jet with the largest (second-largest) pt
-        jet2 = centralJets[1]
-        deltaPhi1 = min(abs(jet1.phi - event.MET_phi), 2 * math.pi - abs(jet1.phi - event.MET_phi)) #phi angle between jet1 and missing pt
-        deltaPhi2 = min(abs(jet2.phi - event.MET_phi), 2 * math.pi - abs(jet2.phi - event.MET_phi)) #phi angle between jet2 and missing pt
-        minDeltaPhi12 = min(deltaPhi1, deltaPhi2)
+        minDeltaPhi12 = 0
+        if len(centralJets) > 1:
+            jet1 = centralJets[0] #jet1 (jet2) is the jet with the largest (second-largest) pt
+            jet2 = centralJets[1]
+            deltaPhi1 = min(abs(jet1.phi - event.MET_phi), 2 * math.pi - abs(jet1.phi - event.MET_phi)) #phi angle between jet1 and missing pt
+            deltaPhi2 = min(abs(jet2.phi - event.MET_phi), 2 * math.pi - abs(jet2.phi - event.MET_phi)) #phi angle between jet2 and missing pt
+            minDeltaPhi12 = min(deltaPhi1, deltaPhi2)
         
 
         #Calculate jet1p_T/H_T
         H_T = 0
+        jet1pTHT = 999
+        
+        if len(centralJets) > 0:
+            for jet in centralJets:
+                H_T += jet.pt
+                if jet.btagCSVV2 < 0.8484:
+                    ljetVector.push_back(jet.p4())
 
-        for jet in centralJets:
-            H_T += jet.pt
-            if jet.btagCSVV2 < 0.8484:
-                ljetVector.push_back(jet.p4())
-
-        jet1pTHT = jet1.pt/H_T
+            jet1pTHT = centralJets[0].pt/H_T
 
         #Calculate M_T^b
-        bjet1 = bJets[0]
+        MTb = 0
+        
+        if len(bJets) > 0:
+            bjet1 = bJets[0]
 
-        for bjet in bJets:
-            bjetVector.push_back(bjet.p4())
-            if bjet.btagCSVV2 > bjet1.btagCSVV2:
-                bjet1 = bjet
+            for bjet in bJets:
+                bjetVector.push_back(bjet.p4())
+                if bjet.btagCSVV2 > bjet1.btagCSVV2:
+                    bjet1 = bjet
 
-        deltaPhiMTb = bjet1.phi - event.MET_phi
-        MTb = math.sqrt(2 * event.MET_pt * bjet1.pt * (1 - math.cos(deltaPhiMTb)))
+            deltaPhiMTb = bjet1.phi - event.MET_phi
+            MTb = math.sqrt(2 * event.MET_pt * bjet1.pt * (1 - math.cos(deltaPhiMTb)))
 
         #Calculate M_T and M_T2^W for SL case
         M_T = 0
         MT2W = 0 
-        if 'SL' in self.signalRegion:
-            if '1e' in self.signalRegion: #Select tight electron in single electron SR
+        # if 'SL' in self.signalRegion:
+        #     if '1e' in self.signalRegion: #Select tight electron in single electron SR
+        #         lepton = tightElectrons[0]
+        #     elif '1m' in self.signalRegion: #Select tight muon in single muon SR
+        #         lepton = tightMuons[0]
+        if len(tightElectrons) > 0 or len(tightMuons) > 0:
+            if len(tightElectrons) > 0:
                 lepton = tightElectrons[0]
-            elif '1m' in self.signalRegion: #Select tight muon in single muon SR
+            elif len(tightMuons) > 0:
                 lepton = tightMuons[0]
 
             #Calculate M_T
@@ -148,12 +160,16 @@ class optimizeAnalysis(Module):
 
         #Signal region chosen here
         #signalRegionOptimize = True
-        if self.signalRegion == "SL1e" or self.signalRegion == "SL1m":
+        if self.signalRegion == "All":
+            signalRegionOptimize = True
+        elif self.signalRegion == "SL1e" or self.signalRegion == "SL1m":
             signalRegionOptimize = singleLeptonAccept
         elif self.signalRegion == "AH":
             signalRegionOptimize = allHadronicAccept
         elif self.signalRegion == "AH2b":
             signalRegionOptimize = allHadronicAccept2b
+        else:
+            signalRegionOptimize = False
 
         if signalRegionOptimize: #True if event satisfies all optimization selections for specified signal region
             #fill output branches
@@ -161,31 +177,32 @@ class optimizeAnalysis(Module):
             self.out.fillBranch("M_Tb", MTb)
             self.out.fillBranch("njets", njets)
             self.out.fillBranch("bjets", nbjets)
-            if 'SL' in self.signalRegion:
-                self.out.fillBranch("M_T", M_T)
-                self.out.fillBranch("M_T2W", MT2W)
-            if 'AH' in self.signalRegion:
-                self.out.fillBranch("jet1p_TH_T", jet1pTHT)
+            #if 'SL' in self.signalRegion:
+            self.out.fillBranch("M_T", M_T)
+            self.out.fillBranch("M_T2W", MT2W)
+            #if 'AH' in self.signalRegion:
+            self.out.fillBranch("jet1p_TH_T", jet1pTHT)
             return True
         else:
             return False
 
 #Select PostProcessor options here
 preselection=None
-outputDir = "outDir2016AnalysisSR/ttbarDM"
-inputbranches="python/postprocessing/2016Analysis/keep_and_dropSR_in.txt"
-outputbranches="python/postprocessing/2016Analysis/keep_and_dropSR_out.txt"
+outputDir = "outDir2016AnalysisSR/ttbarDM/TTTo2L2Nu"
+inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
 #Change input files to output of preselectSR.py for each signal region
-inputFiles1=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1e0fSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1e0fSR.root"]
-inputFiles2=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1m0fSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1m0fSR.root"]
-inputFiles3=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1e1fSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1e1fSR.root"]
-inputFiles4=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1m1fSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1m1fSR.root"]
-inputFiles5=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1e2bSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1e2bSR.root"]
-inputFiles6=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1m2bSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1m2bSR.root"]
-inputFiles7=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l0fSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l0fSR_looseJetId.root"]
-inputFiles8=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l1fSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l1fSR_looseJetId.root"]
-inputFiles9=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l2bSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l2bSR_looseJetId.root"]
-inputFilesAH=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH.root"]
+# inputFiles1=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1e0fSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1e0fSR.root"]
+# inputFiles2=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1m0fSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1m0fSR.root"]
+# inputFiles3=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1e1fSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1e1fSR.root"]
+# inputFiles4=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1m1fSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1m1fSR.root"]
+# inputFiles5=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1e2bSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1e2bSR.root"]
+# inputFiles6=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_SL1m2bSR.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_SL1m2bSR.root"]
+# inputFiles7=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l0fSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l0fSR_looseJetId.root"]
+# inputFiles8=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l1fSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l1fSR_looseJetId.root"]
+# inputFiles9=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l2bSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l2bSR_looseJetId.root"]
+# inputFilesAH=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH.root"]
+inputFiles = ["outDir2016AnalysisSR/ttbarDM/TTTo2L2Nu/B40C2CF7-900D-B142-B62F-56D01B233EFA_All.root"]
 #Applies optimization selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
 # p1=PostProcessor(outputDir,inputFiles1,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1e")],postfix="",noOut=False,outputbranchsel=outputbranches)
 # p2=PostProcessor(outputDir,inputFiles2,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1m")],postfix="",noOut=False,outputbranchsel=outputbranches)
@@ -196,7 +213,7 @@ inputFilesAH=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH
 # p7=PostProcessor(outputDir,inputFiles7,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
 # p8=PostProcessor(outputDir,inputFiles8,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
 # p9=PostProcessor(outputDir,inputFiles9,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH2b")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
-p1=PostProcessor(outputDir,inputFilesAH,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("AH")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
+p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("All")],postfix="_optimized",noOut=False,outputbranchsel=outputbranches)
 p1.run()
 # p2.run()
 # p3.run()

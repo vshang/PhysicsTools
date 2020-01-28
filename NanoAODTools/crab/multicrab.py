@@ -2,15 +2,19 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'Test_4' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
- analysis      = 'localTest' #Name of the analysis (e.g. VBFHN, LQtop, ...)
- unitsPerJob   = 1 #Units (usually number of root files) per job
+ task          = 'MC5' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ analysis      = 'ttbarPlusJets' #Name of the analysis (e.g. VBFHN, LQtop, ...)
+ unitsPerJob   = 2 #Units (usually number of root files) per job
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
  datasetnames  = [ #Name of the folder created by crab and corresponding to its datasetinputs
+'TTTo2L2Nu', 
+#'TTToSemilepton'
 #'TTWJetsToLNu'
-'ttbarDM1'
+#'ttbarDM1'
                  ]
  datasetinputs = [ #Name of in the input dataset
+'/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/RunIISummer16NanoAODv6-PUMoriond17_Nano25Oct2019_102X_mcRun2_asymptotic_v7-v1/NANOAODSIM', 
+#'/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/RunIISummer16NanoAODv6-PUMoriond17_Nano25Oct2019_102X_mcRun2_asymptotic_v7-v1/NANOAODSIM'
 #'/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/RunIISummer16NanoAODv4-PUMoriond17_Nano14Dec2018_102X_mcRun2_asymptotic_v6_ext1-v1/NANOAODSIM'
 #'root://cmsxrootd.hep.wisc.edu///store/user/vshang/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1.root' #Test 3
 #'file:/hdfs/store/user/vshang/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1.root' #Test 1
@@ -50,8 +54,8 @@ if __name__ == '__main__':
   config.JobType.sendPythonFolder = True
   config.JobType.allowUndistributedCMSSW = True
   config.section_('Data')
-  #config.Data.inputDataset        = datasetinputs[d]
-  config.Data.userInputFiles      = [datasetinputs[d]]
+  config.Data.inputDataset        = datasetinputs[d]
+  #config.Data.userInputFiles      = [datasetinputs[d]]
   config.Data.inputDBS            = 'global'
   config.Data.splitting           = 'FileBased'
   #config.Data.splitting           = 'Automatic'

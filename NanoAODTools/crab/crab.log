@@ -458,3 +458,104 @@ Traceback (most recent call last):
   File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1910.patch2/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 580, in validateOptions
     raise ConfigurationException(msg)
 ConfigurationException: [91mError[0m: Test_1/crab_TTWJetsToLNu/ is not a valid CRAB project directory.
+DEBUG 2020-01-27 05:23:33.277 UTC: 	 Running on: Linux login04.hep.wisc.edu 4.4.201-1.el7.elrepo.x86_64 #1 SMP Tue Nov 12 14:34:24 EST 2019 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-01-27 05:23:33.291 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-01-27 05:23:33.291 UTC: 	 Executing command: 'submit'
+DEBUG 2020-01-27 05:23:33.291 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+DEBUG 2020-01-27 05:23:33.298 UTC: 	 Checking credentials
+DEBUG 2020-01-27 05:23:33.298 UTC: 	 Found proxy file /tmp/x509up_u10060
+DEBUG 2020-01-27 05:23:33.298 UTC: 	 Getting proxy life time left
+DEBUG 2020-01-27 05:23:33.402 UTC: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u10060 -timeleft
+ output : 85841
+
+ error: 
+ retcode : 0
+DEBUG 2020-01-27 05:23:33.507 UTC: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u10060 -actimeleft
+ output : 85840
+
+ error: 
+ retcode : 0
+DEBUG 2020-01-27 05:23:33.507 UTC: 	 Proxy lifetime 85841 secs is different from voms extension lifetime 85840 secs for proxy: /tmp/x509up_u10060
+DEBUG 2020-01-27 05:23:33.507 UTC: 	 Proxy valid for 23:50:40 hours
+DEBUG 2020-01-27 05:23:33.508 UTC: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2020-01-27 20:08:01.710 UTC: 	 Running on: Linux login05.hep.wisc.edu 4.4.188-1.el7.elrepo.x86_64 #1 SMP Tue Aug 6 13:44:31 EDT 2019 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-01-27 20:08:01.746 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-01-27 20:08:01.747 UTC: 	 Executing command: 'submit'
+DEBUG 2020-01-27 20:08:01.759 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+DEBUG 2020-01-27 20:08:01.774 UTC: 	 Checking credentials
+DEBUG 2020-01-27 20:08:01.775 UTC: 	 Found proxy file /tmp/x509up_u10060
+DEBUG 2020-01-27 20:08:01.775 UTC: 	 Getting proxy life time left
+DEBUG 2020-01-27 20:08:01.883 UTC: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u10060 -timeleft
+ output : 604785
+
+ error: 
+ retcode : 0
+DEBUG 2020-01-27 20:08:02.092 UTC: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u10060 -actimeleft
+ output : 604785
+
+ error: 
+ retcode : 0
+DEBUG 2020-01-27 20:08:02.092 UTC: 	 Proxy valid for 167:59:45 hours
+DEBUG 2020-01-27 20:08:02.094 UTC: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2020-01-28 16:02:38.886 UTC: 	 Running on: Linux login01.hep.wisc.edu 4.4.205-1.el7.elrepo.x86_64 #1 SMP Fri Nov 29 10:10:01 EST 2019 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-01-28 16:02:38.901 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-01-28 16:02:38.901 UTC: 	 Executing command: 'status'
+DEBUG 2020-01-28 16:02:38.902 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+ERROR 2020-01-28 16:02:38.919 UTC: 	 Error: MC/crab_TTTo/ is not a valid CRAB project directory.
+ERROR 2020-01-28 16:02:38.919 UTC: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/bin/crab", line 145, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 40, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 277, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 595, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: MC/crab_TTTo/ is not a valid CRAB project directory.
+DEBUG 2020-01-28 16:02:44.600 UTC: 	 Running on: Linux login01.hep.wisc.edu 4.4.205-1.el7.elrepo.x86_64 #1 SMP Fri Nov 29 10:10:01 EST 2019 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-01-28 16:02:44.613 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-01-28 16:02:44.613 UTC: 	 Executing command: 'status'
+DEBUG 2020-01-28 16:02:44.613 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+ERROR 2020-01-28 16:02:44.614 UTC: 	 Cannot find .requestcache file in CRAB project directory /afs/hep.wisc.edu/user/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/crab/MC
+ERROR 2020-01-28 16:02:44.615 UTC: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/bin/crab", line 145, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 40, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 277, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 599, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 461, in loadLocalCache
+    raise ex
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/hep.wisc.edu/user/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/crab/MC
+DEBUG 2020-01-28 16:03:44.289 UTC: 	 Running on: Linux login01.hep.wisc.edu 4.4.205-1.el7.elrepo.x86_64 #1 SMP Fri Nov 29 10:10:01 EST 2019 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-01-28 16:03:44.302 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-01-28 16:03:44.303 UTC: 	 Executing command: 'status'
+DEBUG 2020-01-28 16:03:44.303 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+ERROR 2020-01-28 16:03:44.304 UTC: 	 Cannot find .requestcache file in CRAB project directory /afs/hep.wisc.edu/user/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/crab/MC
+ERROR 2020-01-28 16:03:44.304 UTC: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/bin/crab", line 145, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 40, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 277, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 599, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 461, in loadLocalCache
+    raise ex
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/hep.wisc.edu/user/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/crab/MC
