@@ -225,13 +225,13 @@ preselectAll = lambda : preselectAnalysis("All")
 
 #########################################################################################################################################
 
-#Select PostProcessor options here
-preselection=None
-outputDir = "outDir2016AnalysisSR/ttbarDM/TTTo2L2Nu"
-#outputDir = "."
-inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-inputFiles=["samples/ttbarDM/TTTo2L2Nu/B40C2CF7-900D-B142-B62F-56D01B233EFA.root"]#, "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root", "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+# #Select PostProcessor options here
+# preselection=None
+# outputDir = "outDir2016AnalysisSR/ttbarDM/TTTo2L2Nu"
+# #outputDir = "."
+# inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+# outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+# inputFiles=["samples/ttbarDM/TTTo2L2Nu/B40C2CF7-900D-B142-B62F-56D01B233EFA.root"]#, "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root", "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 
 #Applies pre-selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
 # p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("SL1e0fSR")],postfix="_SL1e0fSR",noOut=False,outputbranchsel=outputbranches)
@@ -244,8 +244,8 @@ inputFiles=["samples/ttbarDM/TTTo2L2Nu/B40C2CF7-900D-B142-B62F-56D01B233EFA.root
 # p8=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l1fSR")],postfix="_AH0l1fSR_looseJetId",noOut=False,outputbranchsel=outputbranches)
 # p9=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH0l2bSR")],postfix="_AH0l2bSR_looseJetId",noOut=False,outputbranchsel=outputbranches)
 #p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("AH")],postfix="_AH",noOut=False,outputbranchsel=outputbranches)
-p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("All")],postfix="_All",noOut=False,outputbranchsel=outputbranches)
-p1.run()
+# p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=inputbranches,modules=[preselectAnalysis("All")],postfix="_All",noOut=False,outputbranchsel=outputbranches)
+# p1.run()
 # p2.run()
 # p3.run()
 # p4.run()
