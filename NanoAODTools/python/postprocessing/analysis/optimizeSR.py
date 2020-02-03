@@ -202,7 +202,8 @@ outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
 # inputFiles8=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l1fSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l1fSR_looseJetId.root"]
 # inputFiles9=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH0l2bSR_looseJetId.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH0l2bSR_looseJetId.root"]
 # inputFilesAH=["outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full1_AH.root", "outDir2016AnalysisSR/ttbarDM/ttbarDM_Mchi1Mphi100_scalar_full2_AH.root"]
-inputFiles = ["outDir2016AnalysisSR/ttbarDM/TTTo2L2Nu/B40C2CF7-900D-B142-B62F-56D01B233EFA_All.root"]
+#inputFiles = ["outDir2016AnalysisSR/ttbarDM/TTTo2L2Nu/B40C2CF7-900D-B142-B62F-56D01B233EFA_All.root"]
+inputFiles = ["/hdfs/store/user/vshang/ttbarPlusJets/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MC/200128_212401/0000/tree_1.root"]
 #Applies optimization selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
 # p1=PostProcessor(outputDir,inputFiles1,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1e")],postfix="",noOut=False,outputbranchsel=outputbranches)
 # p2=PostProcessor(outputDir,inputFiles2,cut=preselection,branchsel=inputbranches,modules=[optimizeAnalysis("SL1m")],postfix="",noOut=False,outputbranchsel=outputbranches)

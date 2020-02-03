@@ -11,10 +11,10 @@ from PhysicsTools.NanoAODTools.postprocessing.corrections.leptonSFs import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.BTaggingTool import *
 
 #Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region 
-ROOT.gSystem.Load("/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/2016Analysis/mt2w_bisect_cc")
-ROOT.gSystem.Load("/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/2016Analysis/MT2Utility_cc")
-ROOT.gSystem.Load("/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/2016Analysis/mt2bl_bisect_cc")
-ROOT.gSystem.Load("/afs/cern.ch/user/v/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/2016Analysis/Mt2Com_bisect_cc")
+ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
+ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.so")
+ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so")
+ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so")
 Mt2Com_bisect = ROOT.Mt2Com_bisect()
 
 class CommonAnalysis(Module):
@@ -202,7 +202,7 @@ to next event)"""
         # SL1e = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and event.MET_pt >= 160 and passMETfilters and (singleIsoEle or singleEle)
         # SL1m = nTightMuons == 1 and nLooseMuons == 1 and nVetoElectrons == 0 and njets >= 2 and event.MET_pt >= 160 and passMETfilters and singleIsoMu
         # AH = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and event.MET_pt >= 250 and ntaus == 0 and minDeltaPhi > 0.4 and centralJets[0].jetId >= 3 and centralJets[0].chHEF > 0.1 and passMETfilters
-        SL = SL1e or SL1m
+        SL = SL1e and M_T >= 160 and nbjets >= 2
 
         # SL1e0fSR = SL1e and nbjets == 1 and nfjets == 0
         # SL1m0fSR = SL1m and nbjets == 1 and nfjets == 0
@@ -281,12 +281,14 @@ analyzeAll = lambda : CommonAnalysis("All")
 
 #Select PostProcessor options here
 selection=None
-outputDir = "outDir2016AnalysisSR/ttbarDM/TTTo2L2Nu"
-#outputDir = "."
+#outputDir = "outDir2016AnalysisSR/ttbarDM/TTTo2L2Nu"
+outputDir = "."
 inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
 outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
 inputFiles=["samples/ttbarDM/TTTo2L2Nu/B40C2CF7-900D-B142-B62F-56D01B233EFA.root"]
+#inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]
 
 #Applies pre-selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
 p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=inputbranches,modules=[CommonAnalysis("All")],postfix="_ModuleCommon_All",noOut=False,outputbranchsel=outputbranches)
+#p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=inputbranches,modules=[CommonAnalysis("SL")],postfix="_ModuleCommon_SL",noOut=False,outputbranchsel=outputbranches)
 p.run()
