@@ -2,8 +2,8 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'QCD' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
- analysis      = 'QCD' #Name of the analysis (e.g. VBFHN, LQtop, ...)
+ task          = 'ModuleCommon_noMt2W' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ analysis      = 'ZTo2Nu' #Name of the analysis (e.g. VBFHN, LQtop, ...)
  unitsPerJob   = 2 #Units (usually number of root files) per job
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
  # datasetnames  = [ #Name of the folder created by crab and corresponding to its datasetinputs
@@ -18,16 +18,16 @@ if __name__ == '__main__':
  #samples = 'datasetinputs/singleTop.txt' 
  #samples = 'datasetinputs/WPlusJets.txt'
  #samples = 'datasetinputs/ZTo2L.txt'
- #samples = 'datasetinputs/ZTo2Nu.txt'
+ samples = 'datasetinputs/ZTo2Nu.txt'
  #samples = 'datasetinputs/WW.txt'
  #samples = 'datasetinputs/WZ.txt'
  #samples = 'datasetinputs/ZZ.txt'
  #samples = 'datasetinputs/TTV.txt'
- samples = 'datasetinputs/QCD.txt'
+ #samples = 'datasetinputs/QCD.txt'
  with open(samples, 'r') as f:
   datasetinputs = [line.strip() for line in f]
 
- #Mt2Com_files = ['../python/postprocessing/analysis/mt2w_bisect_cc.so', '../python/postprocessing/analysis/mt2w_bisect.cc', '../python/postprocessing/analysis/mt2w_bisect.h', '../python/postprocessing/analysis/mt2w_bisect_cc.d', '../python/postprocessing/analysis/MT2Utility_cc.so', '../python/postprocessing/analysis/MT2Utility.cc', '../python/postprocessing/analysis/MT2Utility.h', '../python/postprocessing/analysis/MT2Utility_cc.d', '../python/postprocessing/analysis/mt2bl_bisect_cc.so', '../python/postprocessing/analysis/mt2bl_bisect.cc', '../python/postprocessing/analysis/mt2bl_bisect.h', '../python/postprocessing/analysis/mt2bl_bisect_cc.d', '../python/postprocessing/analysis/Mt2Com_bisect_cc.so', '../python/postprocessing/analysis/Mt2Com_bisect.cc', '../python/postprocessing/analysis/Mt2Com_bisect.h', '../python/postprocessing/analysis/Mt2Com_bisect_cc.d']
+ #Mt2Com_files = ['/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect.cc', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect.h', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.d', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.so', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility.cc', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility.h', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.d', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect.cc', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect.h', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.d', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect.cc', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect.h', '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.d']
 
  #####
  ##   Multicrab configuration
@@ -50,9 +50,10 @@ if __name__ == '__main__':
  ##   Crab configuration
  #####
  #for d in range(0,len(datasetnames)):
- for d in range(0,len(datasetinputs)):
+ #for d in range(0,len(datasetinputs)):
+ for d in range(5,6):
   config.section_('General')
-  #config.General.requestName      = datasetnames[d]
+  config.General.requestName      = analysis + '_sample%d' % d #datasetnames[d]
   config.General.transferLogs=True
   config.section_('JobType')
   config.JobType.pluginName       = 'Analysis'

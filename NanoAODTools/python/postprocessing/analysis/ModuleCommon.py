@@ -10,12 +10,18 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 from PhysicsTools.NanoAODTools.postprocessing.corrections.leptonSFs import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.BTaggingTool import *
 
-#Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region 
-ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
-ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.so")
-ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so")
-ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so")
-Mt2Com_bisect = ROOT.Mt2Com_bisect()
+# #Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region 
+# ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
+# ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.so")
+# ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so")
+# ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so")
+
+# print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
+# print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.so")
+# print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so")
+# print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so")
+
+# Mt2Com_bisect = ROOT.Mt2Com_bisect()
 
 class CommonAnalysis(Module):
     def __init__(self, signalRegion):
@@ -167,7 +173,7 @@ to next event)"""
             #Calculate M_T2^W 
             leptonTLorentz = lepton.p4()
             metTVector2 = ROOT.TVector2(event.MET_pt * math.cos(event.MET_phi), event.MET_pt * math.sin(event.MET_phi))
-            M_T2W = Mt2Com_bisect.calculateMT2w(ljetVector, bjetVector, leptonTLorentz, metTVector2, "MT2w")
+            #M_T2W = Mt2Com_bisect.calculateMT2w(ljetVector, bjetVector, leptonTLorentz, metTVector2, "MT2w")
         
         #Tau candidates are counted
         tauCandidates = Collection(event, "Tau")
@@ -279,16 +285,16 @@ analyzeAll = lambda : CommonAnalysis("All")
 
 #########################################################################################################################################
 
-#Select PostProcessor options here
-selection=None
-#outputDir = "outDir2016AnalysisSR/ttbarDM/TTTo2L2Nu"
-outputDir = "."
-inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-inputFiles=["samples/ttbarDM/TTTo2L2Nu/B40C2CF7-900D-B142-B62F-56D01B233EFA.root"]
-#inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]
+# #Select PostProcessor options here
+# selection=None
+# #outputDir = "outDir2016AnalysisSR/ttbarDM/TTTo2L2Nu"
+# outputDir = "."
+# inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+# outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+# inputFiles=["samples/ttbarDM/TTTo2L2Nu/B40C2CF7-900D-B142-B62F-56D01B233EFA.root"]
+# #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]
 
-#Applies pre-selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
-p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=inputbranches,modules=[CommonAnalysis("All")],postfix="_ModuleCommon_All",noOut=False,outputbranchsel=outputbranches)
-#p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=inputbranches,modules=[CommonAnalysis("SL")],postfix="_ModuleCommon_SL",noOut=False,outputbranchsel=outputbranches)
-p.run()
+# #Applies pre-selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
+# p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=inputbranches,modules=[CommonAnalysis("All")],postfix="_ModuleCommon_All",noOut=False,outputbranchsel=outputbranches)
+# #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=inputbranches,modules=[CommonAnalysis("SL")],postfix="_ModuleCommon_SL",noOut=False,outputbranchsel=outputbranches)
+# p.run()
