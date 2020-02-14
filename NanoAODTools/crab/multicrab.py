@@ -2,8 +2,8 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'ModuleCommon_noMt2W' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
- analysis      = 'ZTo2Nu' #Name of the analysis (e.g. VBFHN, LQtop, ...)
+ task          = 'test' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ analysis      = 'ttbarPlusJets' #Name of the analysis (e.g. VBFHN, LQtop, ...)
  unitsPerJob   = 2 #Units (usually number of root files) per job
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
  # datasetnames  = [ #Name of the folder created by crab and corresponding to its datasetinputs
@@ -14,11 +14,11 @@ if __name__ == '__main__':
 #                  ]
 
  #Set appropriate text file containing DAS file paths for input datasets
- #samples = 'datasetinputs/ttbarPlusJets.txt' 
+ samples = 'datasetinputs/ttbarPlusJets.txt' 
  #samples = 'datasetinputs/singleTop.txt' 
  #samples = 'datasetinputs/WPlusJets.txt'
  #samples = 'datasetinputs/ZTo2L.txt'
- samples = 'datasetinputs/ZTo2Nu.txt'
+ #samples = 'datasetinputs/ZTo2Nu.txt'
  #samples = 'datasetinputs/WW.txt'
  #samples = 'datasetinputs/WZ.txt'
  #samples = 'datasetinputs/ZZ.txt'
@@ -50,8 +50,7 @@ if __name__ == '__main__':
  ##   Crab configuration
  #####
  #for d in range(0,len(datasetnames)):
- #for d in range(0,len(datasetinputs)):
- for d in range(5,6):
+ for d in range(0,len(datasetinputs)):
   config.section_('General')
   config.General.requestName      = analysis + '_sample%d' % d #datasetnames[d]
   config.General.transferLogs=True
