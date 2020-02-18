@@ -2,214 +2,182 @@ from ROOT import *
 from MCsampleList import *
 import os
 
-#Select signal sample root files here
-ttbar1 = 'outDir2016AnalysisSR/ttbarDM/data_2016/ttbarDM_Mchi1Mphi100_scalar_full1'
-ttbar2 = 'outDir2016AnalysisSR/ttbarDM/data_2016/ttbarDM_Mchi1Mphi100_scalar_full2'
-tChan = 'outDir2016AnalysisSR/tDM_tChan/data_2016/tDM_tChan_Mchi1Mphi100_scalar_full'
-tWChan = 'outDir2016AnalysisSR/tDM_tWChan/data_2016/tDM_tWChan_Mchi1Mphi100_scalar_full'
-
-#Set sameCanvas to True for all nbjets = 1 on same Canvas and nbjets >= 2 plots on same Canvas, False if you want seperate plots
-sameCanvas = False
-
 #Set save directory and date for file names
 saveDirectory = 'plots/SL_optimization/'
-date = '02_13_2020'
+#saveDirectory = 'plots/AH_optimization/'
+date = '02_17_2020'
 
 if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
-#Define selections here
-passMETfilters = lambda t : t.Flag_goodVertices and t.Flag_HBHENoiseFilter and t.Flag_HBHENoiseIsoFilter and t.Flag_EcalDeadCellTriggerPrimitiveFilter and t.Flag_eeBadScFilter and t.Flag_globalTightHalo2016Filter and t.Flag_BadPFMuonFilter and t.Flag_chargedHadronTrackResolutionFilter
-singleIsoEle = lambda t : t.HLT_Ele27_eta2p1_WPTight_Gsf or t.HLT_Ele32_WPTight_Gsf or t.HLT_Ele32_eta2p1_WPTight_Gsf or t.HLT_Ele27_WPLoose_Gsf or t.HLT_Ele27_WPTight_Gsf
-singleEle = lambda t : t.HLT_Ele105_CaloIdVT_GsfTrkIdT or t.HLT_Ele115_CaloIdVT_GsfTrkIdT
-singleIsoMu = lambda t : t.HLT_IsoMu27 or t.HLT_IsoTkMu27 or t.HLT_IsoMu24 or t.HLT_IsoTkMu24
-SL1e = lambda t : t.nTightElectrons == 1 and t.nVetoElectrons == 1 and t.nLooseMuons == 0 and t.njets >= 2 and t.nbjets >= 1 and t.MET_pt >= 160 and passMETfilters(t) and (singleIsoEle(t) or singleEle(t))
-SL1e0f = lambda t : SL1e(t) and t.nbjets == 1 and t.nfjets == 0
+#Define selection cuts and filters here
+passMETfilters = 'Flag_goodVertices && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_eeBadScFilter && Flag_globalTightHalo2016Filter && Flag_BadPFMuonFilter && Flag_chargedHadronTrackResolutionFilter'
+singleIsoEle = 'HLT_Ele27_eta2p1_WPTight_Gsf || HLT_Ele32_WPTight_Gsf || HLT_Ele32_eta2p1_WPTight_Gsf || HLT_Ele27_WPLoose_Gsf || HLT_Ele27_WPTight_Gsf'
+singleEle = 'HLT_Ele105_CaloIdVT_GsfTrkIdT || HLT_Ele115_CaloIdVT_GsfTrkIdT'
+singleIsoMu = 'HLT_IsoMu27 || HLT_IsoTkMu27 || HLT_IsoMu24 || HLT_IsoTkMu24'
 
-#Set signal sample cross sections here
-ttbarXSec = 672.3
-tChanXSec = 268.3
-tWChanXSec = 55.49
+SL1e = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && MET_pt >= 160 && ' + passMETfilters + ' && ((' + singleIsoEle + ') || (' + singleEle + '))'
+SL1e0f = SL1e + ' && ' + 'nbjets == 1 && nfjets == 0'
+SL1e2b = SL1e + ' && ' + 'nbjets >= 2'
 
-#Set lum  and overall scale factor here
+AH = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && MET_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + passMETfilters
+AH0l0f = AH + ' && nbjets == 1 && nfjets == 0'
+AH0l2b = AH + ' && nbjets >= 2'
+
+#Select selection cut and variable to be plotted here
+cut = SL1e0f
+#cut = SL1e2b
+#cut = AH0l0f
+#cut = AH0l2b
+
+var = 'M_T'
+#var = 'minDeltaPhi12'
+#var = 'M_Tb'
+#var = 'jet1p_TH_T'
+
+#Set lum  and overall signal sample scale factor here
 lumi = 35.9
 scaleFactor = 20
-
-#Set total number of events in signal samples here
-nEvents_ttbar = 363143.0 
-nEvents_tChan = 500000.0
-nEvents_tWChan = 200000.0
-
-#Single sample weights are calculated here
-ttbarWeight = ttbarXSec*lumi*scaleFactor/nEvents_ttbar
-tChanWeight = tChanXSec*lumi*scaleFactor/nEvents_tChan
-tWChanWeight = tWChanXSec*lumi*scaleFactor/nEvents_tWChan
-#print ttbarWeight, tChanWeight, tWChanWeight
 
 #Remove stats box from histograms
 gStyle.SetOptStat(0)
 
-#Define list of suffixes to use and dictionary of files for ttbar, tChan, and tWChan
-#suffixList = ['_SL1e0fSR', '_SL1m0fSR', '_SL1e1fSR', '_SL1m1fSR', '_SL1e2bSR', '_SL1m2bSR']
-suffixList = ['_SL1e0fSR', '_SL1e2bSR']
-ttbarFiles = {}
-tChanFiles = {}
-tWChanFiles = {}
-
-#Load MC signal root files 
-print("Loading MC signal root files...")
-for suffix in suffixList:
-    ttbarFiles['f_ttbar1' + suffix] = TFile.Open(ttbar1 + suffix + '.root', '')
-    ttbarFiles['f_ttbar2' + suffix] = TFile.Open(ttbar2 + suffix + '.root', '')
-    tChanFiles['f_tChan' + suffix] = TFile.Open(tChan + suffix + '.root', '')
-    tWChanFiles['f_tWChan' + suffix] = TFile.Open(tWChan + suffix + '.root', '')
-
-    ttbarFiles['f_ttbar1' + suffix + '_MT'] = TFile.Open(ttbar1 + suffix + '_MT' + '.root', '')
-    ttbarFiles['f_ttbar2' + suffix + '_MT'] = TFile.Open(ttbar2 + suffix + '_MT' + '.root', '')
-    tChanFiles['f_tChan' + suffix + '_MT'] = TFile.Open(tChan + suffix + '_MT' + '.root', '')
-    tWChanFiles['f_tWChan' + suffix + '_MT'] = TFile.Open(tWChan + suffix + '_MT' + '.root', '')
-
-    ttbarFiles['f_ttbar1' + suffix + '_MTandMT2W'] = TFile.Open(ttbar1 + suffix + '_MTandMT2W' + '.root', '')
-    ttbarFiles['f_ttbar2' + suffix + '_MTandMT2W'] = TFile.Open(ttbar2 + suffix + '_MTandMT2W' + '.root', '')
-    tChanFiles['f_tChan' + suffix + '_MTandMT2W'] = TFile.Open(tChan + suffix + '_MTandMT2W' + '.root', '')
-    tWChanFiles['f_tWChan' + suffix + '_MTandMT2W'] = TFile.Open(tWChan + suffix + '_MTandMT2W' + '.root', '')
-print("MC signal Root files loaded")
-
-#Get MC signal event trees
-ttbarEvents = {}
-tChanEvents = {}
-tWChanEvents = {}
-
-print("Getting MC signal event trees...")
-for suffix in suffixList:
-    ttbarEvents['ttbar1' + suffix + '_eventTree'] = ttbarFiles['f_ttbar1' + suffix].Get('Events')
-    ttbarEvents['ttbar2' + suffix + '_eventTree'] = ttbarFiles['f_ttbar2' + suffix].Get('Events')
-    tChanEvents['tChan' + suffix + '_eventTree'] = tChanFiles['f_tChan' + suffix].Get('Events')
-    tWChanEvents['tWChan' + suffix + '_eventTree'] = tWChanFiles['f_tWChan' + suffix].Get('Events')
-
-    ttbarEvents['ttbar1' + suffix + '_MT_eventTree'] = ttbarFiles['f_ttbar1' + suffix + '_MT'].Get('Events')
-    ttbarEvents['ttbar2' + suffix + '_MT_eventTree'] = ttbarFiles['f_ttbar2' + suffix + '_MT'].Get('Events')
-    tChanEvents['tChan' + suffix + '_MT_eventTree'] = tChanFiles['f_tChan' + suffix + '_MT'].Get('Events')
-    tWChanEvents['tWChan' + suffix + '_MT_eventTree'] = tWChanFiles['f_tWChan' + suffix + '_MT'].Get('Events')
-
-    ttbarEvents['ttbar1' + suffix + '_MTandMT2W_eventTree'] = ttbarFiles['f_ttbar1' + suffix + '_MTandMT2W'].Get('Events')
-    ttbarEvents['ttbar2' + suffix + '_MTandMT2W_eventTree'] = ttbarFiles['f_ttbar2' + suffix + '_MTandMT2W'].Get('Events')
-    tChanEvents['tChan' + suffix + '_MTandMT2W_eventTree'] = tChanFiles['f_tChan' + suffix + '_MTandMT2W'].Get('Events')
-    tWChanEvents['tWChan' + suffix + '_MTandMT2W_eventTree'] = tWChanFiles['f_tWChan' + suffix + '_MTandMT2W'].Get('Events')
-print("Got MC signal event trees")
-
 #Get MC background root files and event trees
-print("Loading MC background root files and event trees...")
+print("Loading MC sample root files and event trees...")
 for process in samples2016:
     for dataset in samples2016[process]:
         samples2016[process][dataset]['TFile'] = TFile.Open(samples2016[process][dataset]['filepath'],'')
         samples2016[process][dataset]['Events'] = samples2016[process][dataset]['TFile'].Get('Events')
         samples2016[process][dataset]['nevents'] = samples2016[process][dataset]['Events'].GetEntries()
 
-print("Got MC background root files and event trees")
+print("Got MC sample root files and event trees")
 
-##Create SL optimization plots for nbjets = 1 signal regions
+##Create histograms
 ##-----------------------------------------------------------------------------------------------
 
-print("Creating SL1b histograms..")
-#Define SL nbjets = 1 histograms
-h_ttbarSL1b_MT = TH1F('h_ttbarSL1b_MT', 'SL1b M_{T}^{W} distribution; M_{T} (GeV); Events', 10, 0, 400)
-h_tbarSL1b_MT = TH1F('h_tbarSL1b_MT', 'SL1b M_{T}^{W} distribution; M_{T} (GeV); Events', 10, 0, 400)
-h_TTTo2L2Nu_MT = TH1F('h_TTTo2L2Nu_MT', 'SL1b M_{T}^{W} distribution; M_{T} (GeV); Events', 10, 0, 400)
-h_TTToSemiLepton_MT = TH1F('h_TTToSemiLepton_MT', 'SL1b M_{T}^{W} distribution; M_{T} (GeV); Events', 10, 0, 400)
-h_singleTop_MT = TH1F('h_singleTop_MT', 'SL1b M_{T}^{W} distribution; M_{T} (GeV); Events', 10, 0, 400)
-
-
-#Fill histograms
-print("Filling MC signal histograms...")
-for suffix in suffixList:
-    if '2b' in suffix: continue
-    #Fill h_ttbarSL1b_MT
-    for i in range(ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntries()):
-        ttbarEvents['ttbar1' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarSL1b_MT.Fill(ttbarEvents['ttbar1' + suffix + '_eventTree'].M_T, ttbarWeight)
-    for i in range(ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntries()):
-        ttbarEvents['ttbar2' + suffix + '_eventTree'].GetEntry(i)
-        h_ttbarSL1b_MT.Fill(ttbarEvents['ttbar2' + suffix + '_eventTree'].M_T, ttbarWeight)
-    #Fill h_tbarSL1b_MT
-    for i in range(tChanEvents['tChan' + suffix + '_eventTree'].GetEntries()):
-        tChanEvents['tChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarSL1b_MT.Fill(tChanEvents['tChan' + suffix + '_eventTree'].M_T, tChanWeight)
-    for i in range(tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntries()):
-        tWChanEvents['tWChan' + suffix + '_eventTree'].GetEntry(i)
-        h_tbarSL1b_MT.Fill(tWChanEvents['tWChan' + suffix + '_eventTree'].M_T, tWChanWeight)
-print("Finished filling MC signal histograms")
+print("Creating histograms..")
+#Define histograms
+nbins = 10
+xmin = 0
+xmax = 400
+histoLabel = 'SL1e0f M_{T} distribution; M_{T} (GeV); Events'
+#histoLabel = 'AH0l2b min#Delta#phi(_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}), Events'
+#histoLabel = 'AH0l2b M_{T}^b distribution; M_{T}^b (GeV); Events'
+#histoLabel = 'AH0l2b jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
+h_ttbar = TH1F('h_ttbar', histoLabel, nbins, xmin, xmax)
+h_tbar = TH1F('h_tbar', histoLabel, nbins, xmin, xmax)
+h_TTTo2L2Nu = TH1F('h_TTTo2L2Nu', histoLabel, nbins, xmin, xmax)
+h_TTToSemiLepton = TH1F('h_TTToSemiLepton', histoLabel, nbins, xmin, xmax)
+h_singleTop = TH1F('h_singleTop', histoLabel, nbins, xmin, xmax)
+h_WPlusJets = TH1F('h_WPlusJets', histoLabel, nbins, xmin, xmax)
+h_ZTo2L = TH1F('h_ZTo2L', histoLabel, nbins, xmin, xmax)
+h_ZTo2Nu = TH1F('h_ZTo2Nu', histoLabel, nbins, xmin, xmax)
+h_VV = TH1F('h_VV', histoLabel, nbins, xmin, xmax)
+h_TTV = TH1F('h_TTV', histoLabel, nbins, xmin, xmax)
+h_QCD = TH1F('h_QCD', histoLabel, nbins, xmin, xmax)
 
 count = 0
-print("Filling MC background histograms...")
+print("Filling histograms...")
+hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
 for process in samples2016:
     for dataset in samples2016[process]:
-        for i in range(samples2016[process][dataset]['nevents']):
-            samples2016[process][dataset]['Events'].GetEntry(i)
-            count += 1
-            if count % 1000 == 0:
-                print count
-            if SL1e0f(samples2016[process][dataset]['Events']):
-                weight = samples2016[process][dataset]['xsec']*lumi*samples2016[process][dataset]['Events'].eventWeight/samples2016[process][dataset]['nevents']
-                if dataset == 'TTTo2L2Nu':
-                    h_TTTo2L2Nu_MT.Fill(samples2016[process][dataset]['Events'].M_T, weight)
-                elif dataset == 'TTToSemiLepton':
-                    h_TTTo2L2Nu_MT.Fill(samples2016[process][dataset]['Events'].M_T, weight)
-                elif process == 'singleTop':
-                    h_singleTop_MT.Fill(samples2016[process][dataset]['Events'].M_T, weight)
-print("Finished filling MC background histograms")
+        weight = str(samples2016[process][dataset]['xsec']*lumi/samples2016[process][dataset]['nevents']) + '*eventWeight'
+        samples2016[process][dataset]['Events'].Draw(var+'>>hist',weight+'*('+cut+')')
+        if process == 'ttbarDM':
+            h_ttbar += scaleFactor*hist
+        elif process == 'tDM':
+            h_tbar += scaleFactor*hist
+        elif process == 'ttbarPlusJets':
+            if dataset == 'TTTo2L2Nu':
+                h_TTTo2L2Nu += hist
+            elif dataset == 'TTToSemiLepton':
+                h_TTToSemiLepton += hist
+        elif process == 'singleTop':
+            h_singleTop += hist
+        elif process == 'WPlusJets':
+            h_WPlusJets += hist
+        elif process == 'ZTo2L':
+            h_ZTo2L += hist
+        elif process == 'ZTo2Nu':
+            h_ZTo2Nu += hist
+        elif (process == 'WW' or process == 'WZ' or process == 'ZZ'):
+            h_VV += hist
+        elif process == 'TTV':
+            h_TTV += hist
+        elif process == 'QCD':
+            h_QCD += hist
+print("Finished filling histograms")
 
 #Add up MC background histos into stacked histogram
 print("Creating stacked MC background histogram...")
-h_MCbackground_MT = THStack('h_MCbackground_MT', 'SL1b M_{T}^{W} distribution')
-h_TTTo2L2Nu_MT.SetFillColor(kYellow)
-h_MCbackground_MT.Add(h_TTTo2L2Nu_MT)
-h_TTToSemiLepton_MT.SetFillColor(kOrange)
-h_MCbackground_MT.Add(h_TTToSemiLepton_MT)
-h_singleTop_MT.SetFillColor(kOrange+7)
-h_MCbackground_MT.Add(h_singleTop_MT)
+h_MCbackground = THStack('h_MCbackground', histoLabel)
+h_MCbackground.Add(h_QCD)
+h_MCbackground.Add(h_ZTo2L)
+h_MCbackground.Add(h_VV)
+h_MCbackground.Add(h_singleTop)
+h_MCbackground.Add(h_WPlusJets)
+h_MCbackground.Add(h_TTV)
+h_MCbackground.Add(h_TTTo2L2Nu)
+h_MCbackground.Add(h_TTToSemiLepton)
+h_MCbackground.Add(h_ZTo2Nu)
 print("Finished stacking MC background histograms.")
         
-#Draw SL1b  M_T distribution plot
-print("Creating SL1b M_T distribution plot...")
-if sameCanvas:
-    c1b = TCanvas('c1b', 'SL1b optimization distributions')
-    c1b.Divide(2,2)
-    c1b.cd(1)
-else:
-    c1b_MT = TCanvas('c1b_MT', 'SL1b M_{T} distribution')
-h_ttbarSL1b_MT.Draw('hist')
-h_tbarSL1b_MT.Draw('hist same')
-h_MCbackground_MT.Draw('noclear')
-#Set tbar histogram options
-h_tbarSL1b_MT.SetLineColor(kBlue)
-h_tbarSL1b_MT.SetLineWidth(1)
-h_tbarSL1b_MT.SetFillColor(kBlue)
-h_tbarSL1b_MT.SetFillStyle(3003)
-h_tbarSL1b_MT.SetMinimum(0)
-h_tbarSL1b_MT.SetMaximum(18000)
-#Set ttbar histogram options
-h_ttbarSL1b_MT.SetLineColor(kRed)
-h_ttbarSL1b_MT.SetLineStyle(2)
-h_ttbarSL1b_MT.SetLineWidth(1)
-h_ttbarSL1b_MT.SetFillColor(kRed)
-h_ttbarSL1b_MT.SetFillStyle(3003)
-h_ttbarSL1b_MT.SetMinimum(0)
-h_ttbarSL1b_MT.SetMaximum(18000)
-#Add legend
-legend_SL1bMT = TLegend(0.46, 0.73, 0.75, 0.87)
-legend_SL1bMT.AddEntry(h_tbarSL1b_MT, 'Scalar, t+DM', 'l')
-legend_SL1bMT.AddEntry(h_ttbarSL1b_MT, 'Scalar, tt+DM', 'l')
-legend_SL1bMT.AddEntry(h_TTTo2L2Nu_MT, 'tt(2l)', 'f')
-legend_SL1bMT.AddEntry(h_TTToSemiLepton_MT, 'tt(1l)', 'f')
-legend_SL1bMT.AddEntry(h_singleTop_MT, 't+X', 'f')
-legend_SL1bMT.Draw('same')
-legend_SL1bMT.SetBorderSize(0)
-legend_SL1bMT.SetFillStyle(0)
-#Save SL1b M_T distribution plot individually if desired
-if not sameCanvas:
-    c1b_MT.SaveAs(saveDirectory + date + "/SL1b_MT_histo" + date + "_test.pdf")
-print("Finished creating SL1b M_T distribution plot")
+#Draw histograms
+print("Drawing histograms...")
+c = TCanvas('c', 'SL1e0f M_{T} distribution')
+#c = TCanvas('c', 'AH0l2b min#Delta#phi(_{1,2},p_{T}^{miss}) distribution')
+#c = TCanvas('c', 'AH0l2b M_{T}^{b} distribution')
+#c = TCanvas('c', 'jet_{1} p_{T}/H_{T} distribution')
+#c.SetLogy(1)
+h_MCbackground.Draw('hist')
+h_ttbar.Draw('hist same')
+h_tbar.Draw('hist same')
+#Set MC background histogram options 
+h_QCD.SetFillColor(kGray+1)
+h_ZTo2L.SetFillColor(kGreen+1)
+h_VV.SetFillColor(kBlue+2)
+h_singleTop.SetFillColor(kOrange+7)
+h_WPlusJets.SetFillColor(kViolet-1)
+h_TTV.SetFillColor(kOrange+4)
+h_TTTo2L2Nu.SetFillColor(kOrange-2)
+h_TTToSemiLepton.SetFillColor(kOrange-3)
+h_ZTo2Nu.SetFillColor(kAzure-4)
 
-#Save SL1b distribution plots on same canvas if desired
-if sameCanvas:
-    c1b.SaveAs(saveDirectory + date + "/SL1b_allOptimizations_histo" + date + ".pdf")
+h_QCD.SetLineWidth(0)
+h_ZTo2L.SetLineWidth(0)
+h_VV.SetLineWidth(0)
+h_singleTop.SetLineWidth(0)
+h_WPlusJets.SetLineWidth(0)
+h_TTV.SetLineWidth(0)
+h_TTTo2L2Nu.SetLineWidth(0)
+h_TTToSemiLepton.SetLineWidth(0)
+h_ZTo2Nu.SetLineWidth(0)
+
+h_MCbackground.SetMinimum(0)
+h_MCbackground.SetMaximum(18000)
+#Set tbar histogram options
+h_tbar.SetLineColor(kRed)
+h_tbar.SetLineWidth(3)
+#Set ttbar histogram options
+h_ttbar.SetLineColor(kRed)
+h_ttbar.SetLineStyle(2)
+h_ttbar.SetLineWidth(3)
+#Add legend
+legend = TLegend(0.4, 0.65, 0.85, 0.85)
+legend.SetNColumns(3)
+legend.AddEntry(h_ZTo2Nu, 'Z(#nu#nu) + jets', 'f')
+legend.AddEntry(h_TTToSemiLepton, 't#bar{t}(1l)', 'f')
+legend.AddEntry(h_TTTo2L2Nu, 't#bar{t}(2l)', 'f')
+legend.AddEntry(h_TTV, 't#bar{t}+V', 'f')
+legend.AddEntry(h_WPlusJets, 'W(l#nu) + jets', 'f')
+legend.AddEntry(h_singleTop, 't+X', 'f')
+legend.AddEntry(h_VV, 'VV,VH', 'f')
+legend.AddEntry(h_ZTo2L, 'Z(ll) + jets', 'f')
+legend.AddEntry(h_QCD, 'multijet', 'f')
+legend.AddEntry(h_ttbar, 'Scalar, t#bar{t}+DM', 'l')
+legend.AddEntry(h_tbar, 'Scalar, t+DM', 'l')
+legend.Draw('same')
+legend.SetBorderSize(0)
+legend.SetFillStyle(0)
+#Save histograms
+c.SaveAs(saveDirectory + date + "/SL1e0f_" + var + "_histo_" + date + ".pdf")
+print("Finished drawing histograms")

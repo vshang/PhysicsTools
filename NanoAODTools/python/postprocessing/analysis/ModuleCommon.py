@@ -173,12 +173,12 @@ to next event)"""
             #Calculate M_T2^W 
             leptonTLorentz = lepton.p4()
             metTVector2 = ROOT.TVector2(event.MET_pt * math.cos(event.MET_phi), event.MET_pt * math.sin(event.MET_phi))
-            #M_T2W = Mt2Com_bisect.calculateMT2w(ljetVector, bjetVector, leptonTLorentz, metTVector2, "MT2w")
+            M_T2W = Mt2Com_bisect.calculateMT2w(ljetVector, bjetVector, leptonTLorentz, metTVector2, "MT2w")
         
         #Tau candidates are counted
         tauCandidates = Collection(event, "Tau")
-        #skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM >= 31 and cleanJet(tau), tauCandidates)
-        skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM2017v2 >= 31 and cleanJet(tau), tauCandidates)
+        skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM >= 31 and cleanJet(tau), tauCandidates)
+        #skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM2017v2 >= 31 and cleanJet(tau), tauCandidates)
         ntaus = len(skimmedTaus)
 
         #Define MET filters contained in miniAOD analysis (https://github.com/zucchett/SFrame/blob/master/DM/src/DMSearches.cxx#L1542)
@@ -210,7 +210,7 @@ to next event)"""
         # AH = (nVetoElectrons + nLooseMuons) == 0 and njets >= 3 and event.MET_pt >= 250 and ntaus == 0 and minDeltaPhi > 0.4 and centralJets[0].jetId >= 3 and centralJets[0].chHEF > 0.1 and passMETfilters
         SL = SL1e and M_T >= 160 and nbjets >= 2
 
-        # SL1e0fSR = SL1e and nbjets == 1 and nfjets == 0
+        SL1e0fSR = SL1e and nbjets == 1 and nfjets == 0
         # SL1m0fSR = SL1m and nbjets == 1 and nfjets == 0
         # SL1e1fSR = SL1e and nbjets == 1 and nfjets >= 1 
         # SL1m1fSR = SL1m and nbjets == 1 and nfjets >= 1 
@@ -285,16 +285,15 @@ analyzeAll = lambda : CommonAnalysis("All")
 
 #########################################################################################################################################
 
-# #Select PostProcessor options here
-# selection=None
-# #outputDir = "outDir2016AnalysisSR/ttbarDM/TTTo2L2Nu"
-# outputDir = "."
-# inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-# outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-# inputFiles=["samples/ttbarDM/TTTo2L2Nu/B40C2CF7-900D-B142-B62F-56D01B233EFA.root"]
-# #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]
+#Select PostProcessor options here
+selection=None
+outputDir = "outDir2016AnalysisSR/ttbarDM/"
+#outputDir = "."
+inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
 
-# #Applies pre-selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
-# p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=inputbranches,modules=[CommonAnalysis("All")],postfix="_ModuleCommon_All",noOut=False,outputbranchsel=outputbranches)
-# #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=inputbranches,modules=[CommonAnalysis("SL")],postfix="_ModuleCommon_SL",noOut=False,outputbranchsel=outputbranches)
-# p.run()
+#Applies pre-selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
+#p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=inputbranches,modules=[CommonAnalysis("All")],postfix="_ModuleCommon_All",noOut=False,outputbranchsel=outputbranches)
+p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=inputbranches,modules=[CommonAnalysis("SL1e0fSR")],postfix="_ModuleCommon_SL1e0fSR",noOut=False,outputbranchsel=outputbranches)
+p.run()
