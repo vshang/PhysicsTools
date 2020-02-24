@@ -133,7 +133,7 @@ to next event)"""
 
         #Calculate jet1p_T/H_T
         H_T = 0
-        jet1p_TH_T = 9 #If there are no jets, set value to -9 to indicate jet1p_T/H_T cannnot be calculated
+        jet1p_TH_T = 9 #If there are no jets, set value to +9 to indicate jet1p_T/H_T cannnot be calculated
         
         if len(centralJets) > 0:
             for jet in centralJets:

@@ -3,9 +3,10 @@ from MCsampleList import *
 import os
 
 #Set save directory and date for file names
-saveDirectory = 'plots/SL_optimization/'
+#saveDirectory = 'plots/SL_optimization/'
 #saveDirectory = 'plots/AH_optimization/'
-date = '02_17_2020'
+saveDirectory = 'plots/optimized_jets/'
+date = '02_23_2020'
 
 if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
@@ -19,20 +20,27 @@ SL1e = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets
 SL1e0f = SL1e + ' && ' + 'nbjets == 1 && nfjets == 0'
 SL1e2b = SL1e + ' && ' + 'nbjets >= 2'
 
-AH = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && MET_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + passMETfilters
+AH = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && MET_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + passMETfilters #Still need to implement centralJets[0].jetId >= 3 && centralJets[0].chHEF > 0.1
 AH0l0f = AH + ' && nbjets == 1 && nfjets == 0'
 AH0l2b = AH + ' && nbjets >= 2'
 
+AH1b = AH + ' && nbjets == 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
+AH2b = AH + ' && nbjets >= 2 && minDeltaPhi12 >= 1 && M_Tb >= 180 && jet1p_TH_T <= 0.5'
+
 #Select selection cut and variable to be plotted here
-cut = SL1e0f
+#cut = SL1e0f
 #cut = SL1e2b
 #cut = AH0l0f
 #cut = AH0l2b
+#cut = AH1b
+cut = AH2b
 
-var = 'M_T'
+#var = 'M_T'
 #var = 'minDeltaPhi12'
 #var = 'M_Tb'
 #var = 'jet1p_TH_T'
+var = 'njets'
+#var = 'nfjets'
 
 #Set lum  and overall signal sample scale factor here
 lumi = 35.9
@@ -45,24 +53,41 @@ gStyle.SetOptStat(0)
 print("Loading MC sample root files and event trees...")
 for process in samples2016:
     for dataset in samples2016[process]:
-        samples2016[process][dataset]['TFile'] = TFile.Open(samples2016[process][dataset]['filepath'],'')
-        samples2016[process][dataset]['Events'] = samples2016[process][dataset]['TFile'].Get('Events')
-        samples2016[process][dataset]['nevents'] = samples2016[process][dataset]['Events'].GetEntries()
+        nevents = 0
+        for filepath in samples2016[process][dataset]['filepaths']:
+            samples2016[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
+            samples2016[process][dataset][filepath+'_Events'] = samples2016[process][dataset][filepath+'_TFile'].Get('Events')
+            nevents += samples2016[process][dataset][filepath+'_Events'].GetEntries()
+        samples2016[process][dataset]['nevents'] = nevents
 
-print("Got MC sample root files and event trees")
+# print("Got MC sample root files and event trees")
 
 ##Create histograms
 ##-----------------------------------------------------------------------------------------------
 
+print 'Cut = ', cut
+print 'var = ', var
+print 'saveDirectory = ', saveDirectory
+print 'date = ', date
 print("Creating histograms..")
-#Define histograms
-nbins = 10
+#Set histogram options
+nbins = 12
 xmin = 0
-xmax = 400
-histoLabel = 'SL1e0f M_{T} distribution; M_{T} (GeV); Events'
+xmax = 12
+ymin = 0
+ymax = 1100
+
+#doLogPlot = True
+doLogPlot = False
+
+#histoLabel = 'SL1e0f M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = 'AH0l2b min#Delta#phi(_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}), Events'
-#histoLabel = 'AH0l2b M_{T}^b distribution; M_{T}^b (GeV); Events'
+#histoLabel = 'AH0l0f M_{T}^{b} distribution; M_{T}^b (GeV); Events'
 #histoLabel = 'AH0l2b jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
+histoLabel = 'AH2b central n_{jet} distribution; number of AK4 jets; Events'
+#histoLabel = 'AH1b forward n_{jet} distribution; number of forward AK4 jets; Events'
+
+#Define histograms
 h_ttbar = TH1F('h_ttbar', histoLabel, nbins, xmin, xmax)
 h_tbar = TH1F('h_tbar', histoLabel, nbins, xmin, xmax)
 h_TTTo2L2Nu = TH1F('h_TTTo2L2Nu', histoLabel, nbins, xmin, xmax)
@@ -75,36 +100,46 @@ h_VV = TH1F('h_VV', histoLabel, nbins, xmin, xmax)
 h_TTV = TH1F('h_TTV', histoLabel, nbins, xmin, xmax)
 h_QCD = TH1F('h_QCD', histoLabel, nbins, xmin, xmax)
 
+#Fill histograms
 count = 0
 print("Filling histograms...")
 hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
+#Loop through each root file for each dataset
 for process in samples2016:
+    print '  Process = ', process
     for dataset in samples2016[process]:
+        print '      Dataset = ', dataset, ' ||   nEvents = ', samples2016[process][dataset]['nevents']
         weight = str(samples2016[process][dataset]['xsec']*lumi/samples2016[process][dataset]['nevents']) + '*eventWeight'
-        samples2016[process][dataset]['Events'].Draw(var+'>>hist',weight+'*('+cut+')')
-        if process == 'ttbarDM':
-            h_ttbar += scaleFactor*hist
-        elif process == 'tDM':
-            h_tbar += scaleFactor*hist
-        elif process == 'ttbarPlusJets':
-            if dataset == 'TTTo2L2Nu':
-                h_TTTo2L2Nu += hist
-            elif dataset == 'TTToSemiLepton':
-                h_TTToSemiLepton += hist
-        elif process == 'singleTop':
-            h_singleTop += hist
-        elif process == 'WPlusJets':
-            h_WPlusJets += hist
-        elif process == 'ZTo2L':
-            h_ZTo2L += hist
-        elif process == 'ZTo2Nu':
-            h_ZTo2Nu += hist
-        elif (process == 'WW' or process == 'WZ' or process == 'ZZ'):
-            h_VV += hist
-        elif process == 'TTV':
-            h_TTV += hist
-        elif process == 'QCD':
-            h_QCD += hist
+        #Then loop through each filepath and add variable info to appropriate histogram
+        for filepath in samples2016[process][dataset]['filepaths']:
+            # samples2016[process][dataset][filepath + '_file'] = TFile.Open(filepath,'')
+            # samples2016[process][dataset][filepath + '_Events'] = f.Get('Events')
+            # samples2016[process][dataset][filepath + '_Events'].Draw(var+'>>hist',weight+'*('+cut+')')
+            samples2016[process][dataset][filepath+'_Events'].Draw(var+'>>hist',weight+'*('+cut+')')
+            print '          hist nEntries = ', hist.GetEntries()
+            if process == 'ttbarDM':
+                h_ttbar += scaleFactor*hist
+            elif process == 'tDM':
+                h_tbar += scaleFactor*hist
+            elif process == 'ttbarPlusJets':
+                if dataset == 'TTTo2L2Nu':
+                    h_TTTo2L2Nu += hist
+                elif dataset == 'TTToSemiLepton':
+                    h_TTToSemiLepton += hist
+            elif process == 'singleTop':
+                h_singleTop += hist
+            elif process == 'WPlusJets':
+                h_WPlusJets += hist
+            elif process == 'ZTo2L':
+                h_ZTo2L += hist
+            elif process == 'ZTo2Nu':
+                h_ZTo2Nu += hist
+            elif (process == 'WW' or process == 'WZ' or process == 'ZZ'):
+                h_VV += hist
+            elif process == 'TTV':
+                h_TTV += hist
+            elif process == 'QCD':
+                h_QCD += hist
 print("Finished filling histograms")
 
 #Add up MC background histos into stacked histogram
@@ -123,11 +158,9 @@ print("Finished stacking MC background histograms.")
         
 #Draw histograms
 print("Drawing histograms...")
-c = TCanvas('c', 'SL1e0f M_{T} distribution')
-#c = TCanvas('c', 'AH0l2b min#Delta#phi(_{1,2},p_{T}^{miss}) distribution')
-#c = TCanvas('c', 'AH0l2b M_{T}^{b} distribution')
-#c = TCanvas('c', 'jet_{1} p_{T}/H_{T} distribution')
-#c.SetLogy(1)
+c = TCanvas('c', 'c')
+if doLogPlot:
+    c.SetLogy(1)
 h_MCbackground.Draw('hist')
 h_ttbar.Draw('hist same')
 h_tbar.Draw('hist same')
@@ -152,8 +185,8 @@ h_TTTo2L2Nu.SetLineWidth(0)
 h_TTToSemiLepton.SetLineWidth(0)
 h_ZTo2Nu.SetLineWidth(0)
 
-h_MCbackground.SetMinimum(0)
-h_MCbackground.SetMaximum(18000)
+h_MCbackground.SetMinimum(ymin)
+h_MCbackground.SetMaximum(ymax)
 #Set tbar histogram options
 h_tbar.SetLineColor(kRed)
 h_tbar.SetLineWidth(3)
@@ -179,5 +212,5 @@ legend.Draw('same')
 legend.SetBorderSize(0)
 legend.SetFillStyle(0)
 #Save histograms
-c.SaveAs(saveDirectory + date + "/SL1e0f_" + var + "_histo_" + date + ".pdf")
+c.SaveAs(saveDirectory + date + "/AH2b_" + var + "_allhistov3_" + date + ".pdf")
 print("Finished drawing histograms")
