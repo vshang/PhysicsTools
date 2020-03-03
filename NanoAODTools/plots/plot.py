@@ -4,9 +4,9 @@ import os
 
 #Set save directory and date for file names
 #saveDirectory = 'plots/SL_optimization/'
-#saveDirectory = 'plots/AH_optimization/'
-saveDirectory = 'plots/optimized_jets/'
-date = '02_23_2020'
+saveDirectory = 'plots/AH_optimization/'
+#saveDirectory = 'plots/optimized_jets/'
+date = '02_26_2020'
 
 if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
@@ -30,19 +30,19 @@ AH2b = AH + ' && nbjets >= 2 && minDeltaPhi12 >= 1 && M_Tb >= 180 && jet1p_TH_T 
 #Select selection cut and variable to be plotted here
 #cut = SL1e0f
 #cut = SL1e2b
-#cut = AH0l0f
+cut = AH0l0f
 #cut = AH0l2b
 #cut = AH1b
-cut = AH2b
+#cut = AH2b
 
 #var = 'M_T'
-#var = 'minDeltaPhi12'
+var = 'minDeltaPhi12'
 #var = 'M_Tb'
 #var = 'jet1p_TH_T'
-var = 'njets'
+#var = 'njets'
 #var = 'nfjets'
 
-#Set lum  and overall signal sample scale factor here
+#Set lum (fb^-1) and overall signal sample scale factor here
 lumi = 35.9
 scaleFactor = 20
 
@@ -59,7 +59,6 @@ for process in samples2016:
             samples2016[process][dataset][filepath+'_Events'] = samples2016[process][dataset][filepath+'_TFile'].Get('Events')
             nevents += samples2016[process][dataset][filepath+'_Events'].GetEntries()
         samples2016[process][dataset]['nevents'] = nevents
-
 # print("Got MC sample root files and event trees")
 
 ##Create histograms
@@ -71,21 +70,21 @@ print 'saveDirectory = ', saveDirectory
 print 'date = ', date
 print("Creating histograms..")
 #Set histogram options
-nbins = 12
+nbins = 15
 xmin = 0
-xmax = 12
+xmax = 3
 ymin = 0
-ymax = 1100
+ymax = 4700
 
 #doLogPlot = True
 doLogPlot = False
 
 #histoLabel = 'SL1e0f M_{T} distribution; M_{T} (GeV); Events'
-#histoLabel = 'AH0l2b min#Delta#phi(_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}), Events'
+histoLabel = 'AH0l0f min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}); Events'
 #histoLabel = 'AH0l0f M_{T}^{b} distribution; M_{T}^b (GeV); Events'
 #histoLabel = 'AH0l2b jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
-histoLabel = 'AH2b central n_{jet} distribution; number of AK4 jets; Events'
-#histoLabel = 'AH1b forward n_{jet} distribution; number of forward AK4 jets; Events'
+#histoLabel = 'AH2b central n_{jet} distribution; number of AK4 jets; Events'
+#histoLabel = 'AH2b forward n_{jet} distribution; number of forward AK4 jets; Events'
 
 #Define histograms
 h_ttbar = TH1F('h_ttbar', histoLabel, nbins, xmin, xmax)
@@ -110,11 +109,7 @@ for process in samples2016:
     for dataset in samples2016[process]:
         print '      Dataset = ', dataset, ' ||   nEvents = ', samples2016[process][dataset]['nevents']
         weight = str(samples2016[process][dataset]['xsec']*lumi/samples2016[process][dataset]['nevents']) + '*eventWeight'
-        #Then loop through each filepath and add variable info to appropriate histogram
         for filepath in samples2016[process][dataset]['filepaths']:
-            # samples2016[process][dataset][filepath + '_file'] = TFile.Open(filepath,'')
-            # samples2016[process][dataset][filepath + '_Events'] = f.Get('Events')
-            # samples2016[process][dataset][filepath + '_Events'].Draw(var+'>>hist',weight+'*('+cut+')')
             samples2016[process][dataset][filepath+'_Events'].Draw(var+'>>hist',weight+'*('+cut+')')
             print '          hist nEntries = ', hist.GetEntries()
             if process == 'ttbarDM':
@@ -212,5 +207,6 @@ legend.Draw('same')
 legend.SetBorderSize(0)
 legend.SetFillStyle(0)
 #Save histograms
-c.SaveAs(saveDirectory + date + "/AH2b_" + var + "_allhistov3_" + date + ".pdf")
+#c.SaveAs(saveDirectory + date + "/AH0l2b_" + var + "_allhisto_" + date + ".pdf")
+c.SaveAs("AH0l0f_" + var + "_allhisto_" + date + ".png")
 print("Finished drawing histograms")
