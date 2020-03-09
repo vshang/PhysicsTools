@@ -9,17 +9,18 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collect
 from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 from PhysicsTools.NanoAODTools.postprocessing.corrections.leptonSFs import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.BTaggingTool import *
+from PhysicsTools.NanoAODTools.postprocessing.corrections.kfactors import *
 
 #Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region 
-# ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
-# ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.so")
-# ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so")
-# ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so")
+ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
+ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.so")
+ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so")
+ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so")
 
-ROOT.gSystem.Load("mt2w_bisect_cc.so")
-ROOT.gSystem.Load("MT2Utility_cc.so")
-ROOT.gSystem.Load("mt2bl_bisect_cc.so")
-ROOT.gSystem.Load("Mt2Com_bisect_cc.so")
+# ROOT.gSystem.Load("mt2w_bisect_cc.so")
+# ROOT.gSystem.Load("MT2Utility_cc.so")
+# ROOT.gSystem.Load("mt2bl_bisect_cc.so")
+# ROOT.gSystem.Load("Mt2Com_bisect_cc.so")
 
 Mt2Com_bisect = ROOT.Mt2Com_bisect()
 
@@ -60,6 +61,8 @@ class CommonAnalysis(Module):
         self.out.branch("leptonWeight", "F")
         self.out.branch("bjetWeight", "F")
         self.out.branch("eventWeight", "F")
+        self.out.branch("ewkWeight", "F")
+        self.out.branch("qcdWeight", "F")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -70,6 +73,7 @@ to next event)"""
         electrons = Collection(event, "Electron")
         muons = Collection(event, "Muon")
         jets = Collection(event, "Jet")
+        genParticles = Collection(event, "GenPart")
 
         #Tight/Veto electrons are defined and counted
         vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased_Sum16 != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
@@ -185,8 +189,8 @@ to next event)"""
         
         #Tau candidates are counted
         tauCandidates = Collection(event, "Tau")
-        #skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM >= 31 and cleanJet(tau), tauCandidates)
-        skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM2017v2 >= 31 and cleanJet(tau), tauCandidates)
+        skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM >= 31 and cleanJet(tau), tauCandidates)
+        #skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM2017v2 >= 31 and cleanJet(tau), tauCandidates)
         ntaus = len(skimmedTaus)
 
         #Define MET filters contained in miniAOD analysis (https://github.com/zucchett/SFrame/blob/master/DM/src/DMSearches.cxx#L1542)
@@ -207,6 +211,15 @@ to next event)"""
         bjetWeight = self.btagTool.getWeight(centralJets)
         #Calculate total event weight
         eventWeight = 1*leptonWeight*bjetWeight
+        #Calculate EWK and QCD k factors if a Gen V particles exists (Z or W)
+        ewkWeight = 1
+        qcdWeight = 1
+        GenV = filter(lambda gen : gen.pdgId == 23 or gen.pdgId == 24, genParticles)
+        if len(GenV) > 0:
+            GenV_pt = GenV[0].pt
+            ewkWeight *= getEWKW(GenV_pt)
+            qcdWeight *= getQCDW(GenV_pt)
+        
 
         #Preselection cuts defined here
         SL1e = nTightElectrons == 1 and nVetoElectrons == 1 and nLooseMuons == 0 and njets >= 2 and nbjets >= 1 and event.MET_pt >= 160 and passMETfilters and (singleIsoEle or singleEle)
@@ -282,6 +295,8 @@ to next event)"""
             self.out.fillBranch("leptonWeight", leptonWeight)
             self.out.fillBranch("bjetWeight", bjetWeight)
             self.out.fillBranch("eventWeight", eventWeight)
+            self.out.fillBranch("ewkWeight", ewkWeight)
+            self.out.fillBranch("qcdWeight", qcdWeight)
             return True
         else:
             return False
@@ -294,15 +309,14 @@ analyzeAll = lambda : CommonAnalysis("All")
 
 #########################################################################################################################################
 
-# #Select PostProcessor options here
-# selection=None
-# #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-# outputDir = "."
-# #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-# outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-# inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
+#Select PostProcessor options here
+selection=None
+#outputDir = "outDir2016AnalysisSR/ttbarDM/"
+outputDir = "."
+#inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 
-# #Applies pre-selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
-# #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=inputbranches,modules=[CommonAnalysis("All")],postfix="_ModuleCommon_All",noOut=False,outputbranchsel=outputbranches)
-# p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[CommonAnalysis("All")],postfix="_ModuleCommon_Allv3",noOut=False,outputbranchsel=outputbranches)
-# p.run()
+#Applies pre-selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
+p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[CommonAnalysis("All")],postfix="_ModuleCommon_All",noOut=False,outputbranchsel=outputbranches)
+p.run()

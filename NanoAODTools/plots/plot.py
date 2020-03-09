@@ -6,7 +6,7 @@ import os
 #saveDirectory = 'plots/SL_optimization/'
 saveDirectory = 'plots/AH_optimization/'
 #saveDirectory = 'plots/optimized_jets/'
-date = '02_26_2020'
+date = '03_07_2020'
 
 if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
@@ -17,10 +17,14 @@ singleEle = 'HLT_Ele105_CaloIdVT_GsfTrkIdT || HLT_Ele115_CaloIdVT_GsfTrkIdT'
 singleIsoMu = 'HLT_IsoMu27 || HLT_IsoTkMu27 || HLT_IsoMu24 || HLT_IsoTkMu24'
 
 SL1e = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && MET_pt >= 160 && ' + passMETfilters + ' && ((' + singleIsoEle + ') || (' + singleEle + '))'
-SL1e0f = SL1e + ' && ' + 'nbjets == 1 && nfjets == 0'
-SL1e2b = SL1e + ' && ' + 'nbjets >= 2'
+SL1m = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && MET_pt >= 160 && ' + passMETfilters + ' && (' + singleIsoMu + ')'
+SL1e0f = SL1e + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 160' #+ ' && M_T2W >= 200'
+SL1e2b = SL1e + ' && ' + 'nbjets >= 2' + ' && M_T >= 160' #+ ' && M_T2W >= 200'
 
-AH = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && MET_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + passMETfilters #Still need to implement centralJets[0].jetId >= 3 && centralJets[0].chHEF > 0.1
+SL1b = '((' + SL1e + ') || (' + SL1m + ')) && nbjets == 1 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
+SL2b = '((' + SL1e + ') || (' + SL1m + ')) && nbjets >= 2 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
+
+AH = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && MET_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && jet1_jetId >= 3 && jet1_chHEF > 0.1 &&' + passMETfilters #Still need to implement centralJets[0].jetId >= 3 && centralJets[0].chHEF > 0.1
 AH0l0f = AH + ' && nbjets == 1 && nfjets == 0'
 AH0l2b = AH + ' && nbjets >= 2'
 
@@ -30,17 +34,20 @@ AH2b = AH + ' && nbjets >= 2 && minDeltaPhi12 >= 1 && M_Tb >= 180 && jet1p_TH_T 
 #Select selection cut and variable to be plotted here
 #cut = SL1e0f
 #cut = SL1e2b
-cut = AH0l0f
+cut = SL1b
+#cut = SL2b
+#cut = AH0l0f
 #cut = AH0l2b
 #cut = AH1b
 #cut = AH2b
 
 #var = 'M_T'
-var = 'minDeltaPhi12'
+#var = 'M_T2W'
+#var = 'minDeltaPhi12'
 #var = 'M_Tb'
 #var = 'jet1p_TH_T'
 #var = 'njets'
-#var = 'nfjets'
+var = 'nfjets'
 
 #Set lum (fb^-1) and overall signal sample scale factor here
 lumi = 35.9
@@ -70,21 +77,22 @@ print 'saveDirectory = ', saveDirectory
 print 'date = ', date
 print("Creating histograms..")
 #Set histogram options
-nbins = 15
+nbins = 9
 xmin = 0
-xmax = 3
+xmax = 9
 ymin = 0
-ymax = 4700
+ymax = 1200
 
 #doLogPlot = True
 doLogPlot = False
 
-#histoLabel = 'SL1e0f M_{T} distribution; M_{T} (GeV); Events'
-histoLabel = 'AH0l0f min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}); Events'
-#histoLabel = 'AH0l0f M_{T}^{b} distribution; M_{T}^b (GeV); Events'
+#histoLabel = 'SL1e2b M_{T} distribution; M_{T} (GeV); Events'
+#histoLabel = 'Sl1e2b M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
+#histoLabel = 'SL1e0f min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}); Events'
+#histoLabel = 'SL1e2b M_{T}^{b} distribution; M_{T}^b (GeV); Events'
 #histoLabel = 'AH0l2b jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
-#histoLabel = 'AH2b central n_{jet} distribution; number of AK4 jets; Events'
-#histoLabel = 'AH2b forward n_{jet} distribution; number of forward AK4 jets; Events'
+#histoLabel = 'SL2b central n_{jet} distribution; number of AK4 jets; Events'
+histoLabel = 'SL1b forward n_{jet} distribution; number of forward AK4 jets; Events'
 
 #Define histograms
 h_ttbar = TH1F('h_ttbar', histoLabel, nbins, xmin, xmax)
@@ -208,5 +216,5 @@ legend.SetBorderSize(0)
 legend.SetFillStyle(0)
 #Save histograms
 #c.SaveAs(saveDirectory + date + "/AH0l2b_" + var + "_allhisto_" + date + ".pdf")
-c.SaveAs("AH0l0f_" + var + "_allhisto_" + date + ".png")
+c.SaveAs("SL1b_" + var + "_allhisto_" + date + ".png")
 print("Finished drawing histograms")

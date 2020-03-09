@@ -115,14 +115,16 @@ to next event)"""
 
         return True
 
-testModule = lambda : getBTagHist('CSVv2','medium',2016,'ttbar')
+getBTagHist2016 = lambda : getBTagHist('CSVv2','medium',2016,'ttbar')
 
 #########################################################################################################################################
 
-#Select PostProcessor options here
-preselection=None
-outputDir = "python/postprocessing/corrections/btag/ttbar/"
-inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#, "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root", "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+# #Select PostProcessor options here
+# preselection=None
+# #outputDir = "python/postprocessing/corrections/btag/ttbar/"
+# outputDir = "."
+# inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#, "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root", "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 
-p=PostProcessor(".",inputFiles,cut=preselection,branchsel=None,modules=[testModule()],noOut=True,histFileName=outputDir+"ttbarDM_Mchi1Mphi100_scalar_full1_btagHists.root",histDirName="ttbar")
-p.run()
+# #p=PostProcessor(".",inputFiles,cut=preselection,branchsel=None,modules=[testModule()],noOut=True,histFileName=outputDir+"ttbarDM_Mchi1Mphi100_scalar_full1_btagHists.root",histDirName="ttbar")
+# p=PostProcessor(".",inputFiles,cut=preselection,branchsel=None,modules=[getBTagHist2016()],noOut=False,histFileName="hist.root",histDirName="test")
+# p.run()
