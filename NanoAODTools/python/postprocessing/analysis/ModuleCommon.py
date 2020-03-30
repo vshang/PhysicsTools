@@ -10,6 +10,7 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 from PhysicsTools.NanoAODTools.postprocessing.corrections.leptonSFs import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.BTaggingTool import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.kfactors import *
+from PhysicsTools.NanoAODTools.postprocessing.corrections.PileupWeightTool import *
 
 #Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region 
 ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
@@ -31,6 +32,7 @@ class CommonAnalysis(Module):
         self.eleSFs = ElectronSFs(year=2016)
         self.muSFs = MuonSFs(year=2016)
         self.btagTool = BTagWeightTool('CSVv2','medium',channel='ttbar',year=2016)
+        self.puTool = PileupWeightTool(year=2016)
 
     def beginJob(self):
         pass
@@ -60,6 +62,7 @@ class CommonAnalysis(Module):
         self.out.branch("ntaus", "I")
         self.out.branch("leptonWeight", "F")
         self.out.branch("bjetWeight", "F")
+        self.out.branch("puWeight", "F")
         self.out.branch("eventWeight", "F")
         self.out.branch("ewkWeight", "F")
         self.out.branch("qcdWeight", "F")
@@ -209,12 +212,14 @@ to next event)"""
             leptonWeight *= self.muSFs.getSF(tightMuon.pt, tightMuon.eta)
         #Calculate b-jet scale factor weight
         bjetWeight = self.btagTool.getWeight(centralJets)
+        #Calculate PU weight
+        puWeight = self.puTool.getWeight(event.Pileup_nTrueInt)
         #Calculate total event weight
-        eventWeight = 1*leptonWeight*bjetWeight
+        eventWeight = 1*leptonWeight*bjetWeight*puWeight
         #Calculate EWK and QCD k factors if a Gen V particles exists (Z or W)
         ewkWeight = 1
         qcdWeight = 1
-        GenV = filter(lambda gen : gen.pdgId == 23 or gen.pdgId == 24, genParticles)
+        GenV = filter(lambda gen : (gen.pdgId == 23 or abs(gen.pdgId) == 24) and gen.status == 22, genParticles)
         if len(GenV) > 0:
             GenV_pt = GenV[0].pt
             ewkWeight *= getEWKW(GenV_pt)
@@ -294,6 +299,7 @@ to next event)"""
             self.out.fillBranch("ntaus", ntaus)
             self.out.fillBranch("leptonWeight", leptonWeight)
             self.out.fillBranch("bjetWeight", bjetWeight)
+            self.out.fillBranch("puWeight", puWeight)
             self.out.fillBranch("eventWeight", eventWeight)
             self.out.fillBranch("ewkWeight", ewkWeight)
             self.out.fillBranch("qcdWeight", qcdWeight)
@@ -315,7 +321,7 @@ selection=None
 outputDir = "."
 #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
 outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 
 #Applies pre-selection cuts for each signal region (SL vs AH, nb = 1 vs nb >=2, nf = 0 vs nf >= 1), one file for each SR (9 total files)
 p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[CommonAnalysis("All")],postfix="_ModuleCommon_All",noOut=False,outputbranchsel=outputbranches)
