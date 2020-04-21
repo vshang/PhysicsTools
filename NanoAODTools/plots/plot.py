@@ -1,12 +1,13 @@
 from ROOT import *
 from MCsampleList import *
+from DataSampleList import *
 import os
 
 #Set save directory and date for file names
-#saveDirectory = 'plots/SL_optimization/'
-saveDirectory = 'plots/AH_optimization/'
+saveDirectory = 'plots/SL_optimization/'
+#saveDirectory = 'plots/AH_optimization/'
 #saveDirectory = 'plots/optimized_jets/'
-date = '03_07_2020'
+date = '04_20_2020'
 
 if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
@@ -19,7 +20,7 @@ singleIsoMu = 'HLT_IsoMu27 || HLT_IsoTkMu27 || HLT_IsoMu24 || HLT_IsoTkMu24'
 SL1e = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && MET_pt >= 160 && ' + passMETfilters + ' && ((' + singleIsoEle + ') || (' + singleEle + '))'
 SL1m = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && MET_pt >= 160 && ' + passMETfilters + ' && (' + singleIsoMu + ')'
 SL1e0f = SL1e + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 160' #+ ' && M_T2W >= 200'
-SL1e2b = SL1e + ' && ' + 'nbjets >= 2' + ' && M_T >= 160' #+ ' && M_T2W >= 200'
+SL1e2b = SL1e + ' && ' + 'nbjets >= 2' #+ ' && M_T >= 160' #+ ' && M_T2W >= 200'
 
 SL1b = '((' + SL1e + ') || (' + SL1m + ')) && nbjets == 1 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 SL2b = '((' + SL1e + ') || (' + SL1m + ')) && nbjets >= 2 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
@@ -32,22 +33,24 @@ AH1b = AH + ' && nbjets == 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
 AH2b = AH + ' && nbjets >= 2 && minDeltaPhi12 >= 1 && M_Tb >= 180 && jet1p_TH_T <= 0.5'
 
 #Select selection cut and variable to be plotted here
-#cut = SL1e0f
+cut = SL1e0f
 #cut = SL1e2b
-cut = SL1b
+#cut = SL1b
 #cut = SL2b
 #cut = AH0l0f
 #cut = AH0l2b
-#cut = AH1b
+#cut = AH2b
 #cut = AH2b
 
+cut_data = cut.replace(' || HLT_Ele32_WPTight_Gsf', '')
+
 #var = 'M_T'
-#var = 'M_T2W'
+var = 'M_T2W'
 #var = 'minDeltaPhi12'
 #var = 'M_Tb'
 #var = 'jet1p_TH_T'
 #var = 'njets'
-var = 'nfjets'
+#var = 'nfjets'
 
 #Set lum (fb^-1) and overall signal sample scale factor here
 lumi = 35.9
@@ -55,6 +58,17 @@ scaleFactor = 20
 
 #Remove stats box from histograms
 gStyle.SetOptStat(0)
+
+#Get data root files and event trees
+print("Loading data sample root files and event trees...")
+for dataset in data2016:
+    nevents = 0
+    for filepath in data2016[dataset]['filepaths']:
+            data2016[dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
+            data2016[dataset][filepath+'_Events'] = data2016[dataset][filepath+'_TFile'].Get('Events')
+            nevents += data2016[dataset][filepath+'_Events'].GetEntries()
+    data2016[dataset]['nevents'] = nevents
+print("Got data sample root files and event trees")
 
 #Get MC background root files and event trees
 print("Loading MC sample root files and event trees...")
@@ -66,35 +80,36 @@ for process in samples2016:
             samples2016[process][dataset][filepath+'_Events'] = samples2016[process][dataset][filepath+'_TFile'].Get('Events')
             nevents += samples2016[process][dataset][filepath+'_Events'].GetEntries()
         samples2016[process][dataset]['nevents'] = nevents
-# print("Got MC sample root files and event trees")
+print("Got MC sample root files and event trees")
 
 ##Create histograms
 ##-----------------------------------------------------------------------------------------------
 
 print 'Cut = ', cut
 print 'var = ', var
-print 'saveDirectory = ', saveDirectory
+#print 'saveDirectory = ', saveDirectory
 print 'date = ', date
 print("Creating histograms..")
 #Set histogram options
-nbins = 9
-xmin = 0
-xmax = 9
+nbins = 10
+xmin = 80
+xmax = 480
 ymin = 0
-ymax = 1200
+ymax = 2700
 
 #doLogPlot = True
 doLogPlot = False
 
 #histoLabel = 'SL1e2b M_{T} distribution; M_{T} (GeV); Events'
-#histoLabel = 'Sl1e2b M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
-#histoLabel = 'SL1e0f min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}); Events'
-#histoLabel = 'SL1e2b M_{T}^{b} distribution; M_{T}^b (GeV); Events'
+histoLabel = 'Sl1e0f M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
+#histoLabel = 'AH0l0f min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}); Events'
+#histoLabel = 'AH0l2b M_{T}^{b} distribution; M_{T}^b (GeV); Events'
 #histoLabel = 'AH0l2b jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
-#histoLabel = 'SL2b central n_{jet} distribution; number of AK4 jets; Events'
-histoLabel = 'SL1b forward n_{jet} distribution; number of forward AK4 jets; Events'
+#histoLabel = 'AH2b central n_{jet} distribution; number of AK4 jets; Events'
+#histoLabel = 'AH2b forward n_{jet} distribution; number of forward AK4 jets; Events'
 
 #Define histograms
+h_data = TH1F('h_data', histoLabel, nbins, xmin, xmax)
 h_ttbar = TH1F('h_ttbar', histoLabel, nbins, xmin, xmax)
 h_tbar = TH1F('h_tbar', histoLabel, nbins, xmin, xmax)
 h_TTTo2L2Nu = TH1F('h_TTTo2L2Nu', histoLabel, nbins, xmin, xmax)
@@ -112,11 +127,20 @@ count = 0
 print("Filling histograms...")
 hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
 #Loop through each root file for each dataset
+for dataset in data2016:
+    print '  Dataset = ', dataset, ' ||   nEvents = ', data2016[dataset]['nevents']
+    for filepath in data2016[dataset]['filepaths']:
+        data2016[dataset][filepath+'_Events'].Draw(var+'>>hist',cut_data)
+        print '    hist nEntries = ', hist.GetEntries()
+        h_data += hist
 for process in samples2016:
     print '  Process = ', process
     for dataset in samples2016[process]:
         print '      Dataset = ', dataset, ' ||   nEvents = ', samples2016[process][dataset]['nevents']
         weight = str(samples2016[process][dataset]['xsec']*lumi/samples2016[process][dataset]['nevents']) + '*eventWeight'
+        if process == 'WPlusJets' or process == 'ZTo2L' or process == 'ZTo2Nu':
+            weight = weight + '*qcdWeight*ewkWeight'
+            print 'Applied qcd/ewk Weights correctly'
         for filepath in samples2016[process][dataset]['filepaths']:
             samples2016[process][dataset][filepath+'_Events'].Draw(var+'>>hist',weight+'*('+cut+')')
             print '          hist nEntries = ', hist.GetEntries()
@@ -167,6 +191,7 @@ if doLogPlot:
 h_MCbackground.Draw('hist')
 h_ttbar.Draw('hist same')
 h_tbar.Draw('hist same')
+h_data.Draw('hist same')
 #Set MC background histogram options 
 h_QCD.SetFillColor(kGray+1)
 h_ZTo2L.SetFillColor(kGreen+1)
@@ -197,9 +222,14 @@ h_tbar.SetLineWidth(3)
 h_ttbar.SetLineColor(kRed)
 h_ttbar.SetLineStyle(2)
 h_ttbar.SetLineWidth(3)
+#Set data histogram options
+h_data.SetLineColor(1)
+h_data.SetLineStyle(7)
+h_data.SetLineWidth(3)
 #Add legend
 legend = TLegend(0.4, 0.65, 0.85, 0.85)
 legend.SetNColumns(3)
+legend.AddEntry(h_data, 'Data', 'l')
 legend.AddEntry(h_ZTo2Nu, 'Z(#nu#nu) + jets', 'f')
 legend.AddEntry(h_TTToSemiLepton, 't#bar{t}(1l)', 'f')
 legend.AddEntry(h_TTTo2L2Nu, 't#bar{t}(2l)', 'f')
@@ -215,6 +245,6 @@ legend.Draw('same')
 legend.SetBorderSize(0)
 legend.SetFillStyle(0)
 #Save histograms
-#c.SaveAs(saveDirectory + date + "/AH0l2b_" + var + "_allhisto_" + date + ".pdf")
-c.SaveAs("SL1b_" + var + "_allhisto_" + date + ".png")
+c.SaveAs(saveDirectory + date + "/SL1e0f_" + var + "_allhistov2_" + date + ".png")
+#c.SaveAs("SL1e0f_" + var + "_allhisto_" + date + ".png")
 print("Finished drawing histograms")

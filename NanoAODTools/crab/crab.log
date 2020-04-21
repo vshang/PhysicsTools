@@ -283,3 +283,153 @@ Traceback (most recent call last):
   File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 595, in validateOptions
     raise ConfigurationException(msg)
 ConfigurationException: [91mError[0m: getBTagHist/crab_WPlusJets_sample17 is not a valid CRAB project directory.
+DEBUG 2020-04-02 02:16:59.202 UTC: 	 Running on: Linux login02.hep.wisc.edu 4.4.190-1.el7.elrepo.x86_64 #1 SMP Sun Aug 25 07:32:44 EDT 2019 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-04-02 02:16:59.222 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-04-02 02:16:59.223 UTC: 	 Executing command: 'checkusername'
+DEBUG 2020-04-02 02:16:59.224 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+DEBUG 2020-04-02 02:16:59.233 UTC: 	 Checking credentials
+DEBUG 2020-04-02 02:16:59.234 UTC: 	 Found proxy file /tmp/x509up_u10060
+DEBUG 2020-04-02 02:16:59.234 UTC: 	 Getting proxy life time left
+DEBUG 2020-04-02 02:16:59.339 UTC: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u10060 -timeleft
+ output : 43134
+
+ error: 
+ retcode : 0
+DEBUG 2020-04-02 02:16:59.444 UTC: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u10060 -actimeleft
+ output : 
+ error: 
+ retcode : 1
+DEBUG 2020-04-02 02:16:59.444 UTC: 	 Proxy lifetime 43134 secs is different from voms extension lifetime 0 secs for proxy: /tmp/x509up_u10060
+DEBUG 2020-04-02 02:16:59.444 UTC: 	 Proxy valid for 00:00:00 hours
+DEBUG 2020-04-02 02:16:59.444 UTC: 	 Creating new proxy for 24:00 hours with VO group '' and VO role 'NULL'.
+DEBUG 2020-04-02 02:17:03.654 UTC: 	 Executing : 
+ command : voms-proxy-init -voms cms:/cms -valid 24:00 -rfc
+ output : None
+ error: None
+ retcode : 0
+DEBUG 2020-04-02 02:17:03.759 UTC: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u10060 -timeleft
+ output : 86400
+
+ error: 
+ retcode : 0
+DEBUG 2020-04-02 02:17:03.864 UTC: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u10060 -actimeleft
+ output : 86400
+
+ error: 
+ retcode : 0
+DEBUG 2020-04-02 02:17:03.969 UTC: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u10060 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+/cms/uscms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2020-04-02 02:17:03.970 UTC: 	 Proxy created.
+DEBUG 2020-04-02 02:17:04.082 UTC: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vshang/CN=836015/CN=Victor Shang
+
+ error: 
+ retcode : 0
+DEBUG 2020-04-02 02:17:04.082 UTC: 	 Checking credentials
+DEBUG 2020-04-02 02:17:04.082 UTC: 	 Found proxy file /tmp/x509up_u10060
+DEBUG 2020-04-02 02:17:04.082 UTC: 	 Getting proxy life time left
+DEBUG 2020-04-02 02:17:04.187 UTC: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u10060 -timeleft
+ output : 86399
+
+ error: 
+ retcode : 0
+DEBUG 2020-04-02 02:17:04.292 UTC: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u10060 -actimeleft
+ output : 86399
+
+ error: 
+ retcode : 0
+DEBUG 2020-04-02 02:17:04.293 UTC: 	 Proxy valid for 23:59:59 hours
+DEBUG 2020-04-02 02:17:04.293 UTC: 	 Command use: checkusername
+DEBUG 2020-04-02 02:17:04.293 UTC: 	 Options use: []
+DEBUG 2020-04-02 02:17:04.293 UTC: 	 Instance is None
+DEBUG 2020-04-02 02:17:04.293 UTC: 	 Server base url is None
+INFO 2020-04-02 02:17:04.293 UTC: 	 Retrieving DN from proxy...
+INFO 2020-04-02 02:17:04.535 UTC: 	 DN is: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vshang/CN=836015/CN=Victor Shang
+INFO 2020-04-02 02:17:04.535 UTC: 	 Retrieving username for this DN...
+DEBUG 2020-04-02 02:17:04.535 UTC: 	 Retrieving username from SiteDB...
+DEBUG 2020-04-02 02:17:05.878 UTC: 	 Error UsernameException: Failed to retrieve username from SiteDB. Your DN does not seem to be registered in SiteDB.
+Details follow:
+  Executed command: curl -sS --capath /etc/grid-security/certificates --cert /tmp/x509up_u10060 --key /tmp/x509up_u10060 'https://cmsweb.cern.ch/sitedb/data/prod/whoami'
+    Stdout:
+      <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+      <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+       <head>
+       <title>CMSWEB Error: No such site</title>
+       <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+       <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+       <link rel="stylesheet" type="text/css" media="screen" href="/css/cmsweb.css" />
+      </head>
+      <body>
+       <div id="main">
+        <div id="top">
+         <div class="boxTitle"><img src="/img/title.gif" alt="CMSWEB (title)" /></div>
+        </div>
+        <div id="middle">
+         <div class="boxLinkContainer">
+          <h2>No such site</h2>
+          <p>The site you requested does not exist. Could we interest you in <a href='/'>anything else</a>?</p>
+         </div>
+        </div>
+        <div id="bottom">
+         <div class="boxFooter">&nbsp;</div>
+        </div>
+       </div>
+      </body>
+      </html>
+      
+    Parsed username: 
+Note: Make sure you have the correct certificate mapped in SiteDB (you can check what is the certificate you currently have mapped in SiteDB by searching for your name in https://cmsweb.cern.ch/sitedb/prod/people). For instructions on how to map a certificate in SiteDB, see https://twiki.cern.ch/twiki/bin/viewauth/CMS/SiteDBForCRAB.
+DEBUG 2020-04-02 02:17:05.878 UTC: 	 Retrieving username from CRIC...
+DEBUG 2020-04-02 02:17:08.660 UTC: 	 Username is: vshang
+INFO 2020-04-02 02:17:08.661 UTC: 	 Failed to get username from SiteDB.
+ Details are in crab.log file
+Will try new Coputing Resource Information Catalog CRIC
+INFO 2020-04-02 02:17:08.661 UTC: 	 username is vshang
+DEBUG 2020-04-07 15:48:00.218 UTC: 	 Running on: Linux login01.hep.wisc.edu 4.4.216-1.el7.elrepo.x86_64 #1 SMP Wed Mar 11 09:13:43 EDT 2020 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-04-07 15:48:00.231 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-04-07 15:48:00.232 UTC: 	 Executing command: 'resubmit'
+DEBUG 2020-04-07 15:48:00.232 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+ERROR 2020-04-07 15:48:00.233 UTC: 	 Error: ModuleCommon_withPUandBTagWeights/crab_WZ_sampl5 is not a valid CRAB project directory.
+ERROR 2020-04-07 15:48:00.233 UTC: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/bin/crab", line 145, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/resubmit.py", line 28, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 277, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 595, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ModuleCommon_withPUandBTagWeights/crab_WZ_sampl5 is not a valid CRAB project directory.
+DEBUG 2020-04-15 19:53:14.532 UTC: 	 Running on: Linux login03.hep.wisc.edu 4.4.216-1.el7.elrepo.x86_64 #1 SMP Wed Mar 11 09:13:43 EDT 2020 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-04-15 19:53:14.549 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-04-15 19:53:14.549 UTC: 	 Executing command: 'status'
+DEBUG 2020-04-15 19:53:14.550 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+ERROR 2020-04-15 19:53:14.551 UTC: 	 Error: ModuleCommon_withPUandBTagWeightsv2/crab_SingleMuon_Run2016_sample8 is not a valid CRAB project directory.
+ERROR 2020-04-15 19:53:14.551 UTC: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/bin/crab", line 145, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 40, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 277, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.2001/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 595, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ModuleCommon_withPUandBTagWeightsv2/crab_SingleMuon_Run2016_sample8 is not a valid CRAB project directory.
