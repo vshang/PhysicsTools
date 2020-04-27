@@ -4,16 +4,16 @@ from DataSampleList import *
 import os
 
 #Set save directory and date for file names
-saveDirectory = 'plots/SL_optimization/'
+#saveDirectory = 'plots/SL_optimization/'
 #saveDirectory = 'plots/AH_optimization/'
 #saveDirectory = 'plots/optimized_jets/'
-date = '04_20_2020'
+date = '04_24_2020'
 
-if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
+#if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
 #Define selection cuts and filters here
-passMETfilters = 'Flag_goodVertices && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_eeBadScFilter && Flag_globalTightHalo2016Filter && Flag_BadPFMuonFilter && Flag_chargedHadronTrackResolutionFilter'
-singleIsoEle = 'HLT_Ele27_eta2p1_WPTight_Gsf || HLT_Ele32_WPTight_Gsf || HLT_Ele32_eta2p1_WPTight_Gsf || HLT_Ele27_WPLoose_Gsf || HLT_Ele27_WPTight_Gsf'
+passMETfilters = 'Flag_goodVertices && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_globalTightHalo2016Filter && Flag_muonBadTrackFilter && Flag_chargedHadronTrackResolutionFilter'
+singleIsoEle = 'HLT_Ele27_eta2p1_WPTight_Gsf || HLT_Ele32_eta2p1_WPTight_Gsf || HLT_Ele27_WPTight_Gsf'# || HLT_Ele27_WPLoose_Gsf || HLT_Ele32_WPTight_Gsf'
 singleEle = 'HLT_Ele105_CaloIdVT_GsfTrkIdT || HLT_Ele115_CaloIdVT_GsfTrkIdT'
 singleIsoMu = 'HLT_IsoMu27 || HLT_IsoTkMu27 || HLT_IsoMu24 || HLT_IsoTkMu24'
 
@@ -39,10 +39,12 @@ cut = SL1e0f
 #cut = SL2b
 #cut = AH0l0f
 #cut = AH0l2b
-#cut = AH2b
+#cut = AH1b
 #cut = AH2b
 
-cut_data = cut.replace(' || HLT_Ele32_WPTight_Gsf', '')
+cut_data = cut + ' && Flag_eeBadScFilter && Flag_BadPFMuonFilter'
+#cut_data = cut_data.replace(' || HLT_Ele27_WPLoose_Gsf', '')
+#cut_data = cut_data.replace(' || HLT_Ele32_WPTight_Gsf', '')
 
 #var = 'M_T'
 var = 'M_T2W'
@@ -86,6 +88,7 @@ print("Got MC sample root files and event trees")
 ##-----------------------------------------------------------------------------------------------
 
 print 'Cut = ', cut
+print 'Cut_data = ', cut_data
 print 'var = ', var
 #print 'saveDirectory = ', saveDirectory
 print 'date = ', date
@@ -105,7 +108,7 @@ histoLabel = 'Sl1e0f M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
 #histoLabel = 'AH0l0f min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}); Events'
 #histoLabel = 'AH0l2b M_{T}^{b} distribution; M_{T}^b (GeV); Events'
 #histoLabel = 'AH0l2b jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
-#histoLabel = 'AH2b central n_{jet} distribution; number of AK4 jets; Events'
+#histoLabel = 'SL1b central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = 'AH2b forward n_{jet} distribution; number of forward AK4 jets; Events'
 
 #Define histograms
@@ -128,11 +131,12 @@ print("Filling histograms...")
 hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
 #Loop through each root file for each dataset
 for dataset in data2016:
-    print '  Dataset = ', dataset, ' ||   nEvents = ', data2016[dataset]['nevents']
-    for filepath in data2016[dataset]['filepaths']:
-        data2016[dataset][filepath+'_Events'].Draw(var+'>>hist',cut_data)
-        print '    hist nEntries = ', hist.GetEntries()
-        h_data += hist
+    if True: #dataset == 'SingleElectron':
+        print '  Dataset = ', dataset, ' ||   nEvents = ', data2016[dataset]['nevents']
+        for filepath in data2016[dataset]['filepaths']:
+            data2016[dataset][filepath+'_Events'].Draw(var+'>>hist',cut_data)
+            print '    hist nEntries = ', hist.GetEntries()
+            h_data += hist
 for process in samples2016:
     print '  Process = ', process
     for dataset in samples2016[process]:
@@ -191,7 +195,7 @@ if doLogPlot:
 h_MCbackground.Draw('hist')
 h_ttbar.Draw('hist same')
 h_tbar.Draw('hist same')
-h_data.Draw('hist same')
+h_data.Draw('ep same')
 #Set MC background histogram options 
 h_QCD.SetFillColor(kGray+1)
 h_ZTo2L.SetFillColor(kGreen+1)
@@ -223,13 +227,12 @@ h_ttbar.SetLineColor(kRed)
 h_ttbar.SetLineStyle(2)
 h_ttbar.SetLineWidth(3)
 #Set data histogram options
-h_data.SetLineColor(1)
-h_data.SetLineStyle(7)
-h_data.SetLineWidth(3)
+h_data.SetMarkerStyle(20)
+h_data.SetMarkerSize(1.25)
 #Add legend
 legend = TLegend(0.4, 0.65, 0.85, 0.85)
 legend.SetNColumns(3)
-legend.AddEntry(h_data, 'Data', 'l')
+legend.AddEntry(h_data, 'Data', 'pe')
 legend.AddEntry(h_ZTo2Nu, 'Z(#nu#nu) + jets', 'f')
 legend.AddEntry(h_TTToSemiLepton, 't#bar{t}(1l)', 'f')
 legend.AddEntry(h_TTTo2L2Nu, 't#bar{t}(2l)', 'f')
@@ -245,6 +248,6 @@ legend.Draw('same')
 legend.SetBorderSize(0)
 legend.SetFillStyle(0)
 #Save histograms
-c.SaveAs(saveDirectory + date + "/SL1e0f_" + var + "_allhistov2_" + date + ".png")
-#c.SaveAs("SL1e0f_" + var + "_allhisto_" + date + ".png")
+#c.SaveAs(saveDirectory + date + "/AH0l0f_" + var + "_allhisto_" + date + ".png")
+c.SaveAs("SL1e0f_" + var + "_newFiltersv3_" + date + ".png")
 print("Finished drawing histograms")
