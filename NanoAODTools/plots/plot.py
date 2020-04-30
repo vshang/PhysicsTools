@@ -7,7 +7,7 @@ import os
 #saveDirectory = 'plots/SL_optimization/'
 #saveDirectory = 'plots/AH_optimization/'
 #saveDirectory = 'plots/optimized_jets/'
-date = '04_24_2020'
+date = '04_28_2020'
 
 #if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
@@ -25,15 +25,27 @@ SL1e2b = SL1e + ' && ' + 'nbjets >= 2' #+ ' && M_T >= 160' #+ ' && M_T2W >= 200'
 SL1b = '((' + SL1e + ') || (' + SL1m + ')) && nbjets == 1 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 SL2b = '((' + SL1e + ') || (' + SL1m + ')) && nbjets >= 2 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 
-AH = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && MET_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && jet1_jetId >= 3 && jet1_chHEF > 0.1 &&' + passMETfilters #Still need to implement centralJets[0].jetId >= 3 && centralJets[0].chHEF > 0.1
+AH = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && MET_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && jet1_jetId >= 3 && jet1_chHEF > 0.1 &&' + passMETfilters 
 AH0l0f = AH + ' && nbjets == 1 && nfjets == 0'
 AH0l2b = AH + ' && nbjets >= 2'
 
 AH1b = AH + ' && nbjets == 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
 AH2b = AH + ' && nbjets >= 2 && minDeltaPhi12 >= 1 && M_Tb >= 180 && jet1p_TH_T <= 0.5'
 
+
+SL2eTR = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && MET_pt >= 160 && ' + passMETfilters + ' && ((' + singleIsoEle + ') || (' + singleEle + '))'
+SL2mTR = 'njets >= 2 && nbjets >= 1 && nVetoElectrons  == 0 && nTightMuons == 2 && nLooseMuons == 2 && MET_pt >= 160 && ' + passMETfilters + ' && (' + singleIsoMu + ')'
+SL1e1mTR = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 1 && nVetoElectrons == 1 && nTightMuons == 1 && nLooseMuons == 1 && MET_pt >= 160 && ' + passMETfilters + ' && ((' + singleIsoEle + ') || (' + singleEle + '))' + ' && (' + singleIsoMu + ')'
+SL1eWR = 'njets >= 2 && nbjets == 0 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && MET_pt >= 160 && M_T >= 160 && ' + passMETfilters + ' && ((' + singleIsoEle + ') || (' + singleEle + '))'
+SL1mWR = 'njets >= 2 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && MET_pt >= 160 && M_T >= 160 && ' + passMETfilters + ' && (' + singleIsoMu + ')'
+
+AH1eTR = 'njets >= 3 && nbjets >= 1 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && MET_pt >= 250 && M_T <= 160 && minDeltaPhi12 >= 1.0 && ' + passMETfilters + ' && ((' + singleIsoEle + ') || (' + singleEle + '))'
+AH1mTR = 'njets >= 3 && nbjets >= 1 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && MET_pt >= 250 && M_T <= 160 && minDeltaPhi12 >= 1.0 && ' + passMETfilters + ' && (' + singleIsoMu + ')'
+AH1eWR = 'njets >= 3 && nbjets == 0 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && MET_pt >= 250 && M_T <= 160 && ' + passMETfilters + ' && ((' + singleIsoEle + ') || (' + singleEle + '))'
+AH1mWR = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && MET_pt >= 250 && M_T <= 160 && ' + passMETfilters + ' && (' + singleIsoMu + ')'
+
 #Select selection cut and variable to be plotted here
-cut = SL1e0f
+#cut = SL1e0f
 #cut = SL1e2b
 #cut = SL1b
 #cut = SL2b
@@ -42,17 +54,28 @@ cut = SL1e0f
 #cut = AH1b
 #cut = AH2b
 
+#cut = SL2eTR
+cut = SL2mTR
+#cut = SL1e1mTR
+#cut = SL1eWR
+#cut = SL1mWR
+#cut = AH1eTR
+#cut = AH1mTR
+#cut = AH1eWR
+#cut = AH1mWR
+
 cut_data = cut + ' && Flag_eeBadScFilter && Flag_BadPFMuonFilter'
 #cut_data = cut_data.replace(' || HLT_Ele27_WPLoose_Gsf', '')
 #cut_data = cut_data.replace(' || HLT_Ele32_WPTight_Gsf', '')
 
 #var = 'M_T'
-var = 'M_T2W'
+#var = 'M_T2W'
 #var = 'minDeltaPhi12'
 #var = 'M_Tb'
 #var = 'jet1p_TH_T'
 #var = 'njets'
 #var = 'nfjets'
+var = 'MET_pt'
 
 #Set lum (fb^-1) and overall signal sample scale factor here
 lumi = 35.9
@@ -94,22 +117,23 @@ print 'var = ', var
 print 'date = ', date
 print("Creating histograms..")
 #Set histogram options
-nbins = 10
-xmin = 80
-xmax = 480
+nbins = 9
+xmin = 160
+xmax = 520
 ymin = 0
-ymax = 2700
+ymax = 2400
 
 #doLogPlot = True
 doLogPlot = False
 
 #histoLabel = 'SL1e2b M_{T} distribution; M_{T} (GeV); Events'
-histoLabel = 'Sl1e0f M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
+#histoLabel = 'Sl1e0f M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
 #histoLabel = 'AH0l0f min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}); Events'
 #histoLabel = 'AH0l2b M_{T}^{b} distribution; M_{T}^b (GeV); Events'
 #histoLabel = 'AH0l2b jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = 'SL1b central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = 'AH2b forward n_{jet} distribution; number of forward AK4 jets; Events'
+histoLabel = 'SL2mTR p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
 
 #Define histograms
 h_data = TH1F('h_data', histoLabel, nbins, xmin, xmax)
@@ -131,7 +155,7 @@ print("Filling histograms...")
 hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
 #Loop through each root file for each dataset
 for dataset in data2016:
-    if True: #dataset == 'SingleElectron':
+    if True: #dataset == 'SingleMuon':
         print '  Dataset = ', dataset, ' ||   nEvents = ', data2016[dataset]['nevents']
         for filepath in data2016[dataset]['filepaths']:
             data2016[dataset][filepath+'_Events'].Draw(var+'>>hist',cut_data)
@@ -249,5 +273,5 @@ legend.SetBorderSize(0)
 legend.SetFillStyle(0)
 #Save histograms
 #c.SaveAs(saveDirectory + date + "/AH0l0f_" + var + "_allhisto_" + date + ".png")
-c.SaveAs("SL1e0f_" + var + "_newFiltersv3_" + date + ".png")
+c.SaveAs("SL2mTR_" + var + "_newFilters_" + date + ".png")
 print("Finished drawing histograms")
