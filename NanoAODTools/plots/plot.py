@@ -1,13 +1,14 @@
 from ROOT import *
 from MCsampleList import *
 from DataSampleList import *
+from utils import *
 import os
 
 #Set save directory and date for file names
 #saveDirectory = 'plots/SL_optimization/'
 #saveDirectory = 'plots/AH_optimization/'
 #saveDirectory = 'plots/optimized_jets/'
-date = '04_28_2020'
+date = '05_03_2020'
 
 #if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
@@ -55,13 +56,13 @@ AH1mWR = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 1 &
 #cut = AH2b
 
 #cut = SL2eTR
-cut = SL2mTR
+#cut = SL2mTR
 #cut = SL1e1mTR
 #cut = SL1eWR
 #cut = SL1mWR
 #cut = AH1eTR
 #cut = AH1mTR
-#cut = AH1eWR
+cut = AH1mWR
 #cut = AH1mWR
 
 cut_data = cut + ' && Flag_eeBadScFilter && Flag_BadPFMuonFilter'
@@ -117,14 +118,14 @@ print 'var = ', var
 print 'date = ', date
 print("Creating histograms..")
 #Set histogram options
-nbins = 9
-xmin = 160
-xmax = 520
-ymin = 0
-ymax = 2400
+nbins = 15
+xmin = 250
+xmax = 550
+ymin = 80
+ymax = 30000
 
-#doLogPlot = True
-doLogPlot = False
+doLogPlot = True
+#doLogPlot = False
 
 #histoLabel = 'SL1e2b M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = 'Sl1e0f M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
@@ -133,7 +134,9 @@ doLogPlot = False
 #histoLabel = 'AH0l2b jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = 'SL1b central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = 'AH2b forward n_{jet} distribution; number of forward AK4 jets; Events'
-histoLabel = 'SL2mTR p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
+histoLabel = 'AH1mWR p_{T}^{miss} distribution; ; Events'
+
+ratioLabel = '; p_{T}^{miss} (GeV); Data / Bkg'
 
 #Define histograms
 h_data = TH1F('h_data', histoLabel, nbins, xmin, xmax)
@@ -149,13 +152,24 @@ h_VV = TH1F('h_VV', histoLabel, nbins, xmin, xmax)
 h_TTV = TH1F('h_TTV', histoLabel, nbins, xmin, xmax)
 h_QCD = TH1F('h_QCD', histoLabel, nbins, xmin, xmax)
 
+# for i in range(1,nbins+1):
+#     h_TTTo2L2Nu.SetBinContent(i,200)
+#     h_TTToSemiLepton.SetBinContent(i,200)
+#     h_singleTop.SetBinContent(i,200)
+#     h_WPlusJets.SetBinContent(i,200)
+#     h_ZTo2L.SetBinContent(i,200)
+#     h_ZTo2Nu.SetBinContent(i,200)
+#     h_VV.SetBinContent(i,200)
+#     h_TTV.SetBinContent(i,200)
+#     h_QCD.SetBinContent(i,200)
+
 #Fill histograms
 count = 0
 print("Filling histograms...")
 hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
 #Loop through each root file for each dataset
 for dataset in data2016:
-    if True: #dataset == 'SingleMuon':
+    if dataset == 'SingleMuon':
         print '  Dataset = ', dataset, ' ||   nEvents = ', data2016[dataset]['nevents']
         for filepath in data2016[dataset]['filepaths']:
             data2016[dataset][filepath+'_Events'].Draw(var+'>>hist',cut_data)
@@ -213,9 +227,13 @@ print("Finished stacking MC background histograms.")
         
 #Draw histograms
 print("Drawing histograms...")
-c = TCanvas('c', 'c')
+c = TCanvas('c', 'c', 800, 800)
+c.Divide(1,2)
+setTopPad(c.GetPad(1),4)
+setBotPad(c.GetPad(2),4)
+c.cd(1)
 if doLogPlot:
-    c.SetLogy(1)
+    c.GetPad(1).SetLogy(1)
 h_MCbackground.Draw('hist')
 h_ttbar.Draw('hist same')
 h_tbar.Draw('hist same')
@@ -243,6 +261,13 @@ h_ZTo2Nu.SetLineWidth(0)
 
 h_MCbackground.SetMinimum(ymin)
 h_MCbackground.SetMaximum(ymax)
+#Set settings for data and MC background histogram title/labels
+setHistStyle(h_MCbackground)
+h_MCbackground.GetXaxis().SetLabelOffset(999)
+h_MCbackground.GetXaxis().SetLabelSize(0)
+setHistStyle(h_ttbar)
+setHistStyle(h_tbar)
+setHistStyle(h_data)
 #Set tbar histogram options
 h_tbar.SetLineColor(kRed)
 h_tbar.SetLineWidth(3)
@@ -271,7 +296,32 @@ legend.AddEntry(h_tbar, 'Scalar, t+DM', 'l')
 legend.Draw('same')
 legend.SetBorderSize(0)
 legend.SetFillStyle(0)
-#Save histograms
-#c.SaveAs(saveDirectory + date + "/AH0l0f_" + var + "_allhisto_" + date + ".png")
-c.SaveAs("SL2mTR_" + var + "_newFilters_" + date + ".png")
 print("Finished drawing histograms")
+
+#Create and draw ratio plot histogram
+print("Drawing ratio plot...")
+c.cd(2)
+h_ratio = TH1F('h_ratio', ratioLabel, nbins, xmin, xmax)
+setHistStyle(h_ratio) #Set settings for ratio histogram title/labels
+h_errLine = h_ratio.Clone('errLine')
+h_MCsum = h_QCD + h_ZTo2L + h_VV + h_singleTop + h_WPlusJets + h_TTV + h_TTTo2L2Nu + h_TTToSemiLepton + h_ZTo2Nu
+for i in range(1, nbins+1):
+    h_errLine.SetBinContent(i,1)
+    if h_MCsum.GetBinContent(i) > 0:
+        h_ratio.SetBinContent(i,h_data.GetBinContent(i)/h_MCsum.GetBinContent(i))
+#Set settings for ratio histogram axes/labels
+setBotStyle(h_ratio) 
+h_ratio.Draw('p')
+h_errLine.Draw('hist same')
+
+#Set settings for ratio axis at y=1
+h_errLine.SetLineWidth(1)
+h_errLine.SetFillStyle(0)
+#Set ratio histogram marker options
+h_ratio.SetMarkerStyle(20)
+h_ratio.SetMarkerSize(1.25)
+print("Finished drawing ratio plot")
+        
+#Save histograms
+#c.SaveAs(saveDirectory + date + "/AH0l0f_" + var + "_allhisto_" + date + ".png")ls
+c.SaveAs("AH1mWR_" + var + "_withRatioPlot_" + date + ".png")
