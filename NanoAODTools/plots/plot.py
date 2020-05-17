@@ -8,7 +8,7 @@ import os
 #saveDirectory = 'plots/SL_optimization/'
 #saveDirectory = 'plots/AH_optimization/'
 #saveDirectory = 'plots/optimized_jets/'
-date = '05_03_2020'
+date = '05_12_2020'
 
 #if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
@@ -58,11 +58,11 @@ AH1mWR = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 1 &
 #cut = SL2eTR
 #cut = SL2mTR
 #cut = SL1e1mTR
-#cut = SL1eWR
+cut = SL1eWR
 #cut = SL1mWR
 #cut = AH1eTR
 #cut = AH1mTR
-cut = AH1mWR
+#cut = AH1mWR
 #cut = AH1mWR
 
 cut_data = cut + ' && Flag_eeBadScFilter && Flag_BadPFMuonFilter'
@@ -118,14 +118,14 @@ print 'var = ', var
 print 'date = ', date
 print("Creating histograms..")
 #Set histogram options
-nbins = 15
-xmin = 250
-xmax = 550
-ymin = 80
-ymax = 30000
+nbins = 9
+xmin = 160
+xmax = 520
+ymin = 0
+ymax = 5500
 
-doLogPlot = True
-#doLogPlot = False
+#doLogPlot = True
+doLogPlot = False
 
 #histoLabel = 'SL1e2b M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = 'Sl1e0f M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
@@ -134,7 +134,7 @@ doLogPlot = True
 #histoLabel = 'AH0l2b jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = 'SL1b central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = 'AH2b forward n_{jet} distribution; number of forward AK4 jets; Events'
-histoLabel = 'AH1mWR p_{T}^{miss} distribution; ; Events'
+histoLabel = 'SL2eWR p_{T}^{miss} distribution; ; Events'
 
 ratioLabel = '; p_{T}^{miss} (GeV); Data / Bkg'
 
@@ -169,7 +169,7 @@ print("Filling histograms...")
 hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
 #Loop through each root file for each dataset
 for dataset in data2016:
-    if dataset == 'SingleMuon':
+    if dataset == 'SingleElectron':
         print '  Dataset = ', dataset, ' ||   nEvents = ', data2016[dataset]['nevents']
         for filepath in data2016[dataset]['filepaths']:
             data2016[dataset][filepath+'_Events'].Draw(var+'>>hist',cut_data)
@@ -179,7 +179,7 @@ for process in samples2016:
     print '  Process = ', process
     for dataset in samples2016[process]:
         print '      Dataset = ', dataset, ' ||   nEvents = ', samples2016[process][dataset]['nevents']
-        weight = str(samples2016[process][dataset]['xsec']*lumi/samples2016[process][dataset]['nevents']) + '*eventWeight'
+        weight = str(samples2016[process][dataset]['xsec']*lumi/samples2016[process][dataset]['nevents']) #+ '*eventWeight'
         if process == 'WPlusJets' or process == 'ZTo2L' or process == 'ZTo2Nu':
             weight = weight + '*qcdWeight*ewkWeight'
             print 'Applied qcd/ewk Weights correctly'
@@ -210,6 +210,20 @@ for process in samples2016:
             elif process == 'QCD':
                 h_QCD += hist
 print("Finished filling histograms")
+
+#Add overflow bins to histograms
+h_data.SetBinContent(nbins, h_data.GetBinContent(nbins) + h_data.GetBinContent(nbins+1))
+h_ttbar.SetBinContent(nbins, h_ttbar.GetBinContent(nbins) + h_ttbar.GetBinContent(nbins+1))
+h_tbar.SetBinContent(nbins, h_tbar.GetBinContent(nbins) + h_tbar.GetBinContent(nbins+1))
+h_TTTo2L2Nu.SetBinContent(nbins, h_TTTo2L2Nu.GetBinContent(nbins) + h_TTTo2L2Nu.GetBinContent(nbins+1))
+h_TTToSemiLepton.SetBinContent(nbins, h_TTToSemiLepton.GetBinContent(nbins) + h_TTToSemiLepton.GetBinContent(nbins+1))
+h_singleTop.SetBinContent(nbins, h_singleTop.GetBinContent(nbins) + h_singleTop.GetBinContent(nbins+1))
+h_WPlusJets.SetBinContent(nbins, h_WPlusJets.GetBinContent(nbins) + h_WPlusJets.GetBinContent(nbins+1))
+h_ZTo2L.SetBinContent(nbins, h_ZTo2L.GetBinContent(nbins) + h_ZTo2L.GetBinContent(nbins+1))
+h_ZTo2Nu.SetBinContent(nbins, h_ZTo2Nu.GetBinContent(nbins) + h_ZTo2Nu.GetBinContent(nbins+1))
+h_VV.SetBinContent(nbins, h_VV.GetBinContent(nbins) + h_VV.GetBinContent(nbins+1))
+h_TTV.SetBinContent(nbins, h_TTV.GetBinContent(nbins) + h_TTV.GetBinContent(nbins+1))
+h_QCD.SetBinContent(nbins, h_QCD.GetBinContent(nbins) + h_QCD.GetBinContent(nbins+1))
 
 #Add up MC background histos into stacked histogram
 print("Creating stacked MC background histogram...")
@@ -309,9 +323,10 @@ for i in range(1, nbins+1):
     h_errLine.SetBinContent(i,1)
     if h_MCsum.GetBinContent(i) > 0:
         h_ratio.SetBinContent(i,h_data.GetBinContent(i)/h_MCsum.GetBinContent(i))
+        h_ratio.SetBinError(i,h_data.GetBinError(i)/h_MCsum.GetBinContent(i))
 #Set settings for ratio histogram axes/labels
 setBotStyle(h_ratio) 
-h_ratio.Draw('p')
+h_ratio.Draw('ep')
 h_errLine.Draw('hist same')
 
 #Set settings for ratio axis at y=1
@@ -324,4 +339,4 @@ print("Finished drawing ratio plot")
         
 #Save histograms
 #c.SaveAs(saveDirectory + date + "/AH0l0f_" + var + "_allhisto_" + date + ".png")ls
-c.SaveAs("AH1mWR_" + var + "_withRatioPlot_" + date + ".png")
+c.SaveAs("SL2eWR_" + var + "_noMCweight_" + date + ".png")

@@ -12,16 +12,19 @@ from PhysicsTools.NanoAODTools.postprocessing.corrections.BTaggingTool import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.kfactors import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.PileupWeightTool import *
 
-#Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region 
-# ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
-# ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.so")
-# ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so")
-# ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so")
+#Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region (runLocal = False if running jobs through CRAB)
+runLocal = True
 
-ROOT.gSystem.Load("mt2w_bisect_cc.so")
-ROOT.gSystem.Load("MT2Utility_cc.so")
-ROOT.gSystem.Load("mt2bl_bisect_cc.so")
-ROOT.gSystem.Load("Mt2Com_bisect_cc.so")
+if runLocal:
+    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
+    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.so")
+    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so")
+    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so")
+else:
+    ROOT.gSystem.Load("mt2w_bisect_cc.so")
+    ROOT.gSystem.Load("MT2Utility_cc.so")
+    ROOT.gSystem.Load("mt2bl_bisect_cc.so")
+    ROOT.gSystem.Load("Mt2Com_bisect_cc.so")
 
 Mt2Com_bisect = ROOT.Mt2Com_bisect()
 
@@ -64,6 +67,10 @@ class CommonAnalysis(Module):
         self.out.branch("jet1_jetId", "I")
         self.out.branch("jet1_chHEF", "F")
         self.out.branch("ntaus", "I")
+        self.out.branch("m_ll","F")
+        self.out.branch("recoilPtMiss","F")
+        self.out.branch("lepton1_charge","I")
+        self.out.branch("lepton2_charge","I")
         if self.isMC:
             self.out.branch("leptonWeight", "F")
             self.out.branch("bjetWeight", "F")
@@ -95,7 +102,6 @@ to next event)"""
         
         #Tight/Loose muons are defined and counted
         looseMuons = filter(lambda lep : lep.pt > 10 and lep.looseId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
-        #looseMuons = filter(lambda lep : lep.pt > 10 and lep.softId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
         tightMuons = filter(lambda lep : lep.pt > 30 and lep.tightId and lep.pfRelIso04_all < 0.15, looseMuons)
 
         nLooseMuons = len(looseMuons)
@@ -112,12 +118,10 @@ to next event)"""
             return True
 
         #Jet categories are defined and counted 
-        centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 0, jets) #Define central jets 
-        #centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and looseJet(j), jets)
+        centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 0, jets) #Define central jets
         bJets = filter(lambda j : j.btagCSVV2 > 0.8484, centralJets) #Define b-jets
         #bJetsHF = filter(lambda j : j.hadronFlavour == 5, centralJets) #Define b-jets by hadron flavour
         forwardJets = filter(lambda j : j.pt > 30 and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId > 0, jets) #Define forward jets
-        #forwardJets = filter(lambda j : j.pt > 30 and 2.4 < abs(j.eta) < 4 and cleanJet(j) and looseJet(j) > 0, jets)
 
         njets = len(centralJets)
         nbjets = len(bJets)
@@ -224,6 +228,27 @@ to next event)"""
                 GenV_pt = GenV[0].pt
                 ewkWeight *= getEWKW(GenV_pt)
                 qcdWeight *= getQCDW(GenV_pt)
+
+        #Determine if there exists two tight electrons/muons such that their invariant mass m_ll is between 60-120 GeV and the hadronic recoil >= 250 GeV
+        m_ll = 0
+        recoilPtMiss = 0
+        lepton1_charge = 0
+        lepton2_charge = 0
+        if (nTightElectrons >= 2 and nTightMuons == 0) or (nTightElectrons == 0 and nTightMuons >= 2):
+            if nTightElectrons >= 2:
+                tightLeptons = tightElectrons
+            elif nTightMuons >= 2:
+                tightLeptons = tightMuons
+            for i in range(0, len(tightLeptons)):
+                for j in range(i+1, len(tightLeptons)):
+                    lepton1 = tightLeptons[i]
+                    lepton2 = tightLeptons[j]
+                    eventSum = lepton1.p4() + lepton2.p4()
+                    m_ll = eventSum.M()
+                    deltaPhiRecoil = eventSum.Phi() - event.MET_phi
+                    recoilPtMiss = event.MET_pt + eventSum.Pt() * math.cos(deltaPhiRecoil)
+                    lepton1_charge = lepton1.charge
+                    lepton2_charge = lepton2.charge
         
 
         #Define MET filters contained in miniAOD analysis (https://github.com/zucchett/SFrame/blob/master/DM/src/DMSearches.cxx#L1542)
@@ -305,6 +330,10 @@ to next event)"""
             self.out.fillBranch("jet1_jetId", jet1_jetId)
             self.out.fillBranch("jet1_chHEF", jet1_chHEF)
             self.out.fillBranch("ntaus", ntaus)
+            self.out.fillBranch("m_ll", m_ll)
+            self.out.fillBranch("recoilPtMiss", recoilPtMiss)
+            self.out.fillBranch("lepton1_charge", lepton1_charge)
+            self.out.fillBranch("lepton2_charge", lepton2_charge)
             if self.isMC:
                 self.out.fillBranch("leptonWeight", leptonWeight)
                 self.out.fillBranch("bjetWeight", bjetWeight)
@@ -323,17 +352,18 @@ analyze2016Data = lambda : CommonAnalysis("All",year=2016,isData=True)
 
 #########################################################################################################################################
 
-# #Select PostProcessor options here
-# selection=None
-# #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-# outputDir = "testSamples/"
-# #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-# outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-# #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
-# inputFiles=["SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-# jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+#Select PostProcessor options here
+selection=None
+#outputDir = "outDir2016AnalysisSR/ttbarDM/"
+#outputDir = "testSamples/"
+outputDir = "."
+#inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+#inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
+jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 
-# #p1=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016MC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-# p2=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016Data()],postfix="_ModuleCommon_2016Data",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-# #p1.run()
-# p2.run()
+#p1=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016MC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+p2=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016Data()],postfix="_ModuleCommon_2016Data",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#p1.run()
+p2.run()
