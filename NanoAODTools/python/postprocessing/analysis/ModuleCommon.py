@@ -13,7 +13,7 @@ from PhysicsTools.NanoAODTools.postprocessing.corrections.kfactors import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.PileupWeightTool import *
 
 #Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region (runLocal = False if running jobs through CRAB)
-runLocal = True
+runLocal = False
 
 if runLocal:
     ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
@@ -29,11 +29,12 @@ else:
 Mt2Com_bisect = ROOT.Mt2Com_bisect()
 
 class CommonAnalysis(Module):
-    def __init__(self, signalRegion, year=2016, isData=False):
+    def __init__(self, signalRegion, year=2016, isData=False, isSignal=False):
         self.signalRegion = signalRegion
         self.year = year
         self.isData = isData
         self.isMC = not self.isData
+        self.isSignal = isSignal
         self.nEvent = 0
         if self.isMC:
             self.eleSFs = ElectronSFs(self.year)
@@ -92,10 +93,12 @@ to next event)"""
             genParticles = Collection(event, "GenPart")
 
         #Tight/Veto electrons are defined and counted
-        vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased_Sum16 != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
-        tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased_Sum16 == 4, vetoElectrons)
-        #vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
-        #tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased == 4, vetoElectrons)
+        if self.year == 2016:
+            vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased_Sum16 != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
+            tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased_Sum16 == 4, vetoElectrons)
+        else:
+            vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
+            tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased == 4, vetoElectrons)
 
         nVetoElectrons = len(vetoElectrons)
         nTightElectrons = len(tightElectrons)
@@ -202,8 +205,10 @@ to next event)"""
         
         #Tau candidates are counted
         tauCandidates = Collection(event, "Tau")
-        #skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM >= 31 and cleanJet(tau), tauCandidates)
-        skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM2017v2 >= 31 and cleanJet(tau), tauCandidates)
+        if self.isSignal:
+            skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM >= 31 and cleanJet(tau), tauCandidates)
+        else:
+            skimmedTaus = filter(lambda tau : tau.pt > 18 and abs(tau.eta) < 2.3 and tau.idMVAnewDM2017v2 >= 31 and cleanJet(tau), tauCandidates)
         ntaus = len(skimmedTaus)
 
         #Only calculate scale factors if sample is MC
@@ -347,23 +352,25 @@ to next event)"""
 
         #return True
 
-analyze2016MC = lambda : CommonAnalysis("All",year=2016,isData=False)
-analyze2016Data = lambda : CommonAnalysis("All",year=2016,isData=True)
+analyze2016MC = lambda : CommonAnalysis("All",year=2016,isData=False,isSignal=False)
+analyze2016SignalMC = lambda : CommonAnalysis("All",year=2016,isData=False,isSignal=True)
+analyze2016Data = lambda : CommonAnalysis("All",year=2016,isData=True,isSignal=False)
 
 #########################################################################################################################################
 
-#Select PostProcessor options here
-selection=None
-#outputDir = "outDir2016AnalysisSR/ttbarDM/"
-#outputDir = "testSamples/"
-outputDir = "."
-#inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-#inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
-inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+if runLocal:
+    #Select PostProcessor options here
+    selection=None
+    #outputDir = "outDir2016AnalysisSR/ttbarDM/"
+    #outputDir = "testSamples/"
+    outputDir = "."
+    #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+    outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+    inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+    #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
+    jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 
-#p1=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016MC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-p2=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016Data()],postfix="_ModuleCommon_2016Data",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#p1.run()
-p2.run()
+    p1=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    #p2=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016Data()],postfix="_ModuleCommon_2016DataSkimv2",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    p1.run()
+    #p2.run()

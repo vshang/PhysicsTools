@@ -4,12 +4,21 @@ from MCsampleList import *
 from BTagSampleList import *
 
 #Select settings here. Filepaths to btag histograms are contained in BTagSampleList. MCsampleList contains path to MC samples (for cross section normalization).
-tagger = 'CSVv2'   # Choose between CSVv2 and DeepDSV
+tagger = 'CSVv2'   # Choose between CSVv2 and DeepCSV
 wp = 'medium'      # Choose between loose, medium, and tight
 year = 2016        # Choose between 2016, 2017, and 2018
 channel = 'ttbar'
-outfilename = 'CSVv2_2016_Moriond17_eff.root'                        # name of root file that contains final btag efficiencies for selected channel
 lumi = 35.9        # Set luminosity (fb^-1) for normalizing MC samples by cross section
+# name of root file that contains final btag efficiencies for selected channel
+if year == 2016:
+  outfilename = tagger+'_2016_Moriond17_eff.root'
+  samples = samples2016
+elif year = 2017:
+  outfilename = tagger+'_2017_Fall17_eff.root'
+  samples = sample2017
+elif year == 2018:
+  outfilename = tagger+'_2018_Autumn18_eff.root'
+  samples = samples2018
 
 # Define helper functions for plotting
 def makeTitle(tagger,wp,flavor,channel,year):
@@ -33,14 +42,14 @@ def ensureTDirectory(file,dirname):
   return dir
 
 #Get number of events in MC background root files 
-for process in samples2016:
-    for dataset in samples2016[process]:
+for process in samples:
+    for dataset in samples[process]:
         nevents = 0
-        for filepath in samples2016[process][dataset]['filepaths']:
-            samples2016[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
-            samples2016[process][dataset][filepath+'_Events'] = samples2016[process][dataset][filepath+'_TFile'].Get('Events')
-            nevents += samples2016[process][dataset][filepath+'_Events'].GetEntries()
-        btagSamples2016[process][dataset]['nevents'] = nevents
+        for filepath in samples[process][dataset]['filepaths']:
+            samples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
+            samples[process][dataset][filepath+'_Events'] = samples[process][dataset][filepath+'_TFile'].Get('Events')
+            nevents += samples[process][dataset][filepath+'_Events'].GetEntries()
+        btagSamples[process][dataset]['nevents'] = nevents
 
 # PREPARE numerator and denominator histograms per flavor
 nhists  = {}
@@ -52,9 +61,9 @@ for flavor in ['b','c','udsg']:
     hists[histname+'_all'] = None # denominator
 
 # ADD numerator and denominator histograms
-for process in btagSamples2016:
-    for dataset in btagSamples2016[process]:
-        for filename in btagSamples2016[process][dataset]['filepaths']:
+for process in btagSamples:
+    for dataset in btagSamples[process]:
+        for filename in btagSamples[process][dataset]['filepaths']:
             print ">>>   %s"%(filename)
             file = TFile(filename,'READ')
             if not file or file.IsZombie():
@@ -74,7 +83,7 @@ for process in btagSamples2016:
                     nhists[histname] = 1
                 else:
                     #Weight btag histograms by MC sample cross sections
-                    weight = btagSamples2016[process][dataset]['xsec']*lumi/btagSamples2016[process][dataset]['nevents']
+                    weight = btagSamples[process][dataset]['xsec']*lumi/btagSamples[process][dataset]['nevents']
                     hists[histname].Add(hist,weight)
                     nhists[histname] += 1
             file.Close()

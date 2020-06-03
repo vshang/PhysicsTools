@@ -12,16 +12,16 @@ class ElectronSFs:
         assert year in [2016,2017,2018], "ElectronSFs: You must choose a year from: 2016, 2017, or 2018."
 
         if year==2016:
-            self.sftool_10to20GeV = ScaleFactor(pathElectrons+'EGM2D_BtoH_low_RecoSF_Legacy2016.root','EGamma_SF2D')
-            self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'EGM2D_BtoH_GT20GeV_RecoSF_Legacy2016.root','EGamma_SF2D')
+            self.sftool_10to20GeV = ScaleFactor(pathElectrons+'SF2016/EGM2D_BtoH_low_RecoSF_Legacy2016.root','EGamma_SF2D')
+            self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'SF2016/EGM2D_BtoH_GT20GeV_RecoSF_Legacy2016.root','EGamma_SF2D')
 
         if year==2017:
-            self.sftool_10to20GeV = ScaleFactor(pathElectrons+'egammaEffi.txt_EGM2D_runBCDEF_passingRECO_lowEt.root','EGamma_SF2D')
-            self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root','EGamma_SF2D')
+            self.sftool_10to20GeV = ScaleFactor(pathElectrons+'SF2017/egammaEffi.txt_EGM2D_runBCDEF_passingRECO_lowEt.root','EGamma_SF2D')
+            self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'SF2017/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root','EGamma_SF2D')
 
         if year==2018:
-            self.sftool_10to20GeV = ScaleFactor(pathElectrons+'egammaEffi.txt_EGM2D_updatedAll.root','EGamma_SF2D')
-            self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'egammaEffi.txt_EGM2D_updatedAll.root','EGamma_SF2D')
+            self.sftool_10to20GeV = ScaleFactor(pathElectrons+'SF2018/egammaEffi.txt_EGM2D_updatedAll.root','EGamma_SF2D')
+            self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'SF2018/egammaEffi.txt_EGM2D_updatedAll.root','EGamma_SF2D')
         
     def getSF(self, pt, eta):
         #Get SF for single electron trigger.
@@ -43,12 +43,20 @@ class MuonSFs:
         
         if year==2016:
             if run in ['B','C','D','E','F']:
-                self.sftool_ID = ScaleFactor(pathMuons+'RunBCDEF_SF_ID.root','NUM_TightID_DEN_genTracks_eta_pt')
-                self.sftool_ISO  = ScaleFactor(pathMuons+'RunBCDEF_SF_ISO.root','NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt')
+                self.sftool_ID = ScaleFactor(pathMuons+'SF2016/RunBCDEF_SF_ID.root','NUM_TightID_DEN_genTracks_eta_pt')
+                self.sftool_ISO  = ScaleFactor(pathMuons+'SF2016/RunBCDEF_SF_ISO.root','NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt')
             elif run in ['G','H']:
-                self.sftool_ID = ScaleFactor(pathMuons+'RunGH_SF_ID.root''NUM_TightID_DEN_genTracks_eta_pt')
-                self.sftool_ISO  = ScaleFactor(pathMuons+'RunGH_SF_ISO.root','NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt')
-        
+                self.sftool_ID = ScaleFactor(pathMuons+'SF2016/RunGH_SF_ID.root','NUM_TightID_DEN_genTracks_eta_pt')
+                self.sftool_ISO  = ScaleFactor(pathMuons+'SF2016/RunGH_SF_ISO.root','NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt')
+
+        if year==2017:
+            self.sftool_ID = ScaleFactor(pathMuons+'SF2017/RunBCDEF_SF_ID.root','NUM_TightID_DEN_genTracks_pt_abseta',ptvseta=False)
+            self.sftool_ISO = ScaleFactor(pathMuons+'SF2017/RunBCDEF_SF_ISO.root','NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta',ptvseta=False)
+
+        if year==2018:
+            self.sftool_ID = ScaleFactor(pathMuons+'SF2018/EfficienciesStudies_2018_rootfiles_RunABCD_SF_ID.root','NUM_TightID_DEN_TrackerMuons_pt_abseta',ptvseta=False)
+            self.sftool_ISO = ScaleFactor(pathMuons+'SF2018/EfficienciesStudies_2018_rootfiles_RunABCD_SF_ISO.root','NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta',ptvseta=False)
+
     def getSF(self, pt, eta):
         #Get SF for single muon trigger.
         sf_ID = self.sftool_ID.getSF(pt,eta)

@@ -2,10 +2,10 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'ModuleCommon_withPUandBTagWeightsv2' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
- #task          = 'test3'
- analysis      = 'SingleMuon_Run2016' #Name of the analysis (e.g. VBFHN, LQtop, ...)
- unitsPerJob   = 2 #Units (usually number of root files) per job
+ task          = 'ModuleCommon_06022020' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ #task          = 'test'
+ analysis      = 'QCD' #Name of the analysis (e.g. VBFHN, LQtop, ...)
+ unitsPerJob   = 1 #Units (usually number of root files) per job
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
  # datasetnames  = [ #Name of the folder created by crab and corresponding to its datasetinputs
 # 'TTTo2L2Nu', 
@@ -34,7 +34,7 @@ if __name__ == '__main__':
  #####
  ##   Multicrab configuration
  #####
- from CRABClient.UserUtilities import config, getUsernameFromSiteDB
+ from CRABClient.UserUtilities import config #, getUsernameFromSiteDB
  config = config()
  from CRABAPI.RawCommand import crabCommand
  from CRABClient.ClientExceptions import ClientException

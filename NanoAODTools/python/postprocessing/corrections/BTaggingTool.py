@@ -27,24 +27,24 @@ class BTagWPs:
         self.loose    = 0.5426 # for 80X ReReco
         self.medium   = 0.8484
         self.tight    = 0.9535
-    # elif year==2017:
-    #   if 'deep' in tagger.lower():
-    #     self.loose    = 0.1522 # for 94X
-    #     self.medium   = 0.4941
-    #     self.tight    = 0.8001
-    #   else:
-    #     self.loose    = 0.5803 # for 94X
-    #     self.medium   = 0.8838
-    #     self.tight    = 0.9693
-    # elif year==2018:
-    #   if 'deep' in tagger.lower():
-    #     self.loose    = 0.1241 # for 102X
-    #     self.medium   = 0.4184
-    #     self.tight    = 0.7527
-    #   else:
-    #     self.loose    = 0.5803 # for 94X
-    #     self.medium   = 0.8838
-    #     self.tight    = 0.9693
+    elif year==2017:
+      if 'deep' in tagger.lower():
+        self.loose    = 0.1522 # for 94X
+        self.medium   = 0.4941
+        self.tight    = 0.8001
+      else:
+        self.loose    = 0.5803 # for 94X
+        self.medium   = 0.8838
+        self.tight    = 0.9693
+    elif year==2018:
+      if 'deep' in tagger.lower():
+        self.loose    = 0.1241 # for 102X
+        self.medium   = 0.4184
+        self.tight    = 0.7527
+      else:
+        self.loose    = 0.5803 # for 94X
+        self.medium   = 0.8838
+        self.tight    = 0.9693
   
 
 class BTagWeightTool:
@@ -66,20 +66,20 @@ class BTagWeightTool:
           else:
             csvname = path+'CSVv2_Moriond17_B_H.csv'
             effname = path+'CSVv2_2016_Moriond17_eff.root'
-        # elif year==2017:
-        #   if 'deep' in tagger.lower():
-        #     csvname = path+'DeepCSV_94XSF_V3_B_F.csv'
-        #     effname = path+'DeepCSV_2017_12Apr2017_eff.root'
-        #   else:
-        #     csvname = path+'CSVv2_94XSF_V2_B_F.csv'
-        #     effname = path+'CSVv2_2017_12Apr2017_eff.root'
-        # elif year==2018:
-        #   if 'deep' in tagger.lower():
-        #     csvname = path+'DeepCSV_94XSF_V3_B_F.csv'
-        #     effname = path+'DeepCSV_2018_Autumn18_eff.root'
-        #   else:
-        #     csvname = path+'CSVv2_94XSF_V2_B_F.csv'
-        #     effname = path+'CSVv2_2018_Autumn18_eff.root'
+        elif year==2017:
+          if 'deep' in tagger.lower():
+            csvname = path+'DeepCSV_94XSF_V5_B_F.csv'
+            effname = path+'DeepCSV_2017_Fall17_eff.root'
+          else:
+            csvname = path+'CSVv2_94XSF_V2_B_F.csv'
+            effname = path+'CSVv2_2017_Fall17_eff.root'
+        elif year==2018:
+          if 'deep' in tagger.lower():
+            csvname = path+'DeepCSV_102XSF_V2.csv'
+            effname = path+'DeepCSV_2018_Autumn18_eff.root'
+          else:
+            csvname = path+'CSVv2_94XSF_V2_B_F.csv'
+            effname = path+'CSVv2_2018_Autumn18_eff.root'
         
         # TAGGING WP
         self.wpname = wp
