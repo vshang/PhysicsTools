@@ -95,7 +95,10 @@ else:
 
 #Set lum (fb^-1) and overall signal sample scale factor here
 lumi = 35.9
-scaleFactor = 20
+if 'SR' in cut:
+    scaleFactor = 20
+else:
+    scaleFactor = 1
 
 #Remove stats box from histograms
 gStyle.SetOptStat(0)
