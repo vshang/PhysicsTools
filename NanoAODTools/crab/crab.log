@@ -610,3 +610,23 @@ DEBUG 2020-06-01 16:54:54.966 UTC: 	 Running on: Linux login05.hep.wisc.edu 4.4.
 DEBUG 2020-06-01 16:54:55.001 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
 DEBUG 2020-06-01 16:54:55.001 UTC: 	 Executing command: 'resubmit'
 DEBUG 2020-06-01 16:54:55.001 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+DEBUG 2020-06-03 17:03:52.588 UTC: 	 CRAB Client version: 3.3.2005
+DEBUG 2020-06-03 17:03:52.588 UTC: 	 Running on: Linux login05.hep.wisc.edu 4.4.188-1.el7.elrepo.x86_64 #1 SMP Tue Aug 6 13:44:31 EDT 2019 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-06-03 17:03:52.608 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-06-03 17:03:52.609 UTC: 	 Executing command: 'status'
+DEBUG 2020-06-03 17:03:52.610 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+ERROR 2020-06-03 17:03:52.612 UTC: 	 Error: ModuleCommon_06022020/crab_WW_sample3 is not a valid CRAB project directory.
+ERROR 2020-06-03 17:03:52.612 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/3.3.2005-bcolbf2/bin/crab", line 165, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/3.3.2005-bcolbf2/bin/crab", line 150, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/3.3.2005-bcolbf2/lib/CRABClient/Commands/status.py", line 41, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/3.3.2005-bcolbf2/lib/CRABClient/Commands/SubCommand.py", line 278, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/3.3.2005-bcolbf2/lib/CRABClient/Commands/SubCommand.py", line 619, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ModuleCommon_06022020/crab_WW_sample3 is not a valid CRAB project directory.
+INFO 2020-06-03 17:03:52.634 UTC: 	 Log file is /afs/hep.wisc.edu/user/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/crab/crab.log

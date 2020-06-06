@@ -1,4 +1,5 @@
 import os, sys
+sys.path.append('/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/plots')
 from ROOT import *
 from MCsampleList import *
 from BTagSampleList import *
@@ -13,7 +14,7 @@ lumi = 35.9        # Set luminosity (fb^-1) for normalizing MC samples by cross 
 if year == 2016:
   outfilename = tagger+'_2016_Moriond17_eff.root'
   samples = samples2016
-elif year = 2017:
+elif year == 2017:
   outfilename = tagger+'_2017_Fall17_eff.root'
   samples = sample2017
 elif year == 2018:

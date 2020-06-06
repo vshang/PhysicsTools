@@ -3,11 +3,11 @@
 btagSamples2016 = { 
     #Signal
     'ttbarDM' : {
-        'ttbarDM_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 672.3, 'filepaths' : ['/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/corrections/btag/ttbar/ttbarDM_Mchi1Mphi100_scalar_full_btagHists.root'] },
+        'ttbarDM_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 672.3, 'filepaths' : ['/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/corrections/btag/ttbar2016/ttbarDM_Mchi1Mphi100_scalar_full_btagHists.root'] },
     }, 
     'tDM' : {
-        'tChan_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 268.3, 'filepaths' : ['/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/corrections/btag/ttbar/tDM_tChan_Mchi1MPhi100_scalar_full_btagHists.root.root'] },
-        'tWChan_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 55.49, 'filepaths' : ['/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/corrections/btag/ttbar/tDM_tWChan_Mchi1MPhi100_scalar_full_btagHists.root.root'] },
+        'tChan_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 268.3, 'filepaths' : ['/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/corrections/btag/ttbar2016/tDM_tChan_Mchi1MPhi100_scalar_full_btagHists.root.root'] },
+        'tWChan_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 55.49, 'filepaths' : ['/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/corrections/btag/ttbar2016/tDM_tWChan_Mchi1MPhi100_scalar_full_btagHists.root.root'] },
     }, 
     #Background 
     'ttbarPlusJets' : {

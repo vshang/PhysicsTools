@@ -5,6 +5,7 @@ if __name__ == '__main__':
  task          = 'ModuleCommon_06022020' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'test'
  analysis      = 'QCD' #Name of the analysis (e.g. VBFHN, LQtop, ...)
+ year          = '2017'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
  # datasetnames  = [ #Name of the folder created by crab and corresponding to its datasetinputs
@@ -15,7 +16,7 @@ if __name__ == '__main__':
 #                  ]
 
  #Set appropriate text file containing DAS file paths for input datasets
- samples = 'datasetinputs/'+analysis+'.txt'
+ samples = 'datasetinputs'+year+'/'+analysis+'_Run'+year+'.txt'
  #samples = 'datasetinputs/ttbarPlusJets.txt' 
  #samples = 'datasetinputs/singleTop.txt' 
  #samples = 'datasetinputs/WPlusJets.txt'
@@ -54,7 +55,7 @@ if __name__ == '__main__':
  #for d in range(0,len(datasetnames)):
  for d in range(0,len(datasetinputs)):
   config.section_('General')
-  config.General.requestName      = analysis + '_sample%d' % d #datasetnames[d]
+  config.General.requestName      = analysis + '_Run' + year + '_sample%d' % d #datasetnames[d]
   config.General.transferLogs=True
   config.section_('JobType')
   config.JobType.pluginName       = 'Analysis'
@@ -74,7 +75,7 @@ if __name__ == '__main__':
   #config.Data.totalUnits         = 2500 #With 'FileBased' splitting tells how many files to analyse
   config.Data.unitsPerJob         = unitsPerJob 
   #config.Data.outLFNDirBase       = '/store/user/%s/%s' % (getUsernameFromSiteDB(),analysis) #No longer works with CRAB 
-  config.Data.outLFNDirBase       = '/store/user/%s/%s' % ('vshang',analysis)
+  config.Data.outLFNDirBase       = '/store/user/%s/%s' % ('vshang',analysis+'_Run'+year)
   config.Data.outputDatasetTag    = '%s' % (task) 
   config.Data.publication         = False
   config.section_('Site')

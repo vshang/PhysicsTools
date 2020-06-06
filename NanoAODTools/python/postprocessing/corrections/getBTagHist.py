@@ -53,17 +53,18 @@ to next event)"""
         jets = Collection(event, "Jet")
 
         #Tight/Veto electrons are defined and counted
-        vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased_Sum16 != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
-        tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased_Sum16 == 4, vetoElectrons)
-        #vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
-        #tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased == 4, vetoElectrons)
+        if self.year == 2016:
+            vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased_Sum16 != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
+            tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased_Sum16 == 4, vetoElectrons)
+        else:
+            vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
+            tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased == 4, vetoElectrons)
 
         nVetoElectrons = len(vetoElectrons)
         nTightElectrons = len(tightElectrons)
         
         #Tight/Loose muons are defined and counted
         looseMuons = filter(lambda lep : lep.pt > 10 and lep.looseId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
-        #looseMuons = filter(lambda lep : lep.pt > 10 and lep.softId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
         tightMuons = filter(lambda lep : lep.pt > 30 and lep.tightId and lep.pfRelIso04_all < 0.15, looseMuons)
 
         nLooseMuons = len(looseMuons)
@@ -79,24 +80,11 @@ to next event)"""
                     return False
             return True
 
-        #Manually implement loose Jet ID requirements (https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID13TeVRun2016)
-        def looseJet(jet):
-            if abs(jet.eta) < 2.7:
-                if jet.neHEF > 0.99 or jet.neEmEF > 0.99 or jet.nConstituents < 2:
-                    return False
-                if abs(jet.eta) < 2.4:
-                    if jet.chHEF == 0 or jet.chEmEF > 0.99:
-                        return False
-            elif 2.7 < abs(jet.eta) < 3.0:
-                if jet.neHEF < 0.01 or jet.neHEF > 0.98:
-                    return False
-            elif abs(jet.eta) > 3:
-                if jet.neEmEF > 0.9:
-                    return False
-            return True
-
         #Calculate and fill bjet efficiency histograms
-        centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 0, jets) #Define central jets
+        if self.year == 2016:
+            centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 0, jets) #Use loose jet ID WP for 2016
+        else:
+            centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 1, jets) #Use tight jet ID WP for 2017 and 2018
         for jet in centralJets:
             flavor = flavorToString(jet.hadronFlavour)
             if flavor == 'b':
@@ -116,6 +104,8 @@ to next event)"""
         return True
 
 getBTagHist2016 = lambda : getBTagHist('CSVv2','medium',2016,'ttbar')
+getBTagHist2017 = lambda : getBTagHist('DeepCSV','medium',2017,'ttbar')
+getBTagHist2018 = lambda : getBTagHist('DeepCSV','medium',2018,'ttbar')
 
 #########################################################################################################################################
 

@@ -39,7 +39,10 @@ class CommonAnalysis(Module):
         if self.isMC:
             self.eleSFs = ElectronSFs(self.year)
             self.muSFs = MuonSFs(self.year)
-            self.btagTool = BTagWeightTool('CSVv2','medium',channel='ttbar',year=self.year)
+            if self.year == 2016:
+                self.btagTool = BTagWeightTool('CSVv2','medium',channel='ttbar',year=self.year)
+            else:
+                self.btagTool = BTagWeightTool('DeepCSV','medium',channel='ttbar',year=self.year)
             self.puTool = PileupWeightTool(year=self.year)
 
     def beginJob(self):
@@ -57,7 +60,6 @@ class CommonAnalysis(Module):
         self.out.branch("nLooseMuons", "I");
         self.out.branch("njets", "I")
         self.out.branch("nbjets", "I")
-        #self.out.branch("nbjetsHF", "I")
         self.out.branch("nfjets", "I")
         self.out.branch("minDeltaPhi", "F")
         self.out.branch("minDeltaPhi12", "F")
@@ -121,10 +123,16 @@ to next event)"""
             return True
 
         #Jet categories are defined and counted 
-        centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 0, jets) #Define central jets
-        bJets = filter(lambda j : j.btagCSVV2 > 0.8484, centralJets) #Define b-jets
-        #bJetsHF = filter(lambda j : j.hadronFlavour == 5, centralJets) #Define b-jets by hadron flavour
-        forwardJets = filter(lambda j : j.pt > 30 and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId > 0, jets) #Define forward jets
+        if self.year == 2016:
+            centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 0, jets) #Use loose jet ID WP for 2016
+            forwardJets = filter(lambda j : j.pt > 30 and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId > 0, jets)
+            btag_WP = getattr(BTagWPs('CSVv2',self.year),'medium')
+            bJets = filter(lambda j : j.btagCSVV2 > btag_WP, centralJets) #Use CSVV2 medium WP for btagging for 2016
+        else:
+            centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 1, jets) #Use tight jet ID WP for 2017 and 2018
+            forwardJets = filter(lambda j : j.pt > 30 and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId > 1, jets)
+            btag_WP = getattr(BTagWPs('DeepCSV',self.year),'medium')
+            bJets = filter(lambda j : j.btagDeepB > btag_WP, centralJets) #Use DeepDSV medium WP for btagging for 2017 and 2018
 
         njets = len(centralJets)
         nbjets = len(bJets)
@@ -324,7 +332,6 @@ to next event)"""
             self.out.fillBranch("nLooseMuons", nLooseMuons)
             self.out.fillBranch("njets", njets)
             self.out.fillBranch("nbjets", nbjets)
-            #self.out.fillBranch("nbjetsHF", nbjetsHF)
             self.out.fillBranch("nfjets", nfjets)
             self.out.fillBranch("minDeltaPhi", minDeltaPhi)
             self.out.fillBranch("minDeltaPhi12", minDeltaPhi12)

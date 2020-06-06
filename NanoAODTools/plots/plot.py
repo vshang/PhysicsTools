@@ -5,8 +5,8 @@ from utils import *
 import os
 
 #Set save directory and date for file names
-saveDirectory = 'plots/data_plots/'
-date = '05_18_2020'
+saveDirectory = 'plots/'
+date = '06_04_2020'
 
 if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
@@ -158,7 +158,7 @@ if not auto_y:
 #histoLabel = 'AH0l2b jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = 'SL1b central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = 'AH2b forward n_{jet} distribution; number of forward AK4 jets; Events'
-histoLabel = 'SL2eTR p_{T}^{miss} distribution; ; Events'
+histoLabel = 'SL1e p_{T}^{miss} distribution; ; Events'
 
 ratioLabel = '; p_{T}^{miss} (GeV); Data / Bkg'
 
