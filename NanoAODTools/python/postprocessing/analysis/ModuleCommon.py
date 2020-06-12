@@ -13,7 +13,7 @@ from PhysicsTools.NanoAODTools.postprocessing.corrections.kfactors import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.PileupWeightTool import *
 
 #Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region (runLocal = False if running jobs through CRAB)
-runLocal = False
+runLocal = True
 
 if runLocal:
     ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
@@ -58,6 +58,8 @@ class CommonAnalysis(Module):
         self.out.branch("nVetoElectrons", "I");
         self.out.branch("nTightMuons", "I");
         self.out.branch("nLooseMuons", "I");
+        self.out.branch("tightElectron1_charge","I")
+        self.out.branch("tightMuon1_charge","I")
         self.out.branch("njets", "I")
         self.out.branch("nbjets", "I")
         self.out.branch("nfjets", "I")
@@ -70,6 +72,7 @@ class CommonAnalysis(Module):
         self.out.branch("jet1_jetId", "I")
         self.out.branch("jet1_chHEF", "F")
         self.out.branch("ntaus", "I")
+        self.out.branch("m_llExists","I")
         self.out.branch("m_ll","F")
         self.out.branch("recoilPtMiss","F")
         self.out.branch("lepton1_charge","I")
@@ -111,6 +114,14 @@ to next event)"""
 
         nLooseMuons = len(looseMuons)
         nTightMuons = len(tightMuons)
+
+        #Store charge of highest pT Tight electron/muon if possible
+        tightElectron1_charge = 0
+        tightMuon1_charge = 0
+        if nTightElectrons > 0:
+            tightElectron1_charge = tightElectrons[0].charge
+        if nTightMuons > 0:
+            tightMuon1_charge = tightMuons[0].charge
 
         #Jets (including tau jets) are not considered if they are within Delta R < 0.4 of a loose/veto lepton
         def cleanJet(jet):
@@ -243,6 +254,7 @@ to next event)"""
                 qcdWeight *= getQCDW(GenV_pt)
 
         #Determine if there exists two tight electrons/muons such that their invariant mass m_ll is between 60-120 GeV and the hadronic recoil >= 250 GeV
+        m_llExists = False
         m_ll = 0
         recoilPtMiss = 0
         lepton1_charge = 0
@@ -252,16 +264,16 @@ to next event)"""
                 tightLeptons = tightElectrons
             elif nTightMuons >= 2:
                 tightLeptons = tightMuons
-            for i in range(0, len(tightLeptons)):
-                for j in range(i+1, len(tightLeptons)):
-                    lepton1 = tightLeptons[i]
-                    lepton2 = tightLeptons[j]
-                    eventSum = lepton1.p4() + lepton2.p4()
-                    m_ll = eventSum.M()
-                    deltaPhiRecoil = eventSum.Phi() - event.MET_phi
-                    recoilPtMiss = event.MET_pt + eventSum.Pt() * math.cos(deltaPhiRecoil)
-                    lepton1_charge = lepton1.charge
-                    lepton2_charge = lepton2.charge
+            lepton1 = tightLeptons[0]
+            lepton2 = tightLeptons[1]
+            eventSum = lepton1.p4() + lepton2.p4()
+            m_ll = eventSum.M()
+            deltaPhiRecoil = eventSum.Phi() - event.MET_phi
+            recoilPtMiss = event.MET_pt + eventSum.Pt() * math.cos(deltaPhiRecoil)
+            lepton1_charge = lepton1.charge
+            lepton2_charge = lepton2.charge
+            if 60 <= m_ll <= 120 and recoilPtMiss >= 250 and lepton1.charge == -lepton2.charge:
+                m_llExists = True
         
 
         #Define MET filters contained in miniAOD analysis (https://github.com/zucchett/SFrame/blob/master/DM/src/DMSearches.cxx#L1542)
@@ -330,6 +342,8 @@ to next event)"""
             self.out.fillBranch("nVetoElectrons", nVetoElectrons)
             self.out.fillBranch("nTightMuons", nTightMuons)
             self.out.fillBranch("nLooseMuons", nLooseMuons)
+            self.out.fillBranch("tightElectron1_charge",tightElectron1_charge)
+            self.out.fillBranch("tightMuon1_charge",tightMuon1_charge)
             self.out.fillBranch("njets", njets)
             self.out.fillBranch("nbjets", nbjets)
             self.out.fillBranch("nfjets", nfjets)
@@ -342,6 +356,7 @@ to next event)"""
             self.out.fillBranch("jet1_jetId", jet1_jetId)
             self.out.fillBranch("jet1_chHEF", jet1_chHEF)
             self.out.fillBranch("ntaus", ntaus)
+            self.out.fillBranch("m_llExists",m_llExists)
             self.out.fillBranch("m_ll", m_ll)
             self.out.fillBranch("recoilPtMiss", recoilPtMiss)
             self.out.fillBranch("lepton1_charge", lepton1_charge)
@@ -377,7 +392,7 @@ if runLocal:
     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
     jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 
-    p1=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    #p2=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016Data()],postfix="_ModuleCommon_2016DataSkimv2",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    p1=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MCv2",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    #p2=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016Data()],postfix="_ModuleCommon_2016DataSkim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
     p1.run()
     #p2.run()
