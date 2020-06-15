@@ -11,7 +11,6 @@ from PhysicsTools.NanoAODTools.postprocessing.corrections.BTaggingTool import *
 
 class getBTagHist(Module):
     def __init__(self,tagger,wp,year,channel):
-        
         assert(year in [2016,2017,2018]), "You must choose a year from: 2016, 2017, or 2018."
         assert(tagger in ['CSVv2','DeepCSV']), "BTagWeightTool: You must choose a tagger from: CSVv2, DeepCSV!"
         assert(wp in ['loose','medium','tight']), "BTagWeightTool: You must choose a WP from: loose, medium, tight!"
@@ -46,8 +45,7 @@ class getBTagHist(Module):
         self.addObject(self.hist_udsg_all)
 
     def analyze(self, event):
-        """process event, return True (go to next module) or False (fail, go 
-to next event)"""
+        #process event, return True (go to next module) or False (fail, go to next event)
         electrons = Collection(event, "Electron")
         muons = Collection(event, "Muon")
         jets = Collection(event, "Jet")
@@ -114,13 +112,13 @@ getBTagHist2018 = lambda : getBTagHist('DeepCSV','medium',2018,'ttbar')
 # #outputDir = "python/postprocessing/corrections/btag/ttbar2017/"
 # outputDir = "."
 # #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root", "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root", "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
-# inputFile1=["testSample.root"]
+# #inputFile1=["testSample.root"]
 # #inputFile1=["samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
-# #inputFile2=["samples/tDM_tChan_Mchi1Mphi100_scalar_full.root"]
+# inputFile2=["samples/tDM_tChan_Mchi1Mphi100_scalar_full.root"]
 # #inputFile3=["samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 
 # #p=PostProcessor(".",inputFiles,cut=preselection,branchsel=None,modules=[testModule()],noOut=True,histFileName=outputDir+"ttbarDM_Mchi1Mphi100_scalar_full1_btagHists.root",histDirName="ttbar")
-# p1=PostProcessor(outputDir,inputFile1,cut=preselection,branchsel=None,modules=[getBTagHist2017()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="testSample_btagHists.root",histDirName="ttbar")
+# p1=PostProcessor(outputDir,inputFile2,cut=preselection,branchsel=None,modules=[getBTagHist2017()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt")#,histFileName="testSample_btagHists.root",histDirName="ttbar")
 # #p2=PostProcessor(outputDir,inputFile2,cut=preselection,branchsel=None,modules=[getBTagHist2017()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="tDM_tChan_Mchi1MPhi100_scalar_full_btagHists.root",histDirName="ttbar")
 # #p3=PostProcessor(outputDir,inputFile3,cut=preselection,branchsel=None,modules=[getBTagHist2017()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="tDM_tWChan_Mchi1MPhi100_scalar_full_btagHists.root",histDirName="ttbar")
 # #p.run()

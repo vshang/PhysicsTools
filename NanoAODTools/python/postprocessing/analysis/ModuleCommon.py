@@ -13,7 +13,7 @@ from PhysicsTools.NanoAODTools.postprocessing.corrections.kfactors import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.PileupWeightTool import *
 
 #Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region (runLocal = False if running jobs through CRAB)
-runLocal = True
+runLocal = False
 
 if runLocal:
     ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
@@ -257,9 +257,10 @@ to next event)"""
         m_llExists = False
         m_ll = 0
         recoilPtMiss = 0
+        fakeMET_pt = 0
         lepton1_charge = 0
         lepton2_charge = 0
-        if (nTightElectrons >= 2 and nTightMuons == 0) or (nTightElectrons == 0 and nTightMuons >= 2):
+        if (nTightElectrons >= 2 and nLooseMuons == 0) or (nVetoElectrons == 0 and nTightMuons >= 2):
             if nTightElectrons >= 2:
                 tightLeptons = tightElectrons
             elif nTightMuons >= 2:
@@ -269,12 +270,11 @@ to next event)"""
             eventSum = lepton1.p4() + lepton2.p4()
             m_ll = eventSum.M()
             deltaPhiRecoil = eventSum.Phi() - event.MET_phi
-            recoilPtMiss = event.MET_pt + eventSum.Pt() * math.cos(deltaPhiRecoil)
+            recoilPtMiss = math.sqrt(pow(event.MET_pt*math.cos(event.MET_phi) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(event.MET_pt*math.sin(event.MET_phi) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
             lepton1_charge = lepton1.charge
             lepton2_charge = lepton2.charge
             if 60 <= m_ll <= 120 and recoilPtMiss >= 250 and lepton1.charge == -lepton2.charge:
-                m_llExists = True
-        
+                m_llExists = True      
 
         #Define MET filters contained in miniAOD analysis (https://github.com/zucchett/SFrame/blob/master/DM/src/DMSearches.cxx#L1542)
         # passMETfilters = event.Flag_goodVertices and event.Flag_HBHENoiseFilter and event.Flag_HBHENoiseIsoFilter and event.Flag_EcalDeadCellTriggerPrimitiveFilter and event.Flag_eeBadScFilter and event.Flag_globalTightHalo2016Filter and event.Flag_BadPFMuonFilter and event.Flag_chargedHadronTrackResolutionFilter
@@ -342,8 +342,8 @@ to next event)"""
             self.out.fillBranch("nVetoElectrons", nVetoElectrons)
             self.out.fillBranch("nTightMuons", nTightMuons)
             self.out.fillBranch("nLooseMuons", nLooseMuons)
-            self.out.fillBranch("tightElectron1_charge",tightElectron1_charge)
-            self.out.fillBranch("tightMuon1_charge",tightMuon1_charge)
+            self.out.fillBranch("tightElectron1_charge", tightElectron1_charge)
+            self.out.fillBranch("tightMuon1_charge", tightMuon1_charge)
             self.out.fillBranch("njets", njets)
             self.out.fillBranch("nbjets", nbjets)
             self.out.fillBranch("nfjets", nfjets)
@@ -356,7 +356,7 @@ to next event)"""
             self.out.fillBranch("jet1_jetId", jet1_jetId)
             self.out.fillBranch("jet1_chHEF", jet1_chHEF)
             self.out.fillBranch("ntaus", ntaus)
-            self.out.fillBranch("m_llExists",m_llExists)
+            self.out.fillBranch("m_llExists", m_llExists)
             self.out.fillBranch("m_ll", m_ll)
             self.out.fillBranch("recoilPtMiss", recoilPtMiss)
             self.out.fillBranch("lepton1_charge", lepton1_charge)
@@ -380,19 +380,19 @@ analyze2016Data = lambda : CommonAnalysis("All",year=2016,isData=True,isSignal=F
 
 #########################################################################################################################################
 
-if runLocal:
-    #Select PostProcessor options here
-    selection=None
-    #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-    #outputDir = "testSamples/"
-    outputDir = "."
-    #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-    outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-    inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
-    #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-    jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+# if runLocal:
+#     #Select PostProcessor options here
+#     selection=None
+#     #outputDir = "outDir2016AnalysisSR/ttbarDM/"
+#     #outputDir = "testSamples/"
+#     outputDir = "."
+#     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+#     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+#     inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+#     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
+#     jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 
-    p1=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MCv2",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    #p2=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016Data()],postfix="_ModuleCommon_2016DataSkim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    p1.run()
-    #p2.run()
+#     p1=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MCv2",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     #p2=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016Data()],postfix="_ModuleCommon_2016DataSkim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     p1.run()
+#     #p2.run()

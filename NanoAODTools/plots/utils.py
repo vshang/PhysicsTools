@@ -1,6 +1,11 @@
 from ROOT import *
 import os
 
+def setCanvas(Canvas):
+    Canvas.SetRightMargin(0.05)
+    Canvas.SetLeftMargin(0.14)
+    Canvas.SetTicks(1, 1)
+
 def setTopPad(TopPad,r=4):
     TopPad.SetPad("TopPad", "", 0., 1./r, 1.0, 1.0, 0, -1, 0)
     TopPad.SetTopMargin(0.24/r+0.04)

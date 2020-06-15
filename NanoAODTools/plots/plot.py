@@ -4,12 +4,13 @@ from DataSampleList import *
 from utils import *
 import os
 import datetime
+import re
 
 #Set save directory and date for file names
 saveDirectory = 'plots/data_plots/'
-date = '06_10_2020'
+date = '06_14_2020'
 
-if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
+#if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
 print 'Plotting start time:', datetime.datetime.now()
 
@@ -23,8 +24,14 @@ cuts['singleIsoMu'] = 'HLT_IsoMu27 || HLT_IsoTkMu27 || HLT_IsoMu24 || HLT_IsoTkM
 
 cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && MET_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && MET_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
-cuts['SL1e0fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets == 0' #+ ' && M_T >= 160' #+ ' && M_T2W >= 200'
-cuts['SL1e2bSR'] = cuts['SL1e'] + ' && ' + 'nbjets >= 2' #+ ' && M_T >= 160' #+ ' && M_T2W >= 200'
+
+cuts['SL1e0fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
+cuts['SL1e1fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
+cuts['SL1e2bSR'] = cuts['SL1e'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
+
+cuts['SL1m0fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
+cuts['SL1m1fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
+cuts['SL1m2bSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 
 cuts['SL1bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets == 1 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 cuts['SL2bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets >= 2 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
@@ -34,6 +41,8 @@ cuts['AH0l0fSR'] = cuts['AH'] + ' && nbjets == 1 && nfjets == 0'
 cuts['AH0l2bSR'] = cuts['AH'] + ' && nbjets >= 2'
 
 cuts['AH1bSR'] = cuts['AH'] + ' && nbjets == 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
+cuts['AH1b0fSR'] = cuts['AH'] + ' && nbjets == 1 && nfjets == 0 && minDeltaPhi12 >= 1 && M_Tb >= 180'
+cuts['AH1b1fSR'] = cuts['AH'] + ' && nbjets == 1 && nfjets >= 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
 cuts['AH2bSR'] = cuts['AH'] + ' && nbjets >= 2 && minDeltaPhi12 >= 1 && M_Tb >= 180 && jet1p_TH_T <= 0.5'
 
 
@@ -48,7 +57,7 @@ cuts['AH1mTR'] = 'njets >= 3 && nbjets >= 1 && nVetoElectrons == 0 && nTightMuon
 cuts['AH1eWR'] = 'njets >= 3 && nbjets == 0 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && MET_pt >= 250 && M_T <= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['AH1mWR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && MET_pt >= 250 && M_T <= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 cuts['AH2eZR'] = 'njets >= 3 && nbjets == 0 && nTightElectrons == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
-cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu']
+cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 
 #Select selection cut and variable to be plotted here by uncommenting
 
@@ -57,13 +66,19 @@ cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuon
 #cut = 'AH'
 
 #cut = 'SL1e0fSR' #Signal region cuts
+#cut = 'SL1e1fSR'
 #cut = 'SL1e2bSR'
 #cut = 'SL1bSR'
 #cut = 'SL2bSR'
 #cut = 'AH0l0fSR'
 #cut = 'AH0l2bSR'
 #cut = 'AH1bSR'
-#cut = 'AH2bSR'
+#cut = 'AH1b0fSR'
+#cut = 'AH1b1fSR'
+cut = 'AH2bSR'
+#cut = 'SL1m0fSR'
+#cut = 'SL1m1fSR'
+#cut = 'SL1m2bSR'
 
 #cut = 'SL2eTR' #Control region cuts
 #cut = 'SL2mTR'
@@ -74,7 +89,7 @@ cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuon
 #cut = 'AH1mTR'
 #cut = 'AH1eWR'
 #cut = 'AH1mWR'
-cut = 'AH2eZR'
+#cut = 'AH2eZR'
 #cut = 'AH2mZR'
 
 cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter && Flag_BadPFMuonSummer16Filter'
@@ -88,13 +103,13 @@ cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter && Flag_BadPFMuonSummer16Filt
 #var = 'jet1p_TH_T'
 #var = 'njets'
 #var = 'nfjets'
-#var = 'MET_pt'
-var = 'recoilPtMiss'
+var = 'MET_pt'
+#var = 'recoilPtMiss'
 
 #Set lum (fb^-1) and overall signal sample scale factor here
 lumi = 35.9
 if 'SR' in cut:
-    scaleFactor = 20
+    scaleFactor = 10
 else:
     scaleFactor = 1
 
@@ -127,14 +142,14 @@ if not auto_y:
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
 #histoLabel = cut + ' min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}); Events'
 #histoLabel = cut + ' M_{T}^{b} distribution; M_{T}^b (GeV); Events'
-#histoLabel = 'AH0l2b jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
-#histoLabel = 'SL1b central n_{jet} distribution; number of AK4 jets; Events'
-#histoLabel = 'AH2b forward n_{jet} distribution; number of forward AK4 jets; Events'
-#histoLabel = cut + ' p_{T}^{miss} distribution; ; Events'
-histoLabel = cut + ' Hadronic recoil distribution; ; Events'
-
-#ratioLabel = '; p_{T}^{miss} (GeV); Data / Bkg'
-ratioLabel = '; Hadronic recoil (GeV); Data / Bkg'
+#histoLabel = cut + ' jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
+#histoLabel = cut + ' central n_{jet} distribution; number of AK4 jets; Events'
+#histoLabel = cut + ' forward n_{jet} distribution; number of forward AK4 jets; Events'
+histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
+#histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
+if drawData:
+    ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Data / Bkg')
+    histoLabel = re.sub(';.*;', '; ;', histoLabel)
 
 #Remove stats box from histograms
 gStyle.SetOptStat(0)
@@ -175,9 +190,6 @@ for process in samples2016:
         samples2016[process][dataset]['nevents'] = nevents
 print("Got MC sample root files and event trees")
 
-#Automatically activate storage of the sum of squares of errors for all new histograms
-#TH1.SetDefaultSumw2() 
-
 #Define histograms
 signal = ['ttbar','tbar']
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
@@ -185,6 +197,7 @@ hists = {}
 for name in ['data','bkgSum'] + signal + back:
     hists[name] = TH1F(name, histoLabel, nbins, xmin, xmax)
 
+#Uncomment this section for quickly testing plot settings
 # counter = 1.
 # for name in ['data'] + signal + back:
 #     for i in range(1,nbins+1):
@@ -243,9 +256,9 @@ for process in samples2016:
                 hists['TTV'] += hist
             elif process == 'QCD':
                 hists['QCD'] += hist
-#Call Sumw2() to propagate errors for MC background correctly
+
+#Fill background sum histogram for calculating ratio plot
 for name in back:
-    #hists[name].Sumw2()
     hists['bkgSum'] += hists[name]
 print("Finished filling histograms")
 
@@ -271,6 +284,7 @@ if drawData:
     if doLogPlot:
         c.GetPad(1).SetLogy(1)
 else:
+    setCanvas(c)
     if doLogPlot:
         c.SetLogy(1)
 h_MCStack.Draw('hist')
@@ -309,14 +323,14 @@ if auto_y:
 h_MCStack.SetMinimum(ymin)
 h_MCStack.SetMaximum(ymax)
 #Set settings for data and MC background histogram title/labels
-setHistStyle(h_MCStack)
 if drawData:
+    setHistStyle(h_MCStack)
     h_MCStack.GetXaxis().SetLabelOffset(999)
     h_MCStack.GetXaxis().SetLabelSize(0)
-setHistStyle(hists['ttbar'])
-setHistStyle(hists['tbar'])
-setHistStyle(hists['data'])
-setHistStyle(hists['bkgSum'])
+    setHistStyle(hists['ttbar'])
+    setHistStyle(hists['tbar'])
+    setHistStyle(hists['data'])
+    setHistStyle(hists['bkgSum'])
 #Set tbar histogram options
 hists['tbar'].SetLineColor(kRed)
 hists['tbar'].SetLineWidth(3)
@@ -385,7 +399,8 @@ if drawData:
     print("Finished drawing ratio plot")
         
 #Save histogram
-c.SaveAs(saveDirectory + date + "/" + cut + "_" + var + "_" + date + ".png")
-#c.SaveAs("AH1mWR_" + var + "_testSingleTreeAll_" + date + ".png")
+#c.SaveAs(saveDirectory + date + "/" + cut + "_" + var + "_METdataset_" + date + ".png")
+c.SaveAs(cut + "_" + var + "_" + date + ".png")
+#c.SaveAs("test.png")
 
 print 'Plotting end time:', datetime.datetime.now()

@@ -1,25 +1,25 @@
 import os, sys
-sys.path.append('/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/plots')
 from ROOT import *
-from MCsampleList import *
 from BTagSampleList import *
 
 #Select settings here. Filepaths to btag histograms are contained in BTagSampleList. MCsampleList contains path to MC samples (for cross section normalization).
-tagger = 'CSVv2'   # Choose between CSVv2 and DeepCSV
+tagger = 'DeepCSV'   # Choose between CSVv2 and DeepCSV
 wp = 'medium'      # Choose between loose, medium, and tight
-year = 2016        # Choose between 2016, 2017, and 2018
+year = 2017        # Choose between 2016, 2017, and 2018
 channel = 'ttbar'
-lumi = 35.9        # Set luminosity (fb^-1) for normalizing MC samples by cross section
 # name of root file that contains final btag efficiencies for selected channel
 if year == 2016:
   outfilename = tagger+'_2016_Moriond17_eff.root'
-  samples = samples2016
+  samples = btagSamples2016
+  lumi = 35.9        # Set luminosity (fb^-1) for normalizing MC samples by cross section
 elif year == 2017:
   outfilename = tagger+'_2017_Fall17_eff.root'
-  samples = sample2017
+  samples = btagSamples2017
+  lumi = 41.5
 elif year == 2018:
   outfilename = tagger+'_2018_Autumn18_eff.root'
-  samples = samples2018
+  samples = btagSamples2018
+  lumi = 59.7
 
 # Define helper functions for plotting
 def makeTitle(tagger,wp,flavor,channel,year):
@@ -46,11 +46,11 @@ def ensureTDirectory(file,dirname):
 for process in samples:
     for dataset in samples[process]:
         nevents = 0
-        for filepath in samples[process][dataset]['filepaths']:
+        for eventpath in samples[process][dataset]['eventpaths']:
             samples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             samples[process][dataset][filepath+'_Events'] = samples[process][dataset][filepath+'_TFile'].Get('Events')
             nevents += samples[process][dataset][filepath+'_Events'].GetEntries()
-        btagSamples[process][dataset]['nevents'] = nevents
+        samples[process][dataset]['nevents'] = nevents
 
 # PREPARE numerator and denominator histograms per flavor
 nhists  = {}
@@ -62,9 +62,9 @@ for flavor in ['b','c','udsg']:
     hists[histname+'_all'] = None # denominator
 
 # ADD numerator and denominator histograms
-for process in btagSamples:
-    for dataset in btagSamples[process]:
-        for filename in btagSamples[process][dataset]['filepaths']:
+for process in samples:
+    for dataset in samples[process]:
+        for filename in samples[process][dataset]['filepaths']:
             print ">>>   %s"%(filename)
             file = TFile(filename,'READ')
             if not file or file.IsZombie():
@@ -84,7 +84,7 @@ for process in btagSamples:
                     nhists[histname] = 1
                 else:
                     #Weight btag histograms by MC sample cross sections
-                    weight = btagSamples[process][dataset]['xsec']*lumi/btagSamples[process][dataset]['nevents']
+                    weight = samples[process][dataset]['xsec']*lumi/samples[process][dataset]['nevents']
                     hists[histname].Add(hist,weight)
                     nhists[histname] += 1
             file.Close()
