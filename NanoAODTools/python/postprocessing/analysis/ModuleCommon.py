@@ -9,7 +9,7 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collect
 from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 from PhysicsTools.NanoAODTools.postprocessing.corrections.leptonSFs import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.BTaggingTool import *
-from PhysicsTools.NanoAODTools.postprocessing.corrections.kfactors import *
+from PhysicsTools.NanoAODTools.postprocessing.corrections.kFactorTool import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.PileupWeightTool import *
 
 #Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region (runLocal = False if running jobs through CRAB)
@@ -44,6 +44,7 @@ class CommonAnalysis(Module):
             else:
                 self.btagTool = BTagWeightTool('DeepCSV','medium',channel='ttbar',year=self.year)
             self.puTool = PileupWeightTool(year=self.year)
+            self.kFactorTool = KFactorTool(year=self.year)
 
     def beginJob(self):
         pass
@@ -82,8 +83,11 @@ class CommonAnalysis(Module):
             self.out.branch("bjetWeight", "F")
             self.out.branch("puWeight", "F")
             self.out.branch("eventWeight", "F")
-            self.out.branch("ewkWeight", "F")
-            self.out.branch("qcdWeight", "F")
+            self.out.branch("ewkWWeight", "F")
+            self.out.branch("ewkZWeight", "F")
+            self.out.branch("qcdWWeight", "F")
+            self.out.branch("qcdZTo2NuWeight", "F")
+            self.out.branch("qcdZTo2LWeight", "F")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -245,13 +249,19 @@ to next event)"""
             #Calculate total event weight
             eventWeight = 1*leptonWeight*bjetWeight*puWeight
             #Calculate EWK and QCD k factors if a Gen V particles exists (Z or W)
-            ewkWeight = 1
-            qcdWeight = 1
+            ewkWWeight = 1
+            ewkZWeight = 1
+            qcdWWeight = 1
+            qcdZTo2NuWeight = 1
+            qcdZTo2LWeight = 1
             GenV = filter(lambda gen : (gen.pdgId == 23 or abs(gen.pdgId) == 24) and gen.status == 22, genParticles)
             if len(GenV) > 0:
                 GenV_pt = GenV[0].pt
-                ewkWeight *= getEWKW(GenV_pt)
-                qcdWeight *= getQCDW(GenV_pt)
+                ewkWWeight *= self.kFactorTool.getEWKW(GenV_pt)
+                ewkZWeight *= self.kFactorTool.getEWKZ(GenV_pt)
+                qcdWWeight *= self.kFactorTool.getQCDW(GenV_pt)
+                qcdZTo2NuWeight *= self.kFactorTool.getQCDZTo2Nu(GenV_pt)
+                qcdZTo2LWeight *= self.kFactorTool.getQCDZTo2L(GenV_pt)
 
         #Determine if there exists two tight electrons/muons such that their invariant mass m_ll is between 60-120 GeV and the hadronic recoil >= 250 GeV
         m_llExists = False
@@ -366,8 +376,11 @@ to next event)"""
                 self.out.fillBranch("bjetWeight", bjetWeight)
                 self.out.fillBranch("puWeight", puWeight)
                 self.out.fillBranch("eventWeight", eventWeight)
-                self.out.fillBranch("ewkWeight", ewkWeight)
-                self.out.fillBranch("qcdWeight", qcdWeight)
+                self.out.fillBranch("ewkWWeight", ewkWWeight)
+                self.out.fillBranch("ewkZWeight", ewkZWeight)
+                self.out.fillBranch("qcdWWeight", qcdWWeight)
+                self.out.fillBranch("qcdZTo2NuWeight", qcdZTo2NuWeight)
+                self.out.fillBranch("qcdZTo2LWeight", qcdZTo2LWeight)
             return True
         else:
             return False
@@ -377,6 +390,10 @@ to next event)"""
 analyze2016MC = lambda : CommonAnalysis("All",year=2016,isData=False,isSignal=False)
 analyze2016SignalMC = lambda : CommonAnalysis("All",year=2016,isData=False,isSignal=True)
 analyze2016Data = lambda : CommonAnalysis("All",year=2016,isData=True,isSignal=False)
+
+analyze2017MC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=False)
+analyze2017SignalMC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=True)
+analyze2017Data = lambda : CommonAnalysis("All",year=2017,isData=True,isSignal=False)
 
 #########################################################################################################################################
 
@@ -388,11 +405,14 @@ analyze2016Data = lambda : CommonAnalysis("All",year=2016,isData=True,isSignal=F
 #     outputDir = "."
 #     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
 #     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-#     inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+#     #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 #     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-#     jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+#     inputFiles=["testSamples/ttbarPlusJets_Run2017.root"]
+#     #inputFiles=["testSamples/SingleElectron_2017B.root"]
+#     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+#     jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
 
-#     p1=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MCv2",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     #p2=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016Data()],postfix="_ModuleCommon_2016DataSkim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     p1.run()
-#     #p2.run()
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2017Data()],postfix="_ModuleCommon_2017Data",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2017MC()],postfix="_ModuleCommon_2017MC",noOut=False,outputbranchsel=outputbranches)
+#     p.run()

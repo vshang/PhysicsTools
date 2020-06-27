@@ -7,10 +7,10 @@ import datetime
 import re
 
 #Set save directory and date for file names
-saveDirectory = 'plots/data_plots/'
-date = '06_14_2020'
+saveDirectory = 'plots/CR_2016/'
+date = '06_17_2020'
 
-#if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
+if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
 print 'Plotting start time:', datetime.datetime.now()
 
@@ -48,7 +48,7 @@ cuts['AH2bSR'] = cuts['AH'] + ' && nbjets >= 2 && minDeltaPhi12 >= 1 && M_Tb >= 
 
 cuts['SL2eTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && MET_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['SL2mTR'] = 'njets >= 2 && nbjets >= 1 && nVetoElectrons  == 0 && nTightMuons == 2 && nLooseMuons == 2 && MET_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
-cuts['SL1e1mTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 1 && nVetoElectrons == 1 && nTightMuons == 1 && nLooseMuons == 1 && MET_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['SL1e1mTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 1 && nVetoElectrons == 1 && nTightMuons == 1 && nLooseMuons == 1 && MET_pt >= 160 && tightElectron1_charge != tightMuon1_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 cuts['SL1eWR'] = 'njets >= 2 && nbjets == 0 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && MET_pt >= 160 && M_T >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['SL1mWR'] = 'njets >= 2 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && MET_pt >= 160 && M_T >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 
@@ -75,7 +75,7 @@ cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuon
 #cut = 'AH1bSR'
 #cut = 'AH1b0fSR'
 #cut = 'AH1b1fSR'
-cut = 'AH2bSR'
+#cut = 'AH2bSR'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
@@ -88,7 +88,7 @@ cut = 'AH2bSR'
 #cut = 'AH1eTR'
 #cut = 'AH1mTR'
 #cut = 'AH1eWR'
-#cut = 'AH1mWR'
+cut = 'AH1mWR'
 #cut = 'AH2eZR'
 #cut = 'AH2mZR'
 
@@ -109,7 +109,7 @@ var = 'MET_pt'
 #Set lum (fb^-1) and overall signal sample scale factor here
 lumi = 35.9
 if 'SR' in cut:
-    scaleFactor = 10
+    scaleFactor = 20
 else:
     scaleFactor = 1
 
@@ -158,11 +158,10 @@ gStyle.SetOptStat(0)
 datasetNames = []
 if drawData:
     print("Drawing data and ratio plot...")
-    if 'e' in cut or 'm' in cut:
-        if 'e' in cut:
-            datasetNames.append('SingleElectron')
-        if 'm' in cut:
-            datasetNames.append('SingleMuon')
+    if 'm' in cut:
+        datasetNames.append('SingleMuon')
+    elif 'e' in cut:
+        datasetNames.append('SingleElectron')
     else:
         datasetNames.append('MET')
 
@@ -316,10 +315,10 @@ hists['ZTo2Nu'].SetLineWidth(0)
 if auto_y:
     if doLogPlot:
         ymin = max(min(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMinimumBin()), hists['data'].GetBinContent(hists['data'].GetMinimumBin())), 5.e-1)
-        ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()))
+        ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar'].GetBinContent(hists['tbar'].GetMaximumBin()), hists['ttbar'].GetBinContent(hists['ttbar'].GetMaximumBin()))
     else:
         ymin = 0
-        ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()))
+        ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar'].GetBinContent(hists['tbar'].GetMaximumBin()), hists['ttbar'].GetBinContent(hists['ttbar'].GetMaximumBin()))
 h_MCStack.SetMinimum(ymin)
 h_MCStack.SetMaximum(ymax)
 #Set settings for data and MC background histogram title/labels
@@ -399,8 +398,8 @@ if drawData:
     print("Finished drawing ratio plot")
         
 #Save histogram
-#c.SaveAs(saveDirectory + date + "/" + cut + "_" + var + "_METdataset_" + date + ".png")
-c.SaveAs(cut + "_" + var + "_" + date + ".png")
+c.SaveAs(saveDirectory + date + "/" + cut + "_" + var + "_" + date + ".png")
+#c.SaveAs(cut + "_" + var + "_" + date + ".png")
 #c.SaveAs("test.png")
 
 print 'Plotting end time:', datetime.datetime.now()

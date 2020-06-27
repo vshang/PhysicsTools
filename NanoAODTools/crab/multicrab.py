@@ -2,9 +2,9 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- #task          = 'test_ModuleCommon_06122020' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
- task          = 'getBTagHist_06082020'
- analysis      = 'QCD' #Name of the analysis (e.g. VBFHN, LQtop, ...)
+ task          = 'ModuleCommon_06262020' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ #task          = 'getBTagHist_06082020'
+ analysis      = 'MET' #Name of the analysis (e.g. VBFHN, LQtop, ...)
  year          = '2017'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
@@ -62,7 +62,8 @@ if __name__ == '__main__':
   config.JobType.psetName         = 'PSet.py'
   config.JobType.scriptExe        = 'crab_script.sh'
   #config.JobType.inputFiles      =  ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropSR_out.txt','../python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'] + Mt2Com_files
-  config.JobType.inputFiles       = ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropBTag_out.txt']
+  config.JobType.inputFiles      =  ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropSR_out.txt','../python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt.txt'] + Mt2Com_files
+  #config.JobType.inputFiles       = ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropBTag_out.txt']
    #hadd nano will not be needed once nano tools are in cmssw
   #config.JobType.outputFiles = ['hist.root'] #Enable for making BTag histograms using getBTagHist.py
   config.JobType.sendPythonFolder = True

@@ -47,9 +47,9 @@ for process in samples:
     for dataset in samples[process]:
         nevents = 0
         for eventpath in samples[process][dataset]['eventpaths']:
-            samples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
-            samples[process][dataset][filepath+'_Events'] = samples[process][dataset][filepath+'_TFile'].Get('Events')
-            nevents += samples[process][dataset][filepath+'_Events'].GetEntries()
+            samples[process][dataset][eventpath+'_TFile'] = TFile.Open(eventpath,'')
+            samples[process][dataset][eventpath+'_Events'] = samples[process][dataset][eventpath+'_TFile'].Get('Events')
+            nevents += samples[process][dataset][eventpath+'_Events'].GetEntries()
         samples[process][dataset]['nevents'] = nevents
 
 # PREPARE numerator and denominator histograms per flavor
