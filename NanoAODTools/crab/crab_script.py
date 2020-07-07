@@ -11,8 +11,8 @@ from PhysicsTools.NanoAODTools.postprocessing.analysis.ModuleCommon import *
 #jsonFile = "Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt" 
 jsonFile = "Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
 
-#p=PostProcessor(".",inputFiles(),cut=None,branchsel=None,modules=[analyze2016MC()],provenance=True,fwkJobReport=True,jsonInput=runsAndLumis(),noOut=False,outputbranchsel="keep_and_dropSR_out.txt")
-p=PostProcessor(".",inputFiles(),cut=None,branchsel=None,modules=[analyze2017Data()],provenance=True,fwkJobReport=True,jsonInput=jsonFile,noOut=False,outputbranchsel="keep_and_dropSR_out.txt")
+p=PostProcessor(".",inputFiles(),cut=None,branchsel=None,modules=[analyze2017MC()],provenance=True,fwkJobReport=True,jsonInput=runsAndLumis(),noOut=False,outputbranchsel="keep_and_dropSR_out.txt")
+#p=PostProcessor(".",inputFiles(),cut=None,branchsel=None,modules=[analyze2017Data()],provenance=True,fwkJobReport=True,jsonInput=jsonFile,noOut=False,outputbranchsel="keep_and_dropSR_out.txt")
 #p=PostProcessor(".",inputFiles(),cut=None,branchsel=None,modules=[getBTagHist2017()],provenance=True,fwkJobReport=True,jsonInput=runsAndLumis(),noOut=False,outputbranchsel="keep_and_dropBTag_out.txt")#,histFileName="hist.root",histDirName="ttbar")
 p.run()
 

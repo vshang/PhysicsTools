@@ -7,10 +7,10 @@ import datetime
 import re
 
 #Set save directory and date for file names
-saveDirectory = 'plots/CR_2016/'
-date = '06_17_2020'
+saveDirectory = 'plots/CR_2017/'
+date = '07_01_2020'
 
-if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
+#if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
 print 'Plotting start time:', datetime.datetime.now()
 
@@ -18,9 +18,9 @@ print 'Plotting start time:', datetime.datetime.now()
 cuts = {}
 
 cuts['passMETfilters'] = 'Flag_goodVertices && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_globalTightHalo2016Filter && Flag_muonBadTrackFilter && Flag_chargedHadronTrackResolutionFilter'
-cuts['singleIsoEle'] = 'HLT_Ele27_eta2p1_WPTight_Gsf || HLT_Ele32_eta2p1_WPTight_Gsf || HLT_Ele27_WPTight_Gsf'# || HLT_Ele27_WPLoose_Gsf || HLT_Ele32_WPTight_Gsf'
-cuts['singleEle'] = 'HLT_Ele105_CaloIdVT_GsfTrkIdT || HLT_Ele115_CaloIdVT_GsfTrkIdT'
-cuts['singleIsoMu'] = 'HLT_IsoMu27 || HLT_IsoTkMu27 || HLT_IsoMu24 || HLT_IsoTkMu24'
+cuts['singleIsoEle'] = 'HLT_Ele27_WPTight_Gsf || HLT_Ele32_WPTight_Gsf'# || HLT_Ele32_eta2p1_WPTight_Gsf || HLT_Ele27_eta2p1_WPTight_Gsf || HLT_Ele27_WPLoose_Gsf'
+cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT' # || HLT_Ele105_CaloIdVT_GsfTrkIdT
+cuts['singleIsoMu'] = 'HLT_IsoMu27 || HLT_IsoMu24' # || HLT_IsoTkMu24' #|| HLT_IsoTkMu27
 
 cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && MET_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && MET_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
@@ -75,7 +75,7 @@ cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuon
 #cut = 'AH1bSR'
 #cut = 'AH1b0fSR'
 #cut = 'AH1b1fSR'
-#cut = 'AH2bSR'
+cut = 'AH2bSR'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
@@ -88,7 +88,7 @@ cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuon
 #cut = 'AH1eTR'
 #cut = 'AH1mTR'
 #cut = 'AH1eWR'
-cut = 'AH1mWR'
+#cut = 'AH1mWR'
 #cut = 'AH2eZR'
 #cut = 'AH2mZR'
 
@@ -107,9 +107,10 @@ var = 'MET_pt'
 #var = 'recoilPtMiss'
 
 #Set lum (fb^-1) and overall signal sample scale factor here
-lumi = 35.9
+#lumi = 35.9
+lumi = 41.5
 if 'SR' in cut:
-    scaleFactor = 20
+    scaleFactor = 10
 else:
     scaleFactor = 1
 
@@ -132,8 +133,8 @@ auto_y = True
 #auto_y = False
 doLogPlot = True
 #doLogPlot = False
-drawData = True
-#drawData = False
+#drawData = True
+drawData = False
 if not auto_y:
     ymin = 60
     ymax = 20000
@@ -167,26 +168,26 @@ if drawData:
 
 #Get data root files and event trees
 print("Loading data sample root files and event trees...")
-for dataset in data2016:
+for dataset in data2017:
     if dataset in datasetNames:
         nevents = 0
-        for filepath in data2016[dataset]['filepaths']:
-            data2016[dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
-            data2016[dataset][filepath+'_Events'] = data2016[dataset][filepath+'_TFile'].Get('Events')
-            nevents += data2016[dataset][filepath+'_Events'].GetEntries()
-        data2016[dataset]['nevents'] = nevents
+        for filepath in data2017[dataset]['filepaths']:
+            data2017[dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
+            data2017[dataset][filepath+'_Events'] = data2017[dataset][filepath+'_TFile'].Get('Events')
+            nevents += data2017[dataset][filepath+'_Events'].GetEntries()
+        data2017[dataset]['nevents'] = nevents
 print("Got data sample root files and event trees")
 
 #Get MC background root files and event trees
 print("Loading MC sample root files and event trees...")
-for process in samples2016:
-    for dataset in samples2016[process]:
+for process in samples2017:
+    for dataset in samples2017[process]:
         nevents = 0
-        for filepath in samples2016[process][dataset]['filepaths']:
-            samples2016[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
-            samples2016[process][dataset][filepath+'_Events'] = samples2016[process][dataset][filepath+'_TFile'].Get('Events')
-            nevents += samples2016[process][dataset][filepath+'_Events'].GetEntries()
-        samples2016[process][dataset]['nevents'] = nevents
+        for filepath in samples2017[process][dataset]['filepaths']:
+            samples2017[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
+            samples2017[process][dataset][filepath+'_Events'] = samples2017[process][dataset][filepath+'_TFile'].Get('Events')
+            nevents += samples2017[process][dataset][filepath+'_Events'].GetEntries()
+        samples2017[process][dataset]['nevents'] = nevents
 print("Got MC sample root files and event trees")
 
 #Define histograms
@@ -211,28 +212,34 @@ for name in ['data','bkgSum'] + signal + back:
 count = 0
 print("Filling histograms...")
 #Loop through each root file for each dataset
-for dataset in data2016:
+for dataset in data2017:
     if dataset in datasetNames:
-        print '  Dataset = ', dataset, ' ||   nEvents = ', data2016[dataset]['nevents']
-        for filepath in data2016[dataset]['filepaths']:
+        print '  Dataset = ', dataset, ' ||   nEvents = ', data2017[dataset]['nevents']
+        for filepath in data2017[dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
-            data2016[dataset][filepath+'_Events'].Draw(var+'>>hist',cuts['data'])
+            data2017[dataset][filepath+'_Events'].Draw(var+'>>hist',cuts['data'])
             print '    hist nEntries = ', hist.GetEntries()
             print '    hist integral = ', hist.Integral()
             hists['data'] += hist
             print '    hist_data nEntries = ', hists['data'].GetEntries()
             print '    hist_data integral = ', hists['data'].Integral()
-for process in samples2016:
+for process in samples2017:
     print '  Process = ', process
-    for dataset in samples2016[process]:
-        print '      Dataset = ', dataset, ' ||   nEvents = ', samples2016[process][dataset]['nevents']
-        weight = str(samples2016[process][dataset]['xsec']*lumi/samples2016[process][dataset]['nevents']) + '*eventWeight'
-        if process == 'WPlusJets' or process == 'ZTo2L' or process == 'ZTo2Nu':
-            weight = weight + '*qcdWeight*ewkWeight'
-            print 'Applied qcd/ewk Weights correctly'
-        for filepath in samples2016[process][dataset]['filepaths']:
+    for dataset in samples2017[process]:
+        print '      Dataset = ', dataset, ' ||   nEvents = ', samples2017[process][dataset]['nevents']
+        weight = str(samples2017[process][dataset]['xsec']*lumi/samples2017[process][dataset]['nevents']) + '*eventWeight'
+        if process == 'WPlusJets':
+            weight = weight + '*qcdWWeight*ewkWWeight'
+            print 'Applied WPlusJets qcd/ewk Weights correctly'
+        elif process == 'ZTo2L':
+            weight = weight + '*qcdZTo2LWeight*ewkZWeight'
+            print 'Applied ZTo2L qcd/ewk Weights correctly'
+        elif process == 'ZTo2Nu':
+            weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
+            print 'Applied ZTo2Nu qcd/ewk Weights correctly'
+        for filepath in samples2017[process][dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
-            samples2016[process][dataset][filepath+'_Events'].Draw(var+'>>hist',weight+'*('+cuts[cut]+')')
+            samples2017[process][dataset][filepath+'_Events'].Draw(var+'>>hist',weight+'*('+cuts[cut]+')')
             print '          hist nEntries = ', hist.GetEntries()
             if process in signal:
                 hists[process] += scaleFactor*hist
@@ -398,8 +405,8 @@ if drawData:
     print("Finished drawing ratio plot")
         
 #Save histogram
-c.SaveAs(saveDirectory + date + "/" + cut + "_" + var + "_" + date + ".png")
-#c.SaveAs(cut + "_" + var + "_" + date + ".png")
+#c.SaveAs(saveDirectory + date + "/" + cut + "_" + var + "_" + date + ".png")
+c.SaveAs(cut + "_" + var + "_" + date + ".png")
 #c.SaveAs("test.png")
 
 print 'Plotting end time:', datetime.datetime.now()
