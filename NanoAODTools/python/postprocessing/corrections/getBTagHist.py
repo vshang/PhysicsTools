@@ -7,7 +7,7 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.postprocessor import Pos
 
 from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collection 
 from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
-#from PhysicsTools.NanoAODTools.postprocessing.corrections.BTaggingTool import *
+from PhysicsTools.NanoAODTools.postprocessing.corrections.BTaggingTool import *
 
 class getBTagHist(Module):
     def __init__(self,tagger,wp,year,channel):
@@ -27,7 +27,7 @@ class getBTagHist(Module):
         else:
           self.tagged = lambda j: j.btagCSVV2>threshold
 
-    def beginJob(self),histFile=None,histDirName=None):
+    def beginJob(self, histFile=None, histDirName=None):
         Module.beginJob(self,histFile,histDirName)
         
         self.hist_b = createEfficiencyMap('%s_%s_%s'%(self.tagger,'b',self.wp))

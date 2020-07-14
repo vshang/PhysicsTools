@@ -56,7 +56,7 @@ samples2016 = {
         'WWTo4Q' : { 'nevents' : 1, 'xsec' : 51723.0, 'filepaths' : ['/hdfs/store/user/vshang/WW_Run2016/WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8/ModuleCommon_06122020/tree_all.root'] },
     },
     'WZ' : {
-        'WZTo1L1Nu' : { 'nevents' : 1, 'xsec' : 10710.0, 'filepaths' : ['/hdfs/store/user/vshang/WZ_Run2016/WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/ModuleCommon_06122020/tree_all.root'] },
+        'WZTo1L1Nu2Q' : { 'nevents' : 1, 'xsec' : 10710.0, 'filepaths' : ['/hdfs/store/user/vshang/WZ_Run2016/WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/ModuleCommon_06122020/tree_all.root'] },
         'WZTo1L3Nu' : { 'nevents' : 1, 'xsec' : 3033.0, 'filepaths' : ['/hdfs/store/user/vshang/WZ_Run2016/WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8/ModuleCommon_06122020/tree_all.root'] },
         'WZTo2L2Q' : { 'nevents' : 1, 'xsec' : 5595.0, 'filepaths' : ['/hdfs/store/user/vshang/WZ_Run2016/WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/ModuleCommon_06122020/tree_all.root'] },
         'WZTo2Q2Nu' : { 'nevents' : 1, 'xsec' : 6488.0, 'filepaths' : ['/hdfs/store/user/vshang/WZ_Run2016/WZTo2Q2Nu_13TeV_amcatnloFXFX_madspin_pythia8/ModuleCommon_06122020/tree_all.root'] },
@@ -130,12 +130,12 @@ samples2017 = {
         'HT2500ToInf' : { 'nevents' : 1, 'xsec' : 5.146, 'filepaths' : ['/hdfs/store/user/vshang/ZTo2Nu_Run2017/ZJetsToNuNu_HT-2500ToInf_13TeV-madgraph/ModuleCommon_06282020/tree_all.root'] },
     },
     'WW' : {
-        'WWTo1L1Nu' : { 'nevents' : 1, 'xsec' : 80740.0, 'filepaths' : ['/hdfs/store/user/vshang/WW_Run2017/WWTo4Q_NNPDF31_TuneCP5_13TeV-powheg-pythia8/ModuleCommon_06282020/tree_all.root'] },
+        'WWTo4Q' : { 'nevents' : 1, 'xsec' : 47730.0, 'filepaths' : ['/hdfs/store/user/vshang/WW_Run2017/WWTo4Q_NNPDF31_TuneCP5_13TeV-powheg-pythia8/ModuleCommon_06282020/tree_all.root'] },
         'WWTo2L2Nu' : { 'nevents' : 1, 'xsec' : 11080.0, 'filepaths' : ['/hdfs/store/user/vshang/WW_Run2017/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/ModuleCommon_06282020/tree_all.root'] },
-        'WWTo4Q' : { 'nevents' : 1, 'xsec' : 47730.0, 'filepaths' : ['/hdfs/store/user/vshang/WW_Run2017/WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/ModuleCommon_06282020/tree_all.root'] },
+        'WWTo1L1Nu2Q' : { 'nevents' : 1, 'xsec' : 80740.0, 'filepaths' : ['/hdfs/store/user/vshang/WW_Run2017/WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/ModuleCommon_06282020/tree_all.root'] },
     },
     'WZ' : {
-        'WZTo1L1Nu' : { 'nevents' : 1, 'xsec' : 11660.0, 'filepaths' : ['/hdfs/store/user/vshang/WZ_Run2017/WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/ModuleCommon_06282020/tree_all.root'] },
+        'WZTo1L1Nu2Q' : { 'nevents' : 1, 'xsec' : 11660.0, 'filepaths' : ['/hdfs/store/user/vshang/WZ_Run2017/WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/ModuleCommon_06282020/tree_all.root'] },
         'WZTo1L3Nu' : { 'nevents' : 1, 'xsec' : 3342.0, 'filepaths' : ['/hdfs/store/user/vshang/WZ_Run2017/WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8_v2/ModuleCommon_06282020/tree_all.root'] },
         'WZTo2L2Q' : { 'nevents' : 1, 'xsec' : 6331.0, 'filepaths' : ['/hdfs/store/user/vshang/WZ_Run2017/WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/ModuleCommon_06282020/tree_all.root'] },
         #'WZTo2Q2Nu' : { 'nevents' : 1, 'xsec' : , 'filepaths' : ['/hdfs/store/user/vshang/WZ_Run2017/WZTo2Q2Nu_13TeV_amcatnloFXFX_madspin_pythia8/ModuleCommon_06282020/tree_all.root'] },
@@ -165,3 +165,6 @@ samples2017 = {
         'HT2000ToInf' : { 'nevents' : 1, 'xsec' : 20230.0, 'filepaths' : ['/hdfs/store/user/vshang/QCD_Run2017/QCD_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8/ModuleCommon_06282020/tree_all.root'] },
     },
 }
+
+#2018 MC samples
+samples2018 = 

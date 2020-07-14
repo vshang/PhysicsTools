@@ -13,7 +13,7 @@ from PhysicsTools.NanoAODTools.postprocessing.corrections.kFactorTool import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.PileupWeightTool import *
 
 #Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region (runLocal = False if running jobs through CRAB)
-runLocal = False
+runLocal = True
 
 if runLocal:
     ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
@@ -397,22 +397,22 @@ analyze2017Data = lambda : CommonAnalysis("All",year=2017,isData=True,isSignal=F
 
 #########################################################################################################################################
 
-# if runLocal:
-#     #Select PostProcessor options here
-#     selection=None
-#     #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-#     #outputDir = "testSamples/"
-#     outputDir = "."
-#     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-#     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-#     #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
-#     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-#     inputFiles=["testSamples/ttbarPlusJets_Run2017.root"]
-#     #inputFiles=["testSamples/SingleElectron_2017B.root"]
-#     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
-#     jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
+if runLocal:
+    #Select PostProcessor options here
+    selection=None
+    #outputDir = "outDir2016AnalysisSR/ttbarDM/"
+    #outputDir = "testSamples/"
+    outputDir = "."
+    #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+    outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+    #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+    #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
+    #inputFiles=["testSamples/ttbarPlusJets_Run2017.root"]
+    inputFiles=["testSamples/SingleElectron_2017B.root"]
+    #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+    jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
 
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2017Data()],postfix="_ModuleCommon_2017Data",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
-#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2017MC()],postfix="_ModuleCommon_2017MC",noOut=False,outputbranchsel=outputbranches)
-#     p.run()
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2017Data()],postfix="_ModuleCommon_2017Data",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2017MC()],postfix="_ModuleCommon_2017MC",noOut=False,outputbranchsel=outputbranches)
+    p.run()

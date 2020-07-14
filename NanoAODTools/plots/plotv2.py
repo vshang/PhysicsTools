@@ -6,11 +6,13 @@ import os
 import datetime
 import re
 
+from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collection 
+from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
+
 #Set save directory and date for file names
-saveDirectory = 'plots/CR_2016/jetpt/'
+saveDirectory = 'plots/CR_2016/leptoneta/'
 date = '07_10_2020'
 year = 2016
-useCondor = True
 
 if year == 2016:
     dataSamples = data2016
@@ -22,8 +24,8 @@ elif year == 2018:
     dataSamples = data2018
     MCSamples = samples2018
     
-if not useCondor:
-    if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
+
+if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
 
 print 'Plotting start time:', datetime.datetime.now()
 
@@ -98,13 +100,13 @@ cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuon
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
 
-#cut = 'SL2eTR' #Control region cuts
+cut = 'SL2eTR' #Control region cuts
 #cut = 'SL2mTR'
 #cut = 'SL1e1mTR'
 #cut = 'SL1eWR'
 #cut = 'SL1mWR'
 #cut = 'AH1eTR'
-cut = 'AH1mTR'
+#cut = 'AH1mTR'
 #cut = 'AH1eWR'
 #cut = 'AH1mWR'
 #cut = 'AH2eZR'
@@ -117,9 +119,8 @@ def testFunction(i):
         return 0
 
 #cuts[cut] += ' && testFunction(1)' #&& len(list(filter(lambda i: Electron_pt[i] > 30 && Electron_cutBased[i] == 4 && ((abs(Electron_eta[i]) < 1.4442) || (abs(Electron_eta[i]) > 1.566 && abs(Electron_eta[i]) < 2.1)), range(len(Electron_pt)))))==2'
-#cuts[cut] += ' && Electron_pt[0] > 30 && Electron_cutBased[0] == 4 && ((abs(Electron_eta[0]) < 1.4442) || (abs(Electron_eta[0]) > 1.566 && abs(Electron_eta[0]) < 2.1))'
+cuts[cut] += ' && Electron_pt[0] > 30 && Electron_cutBased_Sum16[0] == 4 && ((abs(Electron_eta[0]) < 1.4442) || (abs(Electron_eta[0]) > 1.566 && abs(Electron_eta[0]) < 2.1))'
 #cuts[cut] += ' && Muon_pt[0] > 30 && Muon_tightId[0] && abs(Muon_eta[0]) < 2.4'
-#cuts[cut] += ' && Jet_pt[0] > 30 && abs(Jet_eta[0]) < 2.4 && Jet_jetId[0] > 0'
 
 if year == 2016:
     cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter && Flag_BadPFMuonSummer16Filter'
@@ -140,8 +141,8 @@ else:
 #var = 'recoilPtMiss'
 #var = 'Electron_pt[0]'
 #var = 'Muon_pt[0]'
-var = 'Jet_pt[0]'
-#var = 'Electron_eta[0]'
+#var = 'Jet_pt[0]'
+var = 'Electron_eta[0]'
 #var = 'Muon_eta[0]'
 
 #Set lum (fb^-1) and overall signal sample scale factor here
@@ -161,16 +162,15 @@ print 'Cut name = ', cut
 print 'MC Selection Cuts = ', cuts[cut]
 print 'Data Selection Cuts = ', cuts['data']
 print 'var = ', var
-print 'year = ', str(year)
 print 'lumi = ', str(lumi)
 print 'saveDirectory = ', saveDirectory
 print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 20
-xmin = 30
-xmax = 830
+nbins = 24
+xmin = -2.4
+xmax = 2.4
 auto_y = True
 #auto_y = False
 #doLogPlot = True
@@ -193,8 +193,8 @@ if not auto_y:
 #histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
 #histoLabel = cut + ' Electron_pt[0] distribution; Electron_pt[0]; Events'
 #histoLabel = cut + ' Muon_pt[0] distribution; Muon_pt[0]; Events'
-histoLabel = cut + ' Jet_pt[0] distribution; Jet_pt[0]; Events'
-#histoLabel = cut + ' Electron_eta[0] distribution; Electron_eta[0]; Events'
+#histoLabel = cut + ' Jet_pt[0] distribution; Jet_pt[0]; Events'
+histoLabel = cut + ' Electron_eta[0] distribution; Electron_eta[0]; Events'
 #histoLabel = cut + ' Muon_eta[0] distribution; Muon_eta[0]; Events'
 if drawData:
     ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Data / Bkg')
@@ -458,10 +458,8 @@ if drawData:
     print("Finished drawing ratio plot")
         
 #Save histogram
-if useCondor:
-    c.SaveAs(cut + "_" + var + "_" + date + ".png")
-else:
-    c.SaveAs(saveDirectory + date + "/" + cut + "_" + var + "_" + date + ".png")
+c.SaveAs(saveDirectory + date + "/" + cut + "_" + var + "_" + date + ".png")
+#c.SaveAs(cut + "_" + var + "_" + date + ".png")
 #c.SaveAs("test.png")
 
 print 'Plotting end time:', datetime.datetime.now()
