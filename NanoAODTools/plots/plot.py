@@ -7,9 +7,9 @@ import datetime
 import re
 
 #Set save directory and date for file names
-saveDirectory = 'plots/CR_2016/jetpt/'
-date = '07_10_2020'
-year = 2016
+saveDirectory = 'plots/CR_2016/nleptons/'
+date = '07_22_2020'
+year = 2017
 useCondor = True
 
 if year == 2016:
@@ -77,6 +77,15 @@ cuts['AH1mWR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuon
 cuts['AH2eZR'] = 'njets >= 3 && nbjets == 0 && nTightElectrons == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 
+cuts['SLeCR'] = 'njets >= 2 && MET_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
+cuts['SLmCR'] = 'njets >= 2 && MET_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['SL1eCR'] = 'njets >= 2 && MET_pt >= 160 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
+cuts['SL1mCR'] = 'njets >= 2 && MET_pt >= 160 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['SL1e0bCR'] = cuts['SL1eCR'] + ' && nbjets == 0'
+cuts['SL1m0bCR'] = cuts['SL1mCR'] + ' && nbjets == 0'
+cuts['SL1e1bCR'] = cuts['SL1eCR'] + ' && nbjets >= 1'
+cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
+
 #Select selection cut and variable to be plotted here by uncommenting
 
 #cut = 'SL1e' #Pre-selection cuts
@@ -104,22 +113,24 @@ cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuon
 #cut = 'SL1eWR'
 #cut = 'SL1mWR'
 #cut = 'AH1eTR'
-cut = 'AH1mTR'
+#cut = 'AH1mTR'
 #cut = 'AH1eWR'
 #cut = 'AH1mWR'
 #cut = 'AH2eZR'
 #cut = 'AH2mZR'
+#cut = 'SLeCR'
+#cut = 'SLmCR'
+#cut = 'SL1eCR'
+#cut = 'SL1mCR'
+cut = 'SL1e0bCR'
+#cut = 'SL1m0bCR'
+#cut = 'SL1e1bCR'
+#cut = 'SL1m1bCR'
 
-def testFunction(i):
-    if i>0:
-        return 1
-    else:
-        return 0
-
-#cuts[cut] += ' && testFunction(1)' #&& len(list(filter(lambda i: Electron_pt[i] > 30 && Electron_cutBased[i] == 4 && ((abs(Electron_eta[i]) < 1.4442) || (abs(Electron_eta[i]) > 1.566 && abs(Electron_eta[i]) < 2.1)), range(len(Electron_pt)))))==2'
-#cuts[cut] += ' && Electron_pt[0] > 30 && Electron_cutBased[0] == 4 && ((abs(Electron_eta[0]) < 1.4442) || (abs(Electron_eta[0]) > 1.566 && abs(Electron_eta[0]) < 2.1))'
-#cuts[cut] += ' && Muon_pt[0] > 30 && Muon_tightId[0] && abs(Muon_eta[0]) < 2.4'
+#cuts[cut] += ' && Electron_pt[1] > 30 && Electron_cutBased_Sum16[1] == 4 && ((abs(Electron_eta[1]) < 1.4442) || (abs(Electron_eta[1]) > 1.566 && abs(Electron_eta[1]) < 2.1))'
+#cuts[cut] += ' && Muon_pt[1] > 30 && Muon_tightId[1] && abs(Muon_eta[1]) < 2.4'
 #cuts[cut] += ' && Jet_pt[0] > 30 && abs(Jet_eta[0]) < 2.4 && Jet_jetId[0] > 0'
+#cuts[cut] = cuts[cut].replace('&& M_T >= 160 ', '')
 
 if year == 2016:
     cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter && Flag_BadPFMuonSummer16Filter'
@@ -128,7 +139,7 @@ else:
 #cut['data'] = cut['data'].replace(' || HLT_Ele27_WPLoose_Gsf', '')
 #cut['data'] = cut['data'].replace(' || HLT_Ele32_WPTight_Gsf', '')
 
-#var = 'M_T'
+var = 'M_T'
 #var = 'M_T2W'
 #var = 'minDeltaPhi12'
 #var = 'M_Tb'
@@ -138,11 +149,14 @@ else:
 #var = 'nbjets'
 #var = 'MET_pt'
 #var = 'recoilPtMiss'
-#var = 'Electron_pt[0]'
-#var = 'Muon_pt[0]'
-var = 'Jet_pt[0]'
-#var = 'Electron_eta[0]'
-#var = 'Muon_eta[0]'
+#var = 'Electron_pt[1]'
+#var = 'Muon_pt[1]'
+#var = 'Jet_pt[0]'
+#var = 'Electron_eta[1]'
+#var = 'Muon_eta[1]'
+#var = 'nTightElectrons'
+#var = 'nTightMuons'
+#var = 'nTightElectrons + nTightMuons'
 
 #Set lum (fb^-1) and overall signal sample scale factor here
 if year == 2016:
@@ -168,20 +182,20 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 20
-xmin = 30
-xmax = 830
+nbins = 10
+xmin = 0
+xmax = 400
 auto_y = True
 #auto_y = False
-#doLogPlot = True
-doLogPlot = False
+doLogPlot = True
+#doLogPlot = False
 drawData = True
 #drawData = False
 if not auto_y:
     ymin = 60
     ymax = 20000
 
-#histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
+histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
 #histoLabel = cut + ' min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}); Events'
 #histoLabel = cut + ' M_{T}^{b} distribution; M_{T}^b (GeV); Events'
@@ -191,11 +205,15 @@ if not auto_y:
 #histoLabel = cut + ' forward n_{jet} distribution; number of forward AK4 jets; Events'
 #histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
 #histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
-#histoLabel = cut + ' Electron_pt[0] distribution; Electron_pt[0]; Events'
-#histoLabel = cut + ' Muon_pt[0] distribution; Muon_pt[0]; Events'
-histoLabel = cut + ' Jet_pt[0] distribution; Jet_pt[0]; Events'
-#histoLabel = cut + ' Electron_eta[0] distribution; Electron_eta[0]; Events'
-#histoLabel = cut + ' Muon_eta[0] distribution; Muon_eta[0]; Events'
+#histoLabel = cut + ' Electron_pt[1] distribution; Electron_pt[1]; Events'
+#histoLabel = cut + ' Muon_pt[1] distribution; Muon_pt[1]; Events'
+#histoLabel = cut + ' Jet_pt[0] distribution; Jet_pt[0]; Events'
+#histoLabel = cut + ' Electron_eta[1] distribution; Electron_eta[1]; Events'
+#histoLabel = cut + ' Muon_eta[1] distribution; Muon_eta[1]; Events'
+#histoLabel = cut + ' nTightElectrons distribution; number of tight electrons; Events'
+#histoLabel = cut + ' nTightMuons distribution; number of tight muons; Events'
+#histoLabel = cut + ' nTightLeptons distribution; number of tight leptons; Events'
+
 if drawData:
     ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Data / Bkg')
     histoLabel = re.sub(';.*;', '; ;', histoLabel)
@@ -209,10 +227,13 @@ if drawData:
     print("Drawing data and ratio plot...")
     if 'm' in cut:
         datasetNames.append('SingleMuon')
+        print("Selected SingleMuon dataset")
     elif 'e' in cut:
         datasetNames.append('SingleElectron')
+        print("Selected SingleElectron dataset")
     else:
         datasetNames.append('MET')
+        print("Selected MET dataset")
 
 #Get data root files and event trees
 print("Loading data sample root files and event trees...")
@@ -459,9 +480,9 @@ if drawData:
         
 #Save histogram
 if useCondor:
-    c.SaveAs(cut + "_" + var + "_" + date + ".png")
+    c.SaveAs(cut + str(year) + "_" + var + "_" + date + "_logScale.png")
 else:
-    c.SaveAs(saveDirectory + date + "/" + cut + "_" + var + "_" + date + ".png")
+    c.SaveAs(saveDirectory + date + "/" + cut + str(year) + "_" + var + "_" + date + ".png")
 #c.SaveAs("test.png")
 
 print 'Plotting end time:', datetime.datetime.now()

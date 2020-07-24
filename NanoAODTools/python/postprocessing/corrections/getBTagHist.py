@@ -80,9 +80,9 @@ class getBTagHist(Module):
 
         #Calculate and fill bjet efficiency histograms
         if self.year == 2016:
-            centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 0, jets) #Use loose jet ID WP for 2016
+            centralJets = filter(lambda j : ((30 < j.pt < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets) #Use tightLepVeto jet ID WP for 2016 with tight puId for jet_pt < 50
         else:
-            centralJets = filter(lambda j : j.pt > 30 and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId > 1, jets) #Use tight jet ID WP for 2017 and 2018
+            centralJets = filter(lambda j : ((30 < j.pt < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets) #Use tightLepVeto jet ID WP for 2017 and 2018 with tight puId for jet_pt < 50
         for jet in centralJets:
             flavor = flavorToString(jet.hadronFlavour)
             if flavor == 'b':
@@ -102,6 +102,7 @@ class getBTagHist(Module):
         return True
 
 getBTagHist2016 = lambda : getBTagHist('CSVv2','medium',2016,'ttbar')
+getBTagHist2016_DeepCSV = lambda : getBTagHist('DeepCSV','medium',2016,'ttbar')
 getBTagHist2017 = lambda : getBTagHist('DeepCSV','medium',2017,'ttbar')
 getBTagHist2018 = lambda : getBTagHist('DeepCSV','medium',2018,'ttbar')
 
@@ -111,17 +112,17 @@ getBTagHist2018 = lambda : getBTagHist('DeepCSV','medium',2018,'ttbar')
 # preselection=None
 # #outputDir = "python/postprocessing/corrections/btag/ttbar2017/"
 # outputDir = "."
-# inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root", "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root", "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+# #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root", "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root", "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 # #inputFile1=["testSample.root"]
 # #inputFile1=["samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
-# #inputFile2=["samples/tDM_tChan_Mchi1Mphi100_scalar_full.root"]
+# inputFile2=["samples/tDM_tChan_Mchi1Mphi100_scalar_full.root"]
 # #inputFile3=["samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 
 # #p=PostProcessor(".",inputFiles,cut=preselection,branchsel=None,modules=[testModule()],noOut=True,histFileName=outputDir+"ttbarDM_Mchi1Mphi100_scalar_full1_btagHists.root",histDirName="ttbar")
-# p1=PostProcessor(outputDir,inputFiles,cut=preselection,branchsel=None,modules=[getBTagHist2017()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt")#,histFileName="testSample_btagHists.root",histDirName="ttbar")
-# #p2=PostProcessor(outputDir,inputFile2,cut=preselection,branchsel=None,modules=[getBTagHist2017()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="tDM_tChan_Mchi1MPhi100_scalar_full_btagHists.root",histDirName="ttbar")
-# #p3=PostProcessor(outputDir,inputFile3,cut=preselection,branchsel=None,modules=[getBTagHist2017()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="tDM_tWChan_Mchi1MPhi100_scalar_full_btagHists.root",histDirName="ttbar")
+# #p1=PostProcessor(outputDir,inputFile1,cut=preselection,branchsel=None,modules=[getBTagHist2016_DeepCSV()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="ttbarDM_Mchi1Mphi100_scalar_full2_btagHists.root",histDirName="ttbar")
+# p2=PostProcessor(outputDir,inputFile2,cut=preselection,branchsel=None,modules=[getBTagHist2016_DeepCSV()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="tDM_tChan_Mchi1MPhi100_scalar_full_btagHists.root",histDirName="ttbar")
+# #p3=PostProcessor(outputDir,inputFile3,cut=preselection,branchsel=None,modules=[getBTagHist2016_DeepCSV()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="tDM_tWChan_Mchi1MPhi100_scalar_full_btagHists.root",histDirName="ttbar")
 # #p.run()
-# p1.run()
-# #p2.run()
+# #p1.run()
+# p2.run()
 # #p3.run()

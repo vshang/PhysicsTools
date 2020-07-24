@@ -17,7 +17,7 @@ class PileupWeightTool:
         elif year==2017:
           self.datafile = ensureTFile( path+'PileupHistogram-goldenJSON-13tev-2017-99bins_withVar.root', 'READ')
           self.mcfile   = ensureTFile( path+'mcPileup2017.root', 'READ')
-        elif yea==2018:
+        elif year==2018:
           self.datafile = ensureTFile( path+'PileupHistogram-goldenJSON-13tev-2018-100bins_withVar.root', 'READ')
           self.mcfile   = ensureTFile( path+'mcPileup2018.root', 'READ')
 
