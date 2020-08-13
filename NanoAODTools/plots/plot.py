@@ -8,7 +8,7 @@ import re
 
 #Set save directory and date for file names
 saveDirectory = 'plots/CR_2016/nleptons/'
-date = '07_22_2020'
+date = '08_12_2020'
 year = 2017
 useCondor = True
 
@@ -32,12 +32,12 @@ cuts = {}
 
 cuts['passMETfilters'] = 'Flag_goodVertices && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_globalTightHalo2016Filter && Flag_muonBadTrackFilter && Flag_chargedHadronTrackResolutionFilter'
 if year == 2016:
-    cuts['singleIsoEle'] = 'HLT_Ele27_WPTight_Gsf || HLT_Ele32_eta2p1_WPTight_Gsf || HLT_Ele27_eta2p1_WPTight_Gsf' # || HLT_Ele27_WPLoose_Gsf || HLT_Ele32_WPTight_Gsf
+    cuts['singleIsoEle'] = 'HLT_Ele27_WPTight_Gsf'# || HLT_Ele32_eta2p1_WPTight_Gsf || HLT_Ele27_eta2p1_WPTight_Gsf' # || HLT_Ele27_WPLoose_Gsf || HLT_Ele32_WPTight_Gsf
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Ele105_CaloIdVT_GsfTrkIdT'
     cuts['singleIsoMu'] = 'HLT_IsoMu27 || HLT_IsoMu24 || HLT_IsoTkMu24 || HLT_IsoTkMu27'
 else:
-    cuts['singleIsoEle'] = 'HLT_Ele27_WPTight_Gsf || HLT_Ele32_WPTight_Gsf'# || HLT_Ele32_eta2p1_WPTight_Gsf || HLT_Ele27_eta2p1_WPTight_Gsf || HLT_Ele27_WPLoose_Gsf'
-    cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT' # || HLT_Ele105_CaloIdVT_GsfTrkIdT
+    cuts['singleIsoEle'] = 'HLT_Ele32_WPTight_Gsf' #'HLT_Ele35_WPTight_Gsf || HLT_Ele32_WPTight_Gsf_L1DoubleEG'
+    cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200' # || HLT_Ele105_CaloIdVT_GsfTrkIdT
     cuts['singleIsoMu'] = 'HLT_IsoMu27 || HLT_IsoMu24' # || HLT_IsoTkMu24' #|| HLT_IsoTkMu27
 
 cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && MET_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
@@ -110,7 +110,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL2eTR' #Control region cuts
 #cut = 'SL2mTR'
 #cut = 'SL1e1mTR'
-#cut = 'SL1eWR'
+cut = 'SL1eWR'
 #cut = 'SL1mWR'
 #cut = 'AH1eTR'
 #cut = 'AH1mTR'
@@ -122,7 +122,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SLmCR'
 #cut = 'SL1eCR'
 #cut = 'SL1mCR'
-cut = 'SL1e0bCR'
+#cut = 'SL1e0bCR'
 #cut = 'SL1m0bCR'
 #cut = 'SL1e1bCR'
 #cut = 'SL1m1bCR'
@@ -131,6 +131,7 @@ cut = 'SL1e0bCR'
 #cuts[cut] += ' && Muon_pt[1] > 30 && Muon_tightId[1] && abs(Muon_eta[1]) < 2.4'
 #cuts[cut] += ' && Jet_pt[0] > 30 && abs(Jet_eta[0]) < 2.4 && Jet_jetId[0] > 0'
 #cuts[cut] = cuts[cut].replace('&& M_T >= 160 ', '')
+#cuts[cut] = cuts[cut].replace('&& m_ll >= 60 && m_ll <= 120 ', '')
 
 if year == 2016:
     cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter && Flag_BadPFMuonSummer16Filter'
@@ -139,7 +140,7 @@ else:
 #cut['data'] = cut['data'].replace(' || HLT_Ele27_WPLoose_Gsf', '')
 #cut['data'] = cut['data'].replace(' || HLT_Ele32_WPTight_Gsf', '')
 
-var = 'M_T'
+#var = 'M_T'
 #var = 'M_T2W'
 #var = 'minDeltaPhi12'
 #var = 'M_Tb'
@@ -147,7 +148,7 @@ var = 'M_T'
 #var = 'njets'
 #var = 'nfjets'
 #var = 'nbjets'
-#var = 'MET_pt'
+var = 'MET_pt'
 #var = 'recoilPtMiss'
 #var = 'Electron_pt[1]'
 #var = 'Muon_pt[1]'
@@ -157,12 +158,17 @@ var = 'M_T'
 #var = 'nTightElectrons'
 #var = 'nTightMuons'
 #var = 'nTightElectrons + nTightMuons'
+#var = 'm_ll'
+#var = 'MET_phi'
 
 #Set lum (fb^-1) and overall signal sample scale factor here
 if year == 2016:
     lumi = 35.9
 elif year == 2017:
-    lumi = 41.5
+    #lumi = 41.5
+    lumi = 9.28
+elif year == 2018:
+    lumi = 59.7
 if 'SR' in cut:
     scaleFactor = 20
 else:
@@ -182,20 +188,20 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 10
-xmin = 0
-xmax = 400
+nbins = 9
+xmin = 160
+xmax = 520
 auto_y = True
 #auto_y = False
-doLogPlot = True
-#doLogPlot = False
+#doLogPlot = True
+doLogPlot = False
 drawData = True
 #drawData = False
 if not auto_y:
     ymin = 60
     ymax = 20000
 
-histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
+#histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
 #histoLabel = cut + ' min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}); Events'
 #histoLabel = cut + ' M_{T}^{b} distribution; M_{T}^b (GeV); Events'
@@ -203,7 +209,7 @@ histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = cut + ' n_{bjets} distribution; number of b-tagged jets; Events'
 #histoLabel = cut + ' forward n_{jet} distribution; number of forward AK4 jets; Events'
-#histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
+histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
 #histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
 #histoLabel = cut + ' Electron_pt[1] distribution; Electron_pt[1]; Events'
 #histoLabel = cut + ' Muon_pt[1] distribution; Muon_pt[1]; Events'
@@ -213,6 +219,8 @@ histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' nTightElectrons distribution; number of tight electrons; Events'
 #histoLabel = cut + ' nTightMuons distribution; number of tight muons; Events'
 #histoLabel = cut + ' nTightLeptons distribution; number of tight leptons; Events'
+#histoLabel = cut + ' m_{ll} distribution; m_{ll} (GeV); Events'
+#histoLabel = cut + ' #phi^{miss} distribution; #phi^{miss} (GeV); Events'
 
 if drawData:
     ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Data / Bkg')
@@ -286,12 +294,18 @@ for dataset in dataSamples:
         print '  Dataset = ', dataset, ' ||   nEvents = ', dataSamples[dataset]['nevents']
         for filepath in dataSamples[dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
-            dataSamples[dataset][filepath+'_Events'].Draw(var+'>>hist',cuts['data'])
-            print '    hist nEntries = ', hist.GetEntries()
-            print '    hist integral = ', hist.Integral()
-            hists['data'] += hist
-            print '    hist_data nEntries = ', hists['data'].GetEntries()
-            print '    hist_data integral = ', hists['data'].Integral()
+            if filepath == '/hdfs/store/user/vshang/SingleElectron_Run2017/SingleElectron/ModuleCommon_07302020/tree_all4.root':
+                datacut = cuts['data'].replace('HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200', 'HLT_Photon200')
+                datacut = datacut.replace('HLT_Ele32_WPTight_Gsf', 'HLT_Ele35_WPTight_Gsf || HLT_Ele32_WPTight_Gsf_L1DoubleEG')
+            else:
+                datacut = cuts['data']
+            if filepath == '/hdfs/store/user/vshang/SingleElectron_Run2017/SingleElectron/ModuleCommon_07302020/tree_all2.root':
+                dataSamples[dataset][filepath+'_Events'].Draw(var+'>>hist',datacut)
+                print '    hist nEntries = ', hist.GetEntries()
+                print '    hist integral = ', hist.Integral()
+                hists['data'] += hist
+                print '    hist_data nEntries = ', hists['data'].GetEntries()
+                print '    hist_data integral = ', hists['data'].Integral()
 for process in MCSamples:
     print '  Process = ', process
     for dataset in MCSamples[process]:
@@ -480,7 +494,7 @@ if drawData:
         
 #Save histogram
 if useCondor:
-    c.SaveAs(cut + str(year) + "_" + var + "_" + date + "_logScale.png")
+    c.SaveAs(cut + str(year) + "_" + var + "_" + date + "_RunE.png")
 else:
     c.SaveAs(saveDirectory + date + "/" + cut + str(year) + "_" + var + "_" + date + ".png")
 #c.SaveAs("test.png")

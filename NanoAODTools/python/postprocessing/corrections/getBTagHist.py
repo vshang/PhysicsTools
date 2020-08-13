@@ -101,10 +101,10 @@ class getBTagHist(Module):
 
         return True
 
-getBTagHist2016 = lambda : getBTagHist('CSVv2','medium',2016,'ttbar')
+getBTagHist2016_CSVv2 = lambda : getBTagHist('CSVv2','medium',2016,'ttbar')
 getBTagHist2016_DeepCSV = lambda : getBTagHist('DeepCSV','medium',2016,'ttbar')
-getBTagHist2017 = lambda : getBTagHist('DeepCSV','medium',2017,'ttbar')
-getBTagHist2018 = lambda : getBTagHist('DeepCSV','medium',2018,'ttbar')
+getBTagHist2017_DeepCSV = lambda : getBTagHist('DeepCSV','medium',2017,'ttbar')
+getBTagHist2018_DeepCSV = lambda : getBTagHist('DeepCSV','medium',2018,'ttbar')
 
 #########################################################################################################################################
 
