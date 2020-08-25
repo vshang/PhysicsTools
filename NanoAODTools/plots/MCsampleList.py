@@ -110,6 +110,7 @@ samples2017 = {
         'HT800To1200' : { 'nevents' : 1, 'xsec' : 5366.0, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2017/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_07302020/tree_all.root'] },
         'HT1200To2500' : { 'nevents' : 1, 'xsec' : 1074.0, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2017/WJetsToLNu_HT-1200To2500_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_07302020/tree_all.root'] },
         'HT2500ToInf' : { 'nevents' : 1, 'xsec' : 8.001, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2017/WJetsToLNu_HT-2500ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_07302020/tree_all.root'] },
+        #'Inclusive' : { 'nevents' : 1, 'xsec' : 52940000.0, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2017/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_07302020/tree_all.root'] },
     },
     'ZTo2L' : {
         'HT100To200' : { 'nevents' : 1, 'xsec' : 161100.0, 'filepaths' : ['/hdfs/store/user/vshang/ZTo2L_Run2017/DYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_07302020/tree_all.root'] },
@@ -119,6 +120,7 @@ samples2017 = {
         'HT800To1200' : { 'nevents' : 1, 'xsec' : 805.2, 'filepaths' : ['/hdfs/store/user/vshang/ZTo2L_Run2017/DYJetsToLL_M-50_HT-800to1200_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_07302020/tree_all.root'] },
         'HT1200To2500' : { 'nevents' : 1, 'xsec' : 193.3, 'filepaths' : ['/hdfs/store/user/vshang/ZTo2L_Run2017/DYJetsToLL_M-50_HT-1200to2500_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_07302020/tree_all.root'] },
         'HT2500ToInf' : { 'nevents' : 1, 'xsec' : 3.468, 'filepaths' : ['/hdfs/store/user/vshang/ZTo2L_Run2017/DYJetsToLL_M-50_HT-2500toInf_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_07302020/tree_all.root'] },
+        #'Inclusive' : { 'nevents' : 1, 'xsec' : 5343000.0, 'filepaths' : ['/hdfs/store/user/vshang/ZTo2L_Run2017/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_07302020/tree_all.root'] },
     },
     'ZTo2Nu' : {
         'HT100To200' : { 'nevents' : 1, 'xsec' : 302800.0, 'filepaths' : ['/hdfs/store/user/vshang/ZTo2Nu_Run2017/ZJetsToNuNu_HT-100To200_13TeV-madgraph/ModuleCommon_07302020/tree_all.root'] },
@@ -189,6 +191,7 @@ samples2018 = {
         'HT800To1200' : { 'nevents' : 1, 'xsec' : 5366.0, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2018/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_08092020/tree_all.root'] },
         'HT1200To2500' : { 'nevents' : 1, 'xsec' : 1074.0, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2018/WJetsToLNu_HT-1200To2500_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_08092020/tree_all.root'] },
         'HT2500ToInf' : { 'nevents' : 1, 'xsec' : 8.001, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2018/WJetsToLNu_HT-2500ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_08092020/tree_all.root'] },
+        #'Inclusive' : { 'nevents' : 1, 'xsec' : 52850000.0, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2018/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_08092020/tree_all.root'] },
     },
     'ZTo2L' : {
         'HT100To200' : { 'nevents' : 1, 'xsec' : 161100.0, 'filepaths' : ['/hdfs/store/user/vshang/ZTo2L_Run2018/DYJetsToLL_M-50_HT-100to200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8/ModuleCommon_08092020/tree_all.root'] },
@@ -198,6 +201,7 @@ samples2018 = {
         'HT800To1200' : { 'nevents' : 1, 'xsec' : 805.2, 'filepaths' : ['/hdfs/store/user/vshang/ZTo2L_Run2018/DYJetsToLL_M-50_HT-800to1200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8/ModuleCommon_08092020/tree_all.root'] },
         'HT1200To2500' : { 'nevents' : 1, 'xsec' : 193.3, 'filepaths' : ['/hdfs/store/user/vshang/ZTo2L_Run2018/DYJetsToLL_M-50_HT-1200to2500_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8/ModuleCommon_08092020/tree_all.root'] },
         'HT2500ToInf' : { 'nevents' : 1, 'xsec' : 3.468, 'filepaths' : ['/hdfs/store/user/vshang/ZTo2L_Run2018/DYJetsToLL_M-50_HT-2500toInf_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8/ModuleCommon_08092020/tree_all.root'] },
+        #'Inclusive' : { 'nevents' : 1, 'xsec' : 5321000.0, 'filepaths' : ['/hdfs/store/user/vshang/ZTo2L_Run2018/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommon_08092020/tree_all.root'] },
     },
     'ZTo2Nu' : {
         'HT100To200' : { 'nevents' : 1, 'xsec' : 302800.0, 'filepaths' : ['/hdfs/store/user/vshang/ZTo2Nu_Run2018/ZJetsToNuNu_HT-100To200_13TeV-madgraph/ModuleCommon_08092020/tree_all.root'] },

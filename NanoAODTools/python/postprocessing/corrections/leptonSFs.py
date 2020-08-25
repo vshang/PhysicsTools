@@ -14,24 +14,29 @@ class ElectronSFs:
         if year==2016:
             self.sftool_10to20GeV = ScaleFactor(pathElectrons+'SF2016/EGM2D_BtoH_low_RecoSF_Legacy2016.root','EGamma_SF2D')
             self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'SF2016/EGM2D_BtoH_GT20GeV_RecoSF_Legacy2016.root','EGamma_SF2D')
+            self.sftool_ID = ScaleFactor(pathElectrons+'SF2016/2016LegacyReReco_ElectronTight.root','EGamma_SF2D')
 
         if year==2017:
             self.sftool_10to20GeV = ScaleFactor(pathElectrons+'SF2017/egammaEffi.txt_EGM2D_runBCDEF_passingRECO_lowEt.root','EGamma_SF2D')
             self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'SF2017/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root','EGamma_SF2D')
+            self.sftool_ID = ScaleFactor(pathElectrons+'SF2017/2017_ElectronTight.root','EGamma_SF2D')
 
         if year==2018:
             self.sftool_10to20GeV = ScaleFactor(pathElectrons+'SF2018/egammaEffi.txt_EGM2D_updatedAll.root','EGamma_SF2D')
             self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'SF2018/egammaEffi.txt_EGM2D_updatedAll.root','EGamma_SF2D')
+            self.sftool_ID = ScaleFactor(pathElectrons+'SF2018/2018_ElectronTight.root','EGamma_SF2D')
         
     def getSF(self, pt, eta):
         #Get SF for single electron trigger.
+        sf_ID = self.sftool_ID.getSF(pt,eta)
         if pt < 20:
-            return self.sftool_10to20GeV.getSF(pt,eta)
+            sf_EFF = self.sftool_10to20GeV.getSF(pt,eta)
         elif pt > 20:
-            return self.sftool_Over20GeV.getSF(pt,eta)
+            sf_EFF = self.sftool_Over20GeV.getSF(pt,eta)
         else:
             print 'lepton pt not < 20 GeV or > 20 GeV, error!'
             exit(1)
+        return sf_ID*sf_EFF
 
 class MuonSFs:
 

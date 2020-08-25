@@ -131,7 +131,7 @@ cut = 'AH2eZR'
 #cuts[cut] += ' && Muon_pt[1] > 30 && Muon_tightId[1] && abs(Muon_eta[1]) < 2.4'
 #cuts[cut] += ' && Jet_pt[0] > 30 && abs(Jet_eta[0]) < 2.4 && Jet_jetId[0] > 0'
 #cuts[cut] = cuts[cut].replace('&& M_T >= 160 ', '')
-#cuts[cut] = cuts[cut].replace('&& m_ll >= 60 && m_ll <= 120 ', '')
+cuts[cut] = cuts[cut].replace('&& m_ll >= 60 && m_ll <= 120 ', '')
 
 if year == 2016:
     cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter && Flag_BadPFMuonSummer16Filter'
@@ -149,7 +149,7 @@ else:
 #var = 'nfjets'
 #var = 'nbjets'
 #var = 'MET_pt'
-var = 'recoilPtMiss'
+#var = 'recoilPtMiss'
 #var = 'Electron_pt[1]'
 #var = 'Muon_pt[1]'
 #var = 'Jet_pt[0]'
@@ -158,7 +158,7 @@ var = 'recoilPtMiss'
 #var = 'nTightElectrons'
 #var = 'nTightMuons'
 #var = 'nTightElectrons + nTightMuons'
-#var = 'm_ll'
+var = 'm_ll'
 #var = 'MET_phi'
 
 #Set lum (fb^-1) and overall signal sample scale factor here
@@ -188,13 +188,13 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 15
-xmin = 250
-xmax = 550
+nbins = 20
+xmin = 0
+xmax = 200
 auto_y = True
 #auto_y = False
-doLogPlot = True
-#doLogPlot = False
+#doLogPlot = True
+doLogPlot = False
 drawData = True
 #drawData = False
 if not auto_y:
@@ -210,7 +210,7 @@ if not auto_y:
 #histoLabel = cut + ' n_{bjets} distribution; number of b-tagged jets; Events'
 #histoLabel = cut + ' forward n_{jet} distribution; number of forward AK4 jets; Events'
 #histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
-histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
+#histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
 #histoLabel = cut + ' Electron_pt[1] distribution; Electron_pt[1]; Events'
 #histoLabel = cut + ' Muon_pt[1] distribution; Muon_pt[1]; Events'
 #histoLabel = cut + ' Jet_pt[0] distribution; Jet_pt[0]; Events'
@@ -219,7 +219,7 @@ histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events
 #histoLabel = cut + ' nTightElectrons distribution; number of tight electrons; Events'
 #histoLabel = cut + ' nTightMuons distribution; number of tight muons; Events'
 #histoLabel = cut + ' nTightLeptons distribution; number of tight leptons; Events'
-#histoLabel = cut + ' m_{ll} distribution; m_{ll} (GeV); Events'
+histoLabel = cut + ' m_{ll} distribution; m_{ll} (GeV); Events'
 #histoLabel = cut + ' #phi^{miss} distribution; #phi^{miss} (GeV); Events'
 
 if drawData:
@@ -494,7 +494,7 @@ if drawData:
         
 #Save histogram
 if useCondor:
-    c.SaveAs(cut + str(year) + "_" + var + "_" + date + "_updatedEleTriggers.png")
+    c.SaveAs(cut + str(year) + "_" + var + "_" + date + "_nomllcut.png")
 else:
     c.SaveAs(saveDirectory + date + "/" + cut + str(year) + "_" + var + "_" + date + ".png")
 #c.SaveAs("test.png")

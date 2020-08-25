@@ -550,14 +550,14 @@ if runLocal:
     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
     #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-    #inputFiles=["testSamples/ttbarPlusJets_Run2017.root"]
-    inputFiles=["testSamples/SingleElectron_2017B.root"]
+    inputFiles=["testSamples/ttbarPlusJets_Run2018.root"]
+    #inputFiles=["testSamples/SingleElectron_2017B.root"]
     #inputFiles = ["testSamples/SingleElectron_2018A.root"]
     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
-    jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
+    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2017Data()],postfix="_ModuleCommonv2_2017Data",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2017MC()],postfix="_ModuleCommon_2017MC",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2017Data()],postfix="_ModuleCommon_2017Data_correctedPFMETv2",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
+    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2018MC()],postfix="_ModuleCommon_2018MC",noOut=False,outputbranchsel=outputbranches)
     p.run()
