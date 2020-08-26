@@ -13,7 +13,7 @@ from PhysicsTools.NanoAODTools.postprocessing.corrections.kFactorTool import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.PileupWeightTool import *
 
 #Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region (runLocal = False if running jobs through CRAB)
-runLocal = True
+runLocal = False
 
 if runLocal:
     ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
@@ -21,12 +21,14 @@ if runLocal:
     ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so")
     ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so")
     ROOT.gROOT.ProcessLine(".L /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/lester_mt2_bisect.h")
+    ROOT.gROOT.ProcessLine(".L /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/XYMETCorrection.h")
 else:
     ROOT.gSystem.Load("mt2w_bisect_cc.so")
     ROOT.gSystem.Load("MT2Utility_cc.so")
     ROOT.gSystem.Load("mt2bl_bisect_cc.so")
     ROOT.gSystem.Load("Mt2Com_bisect_cc.so")
     ROOT.gROOT.ProcessLine(".L lester_mt2_bisect.h")
+    ROOT.gROOT.ProcessLine(".L XYMETCorrection.h")
 
 try:
     ROOT.asymm_mt2_lester_bisect.disableCopyrightMessage()
@@ -69,6 +71,8 @@ class CommonAnalysis(Module):
         self.out.branch("njets", "I")
         self.out.branch("nfjets", "I")
         self.out.branch("nbjets", "I")
+        self.out.branch("METcorrected_pt", "F")
+        self.out.branch("METcorrected_phi", "F")
         self.out.branch("minDeltaPhi", "F")
         self.out.branch("minDeltaPhi12", "F")
         self.out.branch("M_Tb", "F")
@@ -82,6 +86,14 @@ class CommonAnalysis(Module):
         self.out.branch("m_llExists","I")
         self.out.branch("m_ll","F")
         self.out.branch("recoilPtMiss","F")
+        self.out.branch("minDeltaPhi_puppi", "F")
+        self.out.branch("minDeltaPhi12_puppi", "F")
+        self.out.branch("M_Tb_puppi", "F")
+        self.out.branch("M_T_puppi", "F")
+        self.out.branch("M_T2W_puppi", "F")
+        self.out.branch("M_T2ll_puppi", "F")
+        self.out.branch("m_llExists_puppi","I")
+        self.out.branch("recoilPtMiss_puppi","F")
         self.out.branch("lepton1_charge","I")
         self.out.branch("lepton2_charge","I")
         self.out.branch("index_vetoElectrons","I",lenVar="nVetoElectrons")
@@ -117,10 +129,10 @@ to next event)"""
         #Tight/Veto electrons are defined and counted
         if self.year == 2016:
             vetoElectronsEnumerate = filter(lambda lep : lep[1].pt > 10 and lep[1].cutBased_Sum16 != 0 and (abs(lep[1].eta) < 1.4442 or 1.566 < abs(lep[1].eta) < 2.5), enumerate(electrons))
-            tightElectronsEnumerate = filter(lambda lep : lep[1].pt > 30 and abs(lep[1].eta) < 2.1 and lep[1].cutBased_Sum16 == 4, vetoElectronsEnumerate)
+            tightElectronsEnumerate = filter(lambda lep : lep[1].pt > 40 and abs(lep[1].eta) < 2.1 and lep[1].cutBased_Sum16 == 4, vetoElectronsEnumerate)
         else:
             vetoElectronsEnumerate = filter(lambda lep : lep[1].pt > 10 and lep[1].cutBased != 0 and (abs(lep[1].eta) < 1.4442 or 1.566 < abs(lep[1].eta) < 2.5), enumerate(electrons))
-            tightElectronsEnumerate = filter(lambda lep : lep[1].pt > 30 and abs(lep[1].eta) < 2.1 and lep[1].cutBased == 4, vetoElectronsEnumerate)
+            tightElectronsEnumerate = filter(lambda lep : lep[1].pt > 40 and abs(lep[1].eta) < 2.1 and lep[1].cutBased == 4, vetoElectronsEnumerate)
         
         nVetoElectrons = len(vetoElectronsEnumerate)
         nTightElectrons = len(tightElectronsEnumerate)
@@ -188,22 +200,40 @@ to next event)"""
         index_forwardJets = [j[0] for j in forwardJetsEnumerate]
         index_bJets = [j[0] for j in bJetsEnumerate]
 
-        #Calculate minDeltaPhi and minDeltaPhi(j_(1,2), missing pt) preselection variable of all central jets
+        #Apply MET corrections
+        if self.year == 2017:
+            METcorrected_pt_phi = ROOT.METXYCorr_Met_MetPhi(event.METFixEE2017_pt, event.METFixEE2017_phi, event.run, 2017, self.isMC, event.PV_npvs)
+        else:
+            METcorrected_pt_phi = ROOT.METXYCorr_Met_MetPhi(event.MET_pt, event.MET_phi, event.run, self.year, self.isMC, event.PV_npvs)
+        METcorrected_pt = METcorrected_pt_phi[0]
+        METcorrected_phi = METcorrected_pt_phi[1]
+
+        #Calculate minDeltaPhi and minDeltaPhi(j_(1,2), missing pt) preselection variable of all central jets 
         minDeltaPhi = -9 #If there is less than 2 jets, set value to -9 to indicate  minDeltaPhi cannot be calculated
         minDeltaPhi12 = -9 #If there is less than 2 jets, set value to -9 to indicate minDeltaPhi12 cannot be calculated
+        minDeltaPhi_puppi = -9 #If there is less than 2 jets, set value to -9 to indicate  minDeltaPhi_puppi cannot be calculated
+        minDeltaPhi12_puppi = -9 #If there is less than 2 jets, set value to -9 to indicate minDeltaPhi12_puppi cannot be calculated
         if len(centralJets) > 1: #Should always be true for both SL and AH signal regions
             jet1 = centralJets[0] #jet1 (jet2) is the jet with the largest (second-largest) pt
             jet2 = centralJets[1]
-            deltaPhi1 = min(abs(jet1.phi - event.MET_phi), 2 * math.pi - abs(jet1.phi - event.MET_phi)) #phi angle between jet1 and missing pt
-            deltaPhi2 = min(abs(jet2.phi - event.MET_phi), 2 * math.pi - abs(jet2.phi - event.MET_phi)) #phi angle between jet2 and missing pt
+            deltaPhi1 = min(abs(jet1.phi - METcorrected_phi), 2 * math.pi - abs(jet1.phi - METcorrected_phi)) #phi angle between jet1 and missing pt
+            deltaPhi2 = min(abs(jet2.phi - METcorrected_phi), 2 * math.pi - abs(jet2.phi - METcorrected_phi)) #phi angle between jet2 and missing pt
             minDeltaPhi12 = min(deltaPhi1, deltaPhi2) #First calculate minDeltaPhi12
+            deltaPhi1_puppi = min(abs(jet1.phi - event.PuppiMET_phi), 2 * math.pi - abs(jet1.phi - event.PuppiMET_phi)) #phi angle between jet1 and Puppi missing pt
+            deltaPhi2_puppi = min(abs(jet2.phi - event.PuppiMET_phi), 2 * math.pi - abs(jet2.phi - event.PuppiMET_phi)) #phi angle between jet2 and Puppi missing pt
+            minDeltaPhi12_puppi = min(deltaPhi1_puppi, deltaPhi2_puppi) #First calculate minDeltaPhi12_puppi 
             #Now calculate minDeltaPhi
-            minDeltaPhi = min(abs(jet1.phi - event.MET_phi), 2 * math.pi - abs(jet1.phi - event.MET_phi)) #phi angle between jet1 and missing pt
+            minDeltaPhi = min(abs(jet1.phi - METcorrected_phi), 2 * math.pi - abs(jet1.phi - METcorrected_phi)) #phi angle between jet1 and missing pt
+            #Now calculate minDeltaPhi_puppi
+            minDeltaPhi_puppi = min(abs(jet1.phi - event.PuppiMET_phi), 2 * math.pi - abs(jet1.phi - event.PuppiMET_phi)) #phi angle between jet1 and Puppi missing pt
             for i in range(1, len(centralJets)):
                 jeti = centralJets[i]
-                minDeltaPhi_i = min(abs(jeti.phi - event.MET_phi), 2 * math.pi - abs(jeti.phi - event.MET_phi)) #phi angle between jeti and missing pt
+                minDeltaPhi_i = min(abs(jeti.phi - METcorrected_phi), 2 * math.pi - abs(jeti.phi - METcorrected_phi)) #phi angle between jeti and missing pt
+                minDeltaPhi_puppi_i = min(abs(jeti.phi - event.PuppiMET_phi), 2 * math.pi - abs(jeti.phi - event.PuppiMET_phi)) #phi angle between jeti and Puppi missing pt
                 if minDeltaPhi_i < minDeltaPhi: #Choose lowest minDeltaPhi out of all central jets
                     minDeltaPhi = minDeltaPhi_i
+                if minDeltaPhi_puppi_i < minDeltaPhi_puppi: #Choose lowest minDeltaPhi_puppi out of all central jets
+                    minDeltaPhi_puppi = minDeltaPhi_puppi_i
 
         #Jet TLorentzVectors are constructed to calculate M_T2^W
         ljetVector = ROOT.vector("TLorentzVector")()
@@ -230,6 +260,7 @@ to next event)"""
 
         #Calculate M_T^b
         M_Tb = -9 #If there are no bjets, set value to -9 to indicate M_Tb cannot be calculated
+        M_Tb_puppi = -9
         
         if len(bJets) > 0:
             bjet1 = bJets[0]
@@ -245,13 +276,18 @@ to next event)"""
                 if bjet_btag > bjet1_btag:
                     bjet1 = bjet
 
-            deltaPhiMTb = bjet1.phi - event.MET_phi
-            M_Tb = math.sqrt(2 * event.MET_pt * bjet1.pt * (1 - math.cos(deltaPhiMTb)))
+            deltaPhiMTb = bjet1.phi - METcorrected_phi
+            deltaPhiMTb_puppi = bjet1.phi - event.PuppiMET_phi
+            M_Tb = math.sqrt(2 * METcorrected_pt * bjet1.pt * (1 - math.cos(deltaPhiMTb)))
+            M_Tb_puppi = math.sqrt(2 * event.PuppiMET_pt * bjet1.pt * (1 - math.cos(deltaPhiMTb_puppi)))
 
-        #Calculate M_T, M_T2^W, and M_T2^ll 
+        #Calculate M_T, M_T2^W, and M_T2^ll using PFMET
         M_T = -9 #If there are no tight leptons, set value to -9 to indicate M_T cannot be calculated
         M_T2W = -9 #If there are no tight leptons, set value to -9 to indicate M_T2W cannot be calculated
         M_T2ll = -9 #If there are not exactly two tight leptons, set value to -9 to indicate M_T2ll cannot be calculated
+        M_T_puppi = -9 #If there are no tight leptons, set value to -9 to indicate M_T_puppi cannot be calculated
+        M_T2W_puppi = -9 #If there are no tight leptons, set value to -9 to indicate M_T2W_puppi cannot be calculated
+        M_T2ll_puppi = -9 #If there are not exactly two tight leptons, set value to -9 to indicate M_T2ll_puppi cannot be calculated
         if nTightElectrons > 0 or nTightMuons > 0: #Default to using electron if both tight electron and muon exist
             if nTightElectrons > 0:
                 lepton = tightElectrons[0] #Default to using tight electron with greatest pT
@@ -259,13 +295,17 @@ to next event)"""
                 lepton = tightMuons[0] #Default to using tight muon with greatest pT
 
             #Calculate M_T
-            deltaPhiMT = lepton.phi - event.MET_phi
-            M_T = math.sqrt(2 * event.MET_pt * lepton.pt * (1 - math.cos(deltaPhiMT)))
+            deltaPhiMT = lepton.phi - METcorrected_phi
+            deltaPhiMT_puppi = lepton.phi - event.PuppiMET_phi
+            M_T = math.sqrt(2 * METcorrected_pt * lepton.pt * (1 - math.cos(deltaPhiMT)))
+            M_T_puppi = math.sqrt(2 * event.PuppiMET_pt * lepton.pt * (1 - math.cos(deltaPhiMT_puppi)))
 
             #Calculate M_T2^W 
             leptonTLorentz = lepton.p4()
-            metTVector2 = ROOT.TVector2(event.MET_pt * math.cos(event.MET_phi), event.MET_pt * math.sin(event.MET_phi))
+            metTVector2 = ROOT.TVector2(METcorrected_pt * math.cos(METcorrected_phi), METcorrected_pt * math.sin(METcorrected_phi))
+            PuppimetTVector2 = ROOT.TVector2(event.PuppiMET_pt * math.cos(event.PuppiMET_phi), event.PuppiMET_pt * math.sin(event.PuppiMET_phi))
             M_T2W = Mt2Com_bisect.calculateMT2w(ljetVector, bjetVector, leptonTLorentz, metTVector2, "MT2w")
+            M_T2W_puppi = Mt2Com_bisect.calculateMT2w(ljetVector, bjetVector, leptonTLorentz, PuppimetTVector2, "MT2w")
             
         if nTightElectrons + nTightMuons == 2:
             if nTightElectrons == 2:
@@ -291,12 +331,16 @@ to next event)"""
             pxB = VisibleB.Px() #x momentum of visible object on side B
             pyB = VisibleB.Py() #y momentum of visible object on side B
 
-            pxMiss = event.MET_pt*math.cos(event.MET_phi) #x component of missing transverse momentum
-            pyMiss = event.MET_pt*math.sin(event.MET_phi) #y component of missing transverse momentum
+            pxMiss = METcorrected_pt*math.cos(METcorrected_phi) #x component of missing transverse momentum
+            pyMiss = METcorrected_pt*math.sin(METcorrected_phi) #y component of missing transverse momentum
+            
+            pxMiss_puppi = event.PuppiMET_pt*math.cos(event.PuppiMET_phi) #x component of Puppi missing transverse momentum
+            pyMiss_puppi = event.PuppiMET_pt*math.sin(event.PuppiMET_phi) #y component of Puppi missing transverse momentum
 
             desiredPrecisionOnM_T2ll = 0 #Must be >= 0. If = 0 algorithm aims for machine precision. If > 0 MT2 computed to supplied absolute precision
 
             M_T2ll = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,pxMiss,pyMiss,chiA,chiB,desiredPrecisionOnM_T2ll)
+            M_T2ll_puppi = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,pxMiss_puppi,pyMiss_puppi,chiA,chiB,desiredPrecisionOnM_T2ll)
         
         #Tau candidates are counted
         tauCandidates = Collection(event, "Tau")
@@ -339,7 +383,8 @@ to next event)"""
         m_llExists = False
         m_ll = 0
         recoilPtMiss = 0
-        fakeMET_pt = 0
+        m_llExists_puppi = False
+        recoilPtMiss_puppi = 0
         lepton1_charge = 0
         lepton2_charge = 0
         if (nTightElectrons >= 2 and nLooseMuons == 0) or (nVetoElectrons == 0 and nTightMuons >= 2):
@@ -351,12 +396,16 @@ to next event)"""
             lepton2 = tightLeptons[1]
             eventSum = lepton1.p4() + lepton2.p4()
             m_ll = eventSum.M()
-            deltaPhiRecoil = eventSum.Phi() - event.MET_phi
-            recoilPtMiss = math.sqrt(pow(event.MET_pt*math.cos(event.MET_phi) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(event.MET_pt*math.sin(event.MET_phi) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
+            deltaPhiRecoil = eventSum.Phi() - METcorrected_phi
+            deltaPhiRecoil_puppi = eventSum.Phi() - event.PuppiMET_phi
+            recoilPtMiss = math.sqrt(pow(METcorrected_pt*math.cos(METcorrected_phi) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_pt*math.sin(METcorrected_phi) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
+            recoilPtMiss_puppi = math.sqrt(pow(event.PuppiMET_pt*math.cos(event.PuppiMET_phi) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(event.PuppiMET_pt*math.sin(event.PuppiMET_phi) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
             lepton1_charge = lepton1.charge
             lepton2_charge = lepton2.charge
             if 60 <= m_ll <= 120 and recoilPtMiss >= 250 and lepton1.charge == -lepton2.charge:
-                m_llExists = True      
+                m_llExists = True  
+            if 60 <= m_ll <= 120 and recoilPtMiss_puppi >= 250 and lepton1.charge == -lepton2.charge:
+                m_llExists_puppi = True
 
         #Define MET filters contained in miniAOD analysis (https://github.com/zucchett/SFrame/blob/master/DM/src/DMSearches.cxx#L1542)
         # passMETfilters = event.Flag_goodVertices and event.Flag_HBHENoiseFilter and event.Flag_HBHENoiseIsoFilter and event.Flag_EcalDeadCellTriggerPrimitiveFilter and event.Flag_eeBadScFilter and event.Flag_globalTightHalo2016Filter and event.Flag_BadPFMuonFilter and event.Flag_chargedHadronTrackResolutionFilter
@@ -429,6 +478,8 @@ to next event)"""
             self.out.fillBranch("njets", njets)
             self.out.fillBranch("nfjets", nfjets)
             self.out.fillBranch("nbjets", nbjets)
+            self.out.fillBranch("METcorrected_pt", METcorrected_pt)
+            self.out.fillBranch("METcorrected_phi", METcorrected_phi)
             self.out.fillBranch("minDeltaPhi", minDeltaPhi)
             self.out.fillBranch("minDeltaPhi12", minDeltaPhi12)
             self.out.fillBranch("M_Tb", M_Tb)
@@ -442,6 +493,14 @@ to next event)"""
             self.out.fillBranch("m_llExists", m_llExists)
             self.out.fillBranch("m_ll", m_ll)
             self.out.fillBranch("recoilPtMiss", recoilPtMiss)
+            self.out.fillBranch("minDeltaPhi_puppi", minDeltaPhi_puppi)
+            self.out.fillBranch("minDeltaPhi12_puppi", minDeltaPhi12_puppi)
+            self.out.fillBranch("M_Tb_puppi", M_Tb_puppi)
+            self.out.fillBranch("M_T_puppi", M_T_puppi)
+            self.out.fillBranch("M_T2W_puppi", M_T2W_puppi)
+            self.out.fillBranch("M_T2ll_puppi", M_T2ll_puppi)
+            self.out.fillBranch("m_llExists_puppi", m_llExists_puppi)
+            self.out.fillBranch("recoilPtMiss_puppi", recoilPtMiss_puppi)
             self.out.fillBranch("lepton1_charge", lepton1_charge)
             self.out.fillBranch("lepton2_charge", lepton2_charge)
             self.out.fillBranch("index_vetoElectrons", index_vetoElectrons)
@@ -481,24 +540,24 @@ analyze2018Data = lambda : CommonAnalysis("All",year=2018,isData=True,isSignal=F
 
 #########################################################################################################################################
 
-if runLocal:
-    #Select PostProcessor options here
-    selection=None
-    #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-    #outputDir = "testSamples/"
-    outputDir = "."
-    #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-    outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-    #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
-    #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-    #inputFiles=["testSamples/ttbarPlusJets_Run2017.root"]
-    inputFiles=["testSamples/SingleElectron_2017B.root"]
-    #inputFiles = ["testSamples/SingleElectron_2018A.root"]
-    #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
-    jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+# if runLocal:
+#     #Select PostProcessor options here
+#     selection=None
+#     #outputDir = "outDir2016AnalysisSR/ttbarDM/"
+#     #outputDir = "testSamples/"
+#     outputDir = "."
+#     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+#     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+#     #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+#     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
+#     inputFiles=["testSamples/ttbarPlusJets_Run2018.root"]
+#     #inputFiles=["testSamples/SingleElectron_2017B.root"]
+#     #inputFiles = ["testSamples/SingleElectron_2018A.root"]
+#     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2017Data()],postfix="_ModuleCommon_2017Data",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2017MC()],postfix="_ModuleCommon_2017MC",noOut=False,outputbranchsel=outputbranches)
-    p.run()
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2017Data()],postfix="_ModuleCommon_2017Data_correctedPFMETv2",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2018MC()],postfix="_ModuleCommon_2018MC",noOut=False,outputbranchsel=outputbranches)
+#     p.run()

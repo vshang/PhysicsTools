@@ -33,7 +33,7 @@ cuts = {}
 cuts['passMETfilters'] = 'Flag_goodVertices && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_globalTightHalo2016Filter && Flag_muonBadTrackFilter && Flag_chargedHadronTrackResolutionFilter'
 if year == 2016:
     cuts['singleIsoEle'] = 'HLT_Ele27_WPTight_Gsf'# || HLT_Ele32_eta2p1_WPTight_Gsf || HLT_Ele27_eta2p1_WPTight_Gsf' # || HLT_Ele27_WPLoose_Gsf || HLT_Ele32_WPTight_Gsf
-    cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Ele105_CaloIdVT_GsfTrkIdT'
+    cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Ele105_CaloIdVT_GsfTrkIdT || HLT_Photon175'
     cuts['singleIsoMu'] = 'HLT_IsoMu27 || HLT_IsoMu24 || HLT_IsoTkMu24 || HLT_IsoTkMu27'
 else:
     cuts['singleIsoEle'] = 'HLT_Ele32_WPTight_Gsf || HLT_Ele35_WPTight_Gsf'# || HLT_Ele32_WPTight_Gsf_L1DoubleEG'
