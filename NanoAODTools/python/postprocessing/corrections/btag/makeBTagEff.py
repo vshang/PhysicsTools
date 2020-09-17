@@ -5,7 +5,7 @@ from BTagSampleList import *
 #Select settings here. Filepaths to btag histograms are contained in BTagSampleList. MCsampleList contains path to MC samples (for cross section normalization).
 tagger = 'DeepCSV'   # Choose between CSVv2 and DeepCSV
 wp = 'medium'      # Choose between loose, medium, and tight
-year = 2018       # Choose between 2016, 2017, and 2018
+year = 2016       # Choose between 2016, 2017, and 2018
 channel = 'ttbar'
 # name of root file that contains final btag efficiencies for selected channel
 if year == 2016:
