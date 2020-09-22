@@ -382,8 +382,8 @@ to next event)"""
                 leptonWeightDown *= self.muSFs.getSF(tightMuon.pt, tightMuon.eta, -1)
             #Calculate b-jet scale factor weight
             bjetWeight = self.btagTool.getWeight(centralJets)
-            bjetWeightUp = max(self.btagToolUp.getWeight(centralJets),self.btagToolDown.getWeight(centralJets))
-            bjetWeightDown = min(self.btagToolUp.getWeight(centralJets),self.btagToolDown.getWeight(centralJets))
+            bjetWeightUp = self.btagToolUp.getWeight(centralJets)
+            bjetWeightDown = self.btagToolDown.getWeight(centralJets)
             #Calculate PU weight
             puWeight = self.puTool.getWeight(event.Pileup_nTrueInt)
             puWeightUp = self.puToolUp.getWeight(event.Pileup_nTrueInt)
