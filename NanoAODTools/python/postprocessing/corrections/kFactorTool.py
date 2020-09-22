@@ -70,3 +70,27 @@ class KFactorTool:
             elif bin > self.nlo_qcd_ZTo2L.GetXaxis().GetNbins(): bin -= 1
             sf = self.nlo_qcd_ZTo2L.GetBinContent(bin)
             return sf
+
+    def getRenUpW(self, pt):
+        return get2016RenUpW(pt)
+
+    def getRenDownW(self, pt):
+        return get2016RenDownW(pt)
+
+    def getFacUpW(self, pt):
+        return get2016FacUpW(pt)
+
+    def getFacDownW(self, pt):
+        return get2016FacDownW(pt)
+
+    def getRenUpZ(self, pt):
+        return get2016RenUpZ(pt)
+
+    def getRenDownZ(self, pt):
+        return get2016RenDownZ(pt)
+
+    def getFacUpZ(self, pt):
+        return get2016FacUpZ(pt)
+
+    def getFacDownZ(self, pt):
+        return get2016FacDownZ(pt)

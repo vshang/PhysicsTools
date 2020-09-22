@@ -8,8 +8,8 @@ import re
 
 #Set save directory and date for file names
 saveDirectory = 'plots/CR_2016/nleptons/'
-date = '09_09_2020'
-year = 2018
+date = '09_20_2020'
+year = 2016
 useCondor = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
@@ -117,8 +117,8 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'AH1mTR'
 #cut = 'AH1eWR'
 #cut = 'AH1mWR'
-cut = 'AH2eZR'
-#cut = 'AH2mZR'
+#cut = 'AH2eZR'
+cut = 'AH2mZR'
 #cut = 'SLeCR'
 #cut = 'SLmCR'
 #cut = 'SL1eCR'
@@ -133,7 +133,7 @@ cut = 'AH2eZR'
 #cuts[cut] += ' && Jet_pt[0] > 30 && abs(Jet_eta[0]) < 2.4 && Jet_jetId[0] > 0'
 #cuts[cut] = cuts[cut].replace('&& M_T >= 160 ', '')
 #cuts[cut] = cuts[cut].replace('&& m_ll >= 60 && m_ll <= 120 ', '')
-cuts[cut] = cuts[cut] + ' && M_T2ll < 100'
+#cuts[cut] = cuts[cut] + ' && M_T2ll < 100'
 
 if year == 2016:
     cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter && Flag_BadPFMuonSummer16Filter'
@@ -314,7 +314,7 @@ for process in MCSamples:
     print '  Process = ', process
     for dataset in MCSamples[process]:
         print '      Dataset = ', dataset, ' ||   nEvents = ', MCSamples[process][dataset]['nevents']
-        weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*eventWeight'
+        weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*leptonWeight*bjetWeight*puWeight'
         #Apply appropriate NLO k-factors
         if process == 'WPlusJets':
             weight = weight + '*qcdWWeight*ewkWWeight'
@@ -496,7 +496,7 @@ if drawData:
         
 #Save histogram
 if useCondor:
-    c.SaveAs(cut + str(year) + "_" + var + "_" + date + "_MT2ll_less100.png")
+    c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
 else:
     c.SaveAs(saveDirectory + date + "/" + cut + str(year) + "_" + var + "_" + date + ".png")
 #c.SaveAs("test.png")
