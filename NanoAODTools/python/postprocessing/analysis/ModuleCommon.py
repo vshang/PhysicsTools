@@ -13,7 +13,7 @@ from PhysicsTools.NanoAODTools.postprocessing.corrections.kFactorTool import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.PileupWeightTool import *
 
 #Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region (runLocal = False if running jobs through CRAB)
-runLocal = True
+runLocal = False
 
 if runLocal:
     ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
@@ -432,10 +432,15 @@ to next event)"""
         # AH0l0fSR = AH and nbjets == 1 and nfjets == 0
         # AH0l1fSR = AH and nbjets == 1 and nfjets >= 1
         # AH0l2bSR = AH and nbjets >= 2
+        
+        #Define skimming cuts to be applied
+        Skim = (nTightElectrons + nTightMuons) <= 1 and nbjets >= 1 and njets >= 2 and event.MET_pt > 100 
 
         #Signal region chosen here
         if self.signalRegion == "All":
             signalRegion = True
+        elif self.signalRegion == "Skim":
+            signalRegion = Skim
         # elif self.signalRegion == "SL1e0fSR":
         #     signalRegion = SL1e0fSR
         # elif self.signalRegion == "SL1m0fSR":
@@ -528,6 +533,10 @@ analyze2016MC = lambda : CommonAnalysis("All",year=2016,isData=False,isSignal=Fa
 analyze2016SignalMC = lambda : CommonAnalysis("All",year=2016,isData=False,isSignal=True,btag='DeepCSV')
 analyze2016Data = lambda : CommonAnalysis("All",year=2016,isData=True,isSignal=False,btag='DeepCSV')
 
+analyze2016MC_Skim = lambda : CommonAnalysis("Skim",year=2016,isData=False,isSignal=False,btag='DeepCSV')
+analyze2016SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2016,isData=False,isSignal=True,btag='DeepCSV')
+analyze2016Data_Skim = lambda : CommonAnalysis("Skim",year=2016,isData=True,isSignal=False,btag='DeepCSV')
+
 analyze2017MC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=False,btag='DeepCSV')
 analyze2017SignalMC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=True,btag='DeepCSV')
 analyze2017Data = lambda : CommonAnalysis("All",year=2017,isData=True,isSignal=False,btag='DeepCSV')
@@ -538,25 +547,25 @@ analyze2018Data = lambda : CommonAnalysis("All",year=2018,isData=True,isSignal=F
 
 #########################################################################################################################################
 
-if runLocal:
-    #Select PostProcessor options here
-    selection=None
-    #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-    #outputDir = "testSamples/"
-    outputDir = "."
-    #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-    outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-    inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
-    #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-    #inputFiles=["testSamples/ttbarPlusJets_Run2018.root"]
-    #inputFiles=["testSamples/SingleElectron_2017B.root"]
-    #inputFiles = ["testSamples/SingleElectron_2018A.root"]
-    #inputFiles = ["testSamples/SingleElectron_2016H.root"]
-    #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+# if runLocal:
+#     #Select PostProcessor options here
+#     selection=None
+#     #outputDir = "outDir2016AnalysisSR/ttbarDM/"
+#     #outputDir = "testSamples/"
+#     outputDir = "."
+#     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+#     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+#     #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+#     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
+#     inputFiles=["testSamples/ttbarPlusJets_Run2016.root"]
+#     #inputFiles=["testSamples/SingleElectron_2017B.root"]
+#     #inputFiles = ["testSamples/SingleElectron_2018A.root"]
+#     #inputFiles = ["testSamples/SingleElectron_2016H.root"]
+#     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
-    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_09142020",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016Data()],postfix="_ModuleCommon_2016Data",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016MC()],postfix="_ModuleCommon_2018MC",noOut=False,outputbranchsel=outputbranches)
-    p.run()
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_09142020",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016Data()],postfix="_ModuleCommon_2016Data",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016MC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)
+#     p.run()

@@ -8,7 +8,7 @@ import re
 
 #Set save directory and date for file names
 saveDirectory = 'plots/CR_2016/nleptons/'
-date = '09_20_2020'
+date = '11_11_2020'
 year = 2016
 useCondor = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -40,8 +40,11 @@ else:
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200' # || HLT_Ele105_CaloIdVT_GsfTrkIdT
     cuts['singleIsoMu'] = 'HLT_IsoMu27 || HLT_IsoMu24' # || HLT_IsoTkMu24' #|| HLT_IsoTkMu27
 
+#Pre-selection cut definitions
 cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && jet1_jetId >= 3 && jet1_chHEF > 0.1 &&' + cuts['passMETfilters'] 
+cuts['AHminSR'] = '(nVetoElectrons + nLooseMuons) == 0 && METcorrected_pt >= 250'
 
 #Signal region definitions
 cuts['SL1e0fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
@@ -51,18 +54,17 @@ cuts['SL1e2bSR'] = cuts['SL1e'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 160' + ' 
 cuts['SL1m0fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 cuts['SL1m1fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 cuts['SL1m2bSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
+cuts['AH0l0fSR'] = cuts['AH'] + ' && nbjets == 1 && nfjets == 0 && minDeltaPhi12 >= 1 && M_Tb >= 180'
+cuts['AH0l1fSR'] = cuts['AH'] + ' && nbjets == 1 && nfjets >= 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
+cuts['AH0l2bSR'] = cuts['AH'] + ' && nbjets >= 2 && minDeltaPhi12 >= 1 && M_Tb >= 180 && jet1p_TH_T <= 0.5'
 
 cuts['SL1bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets == 1 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 cuts['SL2bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets >= 2 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 
-cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && jet1_jetId >= 3 && jet1_chHEF > 0.1 &&' + cuts['passMETfilters'] 
-cuts['AH0l0fSR'] = cuts['AH'] + ' && nbjets == 1 && nfjets == 0'
-cuts['AH0l2bSR'] = cuts['AH'] + ' && nbjets >= 2'
-
-cuts['AH1bSR'] = cuts['AH'] + ' && nbjets == 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
-cuts['AH1b0fSR'] = cuts['AH'] + ' && nbjets == 1 && nfjets == 0 && minDeltaPhi12 >= 1 && M_Tb >= 180'
-cuts['AH1b1fSR'] = cuts['AH'] + ' && nbjets == 1 && nfjets >= 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
-cuts['AH2bSR'] = cuts['AH'] + ' && nbjets >= 2 && minDeltaPhi12 >= 1 && M_Tb >= 180 && jet1p_TH_T <= 0.5'
+cuts['AHSR'] = cuts['AH'] + ' && nbjets >= 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
+cuts['AH1b0fSR'] = cuts['AH'] + ' && nbjets == 1 && nfjets == 0'
+cuts['AH2bSR'] = cuts['AH'] + ' && nbjets >= 2'
+cuts['AH0l1bSR'] = cuts['AH'] + ' && nbjets == 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
 
 #Control region definitions
 cuts['SL2eTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
@@ -91,22 +93,23 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 
 #cut = 'SL1e' #Pre-selection cuts
 #cut = 'SL1m'
-#cut = 'AH'
+cut = 'AHSR'
+#cut = 'AHminSR'
 
 #cut = 'SL1e0fSR' #Signal region cuts
 #cut = 'SL1e1fSR'
 #cut = 'SL1e2bSR'
-#cut = 'SL1bSR'
-#cut = 'SL2bSR'
-#cut = 'AH0l0fSR'
-#cut = 'AH0l2bSR'
-#cut = 'AH1bSR'
-#cut = 'AH1b0fSR'
-#cut = 'AH1b1fSR'
-#cut = 'AH2bSR'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
+#cut = 'AH0l0fSR'
+#cut = 'AH0l1fSR'
+#cut = 'AH0l2bSR'
+#cut = 'SL1bSR'
+#cut = 'SL2bSR'
+#cut = 'AH0l1bSR'
+#cut = 'AH1b0fSR'
+#cut = 'AH2bSR'
 
 #cut = 'SL2eTR' #Control region cuts
 #cut = 'SL2mTR'
@@ -118,7 +121,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'AH1eWR'
 #cut = 'AH1mWR'
 #cut = 'AH2eZR'
-cut = 'AH2mZR'
+#cut = 'AH2mZR'
 #cut = 'SLeCR'
 #cut = 'SLmCR'
 #cut = 'SL1eCR'
@@ -133,7 +136,18 @@ cut = 'AH2mZR'
 #cuts[cut] += ' && Jet_pt[0] > 30 && abs(Jet_eta[0]) < 2.4 && Jet_jetId[0] > 0'
 #cuts[cut] = cuts[cut].replace('&& M_T >= 160 ', '')
 #cuts[cut] = cuts[cut].replace('&& m_ll >= 60 && m_ll <= 120 ', '')
-#cuts[cut] = cuts[cut] + ' && M_T2ll < 100'
+#cuts[cut] = cuts[cut] + ' && M_T2ll < 80'
+#cuts[cut] = cuts[cut] + ' && ((m_ll < 76) || (m_ll > 106))'
+#Uncomment replacements below to replace PFMET with PuppiMET variables
+# cuts[cut] = cuts[cut].replace('METcorrected', 'PuppiMET')
+# cuts[cut] = cuts[cut].replace('minDeltaPhi ', 'minDeltaPhi_puppi ')
+# cuts[cut] = cuts[cut].replace('minDeltaPhi12 ', 'minDeltaPhi12_puppi ')
+# cuts[cut] = cuts[cut].replace('M_Tb ', 'M_Tb_puppi ')
+# cuts[cut] = cuts[cut].replace('M_T ', 'M_T_puppi ')
+# cuts[cut] = cuts[cut].replace('M_T2W ', 'M_T2W_puppi ')
+# cuts[cut] = cuts[cut].replace('M_T2ll ', 'M_T2ll_puppi ')
+# cuts[cut] = cuts[cut].replace('m_llExists ', 'm_llExists_puppi ')
+# cuts[cut] = cuts[cut].replace('recoilPtMiss ', 'recoilPtMiss_puppi ')
 
 if year == 2016:
     cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter && Flag_BadPFMuonSummer16Filter'
@@ -145,12 +159,13 @@ else:
 #var = 'minDeltaPhi12'
 #var = 'M_Tb'
 #var = 'jet1p_TH_T'
-#var = 'njets'
+var = 'njets'
 #var = 'nfjets'
 #var = 'nbjets'
 #var = 'MET_pt'
 #var = 'METcorrected_pt'
-var = 'recoilPtMiss'
+#var = 'PuppiMET_pt'
+#var = 'recoilPtMiss_puppi'
 #var = 'Electron_pt[1]'
 #var = 'Muon_pt[1]'
 #var = 'Jet_pt[0]'
@@ -173,7 +188,7 @@ elif year == 2017:
 elif year == 2018:
     lumi = 59.7
 if 'SR' in cut:
-    scaleFactor = 20
+    scaleFactor = 100
 else:
     scaleFactor = 1
 
@@ -191,14 +206,14 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 15
-xmin = 250
-xmax = 550
+nbins = 12
+xmin = 0
+xmax = 12
 auto_y = True
 #auto_y = False
-doLogPlot = True
-#doLogPlot = False
-drawData = True
+#doLogPlot = True
+doLogPlot = False
+drawData = False
 #drawData = False
 if not auto_y:
     ymin = 60
@@ -206,14 +221,14 @@ if not auto_y:
 
 #histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
-#histoLabel = cut + ' min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(_{1,2},p_{T}^{miss}); Events'
-#histoLabel = cut + ' M_{T}^{b} distribution; M_{T}^b (GeV); Events'
+#histoLabel = cut + ' min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
+#histoLabel = cut + ' M_{T}^{b} distribution; M_{T}^{b} (GeV); Events'
 #histoLabel = cut + ' jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
-#histoLabel = cut + ' central n_{jet} distribution; number of AK4 jets; Events'
+histoLabel = cut + ' central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = cut + ' n_{bjets} distribution; number of b-tagged jets; Events'
 #histoLabel = cut + ' forward n_{jet} distribution; number of forward AK4 jets; Events'
 #histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
-histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
+#histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
 #histoLabel = cut + ' Electron_pt[1] distribution; Electron_pt[1]; Events'
 #histoLabel = cut + ' Muon_pt[1] distribution; Muon_pt[1]; Events'
 #histoLabel = cut + ' Jet_pt[0] distribution; Jet_pt[0]; Events'
@@ -306,10 +321,10 @@ for dataset in dataSamples:
                 datacut = cuts['data']
             dataSamples[dataset][filepath+'_Events'].Draw(var+'>>hist',datacut)
             print '    hist nEntries = ', hist.GetEntries()
-            print '    hist integral = ', hist.Integral()
+            print '    hist integral = ', hist.Integral(1,nbins+1)
             hists['data'] += hist
             print '    hist_data nEntries = ', hists['data'].GetEntries()
-            print '    hist_data integral = ', hists['data'].Integral()
+            print '    hist_data integral = ', hists['data'].Integral(1,nbins+1)
 for process in MCSamples:
     print '  Process = ', process
     for dataset in MCSamples[process]:
@@ -329,6 +344,7 @@ for process in MCSamples:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
             MCSamples[process][dataset][filepath+'_Events'].Draw(var+'>>hist',weight+'*('+cuts[cut]+')')
             print '          hist nEntries = ', hist.GetEntries()
+            print '          hist integral = ', hist.Integral(1,nbins+1)
             if process in signal:
                 hists[process] += scaleFactor*hist
             elif process == 'ttbarPlusJets':
@@ -355,7 +371,9 @@ for process in MCSamples:
 for name in back:
     hists['bkgSum'] += hists[name]
 print 'Total data background nEvents = ', hists['data'].GetEntries()
+print 'Total data background integral = ', hists['data'].Integral(1,nbins+1)
 print 'Total MC background nEvents = ', hists['bkgSum'].GetEntries()
+print 'Total MC background integral = ', hists['bkgSum'].Integral(1,nbins+1)
 print("Finished filling histograms")
 
 #Add overflow bins to histograms
@@ -497,6 +515,7 @@ if drawData:
 #Save histogram
 if useCondor:
     c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
+    #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
 else:
     c.SaveAs(saveDirectory + date + "/" + cut + str(year) + "_" + var + "_" + date + ".png")
 #c.SaveAs("test.png")

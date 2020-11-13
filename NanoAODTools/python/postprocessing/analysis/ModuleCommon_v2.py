@@ -462,9 +462,14 @@ to next event)"""
         # AH0l1fSR = AH and nbjets == 1 and nfjets >= 1
         # AH0l2bSR = AH and nbjets >= 2
 
+        #Define skimming cuts to be applied
+        Skim = (nTightElectrons + nTightMuons) <= 1 and nbjets >= 1 and njets >= 2 and event.MET_pt > 100 
+
         #Signal region chosen here
         if self.signalRegion == "All":
             signalRegion = True
+        elif self.signalRegion == "Skim":
+            signalRegion = Skim
         # elif self.signalRegion == "SL1e0fSR":
         #     signalRegion = SL1e0fSR
         # elif self.signalRegion == "SL1m0fSR":
@@ -570,6 +575,10 @@ analyze2016MC = lambda : CommonAnalysis("All",year=2016,isData=False,isSignal=Fa
 analyze2016SignalMC = lambda : CommonAnalysis("All",year=2016,isData=False,isSignal=True,btag='DeepCSV')
 analyze2016Data = lambda : CommonAnalysis("All",year=2016,isData=True,isSignal=False,btag='DeepCSV')
 
+analyze2016MC_Skim = lambda : CommonAnalysis("Skim",year=2016,isData=False,isSignal=False,btag='DeepCSV')
+analyze2016SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2016,isData=False,isSignal=True,btag='DeepCSV')
+analyze2016Data_Skim = lambda : CommonAnalysis("Skim",year=2016,isData=True,isSignal=False,btag='DeepCSV')
+
 analyze2017MC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=False,btag='DeepCSV')
 analyze2017SignalMC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=True,btag='DeepCSV')
 analyze2017Data = lambda : CommonAnalysis("All",year=2017,isData=True,isSignal=False,btag='DeepCSV')
@@ -590,7 +599,7 @@ if runLocal:
     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
     #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-    inputFiles=["testSamples/ttbarPlusJets_Run2018.root"]
+    inputFiles=["testSamples/ttbarPlusJets_Run2016.root"]
     #inputFiles=["testSamples/SingleElectron_2017B.root"]
     #inputFiles = ["testSamples/SingleElectron_2018A.root"]
     #inputFiles = ["testSamples/SingleElectron_2016H.root"]
@@ -600,5 +609,5 @@ if runLocal:
 
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016Data()],postfix="_ModuleCommon_2016Data",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
-    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2018MC()],postfix="_ModuleCommon_2018MC",noOut=False,outputbranchsel=outputbranches)
+    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016MC()],postfix="_ModuleCommon_2016MC",noOut=False,outputbranchsel=outputbranches)
     p.run()

@@ -2,7 +2,7 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'ModuleCommon_09142020' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'ModuleCommonSkim_10092020' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'getBTagHist_DeepCSV_08062020'
  analysis      = 'QCD' #Name of the analysis (e.g. VBFHN, LQtop, ...)
  year          = '2016'
