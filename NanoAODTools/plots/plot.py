@@ -54,17 +54,17 @@ cuts['SL1e2bSR'] = cuts['SL1e'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 160' + ' 
 cuts['SL1m0fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 cuts['SL1m1fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 cuts['SL1m2bSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
-cuts['AH0l0fSR'] = cuts['AH'] + ' && nbjets == 1 && nfjets == 0 && minDeltaPhi12 >= 1 && M_Tb >= 180'
-cuts['AH0l1fSR'] = cuts['AH'] + ' && nbjets == 1 && nfjets >= 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
-cuts['AH0l2bSR'] = cuts['AH'] + ' && nbjets >= 2 && minDeltaPhi12 >= 1 && M_Tb >= 180 && jet1p_TH_T <= 0.5'
+cuts['AH0l0fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets == 0 && minDeltaPhi12 >= 1 && M_Tb >= 180'
+cuts['AH0l1fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets >= 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
+cuts['AH0l2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDeltaPhi12 >= 1 && M_Tb >= 180 && jet1p_TH_T <= 0.5'
 
 cuts['SL1bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets == 1 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 cuts['SL2bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets >= 2 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 
-cuts['AHSR'] = cuts['AH'] + ' && nbjets >= 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
-cuts['AH1b0fSR'] = cuts['AH'] + ' && nbjets == 1 && nfjets == 0'
-cuts['AH2bSR'] = cuts['AH'] + ' && nbjets >= 2'
-cuts['AH0l1bSR'] = cuts['AH'] + ' && nbjets == 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
+cuts['AHSR'] = cuts['AH'] + ' && minDeltaPhi12 >= 1 && M_Tb >= 180'
+cuts['AH1b0fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets == 0'
+cuts['AH2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2')
+cuts['AH0l1bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && minDeltaPhi12 >= 1 && M_Tb >= 180'
 
 #Control region definitions
 cuts['SL2eTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
@@ -93,7 +93,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 
 #cut = 'SL1e' #Pre-selection cuts
 #cut = 'SL1m'
-cut = 'AHSR'
+#cut = 'AHSR'
 #cut = 'AHminSR'
 
 #cut = 'SL1e0fSR' #Signal region cuts
@@ -102,7 +102,7 @@ cut = 'AHSR'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
-#cut = 'AH0l0fSR'
+cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
