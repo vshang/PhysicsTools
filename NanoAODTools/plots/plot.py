@@ -8,7 +8,7 @@ import re
 
 #Set save directory and date for file names
 saveDirectory = 'plots/CR_2016/nleptons/'
-date = '11_11_2020'
+date = '11_17_2020'
 year = 2016
 useCondor = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -45,6 +45,9 @@ cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 
 cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && jet1_jetId >= 3 && jet1_chHEF > 0.1 &&' + cuts['passMETfilters'] 
 cuts['AHminSR'] = '(nVetoElectrons + nLooseMuons) == 0 && METcorrected_pt >= 250'
+cuts['AH2j0bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets == 0'
+cuts['AH2j1bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets == 1'
+cuts['AH2j2bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets >= 2'
 
 #Signal region definitions
 cuts['SL1e0fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
@@ -95,6 +98,9 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1m'
 #cut = 'AHSR'
 #cut = 'AHminSR'
+#cut = 'AH2j0bSR'
+#cut = 'AH2j1bSR'
+cut = 'AH2j2bSR'
 
 #cut = 'SL1e0fSR' #Signal region cuts
 #cut = 'SL1e1fSR'
@@ -102,7 +108,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
-cut = 'AH0l0fSR'
+#cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
@@ -158,8 +164,8 @@ else:
 #var = 'M_T2W'
 #var = 'minDeltaPhi12'
 #var = 'M_Tb'
-#var = 'jet1p_TH_T'
-var = 'njets'
+var = 'jet1p_TH_T'
+#var = 'njets'
 #var = 'nfjets'
 #var = 'nbjets'
 #var = 'MET_pt'
@@ -206,9 +212,9 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 12
+nbins = 20
 xmin = 0
-xmax = 12
+xmax = 1
 auto_y = True
 #auto_y = False
 #doLogPlot = True
@@ -223,8 +229,8 @@ if not auto_y:
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
 #histoLabel = cut + ' min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
 #histoLabel = cut + ' M_{T}^{b} distribution; M_{T}^{b} (GeV); Events'
-#histoLabel = cut + ' jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
-histoLabel = cut + ' central n_{jet} distribution; number of AK4 jets; Events'
+histoLabel = cut + ' jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
+#histoLabel = cut + ' central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = cut + ' n_{bjets} distribution; number of b-tagged jets; Events'
 #histoLabel = cut + ' forward n_{jet} distribution; number of forward AK4 jets; Events'
 #histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
