@@ -8,7 +8,7 @@ import re
 
 #Set save directory and date for file names
 saveDirectory = 'plots/CR_2016/nleptons/'
-date = '11_17_2020'
+date = '11_26_2020'
 year = 2016
 useCondor = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -100,7 +100,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'AHminSR'
 #cut = 'AH2j0bSR'
 #cut = 'AH2j1bSR'
-cut = 'AH2j2bSR'
+#cut = 'AH2j2bSR'
 
 #cut = 'SL1e0fSR' #Signal region cuts
 #cut = 'SL1e1fSR'
@@ -108,7 +108,7 @@ cut = 'AH2j2bSR'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
-#cut = 'AH0l0fSR'
+cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
@@ -144,6 +144,7 @@ cut = 'AH2j2bSR'
 #cuts[cut] = cuts[cut].replace('&& m_ll >= 60 && m_ll <= 120 ', '')
 #cuts[cut] = cuts[cut] + ' && M_T2ll < 80'
 #cuts[cut] = cuts[cut] + ' && ((m_ll < 76) || (m_ll > 106))'
+cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1 && M_Tb >= 180', 'minDeltaPhi12 >= 2 && M_Tb >= 100')
 #Uncomment replacements below to replace PFMET with PuppiMET variables
 # cuts[cut] = cuts[cut].replace('METcorrected', 'PuppiMET')
 # cuts[cut] = cuts[cut].replace('minDeltaPhi ', 'minDeltaPhi_puppi ')
@@ -162,9 +163,9 @@ else:
 
 #var = 'M_T'
 #var = 'M_T2W'
-#var = 'minDeltaPhi12'
+var = 'minDeltaPhi12'
 #var = 'M_Tb'
-var = 'jet1p_TH_T'
+#var = 'jet1p_TH_T'
 #var = 'njets'
 #var = 'nfjets'
 #var = 'nbjets'
@@ -212,9 +213,9 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 20
+nbins = 16
 xmin = 0
-xmax = 1
+xmax = 3.2
 auto_y = True
 #auto_y = False
 #doLogPlot = True
@@ -227,9 +228,9 @@ if not auto_y:
 
 #histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
-#histoLabel = cut + ' min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
+histoLabel = cut + ' min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
 #histoLabel = cut + ' M_{T}^{b} distribution; M_{T}^{b} (GeV); Events'
-histoLabel = cut + ' jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
+#histoLabel = cut + ' jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = cut + ' central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = cut + ' n_{bjets} distribution; number of b-tagged jets; Events'
 #histoLabel = cut + ' forward n_{jet} distribution; number of forward AK4 jets; Events'
@@ -520,7 +521,7 @@ if drawData:
         
 #Save histogram
 if useCondor:
-    c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
+    c.SaveAs(cut + str(year) + "_" + var + "_" + date + "_2p0.png")
     #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
 else:
     c.SaveAs(saveDirectory + date + "/" + cut + str(year) + "_" + var + "_" + date + ".png")
