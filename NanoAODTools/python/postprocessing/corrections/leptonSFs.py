@@ -75,15 +75,13 @@ class MuonSFs:
         sf_ISO = self.sftool_ISO.getSF(pt,eta,syst)
         return sf_ID*sf_ISO
 
-    def getWeight(self, pt, eta, syst=0):
+    def getWeight(self, pt, eta, run, syst=0):
         #Get weight for single muon trigger efficiency. 
         if self.year ==2018:
-            lumiBefore = 8950.82
-            lumiAfter = 50789.75
-            lumiTotal = lumiBefore + lumiAfter
-            sf_TriggerBefore = self.sftool_TriggerBeforeHLTUpdate.getSF(pt,eta,0)
-            sf_TriggerAfter = self.sftool_TriggerAfterHLTUpdate.getSF(pt,eta,0)
-            sf_Trigger = (lumiBefore/lumiTotal)*sf_TriggerBefore + (lumiAfter/lumiTotal)*sf_TriggerAfter
+            if run < 316361:
+                sf_Trigger = self.sftool_TriggerBeforeHLTUpdate.getSF(pt,eta,0)
+            elif run >= 316361:
+                sf_Trigger = self.sftool_TriggerAfterHLTUpdate.getSF(pt,eta,0)
         else:
             sf_Trigger = self.sftool_Trigger.getSF(pt,eta,0)
         if syst==0:

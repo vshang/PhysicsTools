@@ -8,8 +8,8 @@ import re
 
 #Set save directory and date for file names
 saveDirectory = 'plots/CR_2016/nleptons/'
-date = '11_26_2020'
-year = 2016
+date = '12_09_2020'
+year = 2018
 useCondor = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
@@ -30,20 +30,26 @@ print 'Plotting start time:', datetime.datetime.now()
 #Define selection cuts and filters here
 cuts = {}
 
-cuts['passMETfilters'] = 'Flag_goodVertices && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_globalTightHalo2016Filter && Flag_muonBadTrackFilter && Flag_chargedHadronTrackResolutionFilter'
 if year == 2016:
+    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonSummer16Filter && Flag_ecalBadCalibFilterV2'
     cuts['singleIsoEle'] = 'HLT_Ele27_WPTight_Gsf'# || HLT_Ele32_eta2p1_WPTight_Gsf || HLT_Ele27_eta2p1_WPTight_Gsf' # || HLT_Ele27_WPLoose_Gsf || HLT_Ele32_WPTight_Gsf
-    cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Ele105_CaloIdVT_GsfTrkIdT || HLT_Photon175'
-    cuts['singleIsoMu'] = 'HLT_IsoMu27 || HLT_IsoMu24 || HLT_IsoTkMu24 || HLT_IsoTkMu27'
-else:
+    cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon175'
+    cuts['singleIsoMu'] = 'HLT_IsoMu24 || HLT_IsoTkMu24'
+elif year == 2017:
+    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter'
     cuts['singleIsoEle'] = 'HLT_Ele32_WPTight_Gsf || HLT_Ele35_WPTight_Gsf'# || HLT_Ele32_WPTight_Gsf_L1DoubleEG'
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200' # || HLT_Ele105_CaloIdVT_GsfTrkIdT
-    cuts['singleIsoMu'] = 'HLT_IsoMu27 || HLT_IsoMu24' # || HLT_IsoTkMu24' #|| HLT_IsoTkMu27
+    cuts['singleIsoMu'] = 'HLT_IsoMu27' # || HLT_IsoTkMu24' #|| HLT_IsoTkMu27
+elif year == 2018:
+    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter'
+    cuts['singleIsoEle'] = 'HLT_Ele32_WPTight_Gsf'# || HLT_Ele32_WPTight_Gsf_L1DoubleEG'
+    cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200' # || HLT_Ele105_CaloIdVT_GsfTrkIdT
+    cuts['singleIsoMu'] = 'HLT_IsoMu24' # || HLT_IsoTkMu24' #|| HLT_IsoTkMu27
 
 #Pre-selection cut definitions
 cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
-cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && jet1_jetId >= 3 && jet1_chHEF > 0.1 &&' + cuts['passMETfilters'] 
+cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 &&' + cuts['passMETfilters'] 
 cuts['AHminSR'] = '(nVetoElectrons + nLooseMuons) == 0 && METcorrected_pt >= 250'
 cuts['AH2j0bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets == 0'
 cuts['AH2j1bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets == 1'
@@ -108,7 +114,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
-cut = 'AH0l0fSR'
+#cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
@@ -117,7 +123,7 @@ cut = 'AH0l0fSR'
 #cut = 'AH1b0fSR'
 #cut = 'AH2bSR'
 
-#cut = 'SL2eTR' #Control region cuts
+cut = 'SL2eTR' #Control region cuts
 #cut = 'SL2mTR'
 #cut = 'SL1e1mTR'
 #cut = 'SL1eWR'
@@ -144,7 +150,7 @@ cut = 'AH0l0fSR'
 #cuts[cut] = cuts[cut].replace('&& m_ll >= 60 && m_ll <= 120 ', '')
 #cuts[cut] = cuts[cut] + ' && M_T2ll < 80'
 #cuts[cut] = cuts[cut] + ' && ((m_ll < 76) || (m_ll > 106))'
-cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1 && M_Tb >= 180', 'minDeltaPhi12 >= 2 && M_Tb >= 100')
+#cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1 && M_Tb >= 180', 'minDeltaPhi12 >= 2 && M_Tb >= 100')
 #Uncomment replacements below to replace PFMET with PuppiMET variables
 # cuts[cut] = cuts[cut].replace('METcorrected', 'PuppiMET')
 # cuts[cut] = cuts[cut].replace('minDeltaPhi ', 'minDeltaPhi_puppi ')
@@ -156,20 +162,18 @@ cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1 && M_Tb >= 180', 'minDeltaPhi1
 # cuts[cut] = cuts[cut].replace('m_llExists ', 'm_llExists_puppi ')
 # cuts[cut] = cuts[cut].replace('recoilPtMiss ', 'recoilPtMiss_puppi ')
 
-if year == 2016:
-    cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter && Flag_BadPFMuonSummer16Filter'
-else:
-    cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter && Flag_BadPFMuonFilter'
+#Only apply ee badSC noise filter to data (https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2)
+cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 
 #var = 'M_T'
 #var = 'M_T2W'
-var = 'minDeltaPhi12'
+#var = 'minDeltaPhi12'
 #var = 'M_Tb'
 #var = 'jet1p_TH_T'
 #var = 'njets'
 #var = 'nfjets'
 #var = 'nbjets'
-#var = 'MET_pt'
+var = 'MET_pt'
 #var = 'METcorrected_pt'
 #var = 'PuppiMET_pt'
 #var = 'recoilPtMiss_puppi'
@@ -213,14 +217,14 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 16
-xmin = 0
-xmax = 3.2
+nbins = 9
+xmin = 160
+xmax = 520
 auto_y = True
 #auto_y = False
 #doLogPlot = True
 doLogPlot = False
-drawData = False
+drawData = True
 #drawData = False
 if not auto_y:
     ymin = 60
@@ -228,13 +232,13 @@ if not auto_y:
 
 #histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
-histoLabel = cut + ' min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
+#histoLabel = cut + ' min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
 #histoLabel = cut + ' M_{T}^{b} distribution; M_{T}^{b} (GeV); Events'
 #histoLabel = cut + ' jet_{1} p_{T}/H_{T} distribution; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = cut + ' central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = cut + ' n_{bjets} distribution; number of b-tagged jets; Events'
 #histoLabel = cut + ' forward n_{jet} distribution; number of forward AK4 jets; Events'
-#histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
+histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
 #histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
 #histoLabel = cut + ' Electron_pt[1] distribution; Electron_pt[1]; Events'
 #histoLabel = cut + ' Muon_pt[1] distribution; Muon_pt[1]; Events'
@@ -521,7 +525,7 @@ if drawData:
         
 #Save histogram
 if useCondor:
-    c.SaveAs(cut + str(year) + "_" + var + "_" + date + "_2p0.png")
+    c.SaveAs(cut + str(year) + "_" + var + "_" + date + "_40GeVLepCut.png")
     #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
 else:
     c.SaveAs(saveDirectory + date + "/" + cut + str(year) + "_" + var + "_" + date + ".png")
