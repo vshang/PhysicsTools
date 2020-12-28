@@ -2,10 +2,11 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'ModuleCommonSkim_10092020' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'ModuleCommonSkim_12242020' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'getBTagHist_DeepCSV_08062020'
- analysis      = 'QCD' #Name of the analysis (e.g. VBFHN, LQtop, ...)
+ analysis      = 'SingleMuon' #Name of the analysis (e.g. VBFHN, LQtop, ...)
  year          = '2016'
+ run           = 'B'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
@@ -17,7 +18,7 @@ if __name__ == '__main__':
 #                  ]
 
  #Set appropriate text file containing DAS file paths for input datasets
- samples = 'datasetinputs'+year+'/'+analysis+'_Run'+year+'.txt'
+ samples = 'datasetinputs'+year+'/'+analysis+'_Run'+year+run+'.txt'
  #samples = 'datasetinputs/ttbarPlusJets.txt' 
  #samples = 'datasetinputs/singleTop.txt' 
  #samples = 'datasetinputs/WPlusJets.txt'
@@ -56,7 +57,7 @@ if __name__ == '__main__':
  #for d in range(0,len(datasetnames)):
  for d in range(0,len(datasetinputs)):
   config.section_('General')
-  config.General.requestName      = analysis + '_Run' + year + '_sample%d' % d #datasetnames[d]
+  config.General.requestName      = analysis + '_Run' + year + run + '_sample%d' % d #datasetnames[d]
   config.General.transferLogs=True
   config.section_('JobType')
   config.JobType.pluginName       = 'Analysis'
@@ -79,7 +80,7 @@ if __name__ == '__main__':
   #config.Data.totalUnits         = 2500 #With 'FileBased' splitting tells how many files to analyse
   config.Data.unitsPerJob         = unitsPerJob 
   #config.Data.outLFNDirBase       = '/store/user/%s/%s' % (getUsernameFromSiteDB(),analysis) #No longer works with CRAB 
-  config.Data.outLFNDirBase       = '/store/user/%s/%s' % ('vshang',analysis+'_Run'+year)
+  config.Data.outLFNDirBase       = '/store/user/%s/%s' % ('vshang',analysis+'_Run'+year+run)
   config.Data.outputDatasetTag    = '%s' % (task) 
   config.Data.publication         = False
   config.section_('Site')
