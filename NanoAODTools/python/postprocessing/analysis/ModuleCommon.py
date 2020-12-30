@@ -445,12 +445,12 @@ to next event)"""
 
         #Calculate minDeltaPhi and minDeltaPhi(j_(1,2), missing pt) preselection variable of all central jets 
         minDeltaPhi = minDeltaPhi12 = minDeltaPhi_puppi = minDeltaPhi12_puppi = -9 #If there is less than 2 jets, set value to -9 to indicate  minDeltaPhi cannot be calculated
+        deltaPhij1 = deltaPhij2 = deltaPhij3 = deltaPhib1 = deltaPhib2 = -9
 
         #Systematics - JES, JER
         if self.isMC:
             minDeltaPhiScaleUp = minDeltaPhiScaleDown = minDeltaPhiResUp = minDeltaPhiResDown = -9 
             minDeltaPhi12ScaleUp = minDeltaPhi12ScaleDown = minDeltaPhi12ResUp = minDeltaPhi12ResDown = -9
-            deltaPhij1 = deltaPhij2 = deltaPhij3 = deltaPhib1 = deltaPhib2 = -9
 
         if nbjets > 0:
             bjet1 = bJets[0]
