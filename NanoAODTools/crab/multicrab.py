@@ -4,9 +4,9 @@ if __name__ == '__main__':
  #####
  task          = 'ModuleCommonSkim_12242020' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'getBTagHist_DeepCSV_08062020'
- analysis      = 'SingleMuon' #Name of the analysis (e.g. VBFHN, LQtop, ...)
+ analysis      = 'WPlusJets' #Name of the analysis (e.g. VBFHN, LQtop, ...)
  year          = '2016'
- run           = 'B'
+ run           = ''
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
@@ -55,7 +55,7 @@ if __name__ == '__main__':
  ##   Crab configuration
  #####
  #for d in range(0,len(datasetnames)):
- for d in range(0,len(datasetinputs)):
+ for d in range(1,2):#range(0,len(datasetinputs)):
   config.section_('General')
   config.General.requestName      = analysis + '_Run' + year + run + '_sample%d' % d #datasetnames[d]
   config.General.transferLogs=True
@@ -65,7 +65,7 @@ if __name__ == '__main__':
   config.JobType.scriptExe        = 'crab_script.sh'
   config.JobType.inputFiles      =  ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropSR_out.txt','../python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'] + Mt2Com_files
   #config.JobType.inputFiles      =  ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropSR_out.txt','../python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt'] + Mt2Com_files
-  #config.JobType.inputFiles      =  ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropSR_out.txt','../python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt'] + Mt2Com_files
+  #config.JobType.inputFiles      =  ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropSR_out.txt','../python/postprocessing/data/json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt'] + Mt2Com_files
   #config.JobType.inputFiles       = ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropBTag_out.txt']
    #hadd nano will not be needed once nano tools are in cmssw
   #config.JobType.outputFiles = ['hist.root'] #Enable for making BTag histograms using getBTagHist.py

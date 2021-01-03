@@ -192,12 +192,11 @@ var = 'MET_pt'
 
 #Set lum (fb^-1) and overall signal sample scale factor here
 if year == 2016:
-    lumi = 35.9
+    lumi = 35.92
 elif year == 2017:
-    lumi = 41.5
-    #lumi = 9.66
+    lumi = 41.53
 elif year == 2018:
-    lumi = 59.7
+    lumi = 59.83
 if 'SR' in cut:
     scaleFactor = 100
 else:
