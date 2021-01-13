@@ -7,10 +7,10 @@ import datetime
 import re
 
 #Set save directory and date for file names
-saveDirectory = 'plots/CR_2016/nleptons/'
-date = '12_09_2020'
-year = 2018
-useCondor = True
+saveDirectory = 'plots/SR_2016/FatJet_deepTag_TvsQCD/'
+date = '01_06_2020'
+year = 2016
+useCondor = False
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
     dataSamples = data2016
@@ -31,17 +31,17 @@ print 'Plotting start time:', datetime.datetime.now()
 cuts = {}
 
 if year == 2016:
-    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonSummer16Filter && Flag_ecalBadCalibFilterV2'
+    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter'
     cuts['singleIsoEle'] = 'HLT_Ele27_WPTight_Gsf'# || HLT_Ele32_eta2p1_WPTight_Gsf || HLT_Ele27_eta2p1_WPTight_Gsf' # || HLT_Ele27_WPLoose_Gsf || HLT_Ele32_WPTight_Gsf
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon175'
     cuts['singleIsoMu'] = 'HLT_IsoMu24 || HLT_IsoTkMu24'
 elif year == 2017:
-    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter'
-    cuts['singleIsoEle'] = 'HLT_Ele32_WPTight_Gsf || HLT_Ele35_WPTight_Gsf'# || HLT_Ele32_WPTight_Gsf_L1DoubleEG'
+    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'
+    cuts['singleIsoEle'] = 'passEle32WPTightGsf2017'# || HLT_Ele32_WPTight_Gsf_L1DoubleEG'
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200' # || HLT_Ele105_CaloIdVT_GsfTrkIdT
     cuts['singleIsoMu'] = 'HLT_IsoMu27' # || HLT_IsoTkMu24' #|| HLT_IsoTkMu27
 elif year == 2018:
-    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter'
+    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'
     cuts['singleIsoEle'] = 'HLT_Ele32_WPTight_Gsf'# || HLT_Ele32_WPTight_Gsf_L1DoubleEG'
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200' # || HLT_Ele105_CaloIdVT_GsfTrkIdT
     cuts['singleIsoMu'] = 'HLT_IsoMu24' # || HLT_IsoTkMu24' #|| HLT_IsoTkMu27
@@ -102,7 +102,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 
 #cut = 'SL1e' #Pre-selection cuts
 #cut = 'SL1m'
-#cut = 'AHSR'
+#cut = 'AH'
 #cut = 'AHminSR'
 #cut = 'AH2j0bSR'
 #cut = 'AH2j1bSR'
@@ -113,7 +113,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1e2bSR'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
-#cut = 'SL1m2bSR'
+cut = 'SL1m2bSR'
 #cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
@@ -123,7 +123,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'AH1b0fSR'
 #cut = 'AH2bSR'
 
-cut = 'SL2eTR' #Control region cuts
+#cut = 'SL2eTR' #Control region cuts
 #cut = 'SL2mTR'
 #cut = 'SL1e1mTR'
 #cut = 'SL1eWR'
@@ -164,6 +164,7 @@ cut = 'SL2eTR' #Control region cuts
 
 #Only apply ee badSC noise filter to data (https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2)
 cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
+#
 
 #var = 'M_T'
 #var = 'M_T2W'
@@ -173,7 +174,7 @@ cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 #var = 'njets'
 #var = 'nfjets'
 #var = 'nbjets'
-var = 'MET_pt'
+#var = 'MET_pt'
 #var = 'METcorrected_pt'
 #var = 'PuppiMET_pt'
 #var = 'recoilPtMiss_puppi'
@@ -189,6 +190,9 @@ var = 'MET_pt'
 #var = 'MET_phi'
 #var = 'METcorrected_phi'
 #var = 'M_T2ll'
+var = 'deltaPhij3'
+#var = 'nFatJet'
+#var = 'FatJet_deepTag_WvsQCD'
 
 #Set lum (fb^-1) and overall signal sample scale factor here
 if year == 2016:
@@ -198,9 +202,9 @@ elif year == 2017:
 elif year == 2018:
     lumi = 59.83
 if 'SR' in cut:
-    scaleFactor = 100
+    scaleFactor = 50
 else:
-    scaleFactor = 1
+    scaleFactor = 50
 
 ##Create histograms
 ##-----------------------------------------------------------------------------------------------
@@ -216,15 +220,18 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 9
-xmin = 160
-xmax = 520
+nbins = 15
+xmin = 0
+xmax = 3
 auto_y = True
 #auto_y = False
 #doLogPlot = True
 doLogPlot = False
-drawData = True
-#drawData = False
+#drawData = True
+drawData = False
+mediatorType = 'scalar'
+mchi = 1
+mphi = 100
 if not auto_y:
     ymin = 60
     ymax = 20000
@@ -237,7 +244,7 @@ if not auto_y:
 #histoLabel = cut + ' central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = cut + ' n_{bjets} distribution; number of b-tagged jets; Events'
 #histoLabel = cut + ' forward n_{jet} distribution; number of forward AK4 jets; Events'
-histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
+#histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
 #histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
 #histoLabel = cut + ' Electron_pt[1] distribution; Electron_pt[1]; Events'
 #histoLabel = cut + ' Muon_pt[1] distribution; Muon_pt[1]; Events'
@@ -250,6 +257,10 @@ histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
 #histoLabel = cut + ' m_{ll} distribution; m_{ll} (GeV); Events'
 #histoLabel = cut + ' #phi^{miss} distribution; #phi^{miss} (GeV); Events'
 #histoLabel = cut + ' M_{ll}^{T2} distribution; M_{ll}^{T2} (GeV); Events'
+#histoLabel = cut + ' #Delta#phi(jet_{3},p_{T}^{miss}) distribution; #Delta#phi(jet_{3},p_{T}^{miss}); Events'
+#histoLabel = cut + ' n_{AK8 jets} distribution; number of AK8 jets; Events'
+histoLabel = cut + ' DeepAK8 top tag discriminant distribution; DeepAK8 top tag discriminant value; Events'
+#histoLabel = cut + ' DeepAK8 W tag discriminant distribution; DeepAK8 W tag discriminant value; Events'
 
 if drawData:
     ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Data / Bkg')
@@ -292,12 +303,16 @@ for process in MCSamples:
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
-            nevents += MCSamples[process][dataset][filepath+'_Events'].GetEntries()
+            if 'tbar scalar' in process:
+                nevents += MCSamples[process][dataset][filepath+'_Events'].GetEntries()
+            else:
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim', 'countEvents'),'')
+                nevents += skimFile.Get('Events').GetEntries()
         MCSamples[process][dataset]['nevents'] = nevents
 print("Got MC sample root files and event trees")
 
 #Define signal and background histograms
-signal = ['ttbar','tbar']
+signal = ['ttbar ' + mediatorType,'tbar ' + mediatorType]
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
 for name in ['data','bkgSum'] + signal + back:
@@ -323,12 +338,7 @@ for dataset in dataSamples:
         print '  Dataset = ', dataset, ' ||   nEvents = ', dataSamples[dataset]['nevents']
         for filepath in dataSamples[dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
-            #HLT_Ele32_WPTight_Gsf and HLT_Ele115_CaloIdVT_GsfTrkIdT triggers missing in 2017 Run B, make appropriate replacements
-            if year == 2017 and 'tree_allB' in filepath: 
-                datacut = cuts['data'].replace('HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200', 'HLT_Photon200')
-                datacut = datacut.replace('HLT_Ele32_WPTight_Gsf || HLT_Ele35_WPTight_Gsf', 'HLT_Ele32_WPTight_Gsf_L1DoubleEG || HLT_Ele35_WPTight_Gsf')
-            else:
-                datacut = cuts['data']
+            dataset = cuts['data']
             dataSamples[dataset][filepath+'_Events'].Draw(var+'>>hist',datacut)
             print '    hist nEntries = ', hist.GetEntries()
             print '    hist integral = ', hist.Integral(1,nbins+1)
@@ -350,6 +360,8 @@ for process in MCSamples:
         elif process == 'ZTo2Nu':
             weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
             print 'Applied ZTo2Nu qcd/ewk Weights correctly'
+        if process in signal:
+            weight = weight + '*GenModel__TTbarDMJets_Inclusive_'+mediatorType+'_LO_Mchi_'+str(mchi)+'_Mphi_'+str(mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8'
         for filepath in MCSamples[process][dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
             MCSamples[process][dataset][filepath+'_Events'].Draw(var+'>>hist',weight+'*('+cuts[cut]+')')
@@ -412,8 +424,8 @@ else:
     if doLogPlot:
         c.SetLogy(1)
 h_MCStack.Draw('hist')
-hists['ttbar'].Draw('hist same')
-hists['tbar'].Draw('hist same')
+hists['ttbar '+mediatorType].Draw('hist same')
+hists['tbar '+mediatorType].Draw('hist same')
 hists['data'].Draw('ep same')
 hists['bkgSum'].Draw('e2 same')
 #Set MC background histogram options 
@@ -440,10 +452,10 @@ hists['ZTo2Nu'].SetLineWidth(0)
 if auto_y:
     if doLogPlot:
         ymin = max(min(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMinimumBin()), hists['data'].GetBinContent(hists['data'].GetMinimumBin())), 5.e-1)
-        ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar'].GetBinContent(hists['tbar'].GetMaximumBin()), hists['ttbar'].GetBinContent(hists['ttbar'].GetMaximumBin()))
+        ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
     else:
         ymin = 0
-        ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar'].GetBinContent(hists['tbar'].GetMaximumBin()), hists['ttbar'].GetBinContent(hists['ttbar'].GetMaximumBin()))
+        ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
 h_MCStack.SetMinimum(ymin)
 h_MCStack.SetMaximum(ymax)
 #Set settings for data and MC background histogram title/labels
@@ -451,17 +463,17 @@ if drawData:
     setHistStyle(h_MCStack)
     h_MCStack.GetXaxis().SetLabelOffset(999)
     h_MCStack.GetXaxis().SetLabelSize(0)
-    setHistStyle(hists['ttbar'])
-    setHistStyle(hists['tbar'])
+    setHistStyle(hists['ttbar '+mediatorType])
+    setHistStyle(hists['tbar '+mediatorType])
     setHistStyle(hists['data'])
     setHistStyle(hists['bkgSum'])
 #Set tbar histogram options
-hists['tbar'].SetLineColor(kRed)
-hists['tbar'].SetLineWidth(3)
+hists['tbar '+mediatorType].SetLineColor(kRed)
+hists['tbar '+mediatorType].SetLineWidth(3)
 #Set ttbar histogram options
-hists['ttbar'].SetLineColor(kRed)
-hists['ttbar'].SetLineStyle(2)
-hists['ttbar'].SetLineWidth(3)
+hists['ttbar '+mediatorType].SetLineColor(kRed)
+hists['ttbar '+mediatorType].SetLineStyle(2)
+hists['ttbar '+mediatorType].SetLineWidth(3)
 #Set data histogram options
 hists['data'].SetMarkerStyle(20)
 hists['data'].SetMarkerSize(1.25)
@@ -484,11 +496,11 @@ legend.AddEntry(hists['ZTo2L'], 'Z(ll) + jets', 'f')
 legend.AddEntry(hists['QCD'], 'multijet', 'f')
 legend.AddEntry(hists['bkgSum'], 'MC stat.', 'f')
 if scaleFactor != 1: 
-    legend.AddEntry(hists['ttbar'], 'Scalar, t#bar{t}+DM (x'+str(scaleFactor)+')', 'l')
-    legend.AddEntry(hists['tbar'], 'Scalar, t+DM (x'+str(scaleFactor)+')', 'l')
+    legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+    legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
 else:
-    legend.AddEntry(hists['ttbar'], 'Scalar, t#bar{t}+DM', 'l')
-    legend.AddEntry(hists['tbar'], 'Scalar, t+DM', 'l')
+    legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+    legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
 legend.Draw('same')
 legend.SetBorderSize(0)
 legend.SetFillStyle(0)
@@ -524,10 +536,10 @@ if drawData:
         
 #Save histogram
 if useCondor:
-    c.SaveAs(cut + str(year) + "_" + var + "_" + date + "_40GeVLepCut.png")
+    c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
     #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
 else:
-    c.SaveAs(saveDirectory + date + "/" + cut + str(year) + "_" + var + "_" + date + ".png")
+    c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
 #c.SaveAs("test.png")
 
 print 'Plotting end time:', datetime.datetime.now()

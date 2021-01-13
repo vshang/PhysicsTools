@@ -14,8 +14,8 @@ from PhysicsTools.NanoAODTools.postprocessing.corrections.PileupWeightTool impor
 from PhysicsTools.NanoAODTools.postprocessing.modules.jme.jetmetHelperRun2 import *
 
 #Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region (runLocal = False if running jobs through CRAB)
-#runLocal = False
-runLocal = True
+runLocal = False
+#runLocal = True
 
 if runLocal:
     ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
@@ -1140,7 +1140,20 @@ to next event)"""
         else:
             return False
 
-        #return True
+class CountEvents(Module):
+    def __init__(self):
+        pass
+    def beginJob(self):
+        pass
+    def endJob(self):
+        pass
+    def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
+        pass
+    def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
+        pass
+    def analyze(self, event):
+        """process event, return True (go to next module) or False (fail, go to next event)"""
+        return True
 
 #Define CommonAnalysis cmodules for all years (Data and MC)
 analyze2016MC = lambda : CommonAnalysis("All",year=2016,isData=False,isSignal=False,btag='DeepCSV')
@@ -1190,29 +1203,33 @@ jetmetCorrector2018DataB = createJMECorrector(isMC=False, dataYear=2018, runPeri
 jetmetCorrector2018DataC = createJMECorrector(isMC=False, dataYear=2018, runPeriod="C", jesUncert="Total", applyHEMfix=True)
 jetmetCorrector2018DataD = createJMECorrector(isMC=False, dataYear=2018, runPeriod="D", jesUncert="Total", applyHEMfix=True)
 
+#Define module to count number of events in root file
+countEvents = lambda : CountEvents()
+
 # #########################################################################################################################################
 
-if runLocal:
-    #Select PostProcessor options here
-    selection=None
-    #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-    #outputDir = "testSamples/"
-    outputDir = "."
-    #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-    outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-    inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
-    #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-    #inputFiles=["testSamples/ttbarDM_Run2016.root"]
-    #inputFiles=["testSamples/ttbarPlusJets_Run2017.root"]
-    #inputFiles=["testSamples/SingleElectron_2017B.root"]
-    #inputFiles = ["testSamples/SingleElectron_2018A.root"]
-    #inputFiles = ["testSamples/SingleElectron_2016H.root"]
-    #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+# if runLocal:
+#     #Select PostProcessor options here
+#     selection=None
+#     #outputDir = "outDir2016AnalysisSR/ttbarDM/"
+#     #outputDir = "testSamples/"
+#     outputDir = "."
+#     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+#     outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
+#     #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+#     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
+#     #inputFiles=["testSamples/ttbarDM_Run2016.root"]
+#     inputFiles=["testSamples/ttbarPlusJets_Run2017.root"]
+#     #inputFiles=["testSamples/SingleElectron_2017B.root"]
+#     #inputFiles = ["testSamples/SingleElectron_2018A.root"]
+#     #inputFiles = ["testSamples/SingleElectron_2016H.root"]
+#     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
-    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_12242020",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018Data(),analyze2018Data()],postfix="_ModuleCommon_2018Data_allSys",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_ModuleCommon_2016MC_Skim",noOut=False,outputbranchsel=outputbranches)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018Data()],postfix="_jetmetCorrector2018Data",noOut=False,outputbranchsel=outputbranches)
-    p.run()
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018Data(),analyze2018Data()],postfix="_ModuleCommon_2018Data_allSys",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_ModuleCommon_2016MC_Skim",noOut=False,outputbranchsel=outputbranches)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018Data()],postfix="_jetmetCorrector2018Data",noOut=False,outputbranchsel=outputbranches)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_countEvents_dropAll",noOut=False,outputbranchsel=outputbranches)
+#     p.run()
