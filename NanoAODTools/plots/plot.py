@@ -7,8 +7,8 @@ import datetime
 import re
 
 #Set save directory and date for file names
-saveDirectory = 'plots/SR_2016/FatJet_deepTag_TvsQCD/'
-date = '01_06_2020'
+saveDirectory = 'plots/SR_2016/jet_qgl/'
+date = '01_18_2021'
 year = 2016
 useCondor = False
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -50,6 +50,21 @@ elif year == 2018:
 cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 &&' + cuts['passMETfilters'] 
+
+cuts['SL1e1b1FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet <= 1'
+cuts['SL1e2b1FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet <= 1'
+cuts['SL1m1b1FJ'] = cuts['SL1m'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet <= 1'
+cuts['SL1m2b1FJ'] = cuts['SL1m'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet <= 1'
+cuts['AH1b1FJ'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet <= 1'
+cuts['AH2b1FJ'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet <= 1'
+
+cuts['SL1e1b2FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet >= 2'
+cuts['SL1e2b2FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet >= 2'
+cuts['SL1m1b2FJ'] = cuts['SL1m'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet >= 2'
+cuts['SL1m2b2FJ'] = cuts['SL1m'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet >= 2'
+cuts['AH1b2FJ'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet >= 2'
+cuts['AH2b2FJ'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet >= 2'
+
 cuts['AHminSR'] = '(nVetoElectrons + nLooseMuons) == 0 && METcorrected_pt >= 250'
 cuts['AH2j0bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets == 0'
 cuts['AH2j1bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets == 1'
@@ -71,16 +86,15 @@ cuts['SL1bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets =
 cuts['SL2bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets >= 2 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
 
 cuts['AHSR'] = cuts['AH'] + ' && minDeltaPhi12 >= 1 && M_Tb >= 180'
-cuts['AH1b0fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets == 0'
-cuts['AH2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2')
-cuts['AH0l1bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && minDeltaPhi12 >= 1 && M_Tb >= 180'
+cuts['AH1bSR'] = cuts['AHSR'].replace('nbjets >= 1', 'nbjets ==1')
+cuts['AH2bSR'] = cuts['AHSR'].replace('nbjets >= 1', 'nbjets >= 2')
 
 #Control region definitions
-cuts['SL2eTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
-cuts['SL2mTR'] = 'njets >= 2 && nbjets >= 1 && nVetoElectrons  == 0 && nTightMuons == 2 && nLooseMuons == 2 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
-cuts['SL1e1mTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 1 && nVetoElectrons == 1 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 160 && tightElectron1_charge != tightMuon1_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
-cuts['SL1eWR'] = 'njets >= 2 && nbjets == 0 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 160 && M_T >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
-cuts['SL1mWR'] = 'njets >= 2 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 160 && M_T >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['SL2eTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && METcorrected_pt >= 160 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
+cuts['SL2mTR'] = 'njets >= 2 && nbjets >= 1 && nVetoElectrons  == 0 && nTightMuons == 2 && nLooseMuons == 2 && METcorrected_pt >= 160 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['SL1e1mTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 1 && nVetoElectrons == 1 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 160 && M_T2ll <= 80 && tightElectron1_charge != tightMuon1_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['SL1eWR'] = 'njets >= 2 && nbjets == 0 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 160 && M_T >= 160 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
+cuts['SL1mWR'] = 'njets >= 2 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 160 && M_T >= 160 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 
 cuts['AH1eTR'] = 'njets >= 3 && nbjets >= 1 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 250 && M_T <= 160 && minDeltaPhi12 >= 1.0 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['AH1mTR'] = 'njets >= 3 && nbjets >= 1 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && M_T <= 160 && minDeltaPhi12 >= 1.0 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
@@ -103,20 +117,29 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1e' #Pre-selection cuts
 #cut = 'SL1m'
 #cut = 'AH'
-#cut = 'AHminSR'
-#cut = 'AH2j0bSR'
-#cut = 'AH2j1bSR'
-#cut = 'AH2j2bSR'
+
+#cut = 'SL1e1b1FJ'
+#cut = 'SL1e2b1FJ'
+#cut = 'SL1m1b1FJ'
+#cut = 'SL1m2b1FJ'
+#cut = 'SL1e1b2FJ'
+#cut = 'SL1e2b2FJ'
+#cut = 'SL1m1b2FJ'
+#cut = 'SL1m2b2FJ'
+#cut = 'AH1b1FJ'
+#cut = 'AH2b1FJ'
+#cut = 'AH1b2FJ'
+#cut = 'AH2b2FJ'
 
 #cut = 'SL1e0fSR' #Signal region cuts
 #cut = 'SL1e1fSR'
 #cut = 'SL1e2bSR'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
-cut = 'SL1m2bSR'
+#cut = 'SL1m2bSR'
 #cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
-#cut = 'AH0l2bSR'
+cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
 #cut = 'SL2bSR'
 #cut = 'AH0l1bSR'
@@ -151,6 +174,8 @@ cut = 'SL1m2bSR'
 #cuts[cut] = cuts[cut] + ' && M_T2ll < 80'
 #cuts[cut] = cuts[cut] + ' && ((m_ll < 76) || (m_ll > 106))'
 #cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1 && M_Tb >= 180', 'minDeltaPhi12 >= 2 && M_Tb >= 100')
+#cuts[cut] = cuts[cut] + ' && nFatJet >= 2'
+cuts[cut] = cuts[cut] + ' && index_centralJets == 1'
 #Uncomment replacements below to replace PFMET with PuppiMET variables
 # cuts[cut] = cuts[cut].replace('METcorrected', 'PuppiMET')
 # cuts[cut] = cuts[cut].replace('minDeltaPhi ', 'minDeltaPhi_puppi ')
@@ -190,9 +215,10 @@ cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 #var = 'MET_phi'
 #var = 'METcorrected_phi'
 #var = 'M_T2ll'
-var = 'deltaPhij3'
+#var = 'deltaPhij3'
 #var = 'nFatJet'
 #var = 'FatJet_deepTag_WvsQCD'
+var = 'Jet_qgl'
 
 #Set lum (fb^-1) and overall signal sample scale factor here
 if year == 2016:
@@ -220,9 +246,9 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 15
+nbins = 20
 xmin = 0
-xmax = 3
+xmax = 1
 auto_y = True
 #auto_y = False
 #doLogPlot = True
@@ -232,6 +258,7 @@ drawData = False
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
+normalizePlots = True
 if not auto_y:
     ymin = 60
     ymax = 20000
@@ -259,8 +286,9 @@ if not auto_y:
 #histoLabel = cut + ' M_{ll}^{T2} distribution; M_{ll}^{T2} (GeV); Events'
 #histoLabel = cut + ' #Delta#phi(jet_{3},p_{T}^{miss}) distribution; #Delta#phi(jet_{3},p_{T}^{miss}); Events'
 #histoLabel = cut + ' n_{AK8 jets} distribution; number of AK8 jets; Events'
-histoLabel = cut + ' DeepAK8 top tag discriminant distribution; DeepAK8 top tag discriminant value; Events'
+#histoLabel = cut + ' DeepAK8 top tag discriminant distribution; DeepAK8 top tag discriminant value; Events'
 #histoLabel = cut + ' DeepAK8 W tag discriminant distribution; DeepAK8 W tag discriminant value; Events'
+histoLabel = cut + ' jet_{2} Quark/Gluon likelihood distribution; jet_{2} Quark/Gluon likelihood; Events'
 
 if drawData:
     ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Data / Bkg')
@@ -303,11 +331,8 @@ for process in MCSamples:
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
-            if 'tbar scalar' in process:
-                nevents += MCSamples[process][dataset][filepath+'_Events'].GetEntries()
-            else:
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim', 'countEvents'),'')
-                nevents += skimFile.Get('Events').GetEntries()
+            skimFile = TFile.Open(filepath.replace('ModuleCommonSkim', 'countEvents'),'')
+            nevents += skimFile.Get('Events').GetEntries()
         MCSamples[process][dataset]['nevents'] = nevents
 print("Got MC sample root files and event trees")
 
@@ -360,8 +385,8 @@ for process in MCSamples:
         elif process == 'ZTo2Nu':
             weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
             print 'Applied ZTo2Nu qcd/ewk Weights correctly'
-        if process in signal:
-            weight = weight + '*GenModel__TTbarDMJets_Inclusive_'+mediatorType+'_LO_Mchi_'+str(mchi)+'_Mphi_'+str(mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8'
+        # if process in signal:
+        #     weight = weight + '*GenModel__TTbarDMJets_Inclusive_'+mediatorType+'_LO_Mchi_'+str(mchi)+'_Mphi_'+str(mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8'
         for filepath in MCSamples[process][dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
             MCSamples[process][dataset][filepath+'_Events'].Draw(var+'>>hist',weight+'*('+cuts[cut]+')')
@@ -408,6 +433,16 @@ h_MCStack = THStack('h_MCbackground', histoLabel)
 for name in back:
     h_MCStack.Add(hists[name])
 print("Finished stacking MC background histograms.")
+
+#Normalize plots to area 1 if normalizePlots == True
+if normalizePlots:
+    for name in back:
+        hists[name].Scale(1/hists['bkgSum'].Integral())
+    for process in signal:
+        hists[process].Scale(1./hists[process].Integral())
+    if drawData:
+        hists['data'].Scale(1./hists['data'].Integral())
+    hists['bkgSum'].Scale(1./hists['bkgSum'].Integral())
         
 #Draw histograms
 print("Drawing histograms...")
@@ -451,11 +486,20 @@ hists['ZTo2Nu'].SetLineWidth(0)
 
 if auto_y:
     if doLogPlot:
-        ymin = max(min(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMinimumBin()), hists['data'].GetBinContent(hists['data'].GetMinimumBin())), 5.e-1)
-        ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+        if drawData:
+            ymin = max(min(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMinimumBin()), hists['data'].GetBinContent(hists['data'].GetMinimumBin())), 5.e-1)
+            ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+        else:
+            ymin = max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMinimumBin()), 5.e-1)
+            ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
     else:
         ymin = 0
-        ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+        if drawData:
+            ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+        else:
+            ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+if normalizePlots:
+    ymin = 5.e-4
 h_MCStack.SetMinimum(ymin)
 h_MCStack.SetMaximum(ymax)
 #Set settings for data and MC background histogram title/labels
@@ -484,7 +528,8 @@ hists['bkgSum'].SetFillColor(1)
 #Add legend
 legend = TLegend(0.4, 0.65, 0.85, 0.85)
 legend.SetNColumns(3)
-legend.AddEntry(hists['data'], 'Data', 'pe')
+if drawData:
+    legend.AddEntry(hists['data'], 'Data', 'pe')
 legend.AddEntry(hists['ZTo2Nu'], 'Z(#nu#nu) + jets', 'f')
 legend.AddEntry(hists['TTToSemiLepton'], 't#bar{t}(1l)', 'f')
 legend.AddEntry(hists['TTTo2L2Nu'], 't#bar{t}(2l)', 'f')
@@ -539,7 +584,7 @@ if useCondor:
     c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
     #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
 else:
-    c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
+    c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + "_jet2.png")
 #c.SaveAs("test.png")
 
 print 'Plotting end time:', datetime.datetime.now()
