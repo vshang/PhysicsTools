@@ -175,7 +175,7 @@ cut = 'AH0l2bSR'
 #cuts[cut] = cuts[cut] + ' && ((m_ll < 76) || (m_ll > 106))'
 #cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1 && M_Tb >= 180', 'minDeltaPhi12 >= 2 && M_Tb >= 100')
 #cuts[cut] = cuts[cut] + ' && nFatJet >= 2'
-cuts[cut] = cuts[cut] + ' && index_centralJets == 1'
+#cuts[cut] = cuts[cut] + ' && index_centralJets == 1'
 #Uncomment replacements below to replace PFMET with PuppiMET variables
 # cuts[cut] = cuts[cut].replace('METcorrected', 'PuppiMET')
 # cuts[cut] = cuts[cut].replace('minDeltaPhi ', 'minDeltaPhi_puppi ')
@@ -584,7 +584,7 @@ if useCondor:
     c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
     #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
 else:
-    c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + "_jet2.png")
+    c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
 #c.SaveAs("test.png")
 
 print 'Plotting end time:', datetime.datetime.now()
