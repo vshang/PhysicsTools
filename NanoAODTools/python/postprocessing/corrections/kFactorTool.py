@@ -3,8 +3,8 @@ import os, re
 import math
 from kfactors.get2016kfactors import *
 
-path = modulepath+'/kfactors/'
-#path = '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/corrections/kfactors/'
+#path = modulepath+'/kfactors/'
+path = '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/corrections/kfactors/'
 
 class KFactorTool:
 

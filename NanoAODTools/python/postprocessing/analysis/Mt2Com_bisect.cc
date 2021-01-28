@@ -162,7 +162,7 @@ double Mt2Com_bisect::calculateMT2w(const std::vector<TLorentzVector>& jets,
 
 
 
-// This funcion is a wrapper for mt2w_bisect etc that takes LorentzVectors instead of doubles
+// This funcion is a wrapper for mt2w_bisect etc that takes TLorentzVectors instead of doubles
 double Mt2Com_bisect::mt2wWrapper(TLorentzVector& lep, const TLorentzVector& jet_o,
                                                                     const TLorentzVector& jet_b, float& metval, float& metphi,
                                                                     string& mt2type){

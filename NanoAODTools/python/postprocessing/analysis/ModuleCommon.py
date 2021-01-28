@@ -13,15 +13,18 @@ from PhysicsTools.NanoAODTools.postprocessing.corrections.kFactorTool import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.PileupWeightTool import *
 from PhysicsTools.NanoAODTools.postprocessing.modules.jme.jetmetHelperRun2 import *
 
-#Load Mt2Com_bisect.o object file that contains C++ code to calculate M_T2W for SL region (runLocal = False if running jobs through CRAB)
-runLocal = False
-#runLocal = True
+#Set runLocal to false if running jobs through CRAB
+#runLocal = False
+runLocal = True
 
+#Load shared object files that contains C++ code to calculate discriminating variables 
 if runLocal:
-    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
-    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.so")
-    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so")
-    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so")
+    print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
+    print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.so")
+    print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so")
+    print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so")
+    print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/JetUtil_cc.so")
+    print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/topness_cc.so")
     ROOT.gROOT.ProcessLine(".L /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/lester_mt2_bisect.h")
     ROOT.gROOT.ProcessLine(".L /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/XYMETCorrection.h")
 else:
@@ -29,6 +32,8 @@ else:
     ROOT.gSystem.Load("MT2Utility_cc.so")
     ROOT.gSystem.Load("mt2bl_bisect_cc.so")
     ROOT.gSystem.Load("Mt2Com_bisect_cc.so")
+    ROOT.gSystem.Load("JetUtil_cc.so")
+    ROOT.gSystem.Load("topness_cc.so")
     ROOT.gROOT.ProcessLine(".L lester_mt2_bisect.h")
     ROOT.gROOT.ProcessLine(".L XYMETCorrection.h")
 
@@ -38,6 +43,57 @@ except:
     pass
 Mt2Com_bisect = ROOT.Mt2Com_bisect()
 asymm_mt2_lester_bisect = ROOT.asymm_mt2_lester_bisect()
+
+
+# jets = ROOT.vector("TLorentzVector")()
+# lep = ROOT.TLorentzVector(15.622756958,29.060853958,1.0357201099,33.010417938)
+# j1 = ROOT.TLorentzVector(-154.34786987,-95.917778015,-502.48416138,535.081604)
+# j2 = ROOT.TLorentzVector(9.410118103,-52.559776306,150.97743225,160.78645325)
+# j3 = ROOT.TLorentzVector(49.700946808,-8.7576665878,-108.4271698,120.35206604)
+# j4 = ROOT.TLorentzVector(-42.24382019,20.526990891,30.697292328,56.885437012)
+# j5 = ROOT.TLorentzVector(42.017311096,-12.269251823,34.797512054,57.173427582)
+# # j1 = ROOT.LorentzVector(100., 50., 50., 100.)
+# # j2 = ROOT.LorentzVector(100., 50., 50., 100.)
+# # j3 = ROOT.LorentzVector(100., 50., 50., 100.)
+# # j4 = ROOT.LorentzVector(100., 50., 50., 100.)
+# # j5 = ROOT.LorentzVector(100., 50., 50., 100.)
+# lepton = ROOT.TLorentzVector(100., 50., 50., 100)
+
+# jets.push_back(j1)
+# jets.push_back(j2)
+# jets.push_back(j3)
+# jets.push_back(j4)
+# jets.push_back(j5)
+# btag = [0.675, 0.564, 0.987, 0.125, 0.799]
+# jid = [True, True, True, True, True]
+
+# #[2,4,0,1,3]
+# jetIndexSortedBTag = [0,1,2,3,4]#[2,4,0,1,3]#ROOT.JetUtil.JetIndexCSVsorted(btag, jets, jid, 30., 2.4, 1)
+
+# bjets = ROOT.vector("TLorentzVector")()
+# additionaljets = ROOT.vector("TLorentzVector")()
+
+# met = 60.164054871
+# metphi = 0.61534303427
+
+# metTVector2 = ROOT.TVector2(met*math.cos(metphi),met*math.sin(metphi))
+
+# for i in range(len(jetIndexSortedBTag)):
+#     if btag[i] > 0.90:
+#         bjets.push_back(jets[i])
+#     elif len(bjets)<=1 and (len(bjets) + len(additionaljets) < 3):
+#         additionaljets.push_back(jets[i])
+
+# print 'len(bjets) = ', len(bjets)
+# print 'len(additionaljets) = ', len(additionaljets)
+
+# computeTopness1 = ROOT.CalcTopness_(1,met,metphi,lep,bjets,additionaljets)
+# computeTopness2 = ROOT.CalcTopness_(2,met,metphi,lep,bjets,additionaljets)
+# print 'topness test 1 = ', computeTopness1
+# print 'topness test 2 = ', computeTopness2
+
+# M_T2W = Mt2Com_bisect.calculateMT2w(additionaljets, bjets, lepton, metTVector2, "MT2w")
+# print 'M_T2W = ', M_T2W
 
 class CommonAnalysis(Module):
     def __init__(self, signalRegion, year=2016, isData=False, isSignal=False, btag='DeepCSV'):
@@ -121,6 +177,8 @@ class CommonAnalysis(Module):
 
         self.out.branch("passEle32WPTightGsf2017", "I")
         self.out.branch("EE_L1_prefire", "I") 
+        self.out.branch("modified_topness", "F")
+        self.out.branch("full_topness", "F")
 
         if self.isMC:
             #Systematics - JES, JER
@@ -192,6 +250,16 @@ class CommonAnalysis(Module):
             self.out.branch("recoilPtMissScaleDown", "F")
             self.out.branch("recoilPtMissResUp", "F")
             self.out.branch("recoilPtMissResDown", "F")
+            
+            self.out.branch("modified_topnessScaleUp", "F")
+            self.out.branch("modified_topnessScaleDown", "F")
+            self.out.branch("modified_topnessResUp", "F")
+            self.out.branch("modified_topnessResDown", "F")
+
+            self.out.branch("full_topnessScaleUp", "F")
+            self.out.branch("full_topnessScaleDown", "F")
+            self.out.branch("full_topnessResUp", "F")
+            self.out.branch("full_topnessResDown", "F")
 
             if not self.isSignal:
                 #Systematics - PDF
@@ -545,7 +613,7 @@ to next event)"""
                     if minDeltaPhiResDown_i < minDeltaPhiResDown: #Choose lowest minDeltaPhi out of all central jets
                         minDeltaPhiResDown = minDeltaPhiResDown_i
 
-        #Jet TLorentzVectors are constructed to calculate M_T2^W
+        #Jet TLorentzVectors are constructed to calculate M_T2^W and topness variables
         ljetVector = ROOT.vector("TLorentzVector")()
         bjetVector = ROOT.vector("TLorentzVector")()
         #Systematics - JES, JER
@@ -715,13 +783,17 @@ to next event)"""
                 deltaPhiMTbResDown = bjetResDown1.phi - METcorrected_phiResDown
                 M_TbResDown = math.sqrt(2 * METcorrected_ptResDown * bjetResDown1.pt_nom * (1 - math.cos(deltaPhiMTbResDown)))
 
-        #Calculate M_T, M_T2^W, and M_T2^ll using PFMET
+        #Calculate M_T, M_T2^W, M_T2^ll, and topness variables using PFMET
         M_T = M_T2W = M_T2ll = M_T_puppi = M_T2W_puppi = M_T2ll_puppi = -9 #If there are not enough tight leptons, set value to -9 to indicate variable cannot be calculated
+        modified_topness = full_topness = -999
+        full_topness = -999
         #Systematics - JES, JER
         if self.isMC:
             M_TScaleUp = M_TScaleDown = M_TResUp = M_TResDown = -9
             M_T2WScaleUp = M_T2WScaleDown = M_T2WResUp = M_T2WResDown = -9
             M_T2llScaleUp = M_T2llScaleDown = M_T2llResUp = M_T2llResDown = -9
+            modified_topnessScaleUp = modified_topnessScaleDown = modified_topnessResUp = modified_topnessResDown = -999
+            full_topnessScaleUp = full_topnessScaleDown = full_topnessResUp = full_topnessResDown = -999
 
         if nTightElectrons > 0 or nTightMuons > 0: #Default to using electron if both tight electron and muon exist
             if nTightElectrons > 0:
@@ -761,6 +833,22 @@ to next event)"""
                 M_T2WResUp = Mt2Com_bisect.calculateMT2w(ljetVectorResUp, bjetVectorResUp, leptonTLorentz, metTVector2ResUp, "MT2w")
                 metTVector2ResDown = ROOT.TVector2(METcorrected_ptResDown * math.cos(METcorrected_phiResDown), METcorrected_ptResDown * math.sin(METcorrected_phiResDown))
                 M_T2WResDown = Mt2Com_bisect.calculateMT2w(ljetVectorResDown, bjetVectorResDown, leptonTLorentz, metTVector2ResDown, "MT2w")
+
+            #Only calculate topness variables when a single tight lepton exists (1e or 1m)
+            if (nTightElectrons + nTightMuons) == 1:
+                modified_topness = ROOT.CalcTopness_(1, METcorrected_pt, METcorrected_phi, leptonTLorentz, bjetVector, ljetVector)
+                full_topness = ROOT.CalcTopness_(2, METcorrected_pt, METcorrected_phi, leptonTLorentz, bjetVector, ljetVector)
+                #Systematics - JES, JER
+                if self.isMC:
+                    modified_topnessScaleUp = ROOT.CalcTopness_(1, METcorrected_ptScaleUp, METcorrected_phiScaleUp, leptonTLorentz, bjetVectorScaleUp, ljetVectorScaleUp)
+                    full_topnessScaleUp = ROOT.CalcTopness_(2, METcorrected_ptScaleUp, METcorrected_phiScaleUp, leptonTLorentz, bjetVectorScaleUp, ljetVectorScaleUp)
+                    modified_topnessScaleDown = ROOT.CalcTopness_(1, METcorrected_ptScaleDown, METcorrected_phiScaleDown, leptonTLorentz, bjetVectorScaleDown, ljetVectorScaleDown)
+                    full_topnessScaleDown = ROOT.CalcTopness_(2, METcorrected_ptScaleDown, METcorrected_phiScaleDown, leptonTLorentz, bjetVectorScaleDown, ljetVectorScaleDown)
+                    modified_topnessResUp = ROOT.CalcTopness_(1, METcorrected_ptResUp, METcorrected_phiResUp, leptonTLorentz, bjetVectorResUp, ljetVectorResUp)
+                    full_topnessResUp = ROOT.CalcTopness_(2, METcorrected_ptResUp, METcorrected_phiResUp, leptonTLorentz, bjetVectorResUp, ljetVectorResUp)
+                    modified_topnessResDown = ROOT.CalcTopness_(1, METcorrected_ptResDown, METcorrected_phiResDown, leptonTLorentz, bjetVectorResDown, ljetVectorResDown)
+                    full_topnessResDown = ROOT.CalcTopness_(2, METcorrected_ptResDown, METcorrected_phiResDown, leptonTLorentz, bjetVectorResDown, ljetVectorResDown)
+                
             
         if nTightElectrons + nTightMuons == 2:
             if nTightElectrons == 2:
@@ -1019,6 +1107,8 @@ to next event)"""
             
             self.out.fillBranch("passEle32WPTightGsf2017", passEle32WPTightGsf2017)
             self.out.fillBranch("EE_L1_prefire", EE_L1_prefire)
+            self.out.fillBranch("modified_topness", modified_topness)
+            self.out.fillBranch("full_topness", full_topness)
             
             if self.isMC:
                 #Systematics - JES, JER
@@ -1090,6 +1180,16 @@ to next event)"""
                 self.out.fillBranch("recoilPtMissScaleDown", recoilPtMissScaleDown)
                 self.out.fillBranch("recoilPtMissResUp", recoilPtMissResUp)
                 self.out.fillBranch("recoilPtMissResDown", recoilPtMissResDown)
+
+                self.out.fillBranch("modified_topnessScaleUp", modified_topnessScaleUp)
+                self.out.fillBranch("modified_topnessScaleDown", modified_topnessScaleDown)
+                self.out.fillBranch("modified_topnessResUp", modified_topnessResUp)
+                self.out.fillBranch("modified_topnessResDown", modified_topnessResDown)
+                
+                self.out.fillBranch("full_topnessScaleUp", full_topnessScaleUp)
+                self.out.fillBranch("full_topnessScaleDown", full_topnessScaleDown)
+                self.out.fillBranch("full_topnessResUp", full_topnessResUp)
+                self.out.fillBranch("full_topnessResDown", full_topnessResDown)
 
                 if not self.isSignal:
                     #Systematics - PDF
@@ -1208,28 +1308,28 @@ countEvents = lambda : CountEvents()
 
 # #########################################################################################################################################
 
-# if runLocal:
-#     #Select PostProcessor options here
-#     selection=None
-#     #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-#     #outputDir = "testSamples/"
-#     outputDir = "."
-#     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-#     outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
-#     #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
-#     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-#     #inputFiles=["testSamples/ttbarDM_Run2016.root"]
-#     inputFiles=["testSamples/ttbarPlusJets_Run2017.root"]
-#     #inputFiles=["testSamples/SingleElectron_2017B.root"]
-#     #inputFiles = ["testSamples/SingleElectron_2018A.root"]
-#     #inputFiles = ["testSamples/SingleElectron_2016H.root"]
-#     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
-#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
-#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+if runLocal:
+    #Select PostProcessor options here
+    selection=None
+    #outputDir = "outDir2016AnalysisSR/ttbarDM/"
+    #outputDir = "testSamples/"
+    outputDir = "."
+    #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+    outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
+    #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+    #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
+    #inputFiles=["testSamples/ttbarDM_Run2016.root"]
+    #inputFiles=["testSamples/ttbarPlusJets_Run2016.root"]
+    #inputFiles=["testSamples/SingleElectron_2017B.root"]
+    #inputFiles = ["testSamples/SingleElectron_2018A.root"]
+    inputFiles = ["testSamples/SingleElectron_2016H.root"]
+    #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
+    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018Data(),analyze2018Data()],postfix="_ModuleCommon_2018Data_allSys",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_ModuleCommon_2016MC_Skim",noOut=False,outputbranchsel=outputbranches)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018Data()],postfix="_jetmetCorrector2018Data",noOut=False,outputbranchsel=outputbranches)
-#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_countEvents_dropAll",noOut=False,outputbranchsel=outputbranches)
-#     p.run()
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon_2016MC_Skim",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_ModuleCommon_2016MC_Skim",noOut=False,outputbranchsel=outputbranches)
+    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataH(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_countEvents_dropAll",noOut=False,outputbranchsel=outputbranches)
+    p.run()

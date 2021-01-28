@@ -5,10 +5,11 @@ from utils import *
 import os
 import datetime
 import re
+import math
 
 #Set save directory and date for file names
-saveDirectory = 'plots/SR_2016/jet_qgl/'
-date = '01_18_2021'
+saveDirectory = 'plots/SR_2016/METcorrected_pt/'
+date = '01_25_2021'
 year = 2016
 useCondor = False
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -50,6 +51,8 @@ elif year == 2018:
 cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 &&' + cuts['passMETfilters'] 
+cuts['AH1b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1')
+cuts['AH2b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2')
 
 cuts['SL1e1b1FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet <= 1'
 cuts['SL1e2b1FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet <= 1'
@@ -117,6 +120,8 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1e' #Pre-selection cuts
 #cut = 'SL1m'
 #cut = 'AH'
+#cut = 'AH1b'
+#cut = 'AH2b'
 
 #cut = 'SL1e1b1FJ'
 #cut = 'SL1e2b1FJ'
@@ -139,12 +144,11 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1m2bSR'
 #cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
-cut = 'AH0l2bSR'
+#cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
 #cut = 'SL2bSR'
-#cut = 'AH0l1bSR'
-#cut = 'AH1b0fSR'
-#cut = 'AH2bSR'
+#cut = 'AH1bSR'
+cut = 'AH2bSR'
 
 #cut = 'SL2eTR' #Control region cuts
 #cut = 'SL2mTR'
@@ -176,6 +180,12 @@ cut = 'AH0l2bSR'
 #cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1 && M_Tb >= 180', 'minDeltaPhi12 >= 2 && M_Tb >= 100')
 #cuts[cut] = cuts[cut] + ' && nFatJet >= 2'
 #cuts[cut] = cuts[cut] + ' && index_centralJets == 1'
+#cuts[cut] = cuts[cut] + ' && FatJet_pt[2] > 250'
+#cuts[cut] = cuts[cut].replace('METcorrected_pt >= 160', 'METcorrected_pt >= 180')
+#cuts[cut] = cuts[cut].replace('M_T >= 160', 'M_T >= 180')
+#cuts[cut] = cuts[cut].replace('M_Tb >= 180', 'M_Tb >= 170')
+#cuts[cut] = cuts[cut].replace('M_T2W >= 200', 'M_T2W >= 190')
+#cuts[cut] = cuts[cut].replace('&& minDeltaPhi12 >= 1.2 ', '&& minDeltaPhi12 >= 0.5 ')
 #Uncomment replacements below to replace PFMET with PuppiMET variables
 # cuts[cut] = cuts[cut].replace('METcorrected', 'PuppiMET')
 # cuts[cut] = cuts[cut].replace('minDeltaPhi ', 'minDeltaPhi_puppi ')
@@ -189,7 +199,6 @@ cut = 'AH0l2bSR'
 
 #Only apply ee badSC noise filter to data (https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2)
 cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
-#
 
 #var = 'M_T'
 #var = 'M_T2W'
@@ -200,7 +209,7 @@ cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 #var = 'nfjets'
 #var = 'nbjets'
 #var = 'MET_pt'
-#var = 'METcorrected_pt'
+var = 'METcorrected_pt'
 #var = 'PuppiMET_pt'
 #var = 'recoilPtMiss_puppi'
 #var = 'Electron_pt[1]'
@@ -218,7 +227,8 @@ cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 #var = 'deltaPhij3'
 #var = 'nFatJet'
 #var = 'FatJet_deepTag_WvsQCD'
-var = 'Jet_qgl'
+#var = 'Jet_qgl'
+#var = 'FatJet_pt[2]'
 
 #Set lum (fb^-1) and overall signal sample scale factor here
 if year == 2016:
@@ -246,13 +256,13 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 20
-xmin = 0
-xmax = 1
+nbins = 15
+xmin = 250
+xmax = 550
 auto_y = True
 #auto_y = False
-#doLogPlot = True
-doLogPlot = False
+doLogPlot = True
+#doLogPlot = False
 #drawData = True
 drawData = False
 mediatorType = 'scalar'
@@ -271,7 +281,7 @@ if not auto_y:
 #histoLabel = cut + ' central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = cut + ' n_{bjets} distribution; number of b-tagged jets; Events'
 #histoLabel = cut + ' forward n_{jet} distribution; number of forward AK4 jets; Events'
-#histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
+histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
 #histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
 #histoLabel = cut + ' Electron_pt[1] distribution; Electron_pt[1]; Events'
 #histoLabel = cut + ' Muon_pt[1] distribution; Muon_pt[1]; Events'
@@ -288,7 +298,8 @@ if not auto_y:
 #histoLabel = cut + ' n_{AK8 jets} distribution; number of AK8 jets; Events'
 #histoLabel = cut + ' DeepAK8 top tag discriminant distribution; DeepAK8 top tag discriminant value; Events'
 #histoLabel = cut + ' DeepAK8 W tag discriminant distribution; DeepAK8 W tag discriminant value; Events'
-histoLabel = cut + ' jet_{2} Quark/Gluon likelihood distribution; jet_{2} Quark/Gluon likelihood; Events'
+#histoLabel = cut + ' jet_{2} Quark/Gluon likelihood distribution; jet_{2} Quark/Gluon likelihood; Events'
+#histoLabel = cut + ' FatJet_{3} phi^{miss} distribution; FatJet_{3} phi^{miss} (GeV); Events'
 
 if drawData:
     ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Data / Bkg')
@@ -419,8 +430,19 @@ for name in back:
     hists['bkgSum'] += hists[name]
 print 'Total data background nEvents = ', hists['data'].GetEntries()
 print 'Total data background integral = ', hists['data'].Integral(1,nbins+1)
+print '-----------------------------'
 print 'Total MC background nEvents = ', hists['bkgSum'].GetEntries()
 print 'Total MC background integral = ', hists['bkgSum'].Integral(1,nbins+1)
+print '-----------------------------'
+print 'Total tt+DM signal nEvents = ', hists['ttbar ' + mediatorType].GetEntries()/scaleFactor
+print 'Total tt+DM signal integral = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
+print '-----------------------------'
+print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()/scaleFactor
+print 'Total t+DM signal integral = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
+print '-----------------------------'
+print 'FOM for tt+DM signal = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
+print 'FOM for t+DM signal = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
+print '-----------------------------'
 print("Finished filling histograms")
 
 #Add overflow bins to histograms
