@@ -2,9 +2,9 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'ModuleCommonSkim_12242020' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'test_01282021' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'getBTagHist_DeepCSV_08062020'
- analysis      = 'WPlusJets' #Name of the analysis (e.g. VBFHN, LQtop, ...)
+ analysis      = 'ttbarPlusJets' #Name of the analysis (e.g. VBFHN, LQtop, ...)
  year          = '2016'
  run           = ''
  unitsPerJob   = 1 #Units (usually number of root files) per job
@@ -32,7 +32,7 @@ if __name__ == '__main__':
  with open(samples, 'r') as f:
   datasetinputs = [line.strip() for line in f]
 
- Mt2Com_files = ['../python/postprocessing/analysis/mt2w_bisect_cc.so', '../python/postprocessing/analysis/mt2w_bisect.cc', '../python/postprocessing/analysis/mt2w_bisect.h', '../python/postprocessing/analysis/mt2w_bisect_cc.d', '../python/postprocessing/analysis/MT2Utility_cc.so', '../python/postprocessing/analysis/MT2Utility.cc', '../python/postprocessing/analysis/MT2Utility.h', '../python/postprocessing/analysis/MT2Utility_cc.d', '../python/postprocessing/analysis/mt2bl_bisect_cc.so', '../python/postprocessing/analysis/mt2bl_bisect.cc', '../python/postprocessing/analysis/mt2bl_bisect.h', '../python/postprocessing/analysis/mt2bl_bisect_cc.d', '../python/postprocessing/analysis/Mt2Com_bisect_cc.so', '../python/postprocessing/analysis/Mt2Com_bisect.cc', '../python/postprocessing/analysis/Mt2Com_bisect.h', '../python/postprocessing/analysis/Mt2Com_bisect_cc.d','../python/postprocessing/analysis/lester_mt2_bisect.h','../python/postprocessing/analysis/XYMETCorrection.h']
+ Mt2Com_files = ['../python/postprocessing/analysis/mt2w_bisect_cc.so', '../python/postprocessing/analysis/mt2w_bisect.cc', '../python/postprocessing/analysis/mt2w_bisect.h', '../python/postprocessing/analysis/mt2w_bisect_cc.d', '../python/postprocessing/analysis/MT2Utility_cc.so', '../python/postprocessing/analysis/MT2Utility.cc', '../python/postprocessing/analysis/MT2Utility.h', '../python/postprocessing/analysis/MT2Utility_cc.d', '../python/postprocessing/analysis/mt2bl_bisect_cc.so', '../python/postprocessing/analysis/mt2bl_bisect.cc', '../python/postprocessing/analysis/mt2bl_bisect.h', '../python/postprocessing/analysis/mt2bl_bisect_cc.d', '../python/postprocessing/analysis/Mt2Com_bisect_cc.so', '../python/postprocessing/analysis/Mt2Com_bisect.cc', '../python/postprocessing/analysis/Mt2Com_bisect.h', '../python/postprocessing/analysis/Mt2Com_bisect_cc.d','../python/postprocessing/analysis/lester_mt2_bisect.h','../python/postprocessing/analysis/XYMETCorrection.h','../python/postprocessing/analysis/topness_cc.so','../python/postprocessing/analysis/topness.cc','../python/postprocessing/analysis/topness.h','../python/postprocessing/analysis/topness_cc.d','../python/postprocessing/analysis/JetUtil_cc.so','../python/postprocessing/analysis/JetUtil.cc','../python/postprocessing/analysis/JetUtil.h','../python/postprocessing/analysis/JetUtil_cc.d']
 
  #####
  ##   Multicrab configuration
@@ -54,8 +54,7 @@ if __name__ == '__main__':
  #####
  ##   Crab configuration
  #####
- #for d in range(0,len(datasetnames)):
- for d in range(1,2):#range(0,len(datasetinputs)):
+ for d in range(0,len(datasetinputs)):
   config.section_('General')
   config.General.requestName      = analysis + '_Run' + year + run + '_sample%d' % d #datasetnames[d]
   config.General.transferLogs=True
