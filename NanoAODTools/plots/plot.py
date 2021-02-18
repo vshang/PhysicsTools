@@ -311,10 +311,11 @@ auto_y = True
 doLogPlot = False
 #drawData = True
 drawData = False
-mediatorType = 'scalar'
+mediatorType = 'pseudoscalar'
 mchi = 1
 mphi = 100
 normalizePlots = False
+useCentralSamples = True
 if not auto_y:
     ymin = 60
     ymax = 20000
@@ -400,11 +401,10 @@ for process in MCSamples:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
             skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242020', 'countEvents_12242020'),'')
-            # if process in signal:
-            #     nevents += skimFile.Get('Events').GetEntries('GenModel__TTbarDMJets_Inclusive_'+mediatorType+'_LO_Mchi_'+str(mchi)+'_Mphi_'+str(mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8')
-            # else:
-            #     nevents += skimFile.Get('Events').GetEntries()
-            nevents += skimFile.Get('Events').GetEntries()
+            if (process in signal) and useCentralSamples:
+                nevents += MCSamples[process][dataset][filepath+'_Events'].GetEntries('GenModel__TTbarDMJets_Inclusive_'+mediatorType+'_LO_Mchi_'+str(mchi)+'_Mphi_'+str(mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8')
+            else:
+                nevents += skimFile.Get('Events').GetEntries()
         MCSamples[process][dataset]['nevents'] = nevents
         print '    nevents in ', process, ' ', dataset, ': ', nevents
 print("Got MC sample root files and event trees")
@@ -451,8 +451,8 @@ for process in MCSamples:
         elif process == 'ZTo2Nu':
             weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
             print 'Applied ZTo2Nu qcd/ewk Weights correctly'
-        # if process in signal:
-        #     weight = weight + '*GenModel__TTbarDMJets_Inclusive_'+mediatorType+'_LO_Mchi_'+str(mchi)+'_Mphi_'+str(mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8'
+        if (process in signal) and useCentralSamples:
+            weight = weight + '*GenModel__TTbarDMJets_Inclusive_'+mediatorType+'_LO_Mchi_'+str(mchi)+'_Mphi_'+str(mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8'
         for filepath in MCSamples[process][dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
             MCSamples[process][dataset][filepath+'_Events'].Draw(var+'>>hist',weight+'*('+cuts[cut]+')')

@@ -22,13 +22,13 @@ class ElectronSFs:
             self.sftool_10to20GeV = ScaleFactor(pathElectrons+'SF2017/egammaEffi.txt_EGM2D_runBCDEF_passingRECO_lowEt.root','EGamma_SF2D')
             self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'SF2017/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root','EGamma_SF2D')
             self.sftool_ID = ScaleFactor(pathElectrons+'SF2017/2017_ElectronTight.root','EGamma_SF2D')
-            self.sftool_Trigger = ScaleFactor(pathElectrons+'SF2016/egammaEffi_EGM2D_2017.root','EGamma_SF2D')
+            self.sftool_Trigger = ScaleFactor(pathElectrons+'SF2017/egammaEffi_EGM2D_2017.root','EGamma_SF2D')
 
         if year==2018:
             self.sftool_10to20GeV = ScaleFactor(pathElectrons+'SF2018/egammaEffi.txt_EGM2D_updatedAll.root','EGamma_SF2D')
             self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'SF2018/egammaEffi.txt_EGM2D_updatedAll.root','EGamma_SF2D')
             self.sftool_ID = ScaleFactor(pathElectrons+'SF2018/2018_ElectronTight.root','EGamma_SF2D')
-            self.sftool_Trigger = ScaleFactor(pathElectrons+'SF2016/egammaEffi_EGM2D_2018.root','EGamma_SF2D')
+            self.sftool_Trigger = ScaleFactor(pathElectrons+'SF2018/egammaEffi_EGM2D_2018.root','EGamma_SF2D')
         
     def getSF(self, pt, eta, syst=0):
         #Get SF for electron ID and reconstruction efficiency. Set syst=1 to include up systematic error, syst=-1 to include down systematic error.
