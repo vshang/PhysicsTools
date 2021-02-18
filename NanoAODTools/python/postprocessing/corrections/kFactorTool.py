@@ -3,8 +3,8 @@ import os, re
 import math
 from kfactors.get2016kfactors import *
 
-#path = modulepath+'/kfactors/'
-path = '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/corrections/kfactors/'
+path = modulepath+'/kfactors/'
+#path = '/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/corrections/kfactors/'
 
 class KFactorTool:
 
@@ -25,24 +25,26 @@ class KFactorTool:
         self.nlo_qcd_ZTo2L = self.f_nlo_qcd_ZTo2L.Get('kfac_dy_filter')
 
     def getEWKW(self, pt):
-        if self.year == 2016:
-            return get2016EWKW(pt)
-        else:
-            bin = self.nlo_ewk_WJets.GetXaxis().FindBin(pt)
-            if bin == 0: bin = 1
-            elif bin > self.nlo_ewk_WJets.GetXaxis().GetNbins(): bin -= 1
-            sf = self.nlo_ewk_WJets.GetBinContent(bin)
-            return sf
+        return get2016EWKW(pt)
+        # if self.year == 2016:
+        #     return get2016EWKW(pt)
+        # else:
+        #     bin = self.nlo_ewk_WJets.GetXaxis().FindBin(pt)
+        #     if bin == 0: bin = 1
+        #     elif bin > self.nlo_ewk_WJets.GetXaxis().GetNbins(): bin -= 1
+        #     sf = self.nlo_ewk_WJets.GetBinContent(bin)
+        #     return sf
 
     def getEWKZ(self, pt):
-        if self.year == 2016:
-            return get2016EWKZ(pt)
-        else:
-            bin = self.nlo_ewk_ZJets.GetXaxis().FindBin(pt)
-            if bin == 0: bin = 1
-            elif bin > self.nlo_ewk_ZJets.GetXaxis().GetNbins(): bin -= 1
-            sf = self.nlo_ewk_ZJets.GetBinContent(bin)
-            return sf
+        return get2016EWKZ(pt)
+        # if self.year == 2016:
+        #     return get2016EWKZ(pt)
+        # else:
+        #     bin = self.nlo_ewk_ZJets.GetXaxis().FindBin(pt)
+        #     if bin == 0: bin = 1
+        #     elif bin > self.nlo_ewk_ZJets.GetXaxis().GetNbins(): bin -= 1
+        #     sf = self.nlo_ewk_ZJets.GetBinContent(bin)
+        #     return sf
 
     def getQCDW(self, pt):
         if self.year == 2016:

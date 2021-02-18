@@ -19,21 +19,21 @@ runLocal = True
 
 #Load shared object files that contains C++ code to calculate discriminating variables 
 if runLocal:
-    print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
-    print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.so")
-    print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so")
-    print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so")
-    print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/JetUtil_cc.so")
-    print ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/topness_cc.so")
+    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
+    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/MT2Utility_cc.so")
+    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2bl_bisect_cc.so")
+    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/Mt2Com_bisect_cc.so")
+    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/JetUtil_cc.so")
+    ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/topness_cc.so")
     ROOT.gROOT.ProcessLine(".L /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/lester_mt2_bisect.h")
     ROOT.gROOT.ProcessLine(".L /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/XYMETCorrection.h")
 else:
-    ROOT.gSystem.Load("mt2w_bisect_cc.so")
-    ROOT.gSystem.Load("MT2Utility_cc.so")
-    ROOT.gSystem.Load("mt2bl_bisect_cc.so")
-    ROOT.gSystem.Load("Mt2Com_bisect_cc.so")
-    ROOT.gSystem.Load("JetUtil_cc.so")
-    ROOT.gSystem.Load("topness_cc.so")
+    print 'gSystem Load mt2w_bisect = ', ROOT.gSystem.Load("mt2w_bisect_cc.so")
+    print 'gSystem Load MT2Utility = ', ROOT.gSystem.Load("MT2Utility_cc.so")
+    print 'gSystem Load mt2bl_bisect = ', ROOT.gSystem.Load("mt2bl_bisect_cc.so")
+    print 'gSystem Load Mt2Com_bisect = ', ROOT.gSystem.Load("Mt2Com_bisect_cc.so")
+    print 'gSystem Load JetUtil = ', ROOT.gSystem.Load("JetUtil_cc.so")
+    print 'gSystem Load topness = ', ROOT.gSystem.Load("topness_cc.so")
     ROOT.gROOT.ProcessLine(".L lester_mt2_bisect.h")
     ROOT.gROOT.ProcessLine(".L XYMETCorrection.h")
 
@@ -41,59 +41,9 @@ try:
     ROOT.asymm_mt2_lester_bisect.disableCopyrightMessage()
 except:
     pass
+
 Mt2Com_bisect = ROOT.Mt2Com_bisect()
 asymm_mt2_lester_bisect = ROOT.asymm_mt2_lester_bisect()
-
-
-# jets = ROOT.vector("TLorentzVector")()
-# lep = ROOT.TLorentzVector(15.622756958,29.060853958,1.0357201099,33.010417938)
-# j1 = ROOT.TLorentzVector(-154.34786987,-95.917778015,-502.48416138,535.081604)
-# j2 = ROOT.TLorentzVector(9.410118103,-52.559776306,150.97743225,160.78645325)
-# j3 = ROOT.TLorentzVector(49.700946808,-8.7576665878,-108.4271698,120.35206604)
-# j4 = ROOT.TLorentzVector(-42.24382019,20.526990891,30.697292328,56.885437012)
-# j5 = ROOT.TLorentzVector(42.017311096,-12.269251823,34.797512054,57.173427582)
-# # j1 = ROOT.LorentzVector(100., 50., 50., 100.)
-# # j2 = ROOT.LorentzVector(100., 50., 50., 100.)
-# # j3 = ROOT.LorentzVector(100., 50., 50., 100.)
-# # j4 = ROOT.LorentzVector(100., 50., 50., 100.)
-# # j5 = ROOT.LorentzVector(100., 50., 50., 100.)
-# lepton = ROOT.TLorentzVector(100., 50., 50., 100)
-
-# jets.push_back(j1)
-# jets.push_back(j2)
-# jets.push_back(j3)
-# jets.push_back(j4)
-# jets.push_back(j5)
-# btag = [0.675, 0.564, 0.987, 0.125, 0.799]
-# jid = [True, True, True, True, True]
-
-# #[2,4,0,1,3]
-# jetIndexSortedBTag = [0,1,2,3,4]#[2,4,0,1,3]#ROOT.JetUtil.JetIndexCSVsorted(btag, jets, jid, 30., 2.4, 1)
-
-# bjets = ROOT.vector("TLorentzVector")()
-# additionaljets = ROOT.vector("TLorentzVector")()
-
-# met = 60.164054871
-# metphi = 0.61534303427
-
-# metTVector2 = ROOT.TVector2(met*math.cos(metphi),met*math.sin(metphi))
-
-# for i in range(len(jetIndexSortedBTag)):
-#     if btag[i] > 0.90:
-#         bjets.push_back(jets[i])
-#     elif len(bjets)<=1 and (len(bjets) + len(additionaljets) < 3):
-#         additionaljets.push_back(jets[i])
-
-# print 'len(bjets) = ', len(bjets)
-# print 'len(additionaljets) = ', len(additionaljets)
-
-# computeTopness1 = ROOT.CalcTopness_(1,met,metphi,lep,bjets,additionaljets)
-# computeTopness2 = ROOT.CalcTopness_(2,met,metphi,lep,bjets,additionaljets)
-# print 'topness test 1 = ', computeTopness1
-# print 'topness test 2 = ', computeTopness2
-
-# M_T2W = Mt2Com_bisect.calculateMT2w(additionaljets, bjets, lepton, metTVector2, "MT2w")
-# print 'M_T2W = ', M_T2W
 
 class CommonAnalysis(Module):
     def __init__(self, signalRegion, year=2016, isData=False, isSignal=False, btag='DeepCSV'):
@@ -276,6 +226,11 @@ class CommonAnalysis(Module):
             #Systematics - lepton weights
             self.out.branch("leptonWeightUp", "F")
             self.out.branch("leptonWeightDown", "F")
+
+            self.out.branch("electronTriggerWeight", "F")
+            #Systematics - electron trigger weights
+            self.out.branch("electronTriggerWeightUp", "F")
+            self.out.branch("electronTriggerWeightDown", "F")
 
             self.out.branch("muonTriggerWeight", "F")
             #Systematics - muon trigger weights
@@ -984,12 +939,17 @@ to next event)"""
 
             #Calculate lepton scale factor and trigger weights
             leptonWeight = leptonWeightUp = leptonWeightDown = 1
+            electronTriggerWeight = electronTriggerWeightUp = electronTriggerWeightDown = 1
             muonTriggerWeight = muonTriggerWeightUp = muonTriggerWeightDown = 1
 
             for tightElectron in tightElectrons:
                 leptonWeight *= self.eleSFs.getSF(tightElectron.pt, tightElectron.eta, 0)
                 leptonWeightUp *= self.eleSFs.getSF(tightElectron.pt, tightElectron.eta, 1)
                 leptonWeightDown *= self.eleSFs.getSF(tightElectron.pt, tightElectron.eta, -1)
+
+                electronTriggerWeight *= self.eleSFs.getWeight(tightElectron.pt, tightElectron.eta, 0)
+                electronTriggerWeightUp *= self.eleSFs.getWeight(tightElectron.pt, tightElectron.eta, 1)
+                electronTriggerWeightDown *= self.eleSFs.getWeight(tightElectron.pt, tightElectron.eta, -1)
 
             for tightMuon in tightMuons:
                 leptonWeight *= self.muSFs.getSF(tightMuon.pt, tightMuon.eta, 0)
@@ -1207,6 +1167,11 @@ to next event)"""
                 self.out.fillBranch("leptonWeightUp", leptonWeightUp)
                 self.out.fillBranch("leptonWeightDown", leptonWeightDown)
 
+                self.out.fillBranch("electronTriggerWeight", electronTriggerWeight)
+                #Systematics - electron trigger weights
+                self.out.fillBranch("electronTriggerWeightUp", electronTriggerWeightUp)
+                self.out.fillBranch("electronTriggerWeightDown", electronTriggerWeightDown)
+
                 self.out.fillBranch("muonTriggerWeight", muonTriggerWeight)
                 #Systematics - muon trigger weights
                 self.out.fillBranch("muonTriggerWeightUp", muonTriggerWeightUp)
@@ -1256,29 +1221,29 @@ class CountEvents(Module):
         return True
 
 #Define CommonAnalysis cmodules for all years (Data and MC)
-analyze2016MC = lambda : CommonAnalysis("All",year=2016,isData=False,isSignal=False,btag='DeepCSV')
-analyze2016SignalMC = lambda : CommonAnalysis("All",year=2016,isData=False,isSignal=True,btag='DeepCSV')
-analyze2016Data = lambda : CommonAnalysis("All",year=2016,isData=True,isSignal=False,btag='DeepCSV')
+analyze2016MC = lambda : CommonAnalysis("All",year=2016,isData=False,isSignal=False,btag='CSVv2')
+analyze2016SignalMC = lambda : CommonAnalysis("All",year=2016,isData=False,isSignal=True,btag='CSVv2')
+analyze2016Data = lambda : CommonAnalysis("All",year=2016,isData=True,isSignal=False,btag='CSVv2')
 
-analyze2016MC_Skim = lambda : CommonAnalysis("Skim",year=2016,isData=False,isSignal=False,btag='DeepCSV')
-analyze2016SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2016,isData=False,isSignal=True,btag='DeepCSV')
-analyze2016Data_Skim = lambda : CommonAnalysis("Skim",year=2016,isData=True,isSignal=False,btag='DeepCSV')
+analyze2016MC_Skim = lambda : CommonAnalysis("Skim",year=2016,isData=False,isSignal=False,btag='CSVv2')
+analyze2016SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2016,isData=False,isSignal=True,btag='CSVv2')
+analyze2016Data_Skim = lambda : CommonAnalysis("Skim",year=2016,isData=True,isSignal=False,btag='CSVv2')
 
-analyze2017MC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=False,btag='DeepCSV')
-analyze2017SignalMC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=True,btag='DeepCSV')
-analyze2017Data = lambda : CommonAnalysis("All",year=2017,isData=True,isSignal=False,btag='DeepCSV')
+analyze2017MC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=False,btag='CSVv2')
+analyze2017SignalMC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=True,btag='CSVv2')
+analyze2017Data = lambda : CommonAnalysis("All",year=2017,isData=True,isSignal=False,btag='CSVv2')
 
-analyze2017MC_Skim = lambda : CommonAnalysis("Skim",year=2017,isData=False,isSignal=False,btag='DeepCSV')
-analyze2017SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2017,isData=False,isSignal=True,btag='DeepCSV')
-analyze2017Data_Skim = lambda : CommonAnalysis("Skim",year=2017,isData=True,isSignal=False,btag='DeepCSV')
+analyze2017MC_Skim = lambda : CommonAnalysis("Skim",year=2017,isData=False,isSignal=False,btag='CSVv2')
+analyze2017SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2017,isData=False,isSignal=True,btag='CSVv2')
+analyze2017Data_Skim = lambda : CommonAnalysis("Skim",year=2017,isData=True,isSignal=False,btag='CSVv2')
 
-analyze2018MC = lambda : CommonAnalysis("All",year=2018,isData=False,isSignal=False,btag='DeepCSV')
-analyze2018SignalMC = lambda : CommonAnalysis("All",year=2018,isData=False,isSignal=True,btag='DeepCSV')
-analyze2018Data = lambda : CommonAnalysis("All",year=2018,isData=True,isSignal=False,btag='DeepCSV')
+analyze2018MC = lambda : CommonAnalysis("All",year=2018,isData=False,isSignal=False,btag='CSVv2')
+analyze2018SignalMC = lambda : CommonAnalysis("All",year=2018,isData=False,isSignal=True,btag='CSVv2')
+analyze2018Data = lambda : CommonAnalysis("All",year=2018,isData=True,isSignal=False,btag='CSVv2')
 
-analyze2018MC_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=False,isSignal=False,btag='DeepCSV')
-analyze2018SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=False,isSignal=True,btag='DeepCSV')
-analyze2018Data_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=True,isSignal=False,btag='DeepCSV')
+analyze2018MC_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=False,isSignal=False,btag='CSVv2')
+analyze2018SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=False,isSignal=True,btag='CSVv2')
+analyze2018Data_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=True,isSignal=False,btag='CSVv2')
 
 #Define jetmetHelperRun2 modules for all years to calculate systematic uncertanties
 jetmetCorrector2016MC = createJMECorrector(isMC=True, dataYear=2016, jesUncert="Total")
@@ -1315,21 +1280,21 @@ if runLocal:
     #outputDir = "testSamples/"
     outputDir = "."
     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-    outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
-    #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+    outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+    inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
     #inputFiles=["testSamples/ttbarDM_Run2016.root"]
     #inputFiles=["testSamples/ttbarPlusJets_Run2016.root"]
     #inputFiles=["testSamples/SingleElectron_2017B.root"]
     #inputFiles = ["testSamples/SingleElectron_2018A.root"]
-    inputFiles = ["testSamples/SingleElectron_2016H.root"]
+    #inputFiles = ["testSamples/SingleElectron_2016H.root"]
     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon_2016MC_Skim",noOut=False,outputbranchsel=outputbranches)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_ModuleCommon_2016MC_Skim",noOut=False,outputbranchsel=outputbranches)
-    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataH(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)
+    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_CSVv2_12242020",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataH(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_countEvents_dropAll",noOut=False,outputbranchsel=outputbranches)
     p.run()

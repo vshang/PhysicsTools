@@ -2,9 +2,9 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'test_01282021' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'ModuleCommonSkim_12242020_leppt30andlepmediumID' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'getBTagHist_DeepCSV_08062020'
- analysis      = 'ttbarPlusJets' #Name of the analysis (e.g. VBFHN, LQtop, ...)
+ analysis      = 'ttbarDM' #Name of the analysis (e.g. VBFHN, LQtop, ...)
  year          = '2016'
  run           = ''
  unitsPerJob   = 1 #Units (usually number of root files) per job

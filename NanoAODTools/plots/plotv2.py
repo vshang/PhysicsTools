@@ -11,7 +11,7 @@ import math
 saveDirectory = 'plots/topness_studies/'
 date = '02_10_2021'
 year = 2016
-useCondor = True
+useCondor = False
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
     dataSamples = data2016
@@ -142,12 +142,12 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 
 #Select selection cut and variable to be plotted here by uncommenting
 
-cut = 'cut 1'
+#cut = 'cut 8'
 
 #cut = 'SL1e' #Pre-selection cuts
 #cut = 'SL1m'
 #cut = 'SL'
-#cut = 'SL1b'
+cut = 'SL1b'
 #cut = 'SL2b'
 #cut = 'AH'
 #cut = 'AH1b'
@@ -223,11 +223,11 @@ cut = 'cut 1'
 #cuts[cut] = cuts[cut] + ' && nFatJet >= 2'
 #cuts[cut] = cuts[cut] + ' && index_centralJets == 1'
 #cuts[cut] = cuts[cut] + ' && FatJet_pt[2] > 250'
-#cuts[cut] = cuts[cut].replace('METcorrected_pt >= 160', 'METcorrected_pt >= 250')
-#cuts[cut] = cuts[cut].replace('M_T >= 160', 'M_T >= 140')
-#cuts[cut] = cuts[cut].replace('M_Tb >= 180', 'M_Tb >= 140')
-#cuts[cut] = cuts[cut].replace('M_T2W >= 200', 'M_T2W >= 180')
-#cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1.2', 'minDeltaPhi12 >= 0.8')
+cuts[cut] = cuts[cut].replace('METcorrected_pt >= 160', 'METcorrected_pt >= 250')
+cuts[cut] = cuts[cut].replace('M_T >= 160', 'M_T >= 140')
+cuts[cut] = cuts[cut].replace('M_Tb >= 180', 'M_Tb >= 140')
+cuts[cut] = cuts[cut].replace('M_T2W >= 200', 'M_T2W >= 180')
+cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1.2', 'minDeltaPhi12 >= 0.8')
 #cuts[cut] = cuts[cut] + ' && EE_L1_prefire == 0'
 #cuts[cut] = cuts[cut] + ' && deltaPhij3 >= 0.75'
 #Uncomment replacements below to replace PFMET with PuppiMET variables
@@ -303,18 +303,19 @@ print("Creating histograms..")
 
 #Set histogram options
 nbins = 9
-xmin = 160
-xmax = 520
+xmin = 250
+xmax = 610
 auto_y = True
 #auto_y = False
-#doLogPlot = True
-doLogPlot = False
+doLogPlot = True
+#doLogPlot = False
 #drawData = True
 drawData = False
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
-normalizePlots = False
+normalizePlots = True
+doBinned = True
 if not auto_y:
     ymin = 60
     ymax = 20000
@@ -399,7 +400,7 @@ for process in MCSamples:
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
-            skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242020', 'countEvents_12242020'),'')
+            skimFile = TFile.Open(filepath.replace('ModuleCommon_withtopness_01302021', 'countEvents_12242020'),'')
             # if process in signal:
             #     nevents += skimFile.Get('Events').GetEntries('GenModel__TTbarDMJets_Inclusive_'+mediatorType+'_LO_Mchi_'+str(mchi)+'_Mphi_'+str(mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8')
             # else:
@@ -657,7 +658,7 @@ if drawData:
         
 #Save histogram
 if useCondor:
-    c.SaveAs(cut + str(year) + "_" + var + "_" + date + cut + ".png")
+    c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
     #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
 else:
     c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")

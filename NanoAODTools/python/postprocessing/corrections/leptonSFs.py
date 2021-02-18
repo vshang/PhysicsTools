@@ -16,16 +16,19 @@ class ElectronSFs:
             self.sftool_10to20GeV = ScaleFactor(pathElectrons+'SF2016/EGM2D_BtoH_low_RecoSF_Legacy2016.root','EGamma_SF2D')
             self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'SF2016/EGM2D_BtoH_GT20GeV_RecoSF_Legacy2016.root','EGamma_SF2D')
             self.sftool_ID = ScaleFactor(pathElectrons+'SF2016/2016LegacyReReco_ElectronTight.root','EGamma_SF2D')
+            self.sftool_Trigger = ScaleFactor(pathElectrons+'SF2016/egammaEffi_EGM2D_2016.root','EGamma_SF2D')
 
         if year==2017:
             self.sftool_10to20GeV = ScaleFactor(pathElectrons+'SF2017/egammaEffi.txt_EGM2D_runBCDEF_passingRECO_lowEt.root','EGamma_SF2D')
             self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'SF2017/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root','EGamma_SF2D')
             self.sftool_ID = ScaleFactor(pathElectrons+'SF2017/2017_ElectronTight.root','EGamma_SF2D')
+            self.sftool_Trigger = ScaleFactor(pathElectrons+'SF2016/egammaEffi_EGM2D_2017.root','EGamma_SF2D')
 
         if year==2018:
             self.sftool_10to20GeV = ScaleFactor(pathElectrons+'SF2018/egammaEffi.txt_EGM2D_updatedAll.root','EGamma_SF2D')
             self.sftool_Over20GeV  = ScaleFactor(pathElectrons+'SF2018/egammaEffi.txt_EGM2D_updatedAll.root','EGamma_SF2D')
             self.sftool_ID = ScaleFactor(pathElectrons+'SF2018/2018_ElectronTight.root','EGamma_SF2D')
+            self.sftool_Trigger = ScaleFactor(pathElectrons+'SF2016/egammaEffi_EGM2D_2018.root','EGamma_SF2D')
         
     def getSF(self, pt, eta, syst=0):
         #Get SF for electron ID and reconstruction efficiency. Set syst=1 to include up systematic error, syst=-1 to include down systematic error.
@@ -38,6 +41,11 @@ class ElectronSFs:
             print 'lepton pt not < 20 GeV or > 20 GeV, error!'
             exit(1)
         return sf_ID*sf_EFF
+
+    def getWeight(self, pt, eta, syst=0):
+        #Get weight for electron trigger efficiency. Set syst=1 to include up systematic error, syst=-1 to include down systematic error.
+        sf_Trigger = self.sftool_Trigger.getSF(pt,eta,syst)
+        return sf_Trigger
 
 class MuonSFs:
 
@@ -76,7 +84,7 @@ class MuonSFs:
         return sf_ID*sf_ISO
 
     def getWeight(self, pt, eta, run, syst=0):
-        #Get weight for single muon trigger efficiency. 
+        #Get weight for single muon trigger efficiency. Set syst=1 to include up systematic error, syst=-1 to include down systematic error.
         if self.year ==2018:
             if run < 316361:
                 sf_Trigger = self.sftool_TriggerBeforeHLTUpdate.getSF(pt,eta,0)
