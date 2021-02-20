@@ -3,22 +3,21 @@
 #2016 MC samples
 samples2016 = { 
     #Signal
-    # 'ttbar scalar' : {
-    #     #'ttbarDM_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 672.3, 'filepaths' : ['/hdfs/store/user/vshang/ttbarDM_Run2016/TTbarDMJets_Inclusive_scalar_LO_TuneCP5_13TeV-madgraph-mcatnlo-pythia8/ModuleCommon_withtopness_01302021/tree_all.root'] },
-    #     'ttbarDM_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 672.3, 'filepaths' : ['/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/signalMC/samples2016/ttbar/ttbarDM_Mchi1Mphi100_scalar_full_ModuleCommon_2016MC_12242020.root'] },
-    # }, 
+    'ttbar scalar' : {
+        'ttDM_MChi1_MPhi50_scalar' : { 'nevents' : 1, 'xsec' : 722.67, 'mediatorType' : 'scalar', 'mchi' : 1, 'mphi' : 50, 'filepaths' : ['/hdfs/store/user/vshang/ttbarDM_Run2016/TTbarDMJets_Inclusive_scalar_LO_TuneCP5_13TeV-madgraph-mcatnlo-pythia8/ModuleCommonSkim_12242020/tree_all.root'] },
+        #'ttbarDM_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 672.3, 'filepaths' : ['/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/signalMC/samples2016/ttbar/ttbarDM_Mchi1Mphi100_scalar_full_ModuleCommon_2016MC_CSVv2_12242020.root'] },
+    }, 
     'ttbar pseudoscalar' : {
-        'ttbarDM_Mchi1Mphi200' : { 'nevents' : 1, 'xsec' : 86.78, 'filepaths' : ['/hdfs/store/user/vshang/ttbarDM_Run2016/TTbarDMJets_Inclusive_pseudoscalar_LO_TuneCP5_13TeV-madgraph-mcatnlo-pythia8/ModuleCommonSkim_12242020/tree_all.root'] },
+        'ttDM_MChi1_MPhi200_pseudo' : { 'nevents' : 1, 'xsec' : 87.99, 'mediatorType' : 'pseudoscalar', 'mchi' : 1, 'mphi' : 200, 'filepaths' : ['/hdfs/store/user/vshang/ttbarDM_Run2016/TTbarDMJets_Inclusive_pseudoscalar_LO_TuneCP5_13TeV-madgraph-mcatnlo-pythia8/ModuleCommonSkim_12242020/tree_all.root'] },
     },
-    # 'tbar scalar' : {
-    #     #'ttbarDM_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 672.3, 'filepaths' : ['/hdfs/store/user/vshang/ttbarDM_Run2016/TTbarDMJets_Inclusive_scalar_LO_TuneCP5_13TeV-madgraph-mcatnlo-pythia8/ModuleCommon_withtopness_01302021/tree_all.root'] },
-    #     'tChan_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 268.3, 'filepaths' : ['/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/signalMC/samples2016/tDM_tChan/tDM_tChan_Mchi1Mphi100_scalar_full_ModuleCommon_2016MC_12242020.root'] },
-    #     'tWChan_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 55.49, 'filepaths' : ['/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/signalMC/samples2016/tDM_tWChan/tDM_tWChan_Mchi1Mphi100_scalar_full_ModuleCommon_2016MC_12242020.root'] },
+    'tbar scalar' : {
+        #'tDM_MChi1_MPhi100_scalar' : { 'nevents' : 1, 'xsec' : 672.3, 'filepaths' : ['/hdfs/store/user/vshang/ttbarDM_Run2016/TTbarDMJets_Inclusive_scalar_LO_TuneCP5_13TeV-madgraph-mcatnlo-pythia8/ModuleCommon_withtopness_01302021/tree_all.root'] },
+        'tChan_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 276.59, 'mediatorType' : 'scalar', 'mchi' : 1, 'mphi' : 100, 'filepaths' : ['/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/signalMC/samples2016/tDM_tChan/tDM_tChan_Mchi1Mphi100_scalar_full_ModuleCommon_2016MC_12242020.root'] },
+        'tWChan_Mchi1Mphi100' : { 'nevents' : 1, 'xsec' : 52.99, 'mediatorType' : 'scalar', 'mchi' : 1, 'mphi' : 100, 'filepaths' : ['/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/signalMC/samples2016/tDM_tWChan/tDM_tWChan_Mchi1Mphi100_scalar_full_ModuleCommon_2016MC_12242020.root'] },
+    },
+    # 'tbar pseudoscalar' : {
+    #     'tDM_MChi1_MPhi200_pseudo' : { 'nevents' : 1, 'xsec' : 86.78, 'mediatorType' : 'pseudoscalar', 'mchi' : 1, 'mphi' : 200, 'filepaths' : ['/hdfs/store/user/vshang/ttbarDM_Run2016/TTbarDMJets_Inclusive_pseudoscalar_LO_TuneCP5_13TeV-madgraph-mcatnlo-pythia8/ModuleCommonSkim_CSVv2_12242020/tree_all.root'] },
     # },
-    
-    'tbar pseudoscalar' : {
-        'ttbarDM_Mchi1Mphi200' : { 'nevents' : 1, 'xsec' : 86.78, 'filepaths' : ['/hdfs/store/user/vshang/ttbarDM_Run2016/TTbarDMJets_Inclusive_pseudoscalar_LO_TuneCP5_13TeV-madgraph-mcatnlo-pythia8/ModuleCommonSkim_12242020/tree_all.root'] },
-    },
     #Background 
     'ttbarPlusJets' : {
         'TTTo2L2Nu' : { 'nevents' : 1, 'xsec' : 87310.0, 'filepaths' : ['/hdfs/store/user/vshang/ttbarPlusJets_Run2016/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/ModuleCommonSkim_12242020/tree_all.root'] },
