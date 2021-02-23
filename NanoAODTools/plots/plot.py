@@ -8,8 +8,8 @@ import re
 import math
 
 #Set save directory and date for file names
-saveDirectory = 'plots/topness_studies/'
-date = '02_10_2021'
+saveDirectory = 'binnedHists/'
+date = '02_19_2021'
 year = 2016
 useCondor = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -142,7 +142,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 
 #Select selection cut and variable to be plotted here by uncommenting
 
-#cut = 'cut 8'
+#cut = 'cut 1'
 
 #cut = 'SL1e' #Pre-selection cuts
 #cut = 'SL1m'
@@ -171,9 +171,9 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1e2bSR'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
-#cut = 'SL1m2bSR'
+cut = 'SL1m2bSR'
 #cut = 'AH0l0fSR'
-cut = 'AH0l1fSR'
+#cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
 #cut = 'SL2bSR'
@@ -223,11 +223,11 @@ cut = 'AH0l1fSR'
 #cuts[cut] = cuts[cut] + ' && nFatJet >= 2'
 #cuts[cut] = cuts[cut] + ' && index_centralJets == 1'
 #cuts[cut] = cuts[cut] + ' && FatJet_pt[2] > 250'
-#cuts[cut] = cuts[cut].replace('METcorrected_pt >= 160', 'METcorrected_pt >= 250')
-#cuts[cut] = cuts[cut].replace('M_T >= 160', 'M_T >= 140')
-#cuts[cut] = cuts[cut].replace('M_Tb >= 180', 'M_Tb >= 140')
-#cuts[cut] = cuts[cut].replace('M_T2W >= 200', 'M_T2W >= 180')
-#cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1.2', 'minDeltaPhi12 >= 0.8')
+cuts[cut] = cuts[cut].replace('METcorrected_pt >= 160', 'METcorrected_pt >= 250')
+cuts[cut] = cuts[cut].replace('M_T >= 160', 'M_T >= 140')
+cuts[cut] = cuts[cut].replace('M_Tb >= 180', 'M_Tb >= 140')
+cuts[cut] = cuts[cut].replace('M_T2W >= 200', 'M_T2W >= 180')
+cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1.2', 'minDeltaPhi12 >= 0.8')
 #cuts[cut] = cuts[cut] + ' && EE_L1_prefire == 0'
 #cuts[cut] = cuts[cut] + ' && deltaPhij3 >= 0.75'
 #Uncomment replacements below to replace PFMET with PuppiMET variables
@@ -302,20 +302,23 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 15
+nbins = 9
 xmin = 250
-xmax = 550
+xmax = 610
 auto_y = True
-#auto_y = False
-doLogPlot = True
-#doLogPlot = False
-#drawData = True
-drawData = False
+doLogPlot = False
+drawData = True
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
 normalizePlots = False
-useCentralSamples = False
+useCentralSamples = True
+doBinned = True
+savePlots = False
+if doBinned:
+    useCentralSamples = True
+    scaleFactor = 1
+    savePlots = False
 if not auto_y:
     ymin = 60
     ymax = 20000
@@ -359,11 +362,19 @@ gStyle.SetOptStat(0)
 
 
 #Define signal and background histograms
-signal = ['ttbar ' + mediatorType,'tbar ' + mediatorType]
+if doBinned:
+    signal = ['ttbar scalar', 'ttbar pseudoscalar', 'tbar scalar']
+else:
+    signal = ['ttbar ' + mediatorType,'tbar ' + mediatorType]
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
 for name in ['data','bkgSum'] + signal + back:
     hists[name] = TH1F(name, histoLabel, nbins, xmin, xmax)
+if doBinned:
+    hists['TTbarSL'] = TH1F('ttbarSL', histoLabel, nbins, xmin, xmax)
+    for process in signal:
+        for dataset in MCSamples[process]:
+            hists[dataset] = TH1F(dataset, histoLabel, nbins, xmin, xmax)
 
 #Select dataset to use based on cut
 datasetNames = []
@@ -400,9 +411,16 @@ for process in MCSamples:
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
-            skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_CSVv2_12242020', 'countEvents_12242020'),'')
-            if (process in signal) and useCentralSamples:
-                nevents += skimFile.Get('Events').GetEntries('GenModel__TTbarDMJets_Inclusive_'+mediatorType+'_LO_Mchi_'+str(mchi)+'_Mphi_'+str(mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8')
+            skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242020', 'countEvents_12242020'),'')
+            if (process in signal) and useCentralSamples and ('ttbar' in process):
+                Mchi = MCSamples[process][dataset]['mchi']
+                Mphi = MCSamples[process][dataset]['mphi']
+                MediatorType = MCSamples[process][dataset]['mediatorType']
+                if 'ttbar' in process:
+                    signalType = 'TTbarDMJets'
+                else:
+                    signalType = 'TTbarDMJets'
+                nevents += skimFile.Get('Events').GetEntries('GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8')
             else:
                 nevents += skimFile.Get('Events').GetEntries()
         MCSamples[process][dataset]['nevents'] = nevents
@@ -451,8 +469,15 @@ for process in MCSamples:
         elif process == 'ZTo2Nu':
             weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
             print 'Applied ZTo2Nu qcd/ewk Weights correctly'
-        if (process in signal) and useCentralSamples:
-            weight = weight + '*GenModel__TTbarDMJets_Inclusive_'+mediatorType+'_LO_Mchi_'+str(mchi)+'_Mphi_'+str(mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8'
+        if (process in signal) and useCentralSamples and ('ttbar' in process):
+            Mchi = MCSamples[process][dataset]['mchi']
+            Mphi = MCSamples[process][dataset]['mphi']
+            MediatorType = MCSamples[process][dataset]['mediatorType']
+            if 'ttbar' in process:
+                signalType = 'TTbarDMJets'
+            else:
+                signalType = 'TTbarDMJets'
+            weight = weight + '*GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8'
         for filepath in MCSamples[process][dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
             MCSamples[process][dataset][filepath+'_Events'].Draw(var+'>>hist',weight+'*('+cuts[cut]+')')
@@ -460,7 +485,11 @@ for process in MCSamples:
             print '          hist integral = ', hist.Integral(1,nbins+1)
             if process in signal:
                 hists[process] += scaleFactor*hist
+                if doBinned:
+                    hists[dataset] += hist
             elif process == 'ttbarPlusJets':
+                if doBinned:
+                    hists['TTbarSL'] += hist
                 if dataset == 'TTTo2L2Nu':
                     hists['TTTo2L2Nu'] += hist
                 elif dataset == 'TTToSemiLepton':
@@ -477,6 +506,8 @@ for process in MCSamples:
                 hists['VV'] += hist
             elif process == 'TTV':
                 hists['TTV'] += hist
+                if doBinned:
+                    hists['TTbarSL'] += hist
             elif process == 'QCD':
                 hists['QCD'] += hist
 
@@ -511,6 +542,82 @@ for name in back:
     h_MCStack.Add(hists[name])
 print("Finished stacking MC background histograms.")
 
+#Create binned histogram root files if doBinned == True
+if doBinned:
+    print("Creating binned histogram root files...")
+    savePrefix = saveDirectory + date + '/' + str(year) + '/'
+    stepSize = (xmax-xmin)/nbins
+    for i in range(1,nbins+1):
+        print '    Bin 1:'
+        print '    ------------'
+        leftbin = xmin + (i-1)*stepSize
+        rightbin = xmin + i*stepSize
+        binnedRootFile = TFile(cut+'bin_'+str(leftbin)+'_'+str(rightbin)+'.root', 'RECREATE')
+        #First fill in bkgSum binned histogram
+        binContent = hists['bkgSum'].GetBinContent(i)
+        binError = hists['bkgSum'].GetBinError(i)
+        binnedHist = TH1F('BkgSum', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+        binnedHist.SetBinContent(1, binContent)
+        binnedHist.SetBinError(1, binError)
+        binnedHist.Write()
+        print '    bkgSum bin ' + str(i) + ': ' + str(binContent)
+        #Then fill in individual background binned histograms
+        TTbarSL = ['TTTo2L2Nu','TTToSemiLepton','TTV']
+        for name in back:
+            binContent = hists[name].GetBinContent(i)
+            binError = hists[name].GetBinError(i)
+            if name == 'ZTo2L':
+                binnedHist = TH1F('DYJetsToLL', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            elif name == 'ZTo2Nu':
+                binnedHist = TH1F('DYJetsToNuNu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            elif name == 'QCD':
+                binnedHist = TH1F('QCD', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            elif name == 'singleTop':
+                binnedHist = TH1F('ST', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            elif name == 'VV':
+                binnedHist = TH1F('VV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            elif name == 'WPlusJets':
+                binnedHist = TH1F('WJetsToLNu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            if name not in TTbarSL:
+                binnedHist.SetBinContent(1, binContent)
+                binnedHist.SetBinError(1, binError)
+                binnedHist.Write()
+                print '    ' + name + ' bin ' + str(i) + ': ' + str(binContent)
+        binContent = hists['TTbarSL'].GetBinContent(i)
+        binError = hists['TTbarSL'].GetBinError(i)
+        binnedHist = TH1F('TTbarSL', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+        binnedHist.SetBinContent(1, binContent)
+        binnedHist.SetBinError(1, binError)
+        binnedHist.Write()
+        print '    TTbarSL bin ' + str(i) + ': ' + str(binContent)
+        #Then fill in data binned histogram
+        binContent = hists['data'].GetBinContent(i)
+        binError = hists['data'].GetBinError(i)
+        binnedHist = TH1F('data_obs', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+        binnedHist.SetBinContent(1, binContent)
+        binnedHist.SetBinError(1, binError)
+        binnedHist.Write()
+        print '    data_obs bin ' + str(i) + ': ' + str(binContent)
+        #Finally fill in signal MC binned histograms
+        for process in signal:
+            if 'ttbar' in process:
+                for dataset in MCSamples[process]:
+                    binContent = hists[dataset].GetBinContent(i)
+                    binError = hists[dataset].GetBinError(i)
+                    binnedHist = TH1F(dataset, '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    binnedHist.SetBinContent(1, binContent)
+                    binnedHist.SetBinError(1, binError)
+                    binnedHist.Write()
+                    '    ' + dataset + ' bin ' + str(i) + ': ' + str(binContent)
+        binContent = hists['tbar scalar'].GetBinContent(i)
+        binError = hists['tbar scalar'].GetBinError(i)
+        binnedHist = TH1F('tDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+        binnedHist.SetBinContent(1, binContent)
+        binnedHist.SetBinError(1, binError)
+        binnedHist.Write()
+        print '    tDM_MChi1_MPhi100_scalar bin ' + str(i) + ': ' + str(binContent)
+    print("Finished creating binned histogram root files...")
+
 #Normalize plots to area 1 if normalizePlots == True
 if normalizePlots:
     for name in back:
@@ -520,116 +627,118 @@ if normalizePlots:
     if drawData:
         hists['data'].Scale(1./hists['data'].Integral())
     hists['bkgSum'].Scale(1./hists['bkgSum'].Integral())
+    print("Normalized plots")
         
-#Draw histograms
-print("Drawing histograms...")
-c = TCanvas('c', 'c', 800, 800)
-if drawData:
-    c.Divide(1,2)
-    setTopPad(c.GetPad(1),4)
-    setBotPad(c.GetPad(2),4)
-    c.cd(1)
-    if doLogPlot:
-        c.GetPad(1).SetLogy(1)
-else:
-    setCanvas(c)
-    if doLogPlot:
-        c.SetLogy(1)
-h_MCStack.Draw('hist')
-hists['ttbar '+mediatorType].Draw('hist same')
-hists['tbar '+mediatorType].Draw('hist same')
-hists['data'].Draw('ep same')
-hists['bkgSum'].Draw('e2 same')
-#Set MC background histogram options 
-hists['QCD'].SetFillColor(kGray+1)
-hists['ZTo2L'].SetFillColor(kGreen+1)
-hists['VV'].SetFillColor(kBlue+2)
-hists['singleTop'].SetFillColor(kOrange+7)
-hists['WPlusJets'].SetFillColor(kViolet-1)
-hists['TTV'].SetFillColor(kOrange+4)
-hists['TTTo2L2Nu'].SetFillColor(kOrange-2)
-hists['TTToSemiLepton'].SetFillColor(kOrange-3)
-hists['ZTo2Nu'].SetFillColor(kAzure-4)
-
-hists['QCD'].SetLineWidth(0)
-hists['ZTo2L'].SetLineWidth(0)
-hists['VV'].SetLineWidth(0)
-hists['singleTop'].SetLineWidth(0)
-hists['WPlusJets'].SetLineWidth(0)
-hists['TTV'].SetLineWidth(0)
-hists['TTTo2L2Nu'].SetLineWidth(0)
-hists['TTToSemiLepton'].SetLineWidth(0)
-hists['ZTo2Nu'].SetLineWidth(0)
-
-if auto_y:
-    if doLogPlot:
-        if drawData:
-            ymin = max(min(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMinimumBin()), hists['data'].GetBinContent(hists['data'].GetMinimumBin())), 5.e-1)
-            ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
-        else:
-            ymin = max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMinimumBin()), 5.e-1)
-            ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+#Draw histograms and save if savePlots == True
+if savePlots:
+    print("Drawing histograms...")
+    c = TCanvas('c', 'c', 800, 800)
+    if drawData:
+        c.Divide(1,2)
+        setTopPad(c.GetPad(1),4)
+        setBotPad(c.GetPad(2),4)
+        c.cd(1)
+        if doLogPlot:
+            c.GetPad(1).SetLogy(1)
     else:
-        ymin = 0
-        if drawData:
-            ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
-        else:
-            ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
-if normalizePlots:
-    ymin = 5.e-4
-h_MCStack.SetMinimum(ymin)
-h_MCStack.SetMaximum(ymax)
-#Set settings for data and MC background histogram title/labels
-if drawData:
-    setHistStyle(h_MCStack)
-    h_MCStack.GetXaxis().SetLabelOffset(999)
-    h_MCStack.GetXaxis().SetLabelSize(0)
-    setHistStyle(hists['ttbar '+mediatorType])
-    setHistStyle(hists['tbar '+mediatorType])
-    setHistStyle(hists['data'])
-    setHistStyle(hists['bkgSum'])
-#Set tbar histogram options
-hists['tbar '+mediatorType].SetLineColor(kRed)
-hists['tbar '+mediatorType].SetLineWidth(3)
-#Set ttbar histogram options
-hists['ttbar '+mediatorType].SetLineColor(kRed)
-hists['ttbar '+mediatorType].SetLineStyle(2)
-hists['ttbar '+mediatorType].SetLineWidth(3)
-#Set data histogram options
-hists['data'].SetMarkerStyle(20)
-hists['data'].SetMarkerSize(1.25)
-hists['data'].SetLineColor(1)
-#Set bkgSum histogram options
-hists['bkgSum'].SetFillStyle(3002)
-hists['bkgSum'].SetFillColor(1)
-#Add legend
-legend = TLegend(0.4, 0.65, 0.85, 0.85)
-legend.SetNColumns(3)
-if drawData:
-    legend.AddEntry(hists['data'], 'Data', 'pe')
-legend.AddEntry(hists['ZTo2Nu'], 'Z(#nu#nu) + jets', 'f')
-legend.AddEntry(hists['TTToSemiLepton'], 't#bar{t}(1l)', 'f')
-legend.AddEntry(hists['TTTo2L2Nu'], 't#bar{t}(2l)', 'f')
-legend.AddEntry(hists['TTV'], 't#bar{t}+V', 'f')
-legend.AddEntry(hists['WPlusJets'], 'W(l#nu) + jets', 'f')
-legend.AddEntry(hists['singleTop'], 't+X', 'f')
-legend.AddEntry(hists['VV'], 'VV,VH', 'f')
-legend.AddEntry(hists['ZTo2L'], 'Z(ll) + jets', 'f')
-legend.AddEntry(hists['QCD'], 'multijet', 'f')
-legend.AddEntry(hists['bkgSum'], 'MC stat.', 'f')
-if scaleFactor != 1: 
-    legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-    legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-else:
-    legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-    legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-legend.Draw('same')
-legend.SetBorderSize(0)
-legend.SetFillStyle(0)
-print("Finished drawing histograms")
+        setCanvas(c)
+        if doLogPlot:
+            c.SetLogy(1)
+    h_MCStack.Draw('hist')
+    hists['ttbar '+mediatorType].Draw('hist same')
+    hists['tbar '+mediatorType].Draw('hist same')
+    hists['data'].Draw('ep same')
+    hists['bkgSum'].Draw('e2 same')
+    #Set MC background histogram options 
+    hists['QCD'].SetFillColor(kGray+1)
+    hists['ZTo2L'].SetFillColor(kGreen+1)
+    hists['VV'].SetFillColor(kBlue+2)
+    hists['singleTop'].SetFillColor(kOrange+7)
+    hists['WPlusJets'].SetFillColor(kViolet-1)
+    hists['TTV'].SetFillColor(kOrange+4)
+    hists['TTTo2L2Nu'].SetFillColor(kOrange-2)
+    hists['TTToSemiLepton'].SetFillColor(kOrange-3)
+    hists['ZTo2Nu'].SetFillColor(kAzure-4)
 
-#Create and draw ratio plot histogram if drawData = True
-if drawData:
+    hists['QCD'].SetLineWidth(0)
+    hists['ZTo2L'].SetLineWidth(0)
+    hists['VV'].SetLineWidth(0)
+    hists['singleTop'].SetLineWidth(0)
+    hists['WPlusJets'].SetLineWidth(0)
+    hists['TTV'].SetLineWidth(0)
+    hists['TTTo2L2Nu'].SetLineWidth(0)
+    hists['TTToSemiLepton'].SetLineWidth(0)
+    hists['ZTo2Nu'].SetLineWidth(0)
+
+    if auto_y:
+        if doLogPlot:
+            if drawData:
+                ymin = max(min(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMinimumBin()), hists['data'].GetBinContent(hists['data'].GetMinimumBin())), 5.e-1)
+                ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+            else:
+                ymin = max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMinimumBin()), 5.e-1)
+                ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+        else:
+            ymin = 0
+            if drawData:
+                ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+            else:
+                ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+    if normalizePlots:
+        ymin = 5.e-4
+    h_MCStack.SetMinimum(ymin)
+    h_MCStack.SetMaximum(ymax)
+    #Set settings for data and MC background histogram title/labels
+    if drawData:
+        setHistStyle(h_MCStack)
+        h_MCStack.GetXaxis().SetLabelOffset(999)
+        h_MCStack.GetXaxis().SetLabelSize(0)
+        setHistStyle(hists['ttbar '+mediatorType])
+        setHistStyle(hists['tbar '+mediatorType])
+        setHistStyle(hists['data'])
+        setHistStyle(hists['bkgSum'])
+    #Set tbar histogram options
+    hists['tbar '+mediatorType].SetLineColor(kRed)
+    hists['tbar '+mediatorType].SetLineWidth(3)
+    #Set ttbar histogram options
+    hists['ttbar '+mediatorType].SetLineColor(kRed)
+    hists['ttbar '+mediatorType].SetLineStyle(2)
+    hists['ttbar '+mediatorType].SetLineWidth(3)
+    #Set data histogram options
+    hists['data'].SetMarkerStyle(20)
+    hists['data'].SetMarkerSize(1.25)
+    hists['data'].SetLineColor(1)
+    #Set bkgSum histogram options
+    hists['bkgSum'].SetFillStyle(3002)
+    hists['bkgSum'].SetFillColor(1)
+    #Add legend
+    legend = TLegend(0.4, 0.65, 0.85, 0.85)
+    legend.SetNColumns(3)
+    if drawData:
+        legend.AddEntry(hists['data'], 'Data', 'pe')
+    legend.AddEntry(hists['ZTo2Nu'], 'Z(#nu#nu) + jets', 'f')
+    legend.AddEntry(hists['TTToSemiLepton'], 't#bar{t}(1l)', 'f')
+    legend.AddEntry(hists['TTTo2L2Nu'], 't#bar{t}(2l)', 'f')
+    legend.AddEntry(hists['TTV'], 't#bar{t}+V', 'f')
+    legend.AddEntry(hists['WPlusJets'], 'W(l#nu) + jets', 'f')
+    legend.AddEntry(hists['singleTop'], 't+X', 'f')
+    legend.AddEntry(hists['VV'], 'VV,VH', 'f')
+    legend.AddEntry(hists['ZTo2L'], 'Z(ll) + jets', 'f')
+    legend.AddEntry(hists['QCD'], 'multijet', 'f')
+    legend.AddEntry(hists['bkgSum'], 'MC stat.', 'f')
+    if scaleFactor != 1: 
+        legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+        legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+    else:
+        legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+        legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+    legend.Draw('same')
+    legend.SetBorderSize(0)
+    legend.SetFillStyle(0)
+    print("Finished drawing histograms")
+
+#Create and draw ratio plot histogram if drawData == True and savePlots == True
+if drawData and savePlots:
     print("Drawing ratio plot...")
     c.cd(2)
     h_ratio = TH1F('h_ratio', ratioLabel, nbins, xmin, xmax)
@@ -655,12 +764,13 @@ if drawData:
     h_ratio.SetLineColor(1)
     print("Finished drawing ratio plot")
         
-#Save histogram
-if useCondor:
-    c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
-    #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
-else:
-    c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
-#c.SaveAs("test.png")
+#Save histogram if savePlots == True
+if savePlots:
+    if useCondor:
+        c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
+        #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
+    else:
+        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
+        #c.SaveAs("test.png")
 
 print 'Plotting end time:', datetime.datetime.now()
