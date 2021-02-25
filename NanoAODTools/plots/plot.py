@@ -58,8 +58,8 @@ elif year == 2018:
     cuts['singleIsoMu'] = 'HLT_IsoMu24' # || HLT_IsoTkMu24' #|| HLT_IsoTkMu27
 
 #Pre-selection cut definitions
-cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
-cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
+cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 cuts['SL'] = '(' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')' 
 cuts['SL1b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets == 1')
 cuts['SL2b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets >= 2')
@@ -87,25 +87,25 @@ cuts['AH2j1bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets == 1'
 cuts['AH2j2bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets >= 2'
 
 #Signal region definitions
-cuts['SL1e0fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
-cuts['SL1e1fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
-cuts['SL1e2bSR'] = cuts['SL1e'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
+cuts['SL1e0fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['SL1e1fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['SL1e2bSR'] = cuts['SL1e'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 
-cuts['SL1m0fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
-cuts['SL1m1fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
-cuts['SL1m2bSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 160' + ' && M_T2W >= 200' + ' && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
-cuts['AH0l0fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets == 0 && minDeltaPhi12 >= 1 && M_Tb >= 180'
-cuts['AH0l1fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets >= 1 && minDeltaPhi12 >= 1 && M_Tb >= 180'
-cuts['AH0l2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDeltaPhi12 >= 1 && M_Tb >= 180 && jet1p_TH_T <= 0.5'
+cuts['SL1m0fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['SL1m1fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['SL1m2bSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['AH0l0fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets == 0 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['AH0l1fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets >= 1 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['AH0l2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && jet1p_TH_T <= 0.5'
 
-cuts['SL1bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets == 1 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
-cuts['SL2bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets >= 2 && M_T >= 160 && M_T2W >= 200 && minDeltaPhi12 >= 1.2 && M_Tb >= 180'
+cuts['SL1bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets == 1 && M_T >= 140 && M_T2W >= 180 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['SL2bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets >= 2 && M_T >= 140 && M_T2W >= 180 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['SL1b0fSR'] = cuts['SL1bSR'] + ' && nfjets == 0'
 cuts['SL1b1fSR'] = cuts['SL1bSR'] + ' && nfjets >= 1'
 
-cuts['AHSR'] = cuts['AH'] + ' && minDeltaPhi12 >= 1 && M_Tb >= 180'
+cuts['AHSR'] = cuts['AH'] + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['AH1bSR'] = cuts['AHSR'].replace('nbjets >= 1', 'nbjets ==1')
-cuts['AH2bSR'] = cuts['AHSR'].replace('nbjets >= 1', 'nbjets >= 2')
+cuts['AH2bSR'] = cuts['AHSR'].replace('nbjets >= 1', 'nbjets >= 2') + ' && jet1p_TH_T <= 0.5'
 cuts['AH1b1FJSR'] = cuts['AH1bSR'] + ' && nFatJet <= 1'
 cuts['AH1b2FJSR'] = cuts['AH1bSR'] + ' && nFatJet >= 2'
 cuts['AH2b1FJSR'] = cuts['AH0l2bSR'] + ' && nFatJet <= 1'
@@ -118,16 +118,16 @@ cuts['AH1b1f2FJSR'] = cuts['AH0l1fSR'] + ' && nFatJet >= 2'
 
 
 #Control region definitions
-cuts['SL2eTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && METcorrected_pt >= 160 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
-cuts['SL2mTR'] = 'njets >= 2 && nbjets >= 1 && nVetoElectrons  == 0 && nTightMuons == 2 && nLooseMuons == 2 && METcorrected_pt >= 160 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
-cuts['SL1e1mTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 1 && nVetoElectrons == 1 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 160 && M_T2ll <= 80 && tightElectron1_charge != tightMuon1_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
-cuts['SL1eWR'] = 'njets >= 2 && nbjets == 0 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 160 && M_T >= 160 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
-cuts['SL1mWR'] = 'njets >= 2 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 160 && M_T >= 160 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['SL2eTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && METcorrected_pt >= 250 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
+cuts['SL2mTR'] = 'njets >= 2 && nbjets >= 1 && nVetoElectrons  == 0 && nTightMuons == 2 && nLooseMuons == 2 && METcorrected_pt >= 250 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['SL1e1mTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 1 && nVetoElectrons == 1 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && M_T2ll <= 80 && tightElectron1_charge != tightMuon1_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['SL1eWR'] = 'njets >= 2 && nbjets == 0 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 250 && M_T >= 140 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
+cuts['SL1mWR'] = 'njets >= 2 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && M_T >= 140 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 
-cuts['AH1eTR'] = 'njets >= 3 && nbjets >= 1 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 250 && M_T <= 160 && minDeltaPhi12 >= 1.0 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
-cuts['AH1mTR'] = 'njets >= 3 && nbjets >= 1 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && M_T <= 160 && minDeltaPhi12 >= 1.0 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
-cuts['AH1eWR'] = 'njets >= 3 && nbjets == 0 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 250 && M_T <= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
-cuts['AH1mWR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && M_T <= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['AH1eTR'] = 'njets >= 3 && nbjets >= 1 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 250 && M_T <= 140 && minDeltaPhi12 >= 0.8 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
+cuts['AH1mTR'] = 'njets >= 3 && nbjets >= 1 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && M_T <= 140 && minDeltaPhi12 >= 0.8 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['AH1eWR'] = 'njets >= 3 && nbjets == 0 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 250 && M_T <= 140 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
+cuts['AH1mWR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && M_T <= 140 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 cuts['AH2eZR'] = 'njets >= 3 && nbjets == 0 && nTightElectrons == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 
@@ -171,7 +171,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1e2bSR'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
-cut = 'SL1m2bSR'
+#cut = 'SL1m2bSR'
 #cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
@@ -202,7 +202,7 @@ cut = 'SL1m2bSR'
 #cut = 'AH1eWR'
 #cut = 'AH1mWR'
 #cut = 'AH2eZR'
-#cut = 'AH2mZR'
+cut = 'AH2mZR'
 #cut = 'SLeCR'
 #cut = 'SLmCR'
 #cut = 'SL1eCR'
@@ -223,11 +223,12 @@ cut = 'SL1m2bSR'
 #cuts[cut] = cuts[cut] + ' && nFatJet >= 2'
 #cuts[cut] = cuts[cut] + ' && index_centralJets == 1'
 #cuts[cut] = cuts[cut] + ' && FatJet_pt[2] > 250'
-cuts[cut] = cuts[cut].replace('METcorrected_pt >= 160', 'METcorrected_pt >= 250')
-cuts[cut] = cuts[cut].replace('M_T >= 160', 'M_T >= 140')
-cuts[cut] = cuts[cut].replace('M_Tb >= 180', 'M_Tb >= 140')
-cuts[cut] = cuts[cut].replace('M_T2W >= 200', 'M_T2W >= 180')
-cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1.2', 'minDeltaPhi12 >= 0.8')
+#cuts[cut] = cuts[cut].replace('METcorrected_pt >= 160', 'METcorrected_pt >= 250')
+#cuts[cut] = cuts[cut].replace('M_T >= 160', 'M_T >= 140')
+#cuts[cut] = cuts[cut].replace('M_Tb >= 180', 'M_Tb >= 140')
+#cuts[cut] = cuts[cut].replace('M_T2W >= 200', 'M_T2W >= 180')
+#cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1.2', 'minDeltaPhi12 >= 0.8')
+#cuts[cut] = cuts[cut] + ' && full_topness <= 0.0'
 #cuts[cut] = cuts[cut] + ' && EE_L1_prefire == 0'
 #cuts[cut] = cuts[cut] + ' && deltaPhij3 >= 0.75'
 #Uncomment replacements below to replace PFMET with PuppiMET variables
@@ -253,9 +254,9 @@ cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 #var = 'nfjets'
 #var = 'nbjets'
 #var = 'MET_pt'
-var = 'METcorrected_pt'
+#var = 'METcorrected_pt'
 #var = 'PuppiMET_pt'
-#var = 'recoilPtMiss_puppi'
+var = 'recoilPtMiss'
 #var = 'Electron_pt[1]'
 #var = 'Muon_pt[1]'
 #var = 'Jet_pt[0]'
@@ -302,9 +303,9 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 9
+nbins = 15
 xmin = 250
-xmax = 610
+xmax = 550
 auto_y = True
 doLogPlot = False
 drawData = True
@@ -331,8 +332,8 @@ if not auto_y:
 #histoLabel = cut + ' central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = cut + ' n_{bjets} distribution; number of b-tagged jets; Events'
 #histoLabel = cut + ' forward n_{jet} distribution; number of forward AK4 jets; Events'
-histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
-#histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
+#histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
+histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
 #histoLabel = cut + ' Electron_pt[1] distribution; Electron_pt[1]; Events'
 #histoLabel = cut + ' Muon_pt[1] distribution; Muon_pt[1]; Events'
 #histoLabel = cut + ' Jet_pt[0] distribution; Jet_pt[0]; Events'
@@ -514,6 +515,9 @@ for process in MCSamples:
 #Fill background sum histogram for calculating ratio plot
 for name in back:
     hists['bkgSum'] += hists[name]
+
+#Print signal and background yields and FOM
+print '-----------------------------'
 print 'Total data background nEvents = ', hists['data'].GetEntries()
 print 'Total data background integral = ', hists['data'].Integral(1,nbins+1)
 print '-----------------------------'
