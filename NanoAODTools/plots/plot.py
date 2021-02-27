@@ -196,13 +196,13 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL2mTR'
 #cut = 'SL1e1mTR'
 #cut = 'SL1eWR'
-#cut = 'SL1mWR'
+cut = 'SL1mWR'
 #cut = 'AH1eTR'
 #cut = 'AH1mTR'
 #cut = 'AH1eWR'
 #cut = 'AH1mWR'
 #cut = 'AH2eZR'
-cut = 'AH2mZR'
+#cut = 'AH2mZR'
 #cut = 'SLeCR'
 #cut = 'SLmCR'
 #cut = 'SL1eCR'
@@ -231,6 +231,7 @@ cut = 'AH2mZR'
 #cuts[cut] = cuts[cut] + ' && full_topness <= 0.0'
 #cuts[cut] = cuts[cut] + ' && EE_L1_prefire == 0'
 #cuts[cut] = cuts[cut] + ' && deltaPhij3 >= 0.75'
+#cuts[cut] = cuts[cut] + ' && FatJet_deepTag_TvsQCD >= 0'
 #Uncomment replacements below to replace PFMET with PuppiMET variables
 # cuts[cut] = cuts[cut].replace('METcorrected', 'PuppiMET')
 # cuts[cut] = cuts[cut].replace('minDeltaPhi ', 'minDeltaPhi_puppi ')
@@ -254,9 +255,9 @@ cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 #var = 'nfjets'
 #var = 'nbjets'
 #var = 'MET_pt'
-#var = 'METcorrected_pt'
+var = 'METcorrected_pt'
 #var = 'PuppiMET_pt'
-var = 'recoilPtMiss'
+#var = 'recoilPtMiss'
 #var = 'Electron_pt[1]'
 #var = 'Muon_pt[1]'
 #var = 'Jet_pt[0]'
@@ -303,9 +304,9 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 15
+nbins = 9
 xmin = 250
-xmax = 550
+xmax = 610
 auto_y = True
 doLogPlot = False
 drawData = True
@@ -332,8 +333,8 @@ if not auto_y:
 #histoLabel = cut + ' central n_{jet} distribution; number of AK4 jets; Events'
 #histoLabel = cut + ' n_{bjets} distribution; number of b-tagged jets; Events'
 #histoLabel = cut + ' forward n_{jet} distribution; number of forward AK4 jets; Events'
-#histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
-histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
+histoLabel = cut + ' p_{T}^{miss} distribution; p_{T}^{miss} (GeV); Events'
+#histoLabel = cut + ' Hadronic recoil distribution; Hadronic recoil (GeV); Events'
 #histoLabel = cut + ' Electron_pt[1] distribution; Electron_pt[1]; Events'
 #histoLabel = cut + ' Muon_pt[1] distribution; Muon_pt[1]; Events'
 #histoLabel = cut + ' Jet_pt[0] distribution; Jet_pt[0]; Events'
@@ -373,6 +374,7 @@ for name in ['data','bkgSum'] + signal + back:
     hists[name] = TH1F(name, histoLabel, nbins, xmin, xmax)
 if doBinned:
     hists['TTbarSL'] = TH1F('ttbarSL', histoLabel, nbins, xmin, xmax)
+    hists['tttDM_MChi1_MPhi100_scalar'] = TH1F('tttDM_MChi1_MPhi100_scalar', histoLabel, nbins, xmin, xmax)
     for process in signal:
         for dataset in MCSamples[process]:
             hists[dataset] = TH1F(dataset, histoLabel, nbins, xmin, xmax)
@@ -412,7 +414,7 @@ for process in MCSamples:
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
-            skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242020', 'countEvents_12242020'),'')
+            skimFile = TFile.Open(filepath.replace('ModuleCommon_withtopness_01302021', 'countEvents_12242020'),'')
             if (process in signal) and useCentralSamples and ('ttbar' in process):
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
@@ -488,6 +490,8 @@ for process in MCSamples:
                 hists[process] += scaleFactor*hist
                 if doBinned:
                     hists[dataset] += hist
+                    if (dataset == 'ttDM_MChi1_MPhi100_scalar') or (process == 'tbar scalar'):
+                        hists['tttDM_MChi1_MPhi100_scalar'] += hist
             elif process == 'ttbarPlusJets':
                 if doBinned:
                     hists['TTbarSL'] += hist
@@ -552,8 +556,9 @@ if doBinned:
     savePrefix = saveDirectory + date + '/' + str(year) + '/'
     stepSize = (xmax-xmin)/nbins
     for i in range(1,nbins+1):
-        print '    Bin 1:'
-        print '    ------------'
+        print '--------------------------'
+        print '    Bin ' + str(i)
+        print '    ---------'
         leftbin = xmin + (i-1)*stepSize
         rightbin = xmin + i*stepSize
         binnedRootFile = TFile(cut+'bin_'+str(leftbin)+'_'+str(rightbin)+'.root', 'RECREATE')
@@ -566,7 +571,6 @@ if doBinned:
         binnedHist.Write()
         print '    bkgSum bin ' + str(i) + ': ' + str(binContent)
         #Then fill in individual background binned histograms
-        TTbarSL = ['TTTo2L2Nu','TTToSemiLepton','TTV']
         for name in back:
             binContent = hists[name].GetBinContent(i)
             binError = hists[name].GetBinError(i)
@@ -582,11 +586,16 @@ if doBinned:
                 binnedHist = TH1F('VV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
             elif name == 'WPlusJets':
                 binnedHist = TH1F('WJetsToLNu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-            if name not in TTbarSL:
-                binnedHist.SetBinContent(1, binContent)
-                binnedHist.SetBinError(1, binError)
-                binnedHist.Write()
-                print '    ' + name + ' bin ' + str(i) + ': ' + str(binContent)
+            elif name == 'TTToSemiLepton':
+                binnedHist = TH1F('TTToSemiLepton', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            elif name == 'TTTo2L2Nu':
+                binnedHist = TH1F('TTTo2L2Nu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            elif name == 'TTV':
+                binnedHist = TH1F('TTV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            binnedHist.SetBinContent(1, binContent)
+            binnedHist.SetBinError(1, binError)
+            binnedHist.Write()
+            print '    ' + name + ' bin ' + str(i) + ': ' + str(binContent)
         binContent = hists['TTbarSL'].GetBinContent(i)
         binError = hists['TTbarSL'].GetBinError(i)
         binnedHist = TH1F('TTbarSL', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
@@ -612,7 +621,7 @@ if doBinned:
                     binnedHist.SetBinContent(1, binContent)
                     binnedHist.SetBinError(1, binError)
                     binnedHist.Write()
-                    '    ' + dataset + ' bin ' + str(i) + ': ' + str(binContent)
+                    print '    ' + dataset + ' bin ' + str(i) + ': ' + str(binContent)
         binContent = hists['tbar scalar'].GetBinContent(i)
         binError = hists['tbar scalar'].GetBinError(i)
         binnedHist = TH1F('tDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
@@ -620,6 +629,13 @@ if doBinned:
         binnedHist.SetBinError(1, binError)
         binnedHist.Write()
         print '    tDM_MChi1_MPhi100_scalar bin ' + str(i) + ': ' + str(binContent)
+        binContent = hists['tttDM_MChi1_MPhi100_scalar'].GetBinContent(i)
+        binError = hists['tttDM_MChi1_MPhi100_scalar'].GetBinError(i)
+        binnedHist = TH1F('tttDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+        binnedHist.SetBinContent(1, binContent)
+        binnedHist.SetBinError(1, binError)
+        binnedHist.Write()
+        print '    tttDM_MChi1_MPhi100_scalar bin ' + str(i) + ': ' + str(binContent)
     print("Finished creating binned histogram root files...")
 
 #Normalize plots to area 1 if normalizePlots == True

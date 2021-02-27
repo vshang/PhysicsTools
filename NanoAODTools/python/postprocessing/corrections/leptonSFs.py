@@ -52,7 +52,7 @@ class MuonSFs:
     def __init__(self, year=2016, run='B'):
         #Load histograms from files.
         
-        assert year in [2016,2017,2018], "ElectronSFs: You must choose a year from: 2016, 2017, or 2018."
+        assert year in [2016,2017,2018], "MuonSFs: You must choose a year from: 2016, 2017, or 2018."
         assert run in ['B','C','D','E','F','G','H']
         self.year = year
         

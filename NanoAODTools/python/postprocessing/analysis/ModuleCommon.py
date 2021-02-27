@@ -237,6 +237,11 @@ class CommonAnalysis(Module):
             self.out.branch("muonTriggerWeightUp", "F")
             self.out.branch("muonTriggerWeightDown", "F")
 
+            self.out.branch("EE_L1_prefire_Weight", "F")
+            #Systematics - EE L1 prefiring weights
+            self.out.branch("EE_L1_prefire_WeightUp", "F")
+            self.out.branch("EE_L1_prefire_WeightDown", "F")
+
             self.out.branch("bjetWeight", "F")
             #Systematics - b-tagging weights
             self.out.branch("bjetWeightUp","F")
@@ -960,6 +965,14 @@ to next event)"""
                 muonTriggerWeightUp *= self.muSFs.getWeight(tightMuon.pt, tightMuon.eta, event.run, 1)
                 muonTriggerWeightDown *= self.muSFs.getWeight(tightMuon.pt, tightMuon.eta, event.run, -1)
 
+            #Calculate EE L1 prefiring weight
+            EE_L1_prefire_Weight = EE_L1_prefire_WeightUp = EE_L1_prefire_WeightDown = 1
+
+            if self.year == 2016 or self.year == 2017:
+                EE_L1_prefire_Weight = self.L1PreFiringWeight_Nom
+                EE_L1_prefire_WeightUp = self.L1PreFiringWeight_Up
+                EE_L1_prefire_WeightDown = self.L1PreFiringWeight_Dn
+
             #Calculate b-jet scale factor weight
             bjetWeight = self.btagTool.getWeight(centralJets)
             bjetWeightUp = self.btagToolUp.getWeight(centralJets)
@@ -1176,6 +1189,11 @@ to next event)"""
                 #Systematics - muon trigger weights
                 self.out.fillBranch("muonTriggerWeightUp", muonTriggerWeightUp)
                 self.out.fillBranch("muonTriggerWeightDown", muonTriggerWeightDown)
+
+                self.out.fillBranch("EE_L1_prefire_Weight", EE_L1_prefire_Weight)
+                #Systematics - EE L1 prefiring weights
+                self.out.fillBranch("EE_L1_prefire_WeightUp", EE_L1_prefire_WeightUp)
+                self.out.fillBranch("EE_L1_prefire_WeightDown", EE_L1_prefire_WeightDown)
 
                 self.out.fillBranch("bjetWeight", bjetWeight)
                 #Systematics - b-tag weights
