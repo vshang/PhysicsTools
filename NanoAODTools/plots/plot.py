@@ -8,8 +8,8 @@ import re
 import math
 
 #Set save directory and date for file names
-saveDirectory = 'binnedHists/'
-date = '02_19_2021'
+saveDirectory = 'plots/CR_2016/METcorrected_pt/'
+date = '03_02_2021'
 year = 2016
 useCondor = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -131,6 +131,12 @@ cuts['AH1mWR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuon
 cuts['AH2eZR'] = 'njets >= 3 && nbjets == 0 && nTightElectrons == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 
+cuts['SL2lTR'] = '(' + cuts['SL2eTR'] + ') || (' + cuts['SL2mTR'] + ') || (' + cuts['SL1e1mTR'] + ')'
+cuts['SL1lWR'] = '(' + cuts['SL1eWR'] + ') || (' + cuts['SL1mWR'] + ')'
+cuts['AH1lTR'] = '(' + cuts['AH1eTR'] + ') || (' + cuts['AH1mTR'] + ')'
+cuts['AH1lWR'] = '(' + cuts['AH1eWR'] + ') || (' + cuts['AH1mWR'] + ')'
+cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
+
 cuts['SLeCR'] = 'njets >= 2 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['SLmCR'] = 'njets >= 2 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 cuts['SL1eCR'] = 'njets >= 2 && METcorrected_pt >= 160 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
@@ -176,7 +182,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
-#cut = 'SL2bSR'
+cut = 'SL2bSR'
 #cut = 'AH1bSR'
 #cut = 'AH2bSR'
 
@@ -196,13 +202,20 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL2mTR'
 #cut = 'SL1e1mTR'
 #cut = 'SL1eWR'
-cut = 'SL1mWR'
+#cut = 'SL1mWR'
 #cut = 'AH1eTR'
 #cut = 'AH1mTR'
 #cut = 'AH1eWR'
 #cut = 'AH1mWR'
 #cut = 'AH2eZR'
 #cut = 'AH2mZR'
+
+#cut = 'SL2lTR'
+#cut = 'SL1lWR'
+#cut = 'AH1lTR'
+#cut = 'AH1lWR'
+#cut = 'AH2lZR'
+
 #cut = 'SLeCR'
 #cut = 'SLmCR'
 #cut = 'SL1eCR'
@@ -309,7 +322,7 @@ xmin = 250
 xmax = 610
 auto_y = True
 doLogPlot = False
-drawData = True
+drawData = False
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
