@@ -182,7 +182,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
-cut = 'SL2bSR'
+#cut = 'SL2bSR'
 #cut = 'AH1bSR'
 #cut = 'AH2bSR'
 
@@ -191,7 +191,7 @@ cut = 'SL2bSR'
 #cut = 'AH1b1FJSR'
 #cut = 'AH1b2FJSR'
 #cut = 'AH2b1FJSR'
-#cut = 'AH2b2FJSR'
+cut = 'AH2b2FJSR'
 
 #cut = 'AH1b0f1FJSR'
 #cut = 'AH1b0f2FJSR'
@@ -244,7 +244,7 @@ cut = 'SL2bSR'
 #cuts[cut] = cuts[cut] + ' && full_topness <= 0.0'
 #cuts[cut] = cuts[cut] + ' && EE_L1_prefire == 0'
 #cuts[cut] = cuts[cut] + ' && deltaPhij3 >= 0.75'
-#cuts[cut] = cuts[cut] + ' && FatJet_deepTag_TvsQCD >= 0'
+#cuts[cut] = cuts[cut] + ' && FatJet_deepTag_WvsQCD >= 0'
 #Uncomment replacements below to replace PFMET with PuppiMET variables
 # cuts[cut] = cuts[cut].replace('METcorrected', 'PuppiMET')
 # cuts[cut] = cuts[cut].replace('minDeltaPhi ', 'minDeltaPhi_puppi ')
@@ -317,9 +317,9 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 9
+nbins = 15
 xmin = 250
-xmax = 610
+xmax = 550
 auto_y = True
 doLogPlot = False
 drawData = False
@@ -328,7 +328,7 @@ mchi = 1
 mphi = 100
 normalizePlots = False
 useCentralSamples = True
-doBinned = True
+doBinned = False
 savePlots = False
 if doBinned:
     useCentralSamples = True

@@ -969,9 +969,9 @@ to next event)"""
             EE_L1_prefire_Weight = EE_L1_prefire_WeightUp = EE_L1_prefire_WeightDown = 1
 
             if self.year == 2016 or self.year == 2017:
-                EE_L1_prefire_Weight = self.L1PreFiringWeight_Nom
-                EE_L1_prefire_WeightUp = self.L1PreFiringWeight_Up
-                EE_L1_prefire_WeightDown = self.L1PreFiringWeight_Dn
+                EE_L1_prefire_Weight = event.L1PreFiringWeight_Nom
+                EE_L1_prefire_WeightUp = event.L1PreFiringWeight_Up
+                EE_L1_prefire_WeightDown = event.L1PreFiringWeight_Dn
 
             #Calculate b-jet scale factor weight
             bjetWeight = self.btagTool.getWeight(centralJets)
@@ -1299,11 +1299,11 @@ countEvents = lambda : CountEvents()
 #     outputDir = "."
 #     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
 #     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-#     inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+#     #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 #     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-#     #inputFiles=["testSamples/ttbarDM_Run2016.root"]
+#     inputFiles=["testSamples/ttbarDM_Run2018.root"]
 #     #inputFiles=["testSamples/ttbarPlusJets_Run2016.root"]
-#     #inputFiles=["testSamples/SingleElectron_2017B.root"]
+#     #inputFiles=["testSamples/SingleElectron_2017C.root"]
 #     #inputFiles = ["testSamples/SingleElectron_2018A.root"]
 #     #inputFiles = ["testSamples/SingleElectron_2016H.root"]
 #     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
@@ -1312,7 +1312,7 @@ countEvents = lambda : CountEvents()
 
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon_2016MC_Skim",noOut=False,outputbranchsel=outputbranches)
-#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_CSVv2_12242020",noOut=False,outputbranchsel=outputbranches)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataH(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC()],postfix="_ModuleCommon_2018MC_Skim",noOut=False,outputbranchsel=outputbranches)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2017DataC(),analyze2017Data_Skim()],postfix="_ModuleCommon_2017Data_Skim",noOut=False,outputbranchsel=outputbranches)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_countEvents_dropAll",noOut=False,outputbranchsel=outputbranches)
 #     p.run()
