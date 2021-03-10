@@ -9,7 +9,7 @@ import math
 
 #Set save directory and date for file names
 saveDirectory = 'plots/CR_2016/METcorrected_pt/'
-date = '03_02_2021'
+date = '02_26_2021'
 year = 2016
 useCondor = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -100,8 +100,9 @@ cuts['AH0l2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDe
 
 cuts['SL1bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets == 1 && M_T >= 140 && M_T2W >= 180 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['SL2bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets >= 2 && M_T >= 140 && M_T2W >= 180 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['SL1b0fSR'] = cuts['SL1bSR'] + ' && nfjets == 0'
-cuts['SL1b1fSR'] = cuts['SL1bSR'] + ' && nfjets >= 1'
+cuts['SL1l0fSR'] = cuts['SL1bSR'] + ' && nfjets == 0'
+cuts['SL1l1fSR'] = cuts['SL1bSR'] + ' && nfjets >= 1'
+cuts['SL1l2bSR'] = cuts['SL2bSR']
 
 cuts['AHSR'] = cuts['AH'] + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['AH1bSR'] = cuts['AHSR'].replace('nbjets >= 1', 'nbjets ==1')
@@ -180,18 +181,20 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1m2bSR'
 #cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
-#cut = 'AH0l2bSR'
+cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
 #cut = 'SL2bSR'
 #cut = 'AH1bSR'
 #cut = 'AH2bSR'
 
-#cut = 'SL1b0fSR'
-#cut = 'SL1b1fSR'
+#cut = 'SL1l0fSR'
+#cut = 'SL1l1fSR'
+#cut = 'SL1l2bSR'
+
 #cut = 'AH1b1FJSR'
 #cut = 'AH1b2FJSR'
 #cut = 'AH2b1FJSR'
-cut = 'AH2b2FJSR'
+#cut = 'AH2b2FJSR'
 
 #cut = 'AH1b0f1FJSR'
 #cut = 'AH1b0f2FJSR'
@@ -244,7 +247,7 @@ cut = 'AH2b2FJSR'
 #cuts[cut] = cuts[cut] + ' && full_topness <= 0.0'
 #cuts[cut] = cuts[cut] + ' && EE_L1_prefire == 0'
 #cuts[cut] = cuts[cut] + ' && deltaPhij3 >= 0.75'
-#cuts[cut] = cuts[cut] + ' && FatJet_deepTag_WvsQCD >= 0'
+#cuts[cut] = cuts[cut] + ' && FatJet_deepTag_TvsQCD >= 0'
 #Uncomment replacements below to replace PFMET with PuppiMET variables
 # cuts[cut] = cuts[cut].replace('METcorrected', 'PuppiMET')
 # cuts[cut] = cuts[cut].replace('minDeltaPhi ', 'minDeltaPhi_puppi ')
@@ -322,14 +325,15 @@ xmin = 250
 xmax = 550
 auto_y = True
 doLogPlot = False
-drawData = False
+drawData = True
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
 normalizePlots = False
 useCentralSamples = True
-doBinned = False
+doBinned = True
 savePlots = False
+combineEleMu = True
 if doBinned:
     useCentralSamples = True
     scaleFactor = 1
@@ -396,15 +400,23 @@ if doBinned:
 datasetNames = []
 if drawData:
     print("Drawing data and ratio plot...")
-    if 'm' in cut:
-        datasetNames.append('SingleMuon')
-        print("Selected SingleMuon dataset")
-    elif 'e' in cut:
-        datasetNames.append('SingleElectron')
-        print("Selected SingleElectron dataset")
+    if combineEleMu:
+        if ('1l' in cut) or ('2l' in cut):
+            datasetNames.append('SingleMuon')
+            datasetNames.append('SingleElectron')
+            print 'Selected both SingleMuon and SingleElectron dataset'
+        else:
+            datasetNames.append('MET')
     else:
-        datasetNames.append('MET')
-        print("Selected MET dataset")
+        if 'm' in cut:
+            datasetNames.append('SingleMuon')
+            print("Selected SingleMuon dataset")
+        elif 'e' in cut:
+            datasetNames.append('SingleElectron')
+            print("Selected SingleElectron dataset")
+        else:
+            datasetNames.append('MET')
+            print("Selected MET dataset")
 
 #Get data root files and event trees
 print("Loading data sample root files and event trees...")
@@ -463,7 +475,21 @@ for dataset in dataSamples:
         print '  Dataset = ', dataset, ' ||   nEvents = ', dataSamples[dataset]['nevents']
         for filepath in dataSamples[dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
-            datacut = cuts['data']
+            if combineEleMu:
+                if dataset == 'SingleMuon':
+                    if cut == 'SL2lTR':
+                        datacut = '((' + cuts['SL2mTR'] + ') || (' + cuts['SL1e1mTR'] + '))' + ' && Flag_eeBadScFilter'
+                        print '  Using cut = ', datacut
+                    else:
+                        datacut = cuts[cut.replace('l','m')] + ' && Flag_eeBadScFilter'
+                        print '  Using cut = ', datacut
+                elif dataset == 'SingleElectron':
+                    datacut = cuts[cut.replace('l','e')] + ' && Flag_eeBadScFilter'
+                    print '  Using cut = ', datacut
+                else:
+                    datacut = cuts['data']
+            else:
+                datacut = cuts['data']
             dataSamples[dataset][filepath+'_Events'].Draw(var+'>>hist',datacut)
             print '    hist nEntries = ', hist.GetEntries()
             print '    hist integral = ', hist.Integral(1,nbins+1)
