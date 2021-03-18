@@ -326,13 +326,6 @@ to next event)"""
                 return False
             else:
                 return True
-            # for vetoElectron in vetoElectrons:
-            #     if vetoElectron.p4().DeltaR(jet.p4()) < 0.4:
-            #         return False
-            # for looseMuon in looseMuons:
-            #     if looseMuon.p4().DeltaR(jet.p4()) < 0.4:
-            #         return False
-            # return True
 
         #Jet categories are defined and counted 
         if self.year == 2016:
@@ -1301,9 +1294,9 @@ countEvents = lambda : CountEvents()
 #     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
 #     #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 #     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-#     inputFiles=["testSamples/ttbarDM_Run2018.root"]
-#     #inputFiles=["testSamples/ttbarPlusJets_Run2016.root"]
-#     #inputFiles=["testSamples/SingleElectron_2017C.root"]
+#     #inputFiles=["testSamples/nanoAODv7/ttbarDM_Run2018_v7.root"]
+#     #inputFiles=["testSamples/nanoAODv7/ttbarPlusJets_Run2018_v7.root"]
+#     inputFiles=["testSamples/nanoAODv7/SingleElectron_2018C_v7.root"]
 #     #inputFiles = ["testSamples/SingleElectron_2018A.root"]
 #     #inputFiles = ["testSamples/SingleElectron_2016H.root"]
 #     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
@@ -1311,8 +1304,8 @@ countEvents = lambda : CountEvents()
 #     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon_2016MC_Skim",noOut=False,outputbranchsel=outputbranches)
-#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC()],postfix="_ModuleCommon_2018MC_Skim",noOut=False,outputbranchsel=outputbranches)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2017DataC(),analyze2017Data_Skim()],postfix="_ModuleCommon_2017Data_Skim",noOut=False,outputbranchsel=outputbranches)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018MC_Skim()],postfix="_ModuleCommon_2018MC_Skim",noOut=False,outputbranchsel=outputbranches)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC()],postfix="_ModuleCommon_2018MC_Skim",noOut=False,outputbranchsel=outputbranches)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018DataC(),analyze2018Data_Skim()],postfix="_ModuleCommon_2018Data_Skim",noOut=False,outputbranchsel=outputbranches)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_countEvents_dropAll",noOut=False,outputbranchsel=outputbranches)
 #     p.run()
