@@ -31,16 +31,6 @@ print 'Plotting start time:', datetime.datetime.now()
 #Define selection cuts and filters here
 cuts = {}
 
-cuts['cut 1'] = '(nTightElectrons + nTightMuons) >= 1 && njets >= 2 && METcorrected_pt >= 160'
-cuts['cut 2'] = cuts['cut 1'].replace('(nTightElectrons + nTightMuons) >= 1', '((nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0) || (nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0))')
-cuts['cut 3'] = cuts['cut 2'] + ' && nbjets >= 1'
-cuts['cut 4'] = cuts['cut 3'] + ' && M_T >= 160'
-cuts['cut 5'] = cuts['cut 4'] + ' && minDeltaPhi12 >= 0.8'
-
-cuts['cut 6'] = cuts['cut 5'].replace('METcorrected_pt >= 160', 'METcorrected_pt >= 250')
-cuts['cut 7'] = cuts['cut 5'] + ' && M_T2W >= 200'
-cuts['cut 8'] = cuts['cut 5'].replace('minDeltaPhi12 >= 0.8', 'minDeltaPhi12 >= 1.2')
-
 if year == 2016:
     cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter'
     cuts['singleIsoEle'] = 'HLT_Ele27_WPTight_Gsf'
@@ -67,25 +57,6 @@ cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 &
 cuts['AH1b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1')
 cuts['AH2b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2')
 
-cuts['SL1e1b1FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet <= 1'
-cuts['SL1e2b1FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet <= 1'
-cuts['SL1m1b1FJ'] = cuts['SL1m'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet <= 1'
-cuts['SL1m2b1FJ'] = cuts['SL1m'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet <= 1'
-cuts['AH1b1FJ'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet <= 1'
-cuts['AH2b1FJ'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet <= 1'
-
-cuts['SL1e1b2FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet >= 2'
-cuts['SL1e2b2FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet >= 2'
-cuts['SL1m1b2FJ'] = cuts['SL1m'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet >= 2'
-cuts['SL1m2b2FJ'] = cuts['SL1m'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet >= 2'
-cuts['AH1b2FJ'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet >= 2'
-cuts['AH2b2FJ'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet >= 2'
-
-cuts['AHminSR'] = '(nVetoElectrons + nLooseMuons) == 0 && METcorrected_pt >= 250'
-cuts['AH2j0bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets == 0'
-cuts['AH2j1bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets == 1'
-cuts['AH2j2bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets >= 2'
-
 #Signal region definitions
 cuts['SL1e0fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['SL1e1fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
@@ -94,6 +65,7 @@ cuts['SL1e2bSR'] = cuts['SL1e'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 140' + ' 
 cuts['SL1m0fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['SL1m1fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['SL1m2bSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+
 cuts['AH0l0fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets == 0 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['AH0l1fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets >= 1 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['AH0l2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && jet1p_TH_T <= 0.5'
@@ -180,8 +152,6 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 
 #Select selection cut and variable to be plotted here by uncommenting
 
-#cut = 'cut 1'
-
 #cut = 'SL1e' #Pre-selection cuts
 #cut = 'SL1m'
 #cut = 'SL'
@@ -191,38 +161,26 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'AH1b'
 #cut = 'AH2b'
 
-#cut = 'SL1e1b1FJ'
-#cut = 'SL1e2b1FJ'
-#cut = 'SL1m1b1FJ'
-#cut = 'SL1m2b1FJ'
-#cut = 'SL1e1b2FJ'
-#cut = 'SL1e2b2FJ'
-#cut = 'SL1m1b2FJ'
-#cut = 'SL1m2b2FJ'
-#cut = 'AH1b1FJ'
-#cut = 'AH2b1FJ'
-#cut = 'AH1b2FJ'
-#cut = 'AH2b2FJ'
-
-#cut = 'SL1e0fSR' #Signal region cuts
+cut = 'SL1e0fSR' #Signal region cuts
 #cut = 'SL1e1fSR'
 #cut = 'SL1e2bSR'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
 #cut = 'AH0l0fSR'
-cut = 'AH0l1fSR'
+#cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
+
 #cut = 'SL1bSR'
 #cut = 'SL2bSR'
 #cut = 'AH1bSR'
 #cut = 'AH2bSR'
 
-#cut = 'SL1l0fSR'
+#cut = 'SL1l0fSR' #Combined ele/muon channels
 #cut = 'SL1l1fSR'
 #cut = 'SL1l2bSR'
 
-#cut = 'SL1l0fT1SR'
+#cut = 'SL1l0fT1SR' #modified topness categories
 #cut = 'SL1l0fT2SR'
 #cut = 'SL1l0fT3SR'
 #cut = 'SL1l1fT1SR'
@@ -232,11 +190,10 @@ cut = 'AH0l1fSR'
 #cut = 'SL1l2bT2SR'
 #cut = 'SL1l2bT3SR'
 
-#cut = 'AH1b1FJSR'
+#cut = 'AH1b1FJSR' #nFatJet categories
 #cut = 'AH1b2FJSR'
 #cut = 'AH2b1FJSR'
 #cut = 'AH2b2FJSR'
-
 #cut = 'AH1b0f1FJSR'
 #cut = 'AH1b0f2FJSR'
 #cut = 'AH1b1f1FJSR'
@@ -254,51 +211,12 @@ cut = 'AH0l1fSR'
 #cut = 'AH2eZR'
 #cut = 'AH2mZR'
 
-#cut = 'SL2lTR'
+
+#cut = 'SL2lTR' #Combined ele/muon channel cuts
 #cut = 'SL1lWR'
 #cut = 'AH1lTR'
 #cut = 'AH1lWR'
 #cut = 'AH2lZR'
-
-#cut = 'SLeCR'
-#cut = 'SLmCR'
-#cut = 'SL1eCR'
-#cut = 'SL1mCR'
-#cut = 'SL1e0bCR'
-#cut = 'SL1m0bCR'
-#cut = 'SL1e1bCR'
-#cut = 'SL1m1bCR'
-
-#cuts[cut] += ' && Electron_pt[1] > 30 && Electron_cutBased_Sum16[1] == 4 && ((abs(Electron_eta[1]) < 1.4442) || (abs(Electron_eta[1]) > 1.566 && abs(Electron_eta[1]) < 2.1))'
-#cuts[cut] += ' && Muon_pt[1] > 30 && Muon_tightId[1] && abs(Muon_eta[1]) < 2.4'
-#cuts[cut] += ' && Jet_pt[0] > 30 && abs(Jet_eta[0]) < 2.4 && Jet_jetId[0] > 0'
-#cuts[cut] = cuts[cut].replace('&& M_T >= 160 ', '')
-#cuts[cut] = cuts[cut].replace('&& m_ll >= 60 && m_ll <= 120 ', '')
-#cuts[cut] = cuts[cut] + ' && M_T2ll < 80'
-#cuts[cut] = cuts[cut] + ' && ((m_ll < 76) || (m_ll > 106))'
-#cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1 && M_Tb >= 180', 'minDeltaPhi12 >= 2 && M_Tb >= 100')
-#cuts[cut] = cuts[cut] + ' && nFatJet >= 2'
-#cuts[cut] = cuts[cut] + ' && index_centralJets == 1'
-#cuts[cut] = cuts[cut] + ' && FatJet_pt[2] > 250'
-#cuts[cut] = cuts[cut].replace('METcorrected_pt >= 160', 'METcorrected_pt >= 250')
-#cuts[cut] = cuts[cut].replace('M_T >= 160', 'M_T >= 140')
-#cuts[cut] = cuts[cut].replace('M_Tb >= 180', 'M_Tb >= 140')
-#cuts[cut] = cuts[cut].replace('M_T2W >= 200', 'M_T2W >= 180')
-#cuts[cut] = cuts[cut].replace('minDeltaPhi12 >= 1.2', 'minDeltaPhi12 >= 0.8')
-#cuts[cut] = cuts[cut] + ' && full_topness <= 0.0'
-#cuts[cut] = cuts[cut] + ' && EE_L1_prefire == 0'
-#cuts[cut] = cuts[cut] + ' && deltaPhij3 >= 0.75'
-#cuts[cut] = cuts[cut] + ' && FatJet_deepTag_TvsQCD >= 0'
-#Uncomment replacements below to replace PFMET with PuppiMET variables
-# cuts[cut] = cuts[cut].replace('METcorrected', 'PuppiMET')
-# cuts[cut] = cuts[cut].replace('minDeltaPhi ', 'minDeltaPhi_puppi ')
-# cuts[cut] = cuts[cut].replace('minDeltaPhi12 ', 'minDeltaPhi12_puppi ')
-# cuts[cut] = cuts[cut].replace('M_Tb ', 'M_Tb_puppi ')
-# cuts[cut] = cuts[cut].replace('M_T ', 'M_T_puppi ')
-# cuts[cut] = cuts[cut].replace('M_T2W ', 'M_T2W_puppi ')
-# cuts[cut] = cuts[cut].replace('M_T2ll ', 'M_T2ll_puppi ')
-# cuts[cut] = cuts[cut].replace('m_llExists ', 'm_llExists_puppi ')
-# cuts[cut] = cuts[cut].replace('recoilPtMiss ', 'recoilPtMiss_puppi ')
 
 #Only apply ee badSC noise filter to data (https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2)
 cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
@@ -361,19 +279,19 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 15
+nbins = 9
 xmin = 250
-xmax = 550
+xmax = 610
 auto_y = True
-doLogPlot = True
+doLogPlot = False
 drawData = False
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
 normalizePlots = False
-useCentralSamples = True
+useCentralSamples = False
 doBinned = False
-savePlots = False
+savePlots = True
 combineEleMu = False
 if doBinned:
     useCentralSamples = True
@@ -423,10 +341,9 @@ gStyle.SetOptStat(0)
 
 #Define signal and background histograms
 if doBinned:
-    signal = ['ttbar scalar', 'ttbar pseudoscalar']#, 'tbar scalar']
+    signal = ['ttbar scalar', 'ttbar pseudoscalar']
 else:
-    #signal = ['ttbar ' + mediatorType,'tbar ' + mediatorType]
-    signal = ['ttbar ' + mediatorType,'ttbar pseudoscalar']
+    signal = ['ttbar ' + mediatorType,'tbar ' + mediatorType]
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
 for name in ['data','bkgSum'] + signal + back:
@@ -613,11 +530,11 @@ print '-----------------------------'
 print 'Total tt+DM signal nEvents = ', hists['ttbar ' + mediatorType].GetEntries()/scaleFactor
 print 'Total tt+DM signal integral = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
 print '-----------------------------'
-#print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()/scaleFactor
-#print 'Total t+DM signal integral = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
+print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()/scaleFactor
+print 'Total t+DM signal integral = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
 print '-----------------------------'
 print 'FOM for tt+DM signal = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
-#print 'FOM for t+DM signal = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
+print 'FOM for t+DM signal = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
 print '-----------------------------'
 print("Finished filling histograms")
 
@@ -748,7 +665,7 @@ if savePlots:
             c.SetLogy(1)
     h_MCStack.Draw('hist')
     hists['ttbar '+mediatorType].Draw('hist same')
-    hists['ttbar pseudoscalar'].Draw('hist same')
+    hists['tbar '+mediatorType].Draw('hist same')
     hists['data'].Draw('ep same')
     hists['bkgSum'].Draw('e2 same')
     #Set MC background histogram options 
@@ -776,16 +693,16 @@ if savePlots:
         if doLogPlot:
             if drawData:
                 ymin = max(min(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMinimumBin()), hists['data'].GetBinContent(hists['data'].GetMinimumBin())), 5.e-1)
-                ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['ttbar pseudoscalar'].GetBinContent(hists['ttbar pseudoscalar'].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+                ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
             else:
                 ymin = max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMinimumBin()), 5.e-1)
-                ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['ttbar pseudoscalar'].GetBinContent(hists['ttbar pseudoscalar'].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+                ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
         else:
             ymin = 0
             if drawData:
-                ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['ttbar pseudoscalar'].GetBinContent(hists['ttbar pseudoscalar'].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+                ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
             else:
-                ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['ttbar pseudoscalar'].GetBinContent(hists['ttbar pseudoscalar'].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+                ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
     if normalizePlots:
         ymin = 5.e-4
     h_MCStack.SetMinimum(ymin)
@@ -796,12 +713,12 @@ if savePlots:
         h_MCStack.GetXaxis().SetLabelOffset(999)
         h_MCStack.GetXaxis().SetLabelSize(0)
         setHistStyle(hists['ttbar '+mediatorType])
-        setHistStyle(hists['ttbar pseudoscalar'])
+        setHistStyle(hists['tbar '+mediatorType])
         setHistStyle(hists['data'])
         setHistStyle(hists['bkgSum'])
     #Set tbar histogram options
-    hists['ttbar pseudoscalar'].SetLineColor(kRed)
-    hists['ttbar pseudoscalar'].SetLineWidth(3)
+    hists['tbar '+mediatorType].SetLineColor(kRed)
+    hists['tbar '+mediatorType].SetLineWidth(3)
     #Set ttbar histogram options
     hists['ttbar '+mediatorType].SetLineColor(kRed)
     hists['ttbar '+mediatorType].SetLineStyle(2)
@@ -830,12 +747,12 @@ if savePlots:
     legend.AddEntry(hists['bkgSum'], 'MC stat.', 'f')
     if scaleFactor != 1: 
         legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-        #legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-        legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+        legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+        #legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
     else:
         legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-        #legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-        legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+        legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+        #legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
     legend.Draw('same')
     legend.SetBorderSize(0)
     legend.SetFillStyle(0)

@@ -2,12 +2,12 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'countEventsv3_12242020' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'ModuleCommonSkim_03182021' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'getBTagHist_DeepCSV_08062020'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
- countNEntries = True
+ countNEntries = False
 
  #####
  ##   Helper function to set appropriate text file containing DAS file paths for input datasets
@@ -108,10 +108,10 @@ if __name__ == '__main__':
  
  isData = False
  run = ''
- datasetnames = ['ttbarDM']
+ datasetnames = ['TTV']
  #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD']
- #years = ['2017','2018']
- years = ['2016','2017','2018']
+ years = ['2016']
+ #years = ['2016','2017','2018']
  for year in years:
   for dataset in datasetnames:
    if dataset == 'ttbarDM':
