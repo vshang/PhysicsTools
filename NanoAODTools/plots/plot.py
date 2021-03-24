@@ -8,7 +8,7 @@ import re
 import math
 
 #Set save directory and date for file names
-saveDirectory = 'plots/SR_2017/METcorrected_pt/'
+saveDirectory = 'plots/CR_2017/METcorrected_pt/'
 date = '03_24_2021'
 year = 2017
 useCondor = False
@@ -211,7 +211,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
 #cut = 'AH0l0fSR'
-cut = 'AH0l1fSR'
+#cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
 #cut = 'SL2bSR'
@@ -258,7 +258,7 @@ cut = 'AH0l1fSR'
 #cut = 'SL1lWR'
 #cut = 'AH1lTR'
 #cut = 'AH1lWR'
-#cut = 'AH2lZR'
+cut = 'AH2lZR'
 
 #cut = 'SLeCR'
 #cut = 'SLmCR'
@@ -366,7 +366,7 @@ xmin = 250
 xmax = 550
 auto_y = True
 doLogPlot = True
-drawData = False
+drawData = True
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
@@ -531,8 +531,11 @@ for dataset in dataSamples:
                     print '  Using cut = ', datacut
                 else:
                     datacut = cuts['data']
+                    print '  Using cut = ', datacut
             else:
                 datacut = cuts['data']
+            if 'SingleElectron_Run2017B' in filepath: #HLT_Ele115_CaloIdVT_GsfTrkIdT trigger path not available in Run2017B (https://hypernews.cern.ch/HyperNews/CMS/get/b2g-selections/346.html?inline=-1)
+                datacut = datacut.replace('HLT_Ele115_CaloIdVT_GsfTrkIdT || ','')
             dataSamples[dataset][filepath+'_Events'].Draw(var+'>>hist',datacut)
             print '    hist nEntries = ', hist.GetEntries()
             print '    hist integral = ', hist.Integral(1,nbins+1)
