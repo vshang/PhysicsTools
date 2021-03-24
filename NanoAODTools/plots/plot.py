@@ -8,10 +8,10 @@ import re
 import math
 
 #Set save directory and date for file names
-saveDirectory = 'plots/SR_2016/METcorrected_pt/'
-date = '03_16_2021'
-year = 2016
-useCondor = True
+saveDirectory = 'plots/SR_2017/METcorrected_pt/'
+date = '03_24_2021'
+year = 2017
+useCondor = False
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
     dataSamples = data2016
@@ -373,8 +373,8 @@ mphi = 100
 normalizePlots = False
 useCentralSamples = True
 doBinned = False
-savePlots = False
-combineEleMu = False
+savePlots = True
+combineEleMu = True
 if doBinned:
     useCentralSamples = True
     scaleFactor = 1
@@ -482,7 +482,7 @@ for process in MCSamples:
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
-            skimFile = TFile.Open(filepath.replace('ModuleCommon_withtopness_01302021', 'countEvents_12242020'),'')
+            skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_03182021', 'countEvents_03182021'),'')
             if (process in signal) and useCentralSamples and ('ttbar' in process):
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
@@ -874,7 +874,7 @@ if savePlots:
         c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
         #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
     else:
-        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
+        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + "_old.png")
         #c.SaveAs("test.png")
 
 print 'Plotting end time:', datetime.datetime.now()
