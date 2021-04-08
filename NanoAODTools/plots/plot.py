@@ -634,22 +634,22 @@ print 'FOM for tt+DM signal = ', hists['ttbar ' + mediatorType].Integral(1,nbins
 print 'FOM for t+DM signal = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
 print '-----------------------------'
 print 'Data bin errors:'
-for i in range(nbins):
+for i in range(nbins+1):
     bin_error = hists['data'].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
 print 'MC background bin errors:'
-for i in range(nbins):
+for i in range(nbins+1):
     bin_error = hists['bkgSum'].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
 print 'tt+DM bin errors:'
-for i in range(nbins):
+for i in range(nbins+1):
     bin_error = hists['ttbar ' + mediatorType].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
 print 't+DM bin errors:'
-for i in range(nbins):
+for i in range(nbins+1):
     bin_error = hists['tbar ' + mediatorType].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
