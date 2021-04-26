@@ -7,9 +7,10 @@ import datetime
 import re
 import math
 
+gErrorIgnoreLevel = kError
 #Set save directory and date for file names
 saveDirectory = 'plots/preselect_2016/'
-date = '03_24_2021'
+date = '04_08_2021'
 year = 2016
 useCondor = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -66,7 +67,7 @@ cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && n
 cuts['SL'] = '(' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')' 
 cuts['SL1b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets == 1')
 cuts['SL2b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets >= 2')
-cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 &&' + cuts['passMETfilters']  #+ ' && (' + cuts['MET'] + ')'
+cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 &&' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')'
 cuts['AH1b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1')
 cuts['AH2b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2')
 
@@ -138,12 +139,13 @@ cuts['SL1l2bT1SR'] = cuts['SL1l2bSR'] + ' && modified_topness <= 0'
 cuts['SL1l2bT2SR'] = cuts['SL1l2bSR'] + ' && modified_topness > 0 && modified_topness <= 10'
 cuts['SL1l2bT3SR'] = cuts['SL1l2bSR'] + ' && modified_topness > 10'
 
+#nFatJet categories
 cuts['AHSR'] = cuts['AH'] + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['AH1bSR'] = cuts['AHSR'].replace('nbjets >= 1', 'nbjets ==1')
 cuts['AH2bSR'] = cuts['AHSR'].replace('nbjets >= 1', 'nbjets >= 2') + ' && jet1p_TH_T <= 0.5'
 cuts['AH1b1FJSR'] = cuts['AH1bSR'] + ' && nFatJet <= 1'
 cuts['AH1b2FJSR'] = cuts['AH1bSR'] + ' && nFatJet >= 2'
-cuts['AH2b1FJSR'] = cuts['AH0l2bSR'] + ' && nFatJet <= 1 && FatJet_deepTag_TvsQCD >= 0'
+cuts['AH2b1FJSR'] = cuts['AH0l2bSR'] + ' && nFatJet <= 1'
 cuts['AH2b2FJSR'] = cuts['AH0l2bSR'] + ' && nFatJet >= 2 && FatJet_deepTag_TvsQCD >= 0' 
 
 cuts['AH1b0f1FJSR'] = cuts['AH0l0fSR'] + ' && nFatJet <= 1'
@@ -213,7 +215,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
-cut = 'AH0l0fSR'
+#cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
@@ -223,7 +225,7 @@ cut = 'AH0l0fSR'
 
 #cut = 'SL1l0fSR'
 #cut = 'SL1l1fSR'
-#cut = 'SL1l2bSR'
+cut = 'SL1l2bSR'
 
 #cut = 'SL1l0fT1SR'
 #cut = 'SL1l0fT2SR'
@@ -269,6 +271,7 @@ cut = 'AH0l0fSR'
 #cut = 'SL1mCR'
 #cut = 'SL1e0bCR'
 #cut = 'SL1m0bCR'
+
 #cut = 'SL1e1bCR'
 #cut = 'SL1m1bCR'
 
@@ -307,6 +310,8 @@ cut = 'AH0l0fSR'
 #Only apply ee badSC noise filter to data (https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2)
 cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 
+var = 'METcorrected_pt'
+#var = 'recoilPtMiss'
 #var = 'M_T'
 #var = 'M_T2W'
 #var = 'minDeltaPhi12'
@@ -316,8 +321,6 @@ cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 #var = 'nfjets'
 #var = 'nbjets'
 #var = 'MET_pt'
-var = 'METcorrected_pt'
-#var = 'recoilPtMiss'
 #var = 'PuppiMET_pt'
 #var = 'Electron_pt[1]'
 #var = 'Muon_pt[1]'
@@ -365,20 +368,21 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 15
+nbins = 9
 xmin = 250
-xmax = 550
+xmax = 610
 auto_y = True
-doLogPlot = True
-drawData = False
+doLogPlot = False
+drawData = True
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
 normalizePlots = False
-useCentralSamples = False
-doBinned = False
-savePlots = True
+useCentralSamples = True
+doBinned = True
+savePlots = False
 combineEleMu = True
+doSys = True
 if doBinned:
     useCentralSamples = True
     scaleFactor = 1
@@ -386,6 +390,14 @@ if doBinned:
 if not auto_y:
     ymin = 60
     ymax = 20000
+
+histoLabel = '; p_{T}^{miss} (GeV); Events'
+#histoLabel = '; Hadronic recoil (GeV); Events'
+#histoLabel = '; M_{T} (GeV); Events'
+#histoLabel = '; M_{T2}^{W} (GeV); Events'
+#histoLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
+#histoLabel = '; M_{T}^{b} (GeV); Events'
+#histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
 
 #histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
@@ -417,8 +429,6 @@ if not auto_y:
 #histoLabel = cut + ' Modified topness distribution; modified topness; Events'
 #histoLabel = cut + ' Full topness distribution; full topness; Events'
 
-histoLabel = '; p_{T}^{miss} (GeV); Events'
-#histoLabel = '; Hadronic recoil (GeV); Events'
 
 if drawData:
     ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Data / Bkg')
@@ -430,12 +440,18 @@ gStyle.SetOptStat(0)
 
 #Define signal and background histograms
 if doBinned:
-    signal = ['ttbar scalar', 'ttbar pseudoscalar', 'tbar scalar']
+    if year == 2016:
+        signal = ['ttbar scalar', 'ttbar pseudoscalar', 'tbar scalar']
+    else:
+        signal = ['ttbar scalar', 'ttbar pseudoscalar']
 else:
-    signal = ['ttbar ' + mediatorType,'tbar ' + mediatorType]
-    #signal = ['ttbar ' + mediatorType,'ttbar pseudoscalar']
+    if year == 2016:
+        signal = ['ttbar ' + mediatorType,'tbar ' + mediatorType]
+    else:
+        signal = ['ttbar ' + mediatorType,'ttbar pseudoscalar']
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
+sys = ['CMS_scale_j']#,'CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF','CMS_HF_V','CMS_eff_b']#, 'CMS_scale_pu', 'CMS_eff_met_trigger', 'CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e', 'pdf_accept_2l','pdf_accept_1l','pdf_accept_0l','CMS_eff_e', 'CMS_eff_m','CMS_eff_e_old', 'CMS_eff_m_old','CMS_HF_Z','CMS_HF_W','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_ZewkWeight','QCDscale_ren', 'QCDscale_fac', 'QCDscale_ren_TT', 'QCDscale_fac_TT', 'QCDscale_ren_VV', 'QCDscale_fac_VV', 'QCDscale_ren_O', 'QCDscale_fac_O',]
 for name in ['data','bkgSum'] + signal + back:
     hists[name] = TH1F(name, histoLabel, nbins, xmin, xmax)
 if doBinned:
@@ -444,13 +460,253 @@ if doBinned:
     for process in signal:
         for dataset in MCSamples[process]:
             hists[dataset] = TH1F(dataset, histoLabel, nbins, xmin, xmax)
+if doSys:
+    print 'Making systematic histogram dictionary...'
+    syshists = {}
+    for sysName in sys:
+        for name in hists:
+            for suffix in ['Up', 'Down']:
+                if name != 'data':
+                    syshists[name + '_' + sysName + suffix] = TH1F(dataset, histoLabel, nbins, xmin, xmax)
+                    print '    ' + name + '_' + sysName + suffix + ' histogram made'
+print 'Finished making systematic histogram dictionary'
+
+########################################################
+
+#Helper function to fill histograms for systematics
+def addSys(histName, eventTree, var, cut, sysName):
+    # print '        Adding systematic histograms for ' + histName + '_' + sysName + '...'
+    histUp = TH1F('histUp', histoLabel, nbins, xmin, xmax)
+    histDown = TH1F('histDown', histoLabel, nbins, xmin, xmax)
+    varUp = varDown = var
+    cutUp = cutDown = cut
+
+    #Systematics
+    if sysName == 'CMS_scale_j':
+        if var == 'METcorrected_pt':
+            varUp = var.replace('METcorrected_pt','METcorrected_ptScaleUp')
+            varDown = var.replace('METcorrected_pt','METcorrected_ptScaleDown')
+        elif var == 'recoilPtMiss':
+            varUp = var.replace('recoilPtMiss','recoilPtMissScaleUp')
+            varDown = var.replace('recoilPtMiss','recoilPtMissScaleDown')
+        
+        cutUp = cut.replace('METcorrected_pt ','METcorrected_ptScaleUp ')
+        cutUp = cutUp.replace('njets ','njetsScaleUp ')
+        cutUp = cutUp.replace('nfjets ','nfjetsScaleUp ')
+        cutUp = cutUp.replace('nbjets ','nbjetsScaleUp ')
+        cutUp = cutUp.replace('minDeltaPhi ','minDeltaPhiScaleUp ')
+        cutUp = cutUp.replace('minDeltaPhi12 ','minDeltaPhi12ScaleUp ')
+        cutUp = cutUp.replace('M_Tb ','M_TbScaleUp ')
+        cutUp = cutUp.replace('M_T ','M_TScaleUp ')
+        cutUp = cutUp.replace('M_T2W ','M_T2WScaleUp ')
+        cutUp = cutUp.replace('M_T2ll ','M_T2llScaleUp ')
+        cutUp = cutUp.replace('jet1p_TH_T ','jet1p_TH_TScaleUp ')
+        cutUp = cutUp.replace('m_llExists ','m_llExistsScaleUp ')
+        cutUp = cutUp.replace('modified_topness ','modified_topnessScaleUp ')
+        cutUp = cutUp.replace('full_topness ','full_topnessScaleUp ')
+
+        cutDown = cut.replace('METcorrected_pt ','METcorrected_ptScaleDown ')
+        cutDown = cutDown.replace('njets ','njetsScaleDown ')
+        cutDown = cutDown.replace('nfjets ','nfjetsScaleDown ')
+        cutDown = cutDown.replace('nbjets ','nbjetsScaleDown ')
+        cutDown = cutDown.replace('minDeltaPhi ','minDeltaPhiScaleDown ')
+        cutDown = cutDown.replace('minDeltaPhi12 ','minDeltaPhi12ScaleDown ')
+        cutDown = cutDown.replace('M_Tb ','M_TbScaleDown ')
+        cutDown = cutDown.replace('M_T ','M_TScaleDown ')
+        cutDown = cutDown.replace('M_T2W ','M_T2WScaleDown ')
+        cutDown = cutDown.replace('M_T2ll ','M_T2llScaleDown ')
+        cutDown = cutDown.replace('jet1p_TH_T ','jet1p_TH_TScaleDown ')
+        cutDown = cutDown.replace('m_llExists ','m_llExistsScaleDown ')
+        cutDown = cutDown.replace('modified_topness ','modified_topnessScaleDown ')
+        cutDown = cutDown.replace('full_topness ','full_topnessScaleDown ')
+
+    elif sysName == 'CMS_res_j':
+        if var == 'METcorrected_pt':
+            varUp = var.replace('METcorrected_pt','METcorrected_ptResUp')
+            varDown = var.replace('METcorrected_pt','METcorrected_ptResDown')
+        elif var == 'recoilPtMiss':
+            varUp = var.replace('recoilPtMiss','recoilPtMissResUp')
+            varDown = var.replace('recoilPtMiss','recoilPtMissResDown')
+        
+        cutUp = cut.replace('METcorrected_pt ','METcorrected_ptResUp ')
+        cutUp = cutUp.replace('njets ','njetsResUp ')
+        cutUp = cutUp.replace('nfjets ','nfjetsResUp ')
+        cutUp = cutUp.replace('nbjets ','nbjetsResUp ')
+        cutUp = cutUp.replace('minDeltaPhi ','minDeltaPhiResUp ')
+        cutUp = cutUp.replace('minDeltaPhi12 ','minDeltaPhi12ResUp ')
+        cutUp = cutUp.replace('M_Tb ','M_TbResUp ')
+        cutUp = cutUp.replace('M_T ','M_TResUp ')
+        cutUp = cutUp.replace('M_T2W ','M_T2WResUp ')
+        cutUp = cutUp.replace('M_T2ll ','M_T2llResUp ')
+        cutUp = cutUp.replace('jet1p_TH_T ','jet1p_TH_TResUp ')
+        cutUp = cutUp.replace('m_llExists ','m_llExistsResUp ')
+        cutUp = cutUp.replace('modified_topness ','modified_topnessResUp ')
+        cutUp = cutUp.replace('full_topness ','full_topnessResUp ')
+
+        cutDown = cut.replace('METcorrected_pt ','METcorrected_ptResDown ')
+        cutDown = cutDown.replace('njets ','njetsResDown ')
+        cutDown = cutDown.replace('nfjets ','nfjetsResDown ')
+        cutDown = cutDown.replace('nbjets ','nbjetsResDown ')
+        cutDown = cutDown.replace('minDeltaPhi ','minDeltaPhiResDown ')
+        cutDown = cutDown.replace('minDeltaPhi12 ','minDeltaPhi12ResDown ')
+        cutDown = cutDown.replace('M_Tb ','M_TbResDown ')
+        cutDown = cutDown.replace('M_T ','M_TResDown ')
+        cutDown = cutDown.replace('M_T2W ','M_T2WResDown ')
+        cutDown = cutDown.replace('M_T2ll ','M_T2llResDown ')
+        cutDown = cutDown.replace('jet1p_TH_T ','jet1p_TH_TResDown ')
+        cutDown = cutDown.replace('m_llExists ','m_llExistsResDown ')
+        cutDown = cutDown.replace('modified_topness ','modified_topnessResDown ')
+        cutDown = cutDown.replace('full_topness ','full_topnessResDown ')
+
+    elif sysName == 'CMS_WqcdWeightRen':
+        cutUp = cut.replace('qcdWWeight','qcdWWeightRenUp')
+        cutDown = cut.replace('qcdWWeight','qcdWWeightRenDown')
+
+    elif sysName == 'CMS_WqcdWeightFac':
+        cutUp = cut.replace('qcdWWeight','qcdWWeightFacUp')
+        cutDown = cut.replace('qcdWWeight','qcdWWeightFacDown')
+
+    elif sysName == 'CMS_ZqcdWeightRen':
+        cutUp = cut.replace('qcdZTo2LWeight','qcdZWeightRenUp')
+        cutUp = cutUp.replace('qcdZTo2NuWeight','qcdZWeightRenUp')
+        cutDown = cut.replace('qcdZTo2LWeight','qcdZWeightRenDown')
+        cutDown = cutDown.replace('qcdZTo2NuWeight','qcdZWeightRenDown')
+
+    elif sysName == 'CMS_ZqcdWeightFac':
+        cutUp = cut.replace('qcdZTo2LWeight','qcdZWeightFacUp')
+        cutUp = cut.replace('qcdZTo2NuWeight','qcdZWeightFacUp')
+        cutDown = cut.replace('qcdZTo2LWeight','qcdZWeightFacDown')
+        cutDown = cut.replace('qcdZTo2NuWeight','qcdZWeightFacDown')
+
+    elif sysName == 'CMS_WewkWeight':
+        cutUp = cut.replace('ewkWWeight', '')
+        cutDown = cut
+
+    elif sysName == 'CMS_ZewkWeight':
+        cutUp = cut.replace('ewkZWeight', '')
+        cutDown = cut
+
+    elif sysName == 'CMS_pdf':
+        if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
+            cutUp = cut + '*pdfWeightUp'
+            cutDown = cut + '*pdfWeightDown'
+
+    elif sysName == 'CMS_HF':
+        cutUp = cut + '*1.20'
+        cutDown = cut + '*0.8'
+
+    elif sysName == 'CMS_HF_V':
+        cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+        cutDown = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+
+    elif sysName == 'CMS_HF_W':
+        cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+        cutDown = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+
+    elif sysName == 'CMS_HF_Z':
+        cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+        cutDown = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+
+    elif sysName == 'CMS_eff_b':
+        cutUp = cut.replace('bjetWeight','bjetWeightUp')
+        cutDown = cut.replace('bjetWeight','bjetWeightDown')
+
+    elif sysName == 'CMS_scale_pu':
+        cutUp = cut.replace('puWeight','puWeightUp')
+        cutDown = cut.replace('puWeight','puWeightDown')
+
+    elif sysName == 'CMS_eff_lep_trigger':
+        cutUp = cut.replace('electronTriggerWeight','electronTriggerWeightUp')
+        cutUp = cutUp.replace('muonTriggerWeight','muonTriggerWeightUp')
+        cutDown = cut.replace('electronTriggerWeight','electronTriggerWeightDown')
+        cutDown = cutDown.replace('muonTriggerWeight','muonTriggerWeightDown')
+
+    elif sysName == 'CMS_trig_e':
+        cutUp = cut.replace('electronTriggerWeight','electronTriggerWeightUp')
+        cutDown = cut.replace('electronTriggerWeight','electronTriggerWeightDown')
+        if ('e' in cut) or ('1l' in cut) or ('2l' in cut):
+            cutUp = cutUp + '*1.020'
+            cutDown = cutDown + '*0.980'
+
+    elif sysName == 'CMS_trig_m':
+        cutUp = cut.replace('muonTriggerWeight','muonTriggerWeightUp')
+        cutDown = cut.replace('muonTriggerWeight','muonTriggerWeightDown')
+        if ('m' in cut) or ('1l' in cut) or ('2l' in cut):
+            cutUp = cutUp + '*1.002'
+            cutDown = cutDown + '*0.998'
+
+    elif sysName == 'CMS_eff_met_trigger':
+        #cutUp = cut.replace('METTriggerWeight','METTriggerWeightUp')
+        #cutDown = cut.replace('METTriggerWeight','METTriggerWeightDown')
+        if ('e' not in cut) and ('m' not in cut) and ('1l' not in cut) and ('2l' not in cut):
+            cutUp = cut + '*1.02'
+            cutDown = cut + '*0.98'
+
+    elif sysName == 'CMS_eff_e_old':
+        cutUp = cut.replace('leptonWeight','leptonWeightUp')
+        cutDown = cut.replace('leptonWeight','leptonWeightDown')
+        
+    elif sysName == 'CMS_eff_m_old':
+        cutUp = cut.replace('leptonWeight','leptonWeightUp')
+        cutDown = cut.replace('leptonWeight','leptonWeightDown')
+
+    elif sysName == 'CMS_eff_e':
+        cutUp = cut.replace('leptonWeight','leptonWeightUp')
+        cutDown = cut.replace('leptonWeight','leptonWeightDown')
+        if ('e' in cut) or ('1l' in cut) or ('2l' in cut):
+            cutUp = cutUp + '*1.010'
+            cutDown = cutDown + '*0.990'
+
+    elif sysName == 'CMS_eff_m':
+        cutUp = cut.replace('leptonWeight','leptonWeightUp')
+        cutDown = cut.replace('leptonWeight','leptonWeightDown')
+        if ('m' in cut) or ('1l' in cut) or ('2l' in cut):
+            cutUp = cutUp + '*1.014'
+            cutDown = cutDown + '*0.986'
+    
+    elif ('QCDscale' in sysName) and ('ren' in sysName):
+        if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
+            cutUp = cut + '*qcdRenWeightUp'
+            cutDown = cut + '*qcdRenWeightDown'
+
+    elif ('QCDscale' in sysName) and ('fac' in sysName):
+        if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
+            cutUp = cut + '*qcdFacWeightUp'
+            cutDown = cut + '*qcdFacWeightDown'
+
+    elif sys == 'pdf_accept_2l':
+        if ('2e' in cut) or ('2m' in cut) or ('2l' in cut):
+            cutUp = cut + '*1.060'
+            cutDown = cut + '*0.940'
+    
+    elif sys == 'pdf_accept_1l':
+        if ('1e' in cut) or ('1m' in cut) or ('1l' in cut):
+            cutUp = cut + '*1.030'
+            cutDown = cut + '*0.970'
+
+    elif sys == 'pdf_accept_0l':
+        if ('e' not in cut) and ('m' not in cut) and ('1l' not in cut) and ('2l' not in cut):
+            cutUp = cut + '*1.060'
+            cutDown = cut + '*0.940'
+
+    eventTree.Draw(varUp+'>>histUp',cutUp)
+    eventTree.Draw(varDown+'>>histDown',cutDown)
+    # print '        ' + name + '_' + sysName + 'Up hist entries = ', histUp.GetEntries()
+    # print '        ' + name + '_' + sysName + 'Up hist integral = ', histUp.Integral(1,nbins+1)
+    # print '        ' + name + '_' + sysName + 'Down hist entries = ', histUp.GetEntries()
+    # print '        ' + name + '_' + sysName + 'Down hist integral = ', histDown.Integral(1,nbins+1)
+    syshists[histName + '_' + sysName + 'Up'] += histUp
+    syshists[histName + '_' + sysName + 'Down'] += histDown
+    # print '        Finished adding systematic histograms for ' + histName + '_' + sysName
+
+########################################################
 
 #Select dataset to use based on cut
 datasetNames = []
 if drawData:
     print("Drawing data and ratio plot...")
     if combineEleMu:
-        if ('1l' in cut) or ('2l' in cut):
+        if ('1l' in cut) or ('2l' in cut) or (cut == 'SL'):
             datasetNames.append('SingleMuon')
             datasetNames.append('SingleElectron')
             print 'Selected both SingleMuon and SingleElectron dataset'
@@ -489,7 +745,7 @@ for process in MCSamples:
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
-            skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242020', 'countEvents_12242020'),'')
+            skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_03182021', 'countEvents_03182021'),'')
             if (process in signal) and useCentralSamples and ('ttbar' in process):
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
@@ -553,11 +809,12 @@ for dataset in dataSamples:
             hists['data'] += hist
             print '    hist_data nEntries = ', hists['data'].GetEntries()
             print '    hist_data integral = ', hists['data'].Integral(1,nbins+1)
+
 for process in MCSamples:
     print '  Process = ', process
     for dataset in MCSamples[process]:
         print '      Dataset = ', dataset, ' ||   nEvents = ', MCSamples[process][dataset]['nevents']
-        weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*leptonWeight*bjetWeight*puWeight'#*muonTriggerWeight*EE_L1_prefire_Weight'#*electronTriggerWeight'
+        weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight'#*electronTriggerWeight'
         #Apply appropriate NLO k-factors
         if process == 'WPlusJets':
             weight = weight + '*qcdWWeight*ewkWWeight'
@@ -611,10 +868,47 @@ for process in MCSamples:
                     hists['TTbarSL'] += hist
             elif process == 'QCD':
                 hists['QCD'] += hist
+            #Add MC histograms for systematics
+            if doSys:
+                for sysName in sys:
+                    if process in signal:
+                        addSys(process, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                        if doBinned:
+                            addSys(dataset, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                            if (dataset == 'ttDM_MChi1_MPhi100_scalar') or (process == 'tbar scalar'):
+                                addSys('tttDM_MChi1_MPhi100_scalar', MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                    elif process == 'ttbarPlusJets':
+                        if doBinned:
+                            addSys('TTbarSL', MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                        if dataset == 'TTTo2L2Nu':
+                            addSys(dataset, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                        elif dataset == 'TTToSemiLepton':
+                            addSys(dataset, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                    elif process == 'singleTop':
+                        addSys(process, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                    elif process == 'WPlusJets':
+                        addSys(process, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                    elif process == 'ZTo2L':
+                        addSys(process, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                    elif process == 'ZTo2Nu':
+                        addSys(process, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                    elif (process == 'WW' or process == 'WZ' or process == 'ZZ'):
+                        addSys('VV', MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                    elif process == 'TTV':
+                        addSys(process, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                        if doBinned:
+                            addSys('TTbarSL', MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                    elif process == 'QCD':
+                        addSys(process, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                    
 
 #Fill background sum histogram for calculating ratio plot
 for name in back:
     hists['bkgSum'] += hists[name]
+    if doSys:
+        for sysName in sys:
+            for suffix in ['Up','Down']:
+                syshists['bkgSum_'+sysName + suffix] += syshists[name + '_' + sysName + suffix]
 
 #Print signal and background yields and FOM
 print '-----------------------------'
@@ -627,11 +921,13 @@ print '-----------------------------'
 print 'Total tt+DM signal nEvents = ', hists['ttbar ' + mediatorType].GetEntries()/scaleFactor
 print 'Total tt+DM signal integral = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
 print '-----------------------------'
-print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()/scaleFactor
-print 'Total t+DM signal integral = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
+if year == 2016:
+    print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()/scaleFactor
+    print 'Total t+DM signal integral = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
 print '-----------------------------'
 print 'FOM for tt+DM signal = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
-print 'FOM for t+DM signal = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
+if year == 2016:
+    print 'FOM for t+DM signal = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
 print '-----------------------------'
 print 'Data bin errors:'
 for i in range(nbins+1):
@@ -648,10 +944,11 @@ for i in range(nbins+1):
     bin_error = hists['ttbar ' + mediatorType].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
-print 't+DM bin errors:'
-for i in range(nbins+1):
-    bin_error = hists['tbar ' + mediatorType].GetBinError(i)
-    print '    bin ' + str(i) + ': ' + str(bin_error)
+if year == 2016:
+    print 't+DM bin errors:'
+    for i in range(nbins+1):
+        bin_error = hists['tbar ' + mediatorType].GetBinError(i)
+        print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
 print("Finished filling histograms")
 
@@ -738,20 +1035,98 @@ if doBinned:
                     binnedHist.SetBinError(1, binError)
                     binnedHist.Write()
                     print '    ' + dataset + ' bin content: ' + str(binContent) + ', ' + dataset + ' bin error: ' + str(binError)
-        binContent = hists['tbar scalar'].GetBinContent(i)
-        binError = hists['tbar scalar'].GetBinError(i)
-        binnedHist = TH1F('tDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-        binnedHist.SetBinContent(1, binContent)
-        binnedHist.SetBinError(1, binError)
-        binnedHist.Write()
-        print '    tDM_MChi1_MPhi100_scalar bin content: ' + str(binContent) + ', tDM_MChi1_MPhi100_scalar bin error: ' + str(binError)
-        binContent = hists['tttDM_MChi1_MPhi100_scalar'].GetBinContent(i)
-        binError = hists['tttDM_MChi1_MPhi100_scalar'].GetBinError(i)
-        binnedHist = TH1F('tttDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-        binnedHist.SetBinContent(1, binContent)
-        binnedHist.SetBinError(1, binError)
-        binnedHist.Write()
-        print '    tttDM_MChi1_MPhi100_scalar bin content: ' + str(binContent) + ', tttDM_MChi1_MPhi100_scalar bin error: ' + str(binError)
+        if year == 2016:
+            binContent = hists['tbar scalar'].GetBinContent(i)
+            binError = hists['tbar scalar'].GetBinError(i)
+            binnedHist = TH1F('tDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            binnedHist.SetBinContent(1, binContent)
+            binnedHist.SetBinError(1, binError)
+            binnedHist.Write()
+            print '    tDM_MChi1_MPhi100_scalar bin content: ' + str(binContent) + ', tDM_MChi1_MPhi100_scalar bin error: ' + str(binError)
+            binContent = hists['tttDM_MChi1_MPhi100_scalar'].GetBinContent(i)
+            binError = hists['tttDM_MChi1_MPhi100_scalar'].GetBinError(i)
+            binnedHist = TH1F('tttDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            binnedHist.SetBinContent(1, binContent)
+            binnedHist.SetBinError(1, binError)
+            binnedHist.Write()
+            print '    tttDM_MChi1_MPhi100_scalar bin content: ' + str(binContent) + ', tttDM_MChi1_MPhi100_scalar bin error: ' + str(binError)
+        #Add systematics
+        if doSys:
+            directories = {}
+            for sysName in sys:
+                for suffix in ['Up','Down']:
+                    directories[sysName+suffix] = binnedRootFile.mkdir(sysName+suffix)
+                    directories[sysName+suffix].cd()
+                    #First fill in bkgSum binned histogram systematics
+                    print '    ---------'
+                    print '    ' + sysName + suffix + ':'
+                    print '    ---------'
+                    binContent = syshists['bkgSum_' + sysName + suffix].GetBinContent(i)
+                    binError = syshists['bkgSum_' + sysName + suffix].GetBinError(i)
+                    binnedHist = TH1F('BkgSum', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    binnedHist.SetBinContent(1, binContent)
+                    binnedHist.SetBinError(1, binError)
+                    binnedHist.Write()
+                    print '    bkgSum_' + sysName + suffix + ' bin content: ' + str(binContent) + ', bkgSum_' + sysName + suffix + ' bin error: ' + str(binError)
+                    #Then fill in individual background binned histogram systematics
+                    for name in back:
+                        binContent = syshists[name + '_' + sysName + suffix].GetBinContent(i)
+                        binError = syshists[name + '_' + sysName + suffix].GetBinError(i)
+                        if name == 'ZTo2L':
+                            binnedHist = TH1F('DYJetsToLL', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        elif name == 'ZTo2Nu':
+                            binnedHist = TH1F('DYJetsToNuNu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        elif name == 'QCD':
+                            binnedHist = TH1F('QCD', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        elif name == 'singleTop':
+                            binnedHist = TH1F('ST', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        elif name == 'VV':
+                            binnedHist = TH1F('VV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        elif name == 'WPlusJets':
+                            binnedHist = TH1F('WJetsToLNu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        elif name == 'TTToSemiLepton':
+                            binnedHist = TH1F('TTToSemiLepton', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        elif name == 'TTTo2L2Nu':
+                            binnedHist = TH1F('TTTo2L2Nu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        elif name == 'TTV':
+                            binnedHist = TH1F('TTV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        binnedHist.SetBinContent(1, binContent)
+                        binnedHist.SetBinError(1, binError)
+                        binnedHist.Write()
+                        print '    ' + name + '_' + sysName + suffix + ' bin content: ' + str(binContent) + ', ' + name + '_' + sysName + suffix + ' bin error: ' + str(binError)
+                    binContent = syshists['TTbarSL_' + sysName + suffix].GetBinContent(i)
+                    binError = syshists['TTbarSL_' + sysName + suffix].GetBinError(i)
+                    binnedHist = TH1F('TTbarSL', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    binnedHist.SetBinContent(1, binContent)
+                    binnedHist.SetBinError(1, binError)
+                    binnedHist.Write()
+                    print '    TTbarSL_' + sysName + suffix + ' bin content: ' + str(binContent) + ', TTbarSL_' + sysName + suffix + ' bin error: ' + str(binError)
+                    #Finally fill in signal MC binned histogram systematics
+                    for process in signal:
+                        if 'ttbar' in process:
+                            for dataset in MCSamples[process]:
+                                binContent = syshists[dataset + '_' + sysName + suffix].GetBinContent(i)
+                                binError = syshists[dataset + '_' + sysName + suffix].GetBinError(i)
+                                binnedHist = TH1F(dataset, '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                                binnedHist.SetBinContent(1, binContent)
+                                binnedHist.SetBinError(1, binError)
+                                binnedHist.Write()
+                                print '    ' + dataset + '_' + sysName + suffix + ' bin content: ' + str(binContent) + ', ' + dataset + '_' + sysName + suffix + ' bin error: ' + str(binError)
+                    if year == 2016:
+                        binContent = syshists['tbar scalar_' + sysName + suffix].GetBinContent(i)
+                        binError = syshists['tbar scalar_' + sysName + suffix].GetBinError(i)
+                        binnedHist = TH1F('tDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        binnedHist.SetBinContent(1, binContent)
+                        binnedHist.SetBinError(1, binError)
+                        binnedHist.Write()
+                        print '    tDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin content: ' + str(binContent) + ', tDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin error: ' + str(binError)
+                        binContent = syshists['tttDM_MChi1_MPhi100_scalar_' + sysName + suffix].GetBinContent(i)
+                        binError = syshists['tttDM_MChi1_MPhi100_scalar_' + sysName + suffix].GetBinError(i)
+                        binnedHist = TH1F('tttDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        binnedHist.SetBinContent(1, binContent)
+                        binnedHist.SetBinError(1, binError)
+                        binnedHist.Write()
+                        print '    tttDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin content: ' + str(binContent) + ', tttDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin error: ' + str(binError)
     print("Finished creating binned histogram root files...")
 
 #Normalize plots to area 1 if normalizePlots == True
@@ -782,7 +1157,11 @@ if savePlots:
             c.SetLogy(1)
     h_MCStack.Draw('hist')
     hists['ttbar '+mediatorType].Draw('hist same')
-    hists['tbar '+mediatorType].Draw('hist same')
+    if year == 2016:
+        secondSignal = 'tbar '+mediatorType
+    else:
+        secondSignal = 'ttbar pseudoscalar'
+    hists[secondSignal].Draw('hist same')
     hists['data'].Draw('ep same')
     hists['bkgSum'].Draw('e2 same')
     #Draw title with lumi and beam energy
@@ -836,16 +1215,16 @@ if savePlots:
         if doLogPlot:
             if drawData:
                 ymin = max(min(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMinimumBin()), hists['data'].GetBinContent(hists['data'].GetMinimumBin())), 5.e-1)
-                ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+                ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()), hists[secondSignal].GetBinContent(hists[secondSignal].GetMaximumBin()))
             else:
                 ymin = max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMinimumBin()), 5.e-1)
-                ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+                ymax = 5.*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()), hists[secondSignal].GetBinContent(hists[secondSignal].GetMaximumBin()))
         else:
             ymin = 0
             if drawData:
-                ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+                ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['data'].GetBinContent(hists['data'].GetMaximumBin())+hists['data'].GetBinError(hists['data'].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()), hists[secondSignal].GetBinContent(hists[secondSignal].GetMaximumBin()))
             else:
-                ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['tbar '+mediatorType].GetBinContent(hists['tbar '+mediatorType].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()))
+                ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()), hists[secondSignal].GetBinContent(hists[secondSignal].GetMaximumBin()))
     if normalizePlots:
         ymin = 5.e-4
     h_MCStack.SetMinimum(ymin)
@@ -856,12 +1235,12 @@ if savePlots:
         h_MCStack.GetXaxis().SetLabelOffset(999)
         h_MCStack.GetXaxis().SetLabelSize(0)
         setHistStyle(hists['ttbar '+mediatorType])
-        setHistStyle(hists['tbar '+mediatorType])
+        setHistStyle(hists[secondSignal])
         setHistStyle(hists['data'])
         setHistStyle(hists['bkgSum'])
     #Set tbar histogram options
-    hists['tbar '+mediatorType].SetLineColor(kRed)
-    hists['tbar '+mediatorType].SetLineWidth(3)
+    hists[secondSignal].SetLineColor(kRed)
+    hists[secondSignal].SetLineWidth(3)
     #Set ttbar histogram options
     hists['ttbar '+mediatorType].SetLineColor(kRed)
     hists['ttbar '+mediatorType].SetLineStyle(2)
@@ -890,12 +1269,16 @@ if savePlots:
     legend.AddEntry(hists['bkgSum'], 'MC stat.', 'f')
     if scaleFactor != 1: 
         legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-        legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-        #legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+        if year == 2016:
+            legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+        else:
+            legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
     else:
         legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-        legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-        #legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+        if year == 2016:
+            legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+        else:
+            legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
     legend.Draw('same')
     legend.SetBorderSize(0)
     legend.SetFillStyle(0)
