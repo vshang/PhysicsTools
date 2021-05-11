@@ -2,12 +2,12 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'countEvents_03182021' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'ModuleCommonSkim_05072021' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'getBTagHist_DeepCSV_08062020'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
- countNEntries = True
+ countNEntries = False
 
  #####
  ##   Helper function to set appropriate text file containing DAS file paths for input datasets
@@ -93,10 +93,10 @@ if __name__ == '__main__':
  isData = True
  isSignal = False
  
- # for run in runs2016:
- #  submitWrapper('MET', '2016', isData, isSignal, run, getDatasetinputs('MET', '2016', run))
- #  submitWrapper('SingleElectron', '2016', isData, isSignal, run, getDatasetinputs('SingleElectron', '2016', run))
- #  submitWrapper('SingleMuon', '2016', isData, isSignal, run, getDatasetinputs('SingleMuon', '2016', run))
+ for run in runs2016:
+  submitWrapper('MET', '2016', isData, isSignal, run, getDatasetinputs('MET', '2016', run))
+  submitWrapper('SingleElectron', '2016', isData, isSignal, run, getDatasetinputs('SingleElectron', '2016', run))
+  submitWrapper('SingleMuon', '2016', isData, isSignal, run, getDatasetinputs('SingleMuon', '2016', run))
  # for run in runs2017:
  #  submitWrapper('MET', '2017', isData, isSignal, run, getDatasetinputs('MET', '2017', run))
  #  submitWrapper('SingleElectron', '2017', isData, isSignal, run, getDatasetinputs('SingleElectron', '2017', run))
@@ -108,8 +108,8 @@ if __name__ == '__main__':
  
  isData = False
  run = ''
- datasetnames = ['WPlusJets']
- #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD']
+ #datasetnames = ['WPlusJets']
+ datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD']
  years = ['2016']
  #years = ['2016','2017','2018']
  for year in years:

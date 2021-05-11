@@ -10,7 +10,7 @@ import math
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
 saveDirectory = 'plots/preselect_2016/'
-date = '04_08_2021'
+date = '04_27_2021'
 year = 2016
 useCondor = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -70,6 +70,26 @@ cuts['SL2b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets >= 2')
 cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 &&' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')'
 cuts['AH1b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1')
 cuts['AH2b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2')
+
+cuts['AH1'] = cuts['AH'] + ' && minDeltaPhi12 >= 0.8'
+cuts['AH2'] = cuts['AH1'] + ' && M_Tb >= 140'
+cuts['AH3'] = cuts['AH2'].replace('nbjets >= 1', 'nbjets == 1')
+cuts['AH4'] = cuts['AH2'].replace('nbjets >= 1', 'nbjets >= 2')
+cuts['AH5'] = cuts['AH4'] + ' && jet1p_TH_T <= 0.5'
+cuts['AH6'] = cuts['AH2'].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 270')
+cuts['AH7'] = cuts['AH2'].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 290')
+cuts['AH8'] = cuts['AH2'].replace('minDeltaPhi12 >= 0.8', 'minDeltaPhi12 >= 1.2')
+cuts['AH9'] = cuts['AH2'].replace('minDeltaPhi12 >= 0.8', 'minDeltaPhi12 >= 2.0')
+cuts['AH10'] = cuts['AH'] + ' && minDeltaPhi12 >= 2.0 && M_Tb >= 200 && METcorrected_pt >= 350'
+cuts['AH11'] = cuts['AH2'].replace('M_Tb >= 140', 'M_Tb >= 180')
+cuts['AH12'] = cuts['AH2'].replace('M_Tb >= 140', 'M_Tb >= 200')
+cuts['AH13'] = cuts['AH2'].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 350')
+cuts['AH14'] = cuts['AH10'].replace('nbjets >= 1', 'nbjets == 1')
+cuts['AH15'] = cuts['AH10'].replace('nbjets >= 1', 'nbjets >= 2')
+cuts['AH16'] = cuts['AH15'] + ' && jet1p_TH_T <= 0.5'
+cuts['AH17'] = cuts['AH6'].replace('nbjets >= 1', 'nbjets == 1')
+cuts['AH18'] = cuts['AH6'].replace('nbjets >= 1', 'nbjets >= 2')
+cuts['AH19'] = cuts['AH18'] + ' && jet1p_TH_T <= 0.5'
 
 cuts['SL1e1b1FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet <= 1'
 cuts['SL1e2b1FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet <= 1'
@@ -168,6 +188,19 @@ cuts['AH1mWR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuon
 cuts['AH2eZR'] = 'njets >= 3 && nbjets == 0 && nTightElectrons == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 
+cuts['AH0lQR'] = cuts['AH'].replace('minDeltaPhi > 0.4', 'minDeltaPhi <= 0.4')
+cuts['AH0l0fQR'] = cuts['AH0lQR'] + ' && nfjets == 0'
+cuts['AH0l1fQR'] = cuts['AH0lQR'] + ' && nfjets >= 1'
+cuts['AH0l1bQR'] = cuts['AH0lQR'].replace('nbjets >= 1', 'nbjets == 1')
+cuts['AH0l2bQR'] = cuts['AH0lQR'].replace('nbjets >= 1', 'nbjets >= 2')
+cuts['AH0l0f1bQR'] = cuts['AH0l1bQR'] + ' && nfjets == 0'
+cuts['AH0l1f1bQR'] = cuts['AH0l1bQR'] + ' && nfjets >= 1'
+cuts['AH1eQR'] = 'njets >= 3 && nbjets >= 1 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 250 && minDeltaPhi12 <= 0.8 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
+cuts['AH1mQR'] = 'njets >= 3 && nbjets >= 1 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && minDeltaPhi12 <= 0.8 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['AH1lQR'] = '(' + cuts['AH1eQR'] + ') || (' + cuts['AH1mQR'] + ')'
+cuts['AH0b'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets == 0 && METcorrected_pt >= 250 && ntaus == 0 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')'
+cuts['AH0l0bQR'] = cuts['AH0b'] + ' && minDeltaPhi <= 0.4'
+
 cuts['SL2lTR'] = '(' + cuts['SL2eTR'] + ') || (' + cuts['SL2mTR'] + ') || (' + cuts['SL1e1mTR'] + ')'
 cuts['SL1lWR'] = '(' + cuts['SL1eWR'] + ') || (' + cuts['SL1mWR'] + ')'
 cuts['AH1lTR'] = '(' + cuts['AH1eTR'] + ') || (' + cuts['AH1mTR'] + ')'
@@ -217,7 +250,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1m2bSR'
 #cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
-#cut = 'AH0l2bSR'
+cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
 #cut = 'SL2bSR'
 #cut = 'AH1bSR'
@@ -225,7 +258,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 
 #cut = 'SL1l0fSR'
 #cut = 'SL1l1fSR'
-cut = 'SL1l2bSR'
+#cut = 'SL1l2bSR'
 
 #cut = 'SL1l0fT1SR'
 #cut = 'SL1l0fT2SR'
@@ -259,6 +292,17 @@ cut = 'SL1l2bSR'
 #cut = 'AH2eZR'
 #cut = 'AH2mZR'
 
+#cut = 'AH0lQR'
+#cut = 'AH0l0fQR'
+#cut = 'AH0l1fQR'
+#cut = 'AH0l1bQR'
+#cut = 'AH0l2bQR'
+#cut = 'AH0l0f1bQR'
+#cut = 'AH0l1f1bQR'
+#cut = 'AH1lQR'
+#cut = 'AH0b'
+#cut = 'AH0l0bQR'
+
 #cut = 'SL2lTR'
 #cut = 'SL1lWR'
 #cut = 'AH1lTR'
@@ -286,7 +330,7 @@ cut = 'SL1l2bSR'
 #cuts[cut] = cuts[cut] + ' && nFatJet >= 2'
 #cuts[cut] = cuts[cut] + ' && index_centralJets == 1'
 #cuts[cut] = cuts[cut] + ' && FatJet_pt[2] > 250'
-#cuts[cut] = cuts[cut].replace('METcorrected_pt >= 160', 'METcorrected_pt >= 250')
+#cuts[cut] = cuts[cut].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 350')
 #cuts[cut] = cuts[cut].replace('M_T >= 160', 'M_T >= 140')
 #cuts[cut] = cuts[cut].replace('M_Tb >= 180', 'M_Tb >= 140')
 #cuts[cut] = cuts[cut].replace('M_T2W >= 200', 'M_T2W >= 180')
@@ -350,7 +394,7 @@ elif year == 2017:
 elif year == 2018:
     lumi = 59.83
 if 'SR' in cut:
-    scaleFactor = 20
+    scaleFactor = 1#20
 else:
     scaleFactor = 1
 
@@ -368,9 +412,9 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 9
+nbins = 15
 xmin = 250
-xmax = 610
+xmax = 550
 auto_y = True
 doLogPlot = False
 drawData = True
@@ -382,7 +426,7 @@ useCentralSamples = True
 doBinned = True
 savePlots = False
 combineEleMu = True
-doSys = True
+doSys = False
 if doBinned:
     useCentralSamples = True
     scaleFactor = 1
@@ -451,7 +495,7 @@ else:
         signal = ['ttbar ' + mediatorType,'ttbar pseudoscalar']
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
-sys = ['CMS_scale_j']#,'CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF','CMS_HF_V','CMS_eff_b']#, 'CMS_scale_pu', 'CMS_eff_met_trigger', 'CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e', 'pdf_accept_2l','pdf_accept_1l','pdf_accept_0l','CMS_eff_e', 'CMS_eff_m','CMS_eff_e_old', 'CMS_eff_m_old','CMS_HF_Z','CMS_HF_W','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_ZewkWeight','QCDscale_ren', 'QCDscale_fac', 'QCDscale_ren_TT', 'QCDscale_fac_TT', 'QCDscale_ren_VV', 'QCDscale_fac_VV', 'QCDscale_ren_O', 'QCDscale_fac_O',]
+sys = ['CMS_scale_j','CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF','CMS_HF_V','CMS_eff_b', 'CMS_scale_pu', 'CMS_eff_met_trigger', 'CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e', 'pdf_accept_2l','pdf_accept_1l','pdf_accept_0l','CMS_eff_e', 'CMS_eff_m','CMS_eff_e_old', 'CMS_eff_m_old','CMS_HF_Z','CMS_HF_W','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_ZewkWeight','QCDscale_ren', 'QCDscale_fac', 'QCDscale_ren_TT', 'QCDscale_fac_TT', 'QCDscale_ren_VV', 'QCDscale_fac_VV', 'QCDscale_ren_O', 'QCDscale_fac_O',]
 for name in ['data','bkgSum'] + signal + back:
     hists[name] = TH1F(name, histoLabel, nbins, xmin, xmax)
 if doBinned:
@@ -712,7 +756,7 @@ if drawData:
             print 'Selected both SingleMuon and SingleElectron dataset'
         else:
             datasetNames.append('MET')
-            print 'Selected ME dataset'
+            print 'Selected MET dataset'
     else:
         if 'm' in cut:
             datasetNames.append('SingleMuon')
@@ -773,7 +817,6 @@ print("Got MC sample root files and event trees")
 #     hists['data'].SetBinError(i,300)
 
 #Fill histograms
-count = 0
 print("Filling histograms...")
 #Loop through each root file for each dataset
 for dataset in dataSamples:
@@ -950,6 +993,10 @@ if year == 2016:
         bin_error = hists['tbar ' + mediatorType].GetBinError(i)
         print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
+for name in hists:
+    print name + ' hist info:'
+    print '    nEvents = ', hists[name].GetEntries()
+    print '    integral = ', hists[name].Integral(1,nbins+1)
 print("Finished filling histograms")
 
 #Add overflow bins to histograms
