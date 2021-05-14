@@ -60,8 +60,8 @@ print("Creating histograms..")
 
 #Set histogram options
 var = 'METcorrected_pt'
-nbins = 100
-xmin = 150
+nbins = 80
+xmin = 250
 xmax = 650
 ymin = 0
 ymax = 1
@@ -76,6 +76,7 @@ gStyle.SetOptStat(0)
 #Define efficiency histograms
 histNames = ['1eNumData', '1eDenomData', '1eEffData', '1mNumData', '1mDenomData', '1mEffData', '1eNumMC', '1eDenomMC', '1eEffMC', '1mEffData', '1mNumMC', '1mDenomMC', '1mEffMC', '1eEffRatio', '1mEffRatio']
 hists = {}
+TH1.SetDefaultSumw2()
 for name in histNames:
     hists[name] = TH1F(name, histoLabel, nbins, xmin, xmax)
 
@@ -109,7 +110,6 @@ print("Got WPlusJets MC sample root files and event trees")
 print("Filling histograms...")
 #Loop through each root file for each dataset
 for dataset in dataSamples:
-    print '  Dataset = ', dataset, ' ||   nEvents = ', samples[dataset]['nevents']
     if dataset == 'SingleElectron':
         prefix = '1e'
     elif dataset == 'SingleMuon':
@@ -130,17 +130,19 @@ for dataset in dataSamples:
         samples[dataset][filepath+'_Events'].Draw(var+'>>histDenom',datacutDenom)
         hists[prefix+'NumData'] += histNum
         hists[prefix+'DenomData'] += histDenom
-    print '    ' + prefix + 'histNumData integral = ', hists[prefix+'NumData'].Integral(1,nbins+1)
-    print '    ' + prefix + 'histDenomData integral = ', hists[prefix+'DenomData'].Integral(1,nbins+1)
+    print '    ' + prefix + 'NumData Bin 1 Content = ', hists[prefix+'NumData'].GetBinContent(1)
+    print '    ' + prefix + 'NumData Bin 1 Error = ', hists[prefix+'NumData'].GetBinError(1)
+    print '    ' + prefix + 'DenomData Bin 1 Content = ', hists[prefix+'DenomData'].GetBinContent(1)
+    print '    ' + prefix + 'DenomData Bin 1 Error = ', hists[prefix+'DenomData'].GetBinError(1)
     hists[prefix+'EffData'].Divide(hists[prefix+'NumData'], hists[prefix+'DenomData'])
-    print '    ' + prefix + 'EffData integral = ', hists[prefix+'EffData'].Integral(1,nbins+1)
+    print '    ' + prefix + 'EffData Bin 1 Content = ', hists[prefix+'EffData'].GetBinContent(1)
+    print '    ' + prefix + 'EffData Bin 1 Error = ', hists[prefix+'EffData'].GetBinError(1)
 
 #Loop through each root file for each HTbin
 for prefix in ['1e', '1m']:
     MCcutNum = cuts[prefix+'Num']
     MCcutDenom = cuts[prefix+'Denom']
     for HTbin in samples['WPlusJets']:
-        print '  process = WPlusJets ', HTbin, ' ||   nEvents = ', samples['WPlusJets'][HTbin]['nevents']
         weight = str(samples['WPlusJets'][HTbin]['xsec']*lumi/samples['WPlusJets'][HTbin]['nevents']) + '*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*qcdWWeight*ewkWWeight'#*electronTriggerWeight'
         for filepath in samples['WPlusJets'][HTbin]['filepaths']:
             histNum = TH1F('histNum', histoLabel, nbins, xmin, xmax)
@@ -149,23 +151,41 @@ for prefix in ['1e', '1m']:
             samples['WPlusJets'][HTbin][filepath+'_Events'].Draw(var+'>>histDenom',MCcutDenom)
             hists[prefix+'NumMC'] += histNum
             hists[prefix+'DenomMC'] += histDenom
-    print '    ' + prefix + 'histNumMC integral = ', hists[prefix+'NumMC'].Integral(1,nbins+1)
-    print '    ' + prefix + ' histDenomMC integral = ', hists[prefix+'DenomMC'].Integral(1,nbins+1)
+    print '    ' + prefix + 'NumMC Bin 1 Content = ', hists[prefix+'NumMC'].GetBinContent(1)
+    print '    ' + prefix + 'NumMC Bin 1 Error = ', hists[prefix+'NumMC'].GetBinError(1)
+    print '    ' + prefix + 'DenomMC Bin 1 Content = ', hists[prefix+'DenomMC'].GetBinContent(1)
+    print '    ' + prefix + 'DenomMC Bin 1 Error = ', hists[prefix+'DenomMC'].GetBinError(1)
     hists[prefix+'EffMC'].Divide(hists[prefix+'NumMC'], hists[prefix+'DenomMC'])
-    print '    ' + prefix + 'EffMC integral = ', hists[prefix+'EffMC'].Integral(1,nbins+1)
+    print '    ' + prefix + 'EffMC Bin 1 Content = ', hists[prefix+'EffMC'].GetBinContent(1)
+    print '    ' + prefix + 'EffMC Bin 1 Error = ', hists[prefix+'EffMC'].GetBinError(1)
 
 #Get Data/MC efficiency histograms
 for prefix in ['1e', '1m']:
     hists[prefix+'EffRatio'].Divide(hists[prefix+'EffData'], hists[prefix+'EffMC'])
-    print prefix + 'EffRatio integral = ', hists[prefix+'EffRatio'].Integral(1,nbins+1)
+    print prefix + 'EffRatio Bin 1 Content = ', hists[prefix+'EffRatio'].GetBinContent(1)
+    print prefix + 'EffRatio Bin 1 Error = ', hists[prefix+'EffRatio'].GetBinError(1)
 
 #Add overflow bins to histograms
 for name in hists:
     hists[name].SetBinContent(nbins, hists[name].GetBinContent(nbins) + hists[name].GetBinContent(nbins+1))
 
+##-----------------------------------------------------------------------------------------------
+
+#Save root files with SFs if saveRootFiles == True
+if saveRootFiles:
+    rootFile = TFile('MET_Trigger_SFs_'+str(year)+'.root', 'RECREATE')
+    ratioHist = TH1F('SF', histoLabel, nbins, xmin, xmax)
+    for i in range(1,nbins+1):
+        binContent = hists['1eEffRatio'].GetBinContent(i)
+        binError = hists['1eEffRatio'].GetBinError(i)
+        ratioHist.SetBinContent(i, binContent)
+        ratioHist.SetBinError(i, binError)
+    ratioHist.Write()
+
 #Draw histograms if savePlots == True
 if savePlots:
     print 'Drawing histograms...'
+    
     #Draw SingleElectron Data efficiencies
     c_data1e = TCanvas('c_data1e', 'c_data1e', 800, 800)
     hists['1eEffData'].Draw('ep')
@@ -174,11 +194,34 @@ if savePlots:
     hists['1eEffData'].SetMarkerStyle(20)
     hists['1eEffData'].SetMarkerSize(1.25)
     hists['1eEffData'].SetLineColor(1)
-    legend_data1e = TLegend(0.6, 0.4, 0.9, 0.65)
-    legend_data1e.AddEntry(hists['1eEffData'], 'SingleElectron', 'le')
+    #Draw legend
+    legend_data1e = TLegend(0.5, 0.1, 0.7, 0.4)
+    legend_data1e.AddEntry(hists['1eEffData'], 'SingleElectron', 'lep')
     legend_data1e.Draw('same')
     legend_data1e.SetBorderSize(0)
     legend_data1e.SetFillStyle(0)
+    legend_data1e.SetTextSize(0.04)
+    #Draw title with lumi and beam energy
+    title_data1e = TLatex()
+    title_data1e.SetTextSize(0.03)
+    title_data1e_x = .7
+    title_data1e_y = .91
+    if year == 2016:
+        title_data1e.DrawLatexNDC(title_data1e_x, title_data1e_y, "#bf{35.9 fb^{-1} (13 TeV)}")
+    elif year == 2017:
+        title_data1e.DrawLatexNDC(title_data1e_x, title_data1e_y, "#bf{41.5 fb^{-1} (13 TeV)}")
+    elif year == 2018:
+        title_data1e.DrawLatexNDC(title_data1e_x, title_data1e_y, "#bf{59.8 fb^{-1} (13 TeV)}")
+    #Set "CMS preliminary" text
+    pt_data1e = TPaveText(0.23, 0.65, 0.4, 0.75, "NDC")
+    pt_data1e.SetTextSize(0.04)
+    pt_data1e.SetFillColor(0)
+    pt_data1e.SetTextAlign(11)
+    pt_data1e.AddText('#splitline{CMS}{#bf{#it{Preliminary}}}')
+    pt_data1e.Draw('same')
+
+#######
+
     #Draw SingleElectron MC efficiencies
     c_MC1e = TCanvas('c_MC1e', 'c_MC1e', 800, 800)
     hists['1eEffMC'].Draw('ep')
@@ -187,11 +230,34 @@ if savePlots:
     hists['1eEffMC'].SetMarkerStyle(20)
     hists['1eEffMC'].SetMarkerSize(1.25)
     hists['1eEffMC'].SetLineColor(1)
-    legend_MC1e = TLegend(0.6, 0.4, 0.9, 0.65)
-    legend_MC1e.AddEntry(hists['1eEffMC'], 'SingleElectron', 'le')
+    #Draw legend
+    legend_MC1e = TLegend(0.5, 0.1, 0.7, 0.4)
+    legend_MC1e.AddEntry(hists['1eEffMC'], 'SingleElectron', 'lep')
     legend_MC1e.Draw('same')
     legend_MC1e.SetBorderSize(0)
     legend_MC1e.SetFillStyle(0)
+    legend_MC1e.SetTextSize(0.04)
+    #Draw title with lumi and beam energy
+    title_MC1e = TLatex()
+    title_MC1e.SetTextSize(0.03)
+    title_MC1e_x = .7
+    title_MC1e_y = .91
+    if year == 2016:
+        title_MC1e.DrawLatexNDC(title_MC1e_x, title_MC1e_y, "#bf{35.9 fb^{-1} (13 TeV)}")
+    elif year == 2017:
+        title_MC1e.DrawLatexNDC(title_MC1e_x, title_MC1e_y, "#bf{41.5 fb^{-1} (13 TeV)}")
+    elif year == 2018:
+        title_MC1e.DrawLatexNDC(title_MC1e_x, title_MC1e_y, "#bf{59.8 fb^{-1} (13 TeV)}")
+    #Set "CMS preliminary" text
+    pt_MC1e = TPaveText(0.23, 0.65, 0.4, 0.75, "NDC")
+    pt_MC1e.SetTextSize(0.04)
+    pt_MC1e.SetFillColor(0)
+    pt_MC1e.SetTextAlign(11)
+    pt_MC1e.AddText('#splitline{CMS}{#bf{#it{Preliminary}}}')
+    pt_MC1e.Draw('same')
+
+#######
+
     #Draw SingleElectron Data/MC efficiencies
     c_ratio1e = TCanvas('c_ratio1e', 'c_ratio1e', 800, 800)
     hists['1eEffRatio'].Draw('ep')
@@ -200,11 +266,34 @@ if savePlots:
     hists['1eEffRatio'].SetMarkerStyle(20)
     hists['1eEffRatio'].SetMarkerSize(1.25)
     hists['1eEffRatio'].SetLineColor(1)
-    legend_ratio1e = TLegend(0.6, 0.4, 0.9, 0.65)
-    legend_ratio1e.AddEntry(hists['1eEffRatio'], 'SingleElectron', 'le')
+    #Draw legend
+    legend_ratio1e = TLegend(0.5, 0.1, 0.7, 0.4)
+    legend_ratio1e.AddEntry(hists['1eEffRatio'], 'SingleElectron', 'lep')
     legend_ratio1e.Draw('same')
     legend_ratio1e.SetBorderSize(0)
     legend_ratio1e.SetFillStyle(0)
+    legend_ratio1e.SetTextSize(0.04)
+    #Draw title with lumi and beam energy
+    title_ratio1e = TLatex()
+    title_ratio1e.SetTextSize(0.03)
+    title_ratio1e_x = .7
+    title_ratio1e_y = .91
+    if year == 2016:
+        title_ratio1e.DrawLatexNDC(title_ratio1e_x, title_ratio1e_y, "#bf{35.9 fb^{-1} (13 TeV)}")
+    elif year == 2017:
+        title_ratio1e.DrawLatexNDC(title_ratio1e_x, title_ratio1e_y, "#bf{41.5 fb^{-1} (13 TeV)}")
+    elif year == 2018:
+        title_ratio1e.DrawLatexNDC(title_ratio1e_x, title_ratio1e_y, "#bf{59.8 fb^{-1} (13 TeV)}")
+    #Set "CMS preliminary" text
+    pt_ratio1e = TPaveText(0.23, 0.65, 0.4, 0.75, "NDC")
+    pt_ratio1e.SetTextSize(0.04)
+    pt_ratio1e.SetFillColor(0)
+    pt_ratio1e.SetTextAlign(11)
+    pt_ratio1e.AddText('#splitline{CMS}{#bf{#it{Preliminary}}}')
+    pt_ratio1e.Draw('same')
+
+#######
+
     #Draw SingleMuon Data efficiencies
     c_data1m = TCanvas('c_data1m', 'c_data1m', 800, 800)
     hists['1mEffData'].Draw('ep')
@@ -213,11 +302,34 @@ if savePlots:
     hists['1mEffData'].SetMarkerStyle(20)
     hists['1mEffData'].SetMarkerSize(1.25)
     hists['1mEffData'].SetLineColor(1)
-    legend_data1m = TLegend(0.6, 0.4, 0.9, 0.65)
-    legend_data1m.AddEntry(hists['1mEffData'], 'SingleMuon', 'le')
+    #Draw legend
+    legend_data1m = TLegend(0.5, 0.1, 0.7, 0.4)
+    legend_data1m.AddEntry(hists['1mEffData'], 'SingleMuon', 'lep')
     legend_data1m.Draw('same')
     legend_data1m.SetBorderSize(0)
     legend_data1m.SetFillStyle(0)
+    legend_data1m.SetTextSize(0.04)
+    #Draw title with lumi and beam energy
+    title_data1m = TLatex()
+    title_data1m.SetTextSize(0.03)
+    title_data1m_x = .7
+    title_data1m_y = .91
+    if year == 2016:
+        title_data1m.DrawLatexNDC(title_data1m_x, title_data1m_y, "#bf{35.9 fb^{-1} (13 TeV)}")
+    elif year == 2017:
+        title_data1m.DrawLatexNDC(title_data1m_x, title_data1m_y, "#bf{41.5 fb^{-1} (13 TeV)}")
+    elif year == 2018:
+        title_data1m.DrawLatexNDC(title_data1m_x, title_data1m_y, "#bf{59.8 fb^{-1} (13 TeV)}")
+    #Set "CMS preliminary" text
+    pt_data1m = TPaveText(0.23, 0.65, 0.4, 0.75, "NDC")
+    pt_data1m.SetTextSize(0.04)
+    pt_data1m.SetFillColor(0)
+    pt_data1m.SetTextAlign(11)
+    pt_data1m.AddText('#splitline{CMS}{#bf{#it{Preliminary}}}')
+    pt_data1m.Draw('same')
+
+#######
+
     #Draw SingleMuon MC efficiencies
     c_MC1m = TCanvas('c_MC1m', 'c_MC1m', 800, 800)
     hists['1mEffMC'].Draw('ep')
@@ -226,11 +338,34 @@ if savePlots:
     hists['1mEffMC'].SetMarkerStyle(20)
     hists['1mEffMC'].SetMarkerSize(1.25)
     hists['1mEffMC'].SetLineColor(1)
-    legend_MC1m = TLegend(0.6, 0.4, 0.9, 0.65)
-    legend_MC1m.AddEntry(hists['1mEffMC'], 'SingleMuon', 'le')
+    #Draw legend
+    legend_MC1m = TLegend(0.5, 0.1, 0.7, 0.4)
+    legend_MC1m.AddEntry(hists['1mEffMC'], 'SingleMuon', 'lep')
     legend_MC1m.Draw('same')
     legend_MC1m.SetBorderSize(0)
     legend_MC1m.SetFillStyle(0)
+    legend_MC1m.SetTextSize(0.04)
+    #Draw title with lumi and beam energy
+    title_MC1m = TLatex()
+    title_MC1m.SetTextSize(0.03)
+    title_MC1m_x = .7
+    title_MC1m_y = .91
+    if year == 2016:
+        title_MC1m.DrawLatexNDC(title_MC1m_x, title_MC1m_y, "#bf{35.9 fb^{-1} (13 TeV)}")
+    elif year == 2017:
+        title_MC1m.DrawLatexNDC(title_MC1m_x, title_MC1m_y, "#bf{41.5 fb^{-1} (13 TeV)}")
+    elif year == 2018:
+        title_MC1m.DrawLatexNDC(title_MC1m_x, title_MC1m_y, "#bf{59.8 fb^{-1} (13 TeV)}")
+    #Set "CMS preliminary" text
+    pt_MC1m = TPaveText(0.23, 0.65, 0.4, 0.75, "NDC")
+    pt_MC1m.SetTextSize(0.04)
+    pt_MC1m.SetFillColor(0)
+    pt_MC1m.SetTextAlign(11)
+    pt_MC1m.AddText('#splitline{CMS}{#bf{#it{Preliminary}}}')
+    pt_MC1m.Draw('same')
+
+#######
+
     #Draw SingleMuon Data/MC efficiencies
     c_ratio1m = TCanvas('c_ratio1m', 'c_ratio1m', 800, 800)
     hists['1mEffRatio'].Draw('ep')
@@ -239,18 +374,38 @@ if savePlots:
     hists['1mEffRatio'].SetMarkerStyle(20)
     hists['1mEffRatio'].SetMarkerSize(1.25)
     hists['1mEffRatio'].SetLineColor(1)
-    legend_ratio1m = TLegend(0.6, 0.4, 0.9, 0.65)
-    legend_ratio1m.AddEntry(hists['1mEffRatio'], 'SingleMuon', 'le')
+    #Draw legend
+    legend_ratio1m = TLegend(0.5, 0.1, 0.7, 0.4)
+    legend_ratio1m.AddEntry(hists['1mEffRatio'], 'SingleMuon', 'lep')
     legend_ratio1m.Draw('same')
     legend_ratio1m.SetBorderSize(0)
     legend_ratio1m.SetFillStyle(0)
+    legend_ratio1m.SetTextSize(0.04)
+    #Draw title with lumi and beam energy
+    title_ratio1m = TLatex()
+    title_ratio1m.SetTextSize(0.03)
+    title_ratio1m_x = .7
+    title_ratio1m_y = .91
+    if year == 2016:
+        title_ratio1m.DrawLatexNDC(title_ratio1m_x, title_ratio1m_y, "#bf{35.9 fb^{-1} (13 TeV)}")
+    elif year == 2017:
+        title_ratio1m.DrawLatexNDC(title_ratio1m_x, title_ratio1m_y, "#bf{41.5 fb^{-1} (13 TeV)}")
+    elif year == 2018:
+        title_ratio1m.DrawLatexNDC(title_ratio1m_x, title_ratio1m_y, "#bf{59.8 fb^{-1} (13 TeV)}")
+    #Set "CMS preliminary" text
+    pt_ratio1m = TPaveText(0.23, 0.65, 0.4, 0.75, "NDC")
+    pt_ratio1m.SetTextSize(0.04)
+    pt_ratio1m.SetFillColor(0)
+    pt_ratio1m.SetTextAlign(11)
+    pt_ratio1m.AddText('#splitline{CMS}{#bf{#it{Preliminary}}}')
+    pt_ratio1m.Draw('same')
     
     #Save histograms
-    c_data1e.SaveAs('MET_Trigger_efficiency_Data_1e.png')
-    c_MC1e.SaveAs('MET_Trigger_efficiency_MC_1e.png')
-    c_ratio1e.SaveAs('MET_Trigger_efficiency_Ratio_1e.png')
-    c_data1m.SaveAs('MET_Trigger_efficiency_Data_1m.png')
-    c_MC1m.SaveAs('MET_Trigger_efficiency_MC_1m.png')
-    c_ratio1m.SaveAs('MET_Trigger_efficiency_Ratio_1m.png')
+    c_data1e.SaveAs(str(year)+'/MET_Trigger_efficiency_Data_1e.png')
+    c_MC1e.SaveAs(str(year)+'/MET_Trigger_efficiency_MC_1e.png')
+    c_ratio1e.SaveAs(str(year)+'/MET_Trigger_efficiency_Ratio_1e.png')
+    c_data1m.SaveAs(str(year)+'/MET_Trigger_efficiency_Data_1m.png')
+    c_MC1m.SaveAs(str(year)+'/MET_Trigger_efficiency_MC_1m.png')
+    c_ratio1m.SaveAs(str(year)+'/MET_Trigger_efficiency_Ratio_1m.png')
 
 print 'Code end time:', datetime.datetime.now()

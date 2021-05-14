@@ -250,7 +250,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1m2bSR'
 #cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
-cut = 'AH0l2bSR'
+#cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
 #cut = 'SL2bSR'
 #cut = 'AH1bSR'
@@ -307,7 +307,7 @@ cut = 'AH0l2bSR'
 #cut = 'SL1lWR'
 #cut = 'AH1lTR'
 #cut = 'AH1lWR'
-#cut = 'AH2lZR'
+cut = 'AH2lZR'
 
 #cut = 'SLeCR'
 #cut = 'SLmCR'
@@ -426,7 +426,7 @@ useCentralSamples = True
 doBinned = True
 savePlots = False
 combineEleMu = True
-doSys = False
+doSys = True
 if doBinned:
     useCentralSamples = True
     scaleFactor = 1
@@ -636,20 +636,24 @@ def addSys(histName, eventTree, var, cut, sysName):
             cutDown = cut + '*pdfWeightDown'
 
     elif sysName == 'CMS_HF':
-        cutUp = cut + '*1.20'
-        cutDown = cut + '*0.8'
+        if ('WPlusJets' in histName) or ('ZTo2L' in histName) or ('ZTo2Nu' in histName):
+            cutUp = cut + '*1.20'
+            cutDown = cut + '*0.8'
 
     elif sysName == 'CMS_HF_V':
-        cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
-        cutDown = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+        if ('WPlusJets' in histName) or ('ZTo2L' in histName) or ('ZTo2Nu' in histName):
+            cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+            cutDown = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
 
     elif sysName == 'CMS_HF_W':
-        cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
-        cutDown = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+        if ('WPlusJets' in histName):
+            cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+            cutDown = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
 
     elif sysName == 'CMS_HF_Z':
-        cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
-        cutDown = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+        if ('ZTo2L' in histName) or ('ZTo2Nu' in histName):
+            cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+            cutDown = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
 
     elif sysName == 'CMS_eff_b':
         cutUp = cut.replace('bjetWeight','bjetWeightUp')
@@ -680,8 +684,6 @@ def addSys(histName, eventTree, var, cut, sysName):
             cutDown = cutDown + '*0.998'
 
     elif sysName == 'CMS_eff_met_trigger':
-        #cutUp = cut.replace('METTriggerWeight','METTriggerWeightUp')
-        #cutDown = cut.replace('METTriggerWeight','METTriggerWeightDown')
         if ('e' not in cut) and ('m' not in cut) and ('1l' not in cut) and ('2l' not in cut):
             cutUp = cut + '*1.02'
             cutDown = cut + '*0.98'
@@ -709,14 +711,34 @@ def addSys(histName, eventTree, var, cut, sysName):
             cutDown = cutDown + '*0.986'
     
     elif ('QCDscale' in sysName) and ('ren' in sysName):
-        if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
+        if ('TT' in sysName) and ('TT' in histName):
             cutUp = cut + '*qcdRenWeightUp'
             cutDown = cut + '*qcdRenWeightDown'
+        elif ('VV' in sysName) and ('VV' in histName):
+            cutUp = cut + '*qcdRenWeightUp'
+            cutDown = cut + '*qcdRenWeightDown'
+        elif ('O' in sysName) and (('QCD' in histName) or ('singleTop' in histName)):
+            cutUp = cut + '*qcdRenWeightUp'
+            cutDown = cut + '*qcdRenWeightDown'
+        elif sysName == 'QCDscale_ren':
+            if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
+                cutUp = cut + '*qcdRenWeightUp'
+                cutDown = cut + '*qcdRenWeightDown'
 
     elif ('QCDscale' in sysName) and ('fac' in sysName):
-        if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
+        if ('TT' in sysName) and ('TT' in histName):
             cutUp = cut + '*qcdFacWeightUp'
             cutDown = cut + '*qcdFacWeightDown'
+        elif ('VV' in sysName) and ('VV' in histName):
+            cutUp = cut + '*qcdFacWeightUp'
+            cutDown = cut + '*qcdFacWeightDown'
+        elif ('O' in sysName) and (('QCD' in histName) or ('singleTop' in histName)):
+            cutUp = cut + '*qcdFacWeightUp'
+            cutDown = cut + '*qcdFacWeightDown'
+        elif sysName == 'QCDscale_fac':
+            if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
+                cutUp = cut + '*qcdFacWeightUp'
+                cutDown = cut + '*qcdFacWeightDown'
 
     elif sys == 'pdf_accept_2l':
         if ('2e' in cut) or ('2m' in cut) or ('2l' in cut):
