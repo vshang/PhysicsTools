@@ -4,9 +4,11 @@ import os
 import datetime
 import re
 import math
+import numpy as np
 
 gErrorIgnoreLevel = kError
-year = 2016
+date = '05_25_2021'
+year = 2018
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
     samples = samples2016
@@ -25,19 +27,19 @@ if year == 2016:
     cuts['singleIsoEle'] = 'HLT_Ele27_WPTight_Gsf'
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon175'
     cuts['singleIsoMu'] = 'HLT_IsoMu24 || HLT_IsoTkMu24'
-    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMET120_PFMHT120_IDTight || HLT_PFMET170_HBHECleaned || HLT_PFMET170_BeamHaloCleaned'
+    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight'
 elif year == 2017:
     cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'
     cuts['singleIsoEle'] = 'passEle32WPTightGsf2017'
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
     cuts['singleIsoMu'] = 'HLT_IsoMu27' 
-    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60 || HLT_PFMET120_PFMHT120_IDTight || HLT_PFMET120_PFMHT120_IDTight_PFHT60 || HLT_PFMET200_HBHECleaned || HLT_PFMET200_HBHE_BeamHaloCleaned'
+    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
 elif year == 2018:
     cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'
     cuts['singleIsoEle'] = 'HLT_Ele32_WPTight_Gsf'
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
     cuts['singleIsoMu'] = 'HLT_IsoMu24' 
-    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60 || HLT_PFMET120_PFMHT120_IDTight || HLT_PFMET120_PFMHT120_IDTight_PFHT60 || HLT_PFMET200_HBHECleaned || HLT_PFMET200_HBHE_BeamHaloCleaned'
+    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
 
 #Cut definitions
 cuts['1eDenom'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
@@ -60,12 +62,13 @@ print("Creating histograms..")
 
 #Set histogram options
 var = 'METcorrected_pt'
-nbins = 80
-xmin = 250
-xmax = 650
+nbins = 29
+#xmin = 250
+#xmax = 650
+edges = np.array([160., 170., 180., 190., 200., 210., 220., 230., 240., 250., 260., 270., 280., 290., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600.], dtype='float64')
 ymin = 0
 ymax = 1
-saveRootFiles = True
+saveRootFiles = False
 savePlots = True
 
 histoLabel = '; p_{T}^{miss} (GeV); Efficiency'
@@ -78,7 +81,7 @@ histNames = ['1eNumData', '1eDenomData', '1eEffData', '1mNumData', '1mDenomData'
 hists = {}
 TH1.SetDefaultSumw2()
 for name in histNames:
-    hists[name] = TH1F(name, histoLabel, nbins, xmin, xmax)
+    hists[name] = TH1F(name, histoLabel, nbins, edges)
 
 #Get data root files and event trees
 dataSamples = ['SingleElectron', 'SingleMuon']
@@ -123,20 +126,27 @@ for dataset in dataSamples:
             datacutDenom = datacutDenom.replace('HLT_Ele115_CaloIdVT_GsfTrkIdT || ','')
         if 'MET_Run2017B' in filepath: #MET trigger paths also missing from Run2017B (https://hypernews.cern.ch/HyperNews/CMS/get/top-trigger/247/1.html)
             datacutNum = datacutNum.replace('HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60 || ','')
-            datacutNum = datacutNum.replace(' || HLT_PFMET120_PFMHT120_IDTight_PFHT60 || HLT_PFMET200_HBHECleaned || HLT_PFMET200_HBHE_BeamHaloCleaned','')
-        histNum = TH1F('histNum', histoLabel, nbins, xmin, xmax)
-        histDenom = TH1F('histDenom', histoLabel, nbins, xmin, xmax)
+        histNum = TH1F('histNum', histoLabel, nbins, edges)
+        histDenom = TH1F('histDenom', histoLabel, nbins, edges)
         samples[dataset][filepath+'_Events'].Draw(var+'>>histNum',datacutNum)
         samples[dataset][filepath+'_Events'].Draw(var+'>>histDenom',datacutDenom)
         hists[prefix+'NumData'] += histNum
         hists[prefix+'DenomData'] += histDenom
+    hists[prefix+'EffData'].Divide(hists[prefix+'NumData'], hists[prefix+'DenomData'])
     print '    ' + prefix + 'NumData Bin 1 Content = ', hists[prefix+'NumData'].GetBinContent(1)
     print '    ' + prefix + 'NumData Bin 1 Error = ', hists[prefix+'NumData'].GetBinError(1)
     print '    ' + prefix + 'DenomData Bin 1 Content = ', hists[prefix+'DenomData'].GetBinContent(1)
     print '    ' + prefix + 'DenomData Bin 1 Error = ', hists[prefix+'DenomData'].GetBinError(1)
-    hists[prefix+'EffData'].Divide(hists[prefix+'NumData'], hists[prefix+'DenomData'])
     print '    ' + prefix + 'EffData Bin 1 Content = ', hists[prefix+'EffData'].GetBinContent(1)
     print '    ' + prefix + 'EffData Bin 1 Error = ', hists[prefix+'EffData'].GetBinError(1)
+    print '    ------------------------------------------------------------------------------------'
+    print '    ' + prefix + 'NumData Bin 40 Content = ', hists[prefix+'NumData'].GetBinContent(40)
+    print '    ' + prefix + 'NumData Bin 40 Error = ', hists[prefix+'NumData'].GetBinError(40)
+    print '    ' + prefix + 'DenomData Bin 40 Content = ', hists[prefix+'DenomData'].GetBinContent(40)
+    print '    ' + prefix + 'DenomData Bin 40 Error = ', hists[prefix+'DenomData'].GetBinError(40)
+    print '    ' + prefix + 'EffData Bin 40 Content = ', hists[prefix+'EffData'].GetBinContent(40)
+    print '    ' + prefix + 'EffData Bin 40 Error = ', hists[prefix+'EffData'].GetBinError(40)
+    print '    ------------------------------------------------------------------------------------'
 
 #Loop through each root file for each HTbin
 for prefix in ['1e', '1m']:
@@ -145,36 +155,42 @@ for prefix in ['1e', '1m']:
     for HTbin in samples['WPlusJets']:
         weight = str(samples['WPlusJets'][HTbin]['xsec']*lumi/samples['WPlusJets'][HTbin]['nevents']) + '*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*qcdWWeight*ewkWWeight'#*electronTriggerWeight'
         for filepath in samples['WPlusJets'][HTbin]['filepaths']:
-            histNum = TH1F('histNum', histoLabel, nbins, xmin, xmax)
-            histDenom = TH1F('histDenom', histoLabel, nbins, xmin, xmax)
+            histNum = TH1F('histNum', histoLabel, nbins, edges)
+            histDenom = TH1F('histDenom', histoLabel, nbins, edges)
             samples['WPlusJets'][HTbin][filepath+'_Events'].Draw(var+'>>histNum',MCcutNum)
             samples['WPlusJets'][HTbin][filepath+'_Events'].Draw(var+'>>histDenom',MCcutDenom)
             hists[prefix+'NumMC'] += histNum
             hists[prefix+'DenomMC'] += histDenom
+    hists[prefix+'EffMC'].Divide(hists[prefix+'NumMC'], hists[prefix+'DenomMC'])
     print '    ' + prefix + 'NumMC Bin 1 Content = ', hists[prefix+'NumMC'].GetBinContent(1)
     print '    ' + prefix + 'NumMC Bin 1 Error = ', hists[prefix+'NumMC'].GetBinError(1)
     print '    ' + prefix + 'DenomMC Bin 1 Content = ', hists[prefix+'DenomMC'].GetBinContent(1)
     print '    ' + prefix + 'DenomMC Bin 1 Error = ', hists[prefix+'DenomMC'].GetBinError(1)
-    hists[prefix+'EffMC'].Divide(hists[prefix+'NumMC'], hists[prefix+'DenomMC'])
     print '    ' + prefix + 'EffMC Bin 1 Content = ', hists[prefix+'EffMC'].GetBinContent(1)
     print '    ' + prefix + 'EffMC Bin 1 Error = ', hists[prefix+'EffMC'].GetBinError(1)
+    print '    ------------------------------------------------------------------------------------'
+    print '    ' + prefix + 'NumMC Bin 40 Content = ', hists[prefix+'NumMC'].GetBinContent(40)
+    print '    ' + prefix + 'NumMC Bin 40 Error = ', hists[prefix+'NumMC'].GetBinError(40)
+    print '    ' + prefix + 'DenomMC Bin 40 Content = ', hists[prefix+'DenomMC'].GetBinContent(40)
+    print '    ' + prefix + 'DenomMC Bin 40 Error = ', hists[prefix+'DenomMC'].GetBinError(40)
+    print '    ' + prefix + 'EffMC Bin 40 Content = ', hists[prefix+'EffMC'].GetBinContent(40)
+    print '    ' + prefix + 'EffMC Bin 40 Error = ', hists[prefix+'EffMC'].GetBinError(40)
+    print '    ------------------------------------------------------------------------------------'
 
 #Get Data/MC efficiency histograms
 for prefix in ['1e', '1m']:
     hists[prefix+'EffRatio'].Divide(hists[prefix+'EffData'], hists[prefix+'EffMC'])
     print prefix + 'EffRatio Bin 1 Content = ', hists[prefix+'EffRatio'].GetBinContent(1)
     print prefix + 'EffRatio Bin 1 Error = ', hists[prefix+'EffRatio'].GetBinError(1)
-
-#Add overflow bins to histograms
-for name in hists:
-    hists[name].SetBinContent(nbins, hists[name].GetBinContent(nbins) + hists[name].GetBinContent(nbins+1))
+    print prefix + 'EffRatio Bin 40 Content = ', hists[prefix+'EffRatio'].GetBinContent(40)
+    print prefix + 'EffRatio Bin 40 Error = ', hists[prefix+'EffRatio'].GetBinError(40)
 
 ##-----------------------------------------------------------------------------------------------
 
 #Save root files with SFs if saveRootFiles == True
 if saveRootFiles:
     rootFile = TFile('MET_Trigger_SFs_'+str(year)+'.root', 'RECREATE')
-    ratioHist = TH1F('SF', histoLabel, nbins, xmin, xmax)
+    ratioHist = TH1F('SF', histoLabel, nbins, edges)
     for i in range(1,nbins+1):
         binContent = hists['1eEffRatio'].GetBinContent(i)
         binError = hists['1eEffRatio'].GetBinError(i)
@@ -401,11 +417,12 @@ if savePlots:
     pt_ratio1m.Draw('same')
     
     #Save histograms
-    c_data1e.SaveAs(str(year)+'/MET_Trigger_efficiency_Data_1e.png')
-    c_MC1e.SaveAs(str(year)+'/MET_Trigger_efficiency_MC_1e.png')
-    c_ratio1e.SaveAs(str(year)+'/MET_Trigger_efficiency_Ratio_1e.png')
-    c_data1m.SaveAs(str(year)+'/MET_Trigger_efficiency_Data_1m.png')
-    c_MC1m.SaveAs(str(year)+'/MET_Trigger_efficiency_MC_1m.png')
-    c_ratio1m.SaveAs(str(year)+'/MET_Trigger_efficiency_Ratio_1m.png')
+    if not os.path.exists(str(year)+'/'+date+'/') : os.makedirs(str(year)+'/'+date+'/')
+    c_data1e.SaveAs(str(year)+'/'+date+'/MET_Trigger_efficiency_Data_1e.png')
+    c_MC1e.SaveAs(str(year)+'/'+date+'/MET_Trigger_efficiency_MC_1e.png')
+    c_ratio1e.SaveAs(str(year)+'/'+date+'/MET_Trigger_efficiency_Ratio_1e.png')
+    c_data1m.SaveAs(str(year)+'/'+date+'/MET_Trigger_efficiency_Data_1m.png')
+    c_MC1m.SaveAs(str(year)+'/'+date+'/MET_Trigger_efficiency_MC_1m.png')
+    c_ratio1m.SaveAs(str(year)+'/'+date+'/MET_Trigger_efficiency_Ratio_1m.png')
 
 print 'Code end time:', datetime.datetime.now()

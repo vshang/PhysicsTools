@@ -9,10 +9,10 @@ import math
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/preselect_2016/'
-date = '04_27_2021'
-year = 2016
-useCondor = True
+saveDirectory = 'plots/2018_QCDCR_debugging/minDeltaPhi12/'
+date = '06_10_2021'
+year = 2018
+useCondor = False
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
     dataSamples = data2016
@@ -47,49 +47,29 @@ if year == 2016:
     cuts['singleIsoEle'] = 'HLT_Ele27_WPTight_Gsf'
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon175'
     cuts['singleIsoMu'] = 'HLT_IsoMu24 || HLT_IsoTkMu24'
-    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMET120_PFMHT120_IDTight || HLT_PFMET170_HBHECleaned || HLT_PFMET170_BeamHaloCleaned'
+    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight'
 elif year == 2017:
     cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'
     cuts['singleIsoEle'] = 'passEle32WPTightGsf2017'
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
     cuts['singleIsoMu'] = 'HLT_IsoMu27' 
-    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60 || HLT_PFMET120_PFMHT120_IDTight || HLT_PFMET120_PFMHT120_IDTight_PFHT60 || HLT_PFMET200_HBHECleaned || HLT_PFMET200_HBHE_BeamHaloCleaned'
+    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
 elif year == 2018:
     cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'
-    cuts['singleIsoEle'] = 'HLT_Ele32_WPTight_Gsf'
-    cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
-    cuts['singleIsoMu'] = 'HLT_IsoMu24' 
-    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60 || HLT_PFMET120_PFMHT120_IDTight || HLT_PFMET120_PFMHT120_IDTight_PFHT60 || HLT_PFMET200_HBHECleaned || HLT_PFMET200_HBHE_BeamHaloCleaned'
+    cuts['singleIsoEle'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'#'HLT_Ele32_WPTight_Gsf'
+    cuts['singleEle'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'#'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
+    cuts['singleIsoMu'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'#'HLT_IsoMu24' 
+    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
 
 #Pre-selection cut definitions
 cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
-cuts['SL'] = '(' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')' 
+cuts['SL'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + '))' 
 cuts['SL1b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets == 1')
 cuts['SL2b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets >= 2')
-cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 &&' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')'
+cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')'
 cuts['AH1b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1')
 cuts['AH2b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2')
-
-cuts['AH1'] = cuts['AH'] + ' && minDeltaPhi12 >= 0.8'
-cuts['AH2'] = cuts['AH1'] + ' && M_Tb >= 140'
-cuts['AH3'] = cuts['AH2'].replace('nbjets >= 1', 'nbjets == 1')
-cuts['AH4'] = cuts['AH2'].replace('nbjets >= 1', 'nbjets >= 2')
-cuts['AH5'] = cuts['AH4'] + ' && jet1p_TH_T <= 0.5'
-cuts['AH6'] = cuts['AH2'].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 270')
-cuts['AH7'] = cuts['AH2'].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 290')
-cuts['AH8'] = cuts['AH2'].replace('minDeltaPhi12 >= 0.8', 'minDeltaPhi12 >= 1.2')
-cuts['AH9'] = cuts['AH2'].replace('minDeltaPhi12 >= 0.8', 'minDeltaPhi12 >= 2.0')
-cuts['AH10'] = cuts['AH'] + ' && minDeltaPhi12 >= 2.0 && M_Tb >= 200 && METcorrected_pt >= 350'
-cuts['AH11'] = cuts['AH2'].replace('M_Tb >= 140', 'M_Tb >= 180')
-cuts['AH12'] = cuts['AH2'].replace('M_Tb >= 140', 'M_Tb >= 200')
-cuts['AH13'] = cuts['AH2'].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 350')
-cuts['AH14'] = cuts['AH10'].replace('nbjets >= 1', 'nbjets == 1')
-cuts['AH15'] = cuts['AH10'].replace('nbjets >= 1', 'nbjets >= 2')
-cuts['AH16'] = cuts['AH15'] + ' && jet1p_TH_T <= 0.5'
-cuts['AH17'] = cuts['AH6'].replace('nbjets >= 1', 'nbjets == 1')
-cuts['AH18'] = cuts['AH6'].replace('nbjets >= 1', 'nbjets >= 2')
-cuts['AH19'] = cuts['AH18'] + ' && jet1p_TH_T <= 0.5'
 
 cuts['SL1e1b1FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet <= 1'
 cuts['SL1e2b1FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet <= 1'
@@ -188,7 +168,7 @@ cuts['AH1mWR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuon
 cuts['AH2eZR'] = 'njets >= 3 && nbjets == 0 && nTightElectrons == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
 cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 
-cuts['AH0lQR'] = cuts['AH'].replace('minDeltaPhi > 0.4', 'minDeltaPhi <= 0.4')
+cuts['AH0lQR'] = cuts['AH'].replace(' && minDeltaPhi > 0.4', '') + ' && minDeltaPhi12 <= 0.8'
 cuts['AH0l0fQR'] = cuts['AH0lQR'] + ' && nfjets == 0'
 cuts['AH0l1fQR'] = cuts['AH0lQR'] + ' && nfjets >= 1'
 cuts['AH0l1bQR'] = cuts['AH0lQR'].replace('nbjets >= 1', 'nbjets == 1')
@@ -207,22 +187,13 @@ cuts['AH1lTR'] = '(' + cuts['AH1eTR'] + ') || (' + cuts['AH1mTR'] + ')'
 cuts['AH1lWR'] = '(' + cuts['AH1eWR'] + ') || (' + cuts['AH1mWR'] + ')'
 cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 
-cuts['SLeCR'] = 'njets >= 2 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
-cuts['SLmCR'] = 'njets >= 2 && METcorrected_pt >= 160 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
-cuts['SL1eCR'] = 'njets >= 2 && METcorrected_pt >= 160 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))'
-cuts['SL1mCR'] = 'njets >= 2 && METcorrected_pt >= 160 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
-cuts['SL1e0bCR'] = cuts['SL1eCR'] + ' && nbjets == 0'
-cuts['SL1m0bCR'] = cuts['SL1mCR'] + ' && nbjets == 0'
-cuts['SL1e1bCR'] = cuts['SL1eCR'] + ' && nbjets >= 1'
-cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
-
 #Select selection cut and variable to be plotted here by uncommenting
 
 #cut = 'cut 1'
 
 #cut = 'SL1e' #Pre-selection cuts
 #cut = 'SL1m'
-#cut = 'SL'
+cut = 'SL'
 #cut = 'SL1b'
 #cut = 'SL2b'
 #cut = 'AH'
@@ -307,7 +278,7 @@ cuts['SL1m1bCR'] = cuts['SL1mCR'] + ' && nbjets >= 1'
 #cut = 'SL1lWR'
 #cut = 'AH1lTR'
 #cut = 'AH1lWR'
-cut = 'AH2lZR'
+#cut = 'AH2lZR'
 
 #cut = 'SLeCR'
 #cut = 'SLmCR'
@@ -339,7 +310,8 @@ cut = 'AH2lZR'
 #cuts[cut] = cuts[cut] + ' && EE_L1_prefire == 0'
 #cuts[cut] = cuts[cut] + ' && deltaPhij3 >= 0.75'
 #cuts[cut] = cuts[cut] + ' && FatJet_deepTag_TvsQCD >= 0'
-#cuts[cut] = cuts[cut] + ' && M_T >= 140 && M_T2W >= 180'
+#cuts[cut] = cuts[cut] + ' && M_T >= 140'# && M_T2W >= 180'
+#cuts[cut] = cuts[cut].replace(' && minDeltaPhi > 0.4', '')
 #Uncomment replacements below to replace PFMET with PuppiMET variables
 # cuts[cut] = cuts[cut].replace('METcorrected', 'PuppiMET')
 # cuts[cut] = cuts[cut].replace('minDeltaPhi ', 'minDeltaPhi_puppi ')
@@ -354,11 +326,11 @@ cut = 'AH2lZR'
 #Only apply ee badSC noise filter to data (https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2)
 cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 
-var = 'METcorrected_pt'
+#var = 'METcorrected_pt'
 #var = 'recoilPtMiss'
 #var = 'M_T'
 #var = 'M_T2W'
-#var = 'minDeltaPhi12'
+var = 'minDeltaPhi12'
 #var = 'M_Tb'
 #var = 'jet1p_TH_T'
 #var = 'njets'
@@ -386,15 +358,21 @@ var = 'METcorrected_pt'
 #var = 'modified_topness'
 #var = 'full_topness'
 
-#Set lum (fb^-1) and overall signal sample scale factor here
+#Set lumi (fb^-1) and overall signal sample scale factor here
 if year == 2016:
     lumi = 35.92
 elif year == 2017:
     lumi = 41.53
 elif year == 2018:
-    lumi = 59.83
+    #lumi = 59.83
+    #lumi = 21.08 #Before HEM 15/16 Issue
+    lumi = 38.75 #After HEM 15/16 Issue
+    # lumi = 14.03 #Run A
+    # lumi = 7.07 #Run B
+    # lumi = 6.90 #Run C
+    # lumi = 31.84 #Run D
 if 'SR' in cut:
-    scaleFactor = 1#20
+    scaleFactor = 20
 else:
     scaleFactor = 1
 
@@ -413,8 +391,8 @@ print("Creating histograms..")
 
 #Set histogram options
 nbins = 15
-xmin = 250
-xmax = 550
+xmin = 0
+xmax = 3
 auto_y = True
 doLogPlot = False
 drawData = True
@@ -423,10 +401,10 @@ mchi = 1
 mphi = 100
 normalizePlots = False
 useCentralSamples = True
-doBinned = True
-savePlots = False
+doBinned = False
+savePlots = True
 combineEleMu = True
-doSys = True
+doSys = False
 if doBinned:
     useCentralSamples = True
     scaleFactor = 1
@@ -435,11 +413,11 @@ if not auto_y:
     ymin = 60
     ymax = 20000
 
-histoLabel = '; p_{T}^{miss} (GeV); Events'
+#histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; Hadronic recoil (GeV); Events'
 #histoLabel = '; M_{T} (GeV); Events'
 #histoLabel = '; M_{T2}^{W} (GeV); Events'
-#histoLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
+histoLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
 #histoLabel = '; M_{T}^{b} (GeV); Events'
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
 
@@ -798,9 +776,11 @@ for dataset in dataSamples:
         for filepath in dataSamples[dataset]['filepaths']:
             dataSamples[dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             dataSamples[dataset][filepath+'_Events'] = dataSamples[dataset][filepath+'_TFile'].Get('Events')
-            nevents += dataSamples[dataset][filepath+'_Events'].GetEntries()
+            dataset_nevents = dataSamples[dataset][filepath+'_Events'].GetEntries()
+            nevents += dataset_nevents
+            print '    nevents in filepath = ' + filepath + ': ' + str(dataset_nevents)
         dataSamples[dataset]['nevents'] = nevents
-        print '   nevents in ', dataset, ': ', nevents
+        print '    total nevents in ', dataset, ': ', nevents
 print("Got data sample root files and event trees")
 
 #Get MC background root files and event trees
@@ -811,7 +791,10 @@ for process in MCSamples:
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
-            skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_05072021', 'countEvents_03182021'),'')
+            if year == 2016:
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_05072021', 'countEvents_03182021'),'')
+            else:
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_03182021', 'countEvents_03182021'),'')
             if (process in signal) and useCentralSamples and ('ttbar' in process):
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
@@ -866,8 +849,8 @@ for dataset in dataSamples:
                 print '   Using cut = ', datacut
             if 'MET_Run2017B' in filepath: #MET trigger paths also missing from Run2017B (https://hypernews.cern.ch/HyperNews/CMS/get/top-trigger/247/1.html)
                 datacut = datacut.replace('HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60 || ','')
-                datacut = datacut.replace(' || HLT_PFMET120_PFMHT120_IDTight_PFHT60 || HLT_PFMET200_HBHECleaned || HLT_PFMET200_HBHE_BeamHaloCleaned','')
                 print '   Using cut = ', datacut
+            datacut = datacut + ' && run >= 319077'
             dataSamples[dataset][filepath+'_Events'].Draw(var+'>>hist',datacut)
             print '    hist nEntries = ', hist.GetEntries()
             print '    hist integral = ', hist.Integral(1,nbins+1)
@@ -879,7 +862,8 @@ for process in MCSamples:
     print '  Process = ', process
     for dataset in MCSamples[process]:
         print '      Dataset = ', dataset, ' ||   nEvents = ', MCSamples[process][dataset]['nevents']
-        weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight'#*electronTriggerWeight'
+        #weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight'#*electronTriggerWeight'
+        weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*leptonWeight*bjetWeight*puWeight*EE_L1_prefire_Weight'#*electronTriggerWeight'
         #Apply appropriate NLO k-factors
         if process == 'WPlusJets':
             weight = weight + '*qcdWWeight*ewkWWeight'
@@ -1386,7 +1370,7 @@ if savePlots:
         c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
         #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
     else:
-        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
+        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + "_withMETTriggers_postHEM.png")
         #c.SaveAs("test.png")
 
 print 'Plotting end time:', datetime.datetime.now()
