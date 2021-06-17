@@ -9,10 +9,10 @@ import math
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/2018_QCDCR_debugging/minDeltaPhi12/'
-date = '06_10_2021'
+saveDirectory = 'plots/CR_2018/METcorrected_pt/'
+date = '06_17_2021'
 year = 2018
-useCondor = False
+useCondor = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
     dataSamples = data2016
@@ -26,6 +26,7 @@ elif year == 2018:
 #Make sure save directory is available if not using Condor
 if not useCondor:
     if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
+    #if not os.path.exists( saveDirectory ) : os.makedirs( saveDirectory )
 
 print 'Plotting start time:', datetime.datetime.now()
 
@@ -56,9 +57,9 @@ elif year == 2017:
     cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
 elif year == 2018:
     cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'
-    cuts['singleIsoEle'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'#'HLT_Ele32_WPTight_Gsf'
-    cuts['singleEle'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'#'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
-    cuts['singleIsoMu'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'#'HLT_IsoMu24' 
+    cuts['singleIsoEle'] = 'HLT_Ele32_WPTight_Gsf'
+    cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
+    cuts['singleIsoMu'] = 'HLT_IsoMu24' 
     cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
 
 #Pre-selection cut definitions
@@ -193,7 +194,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 
 #cut = 'SL1e' #Pre-selection cuts
 #cut = 'SL1m'
-cut = 'SL'
+#cut = 'SL'
 #cut = 'SL1b'
 #cut = 'SL2b'
 #cut = 'AH'
@@ -263,7 +264,7 @@ cut = 'SL'
 #cut = 'AH2eZR'
 #cut = 'AH2mZR'
 
-#cut = 'AH0lQR'
+cut = 'AH0lQR'
 #cut = 'AH0l0fQR'
 #cut = 'AH0l1fQR'
 #cut = 'AH0l1bQR'
@@ -311,7 +312,8 @@ cut = 'SL'
 #cuts[cut] = cuts[cut] + ' && deltaPhij3 >= 0.75'
 #cuts[cut] = cuts[cut] + ' && FatJet_deepTag_TvsQCD >= 0'
 #cuts[cut] = cuts[cut] + ' && M_T >= 140'# && M_T2W >= 180'
-#cuts[cut] = cuts[cut].replace(' && minDeltaPhi > 0.4', '')
+#cuts[cut] = cuts[cut].replace(' && minDeltaPhi > 0.4', '') + ' && ((METcorrected_phi <= -1.77) || (METcorrected_phi >= -0.67))' #+ ' && ((Jet_phi[index_centralJets[0]] <= 1.27) || (Jet_phi[index_centralJets[0]] >= 2.57))'
+#cuts[cut] = cuts[cut] + ' && ((METcorrected_phi <= -1.77) || (METcorrected_phi >= -0.67))' + ' && ((Jet_phi[index_centralJets[0]] <= 1.27) || (Jet_phi[index_centralJets[0]] >= 2.57))'
 #Uncomment replacements below to replace PFMET with PuppiMET variables
 # cuts[cut] = cuts[cut].replace('METcorrected', 'PuppiMET')
 # cuts[cut] = cuts[cut].replace('minDeltaPhi ', 'minDeltaPhi_puppi ')
@@ -326,11 +328,11 @@ cut = 'SL'
 #Only apply ee badSC noise filter to data (https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2)
 cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 
-#var = 'METcorrected_pt'
+var = 'METcorrected_pt'
 #var = 'recoilPtMiss'
 #var = 'M_T'
 #var = 'M_T2W'
-var = 'minDeltaPhi12'
+#var = 'minDeltaPhi12'
 #var = 'M_Tb'
 #var = 'jet1p_TH_T'
 #var = 'njets'
@@ -340,7 +342,8 @@ var = 'minDeltaPhi12'
 #var = 'PuppiMET_pt'
 #var = 'Electron_pt[1]'
 #var = 'Muon_pt[1]'
-#var = 'Jet_pt[0]'
+#var = 'Jet_pt'
+#var = 'Jet_phi[index_centralJets[0]]'
 #var = 'Electron_eta[1]'
 #var = 'Muon_eta[1]'
 #var = 'nTightElectrons'
@@ -364,9 +367,9 @@ if year == 2016:
 elif year == 2017:
     lumi = 41.53
 elif year == 2018:
-    #lumi = 59.83
+    lumi = 59.83
     #lumi = 21.08 #Before HEM 15/16 Issue
-    lumi = 38.75 #After HEM 15/16 Issue
+    #lumi = 38.75 #After HEM 15/16 Issue
     # lumi = 14.03 #Run A
     # lumi = 7.07 #Run B
     # lumi = 6.90 #Run C
@@ -391,10 +394,10 @@ print("Creating histograms..")
 
 #Set histogram options
 nbins = 15
-xmin = 0
-xmax = 3
+xmin = 250
+xmax = 550
 auto_y = True
-doLogPlot = False
+doLogPlot = True
 drawData = True
 mediatorType = 'scalar'
 mchi = 1
@@ -413,13 +416,15 @@ if not auto_y:
     ymin = 60
     ymax = 20000
 
-#histoLabel = '; p_{T}^{miss} (GeV); Events'
+histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; Hadronic recoil (GeV); Events'
 #histoLabel = '; M_{T} (GeV); Events'
 #histoLabel = '; M_{T2}^{W} (GeV); Events'
-histoLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
+#histoLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
 #histoLabel = '; M_{T}^{b} (GeV); Events'
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
+#histoLabel = '; #phi^{miss}; Events'
+#histoLabel = '; jet_{1} #phi; Events'
 
 #histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
@@ -848,9 +853,9 @@ for dataset in dataSamples:
                 datacut = datacut.replace('HLT_Ele115_CaloIdVT_GsfTrkIdT || ','')
                 print '   Using cut = ', datacut
             if 'MET_Run2017B' in filepath: #MET trigger paths also missing from Run2017B (https://hypernews.cern.ch/HyperNews/CMS/get/top-trigger/247/1.html)
-                datacut = datacut.replace('HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60 || ','')
+                datacut = datacut.replace(' || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60','')
                 print '   Using cut = ', datacut
-            datacut = datacut + ' && run >= 319077'
+            #datacut = datacut + ' && run >= 319077'
             dataSamples[dataset][filepath+'_Events'].Draw(var+'>>hist',datacut)
             print '    hist nEntries = ', hist.GetEntries()
             print '    hist integral = ', hist.Integral(1,nbins+1)
@@ -1370,7 +1375,8 @@ if savePlots:
         c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
         #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
     else:
-        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + "_withMETTriggers_postHEM.png")
+        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + "_withHEMfixv2_postHEM.png")
+        #c.SaveAs(saveDirectory + cut + str(year) + "_" + var + "_" + date + "_withHEMfixv5_postHEM.png")
         #c.SaveAs("test.png")
 
 print 'Plotting end time:', datetime.datetime.now()

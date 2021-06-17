@@ -7,8 +7,8 @@ import math
 import numpy as np
 
 gErrorIgnoreLevel = kError
-date = '05_25_2021'
-year = 2018
+date = '06_16_2021'
+year = 2017
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
     samples = samples2016
@@ -62,13 +62,13 @@ print("Creating histograms..")
 
 #Set histogram options
 var = 'METcorrected_pt'
-nbins = 29
-#xmin = 250
-#xmax = 650
-edges = np.array([160., 170., 180., 190., 200., 210., 220., 230., 240., 250., 260., 270., 280., 290., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600.], dtype='float64')
+nbins = 40
+xmin = 250
+xmax = 650
+#edges = np.array([160., 170., 180., 190., 200., 210., 220., 230., 240., 250., 260., 270., 280., 290., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600.], dtype='float64')
 ymin = 0
 ymax = 1
-saveRootFiles = False
+saveRootFiles = True
 savePlots = True
 
 histoLabel = '; p_{T}^{miss} (GeV); Efficiency'
@@ -81,7 +81,7 @@ histNames = ['1eNumData', '1eDenomData', '1eEffData', '1mNumData', '1mDenomData'
 hists = {}
 TH1.SetDefaultSumw2()
 for name in histNames:
-    hists[name] = TH1F(name, histoLabel, nbins, edges)
+    hists[name] = TH1F(name, histoLabel, nbins, xmin, xmax)
 
 #Get data root files and event trees
 dataSamples = ['SingleElectron', 'SingleMuon']
@@ -121,13 +121,13 @@ for dataset in dataSamples:
         #Only apply ee badSC noise filter to data (https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2)
         datacutNum = cuts[prefix+'Num'] + ' && Flag_eeBadScFilter'
         datacutDenom = cuts[prefix+'Denom'] + ' && Flag_eeBadScFilter'
-        if 'SingleElectron_Run2017B' in filepath: #HLT_Ele115_CaloIdVT_GsfTrkIdT trigger path not available in Run2017B (https://hypernews.cern.ch/HyperNews/CMS/get/b2g-selections/346.html?inline=-1)
+        if 'Run2017B' in filepath: #HLT_Ele115_CaloIdVT_GsfTrkIdT trigger path not available in Run2017B (https://hypernews.cern.ch/HyperNews/CMS/get/b2g-selections/346.html?inline=-1)
             datacutNum = datacutNum.replace('HLT_Ele115_CaloIdVT_GsfTrkIdT || ','')
             datacutDenom = datacutDenom.replace('HLT_Ele115_CaloIdVT_GsfTrkIdT || ','')
-        if 'MET_Run2017B' in filepath: #MET trigger paths also missing from Run2017B (https://hypernews.cern.ch/HyperNews/CMS/get/top-trigger/247/1.html)
-            datacutNum = datacutNum.replace('HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60 || ','')
-        histNum = TH1F('histNum', histoLabel, nbins, edges)
-        histDenom = TH1F('histDenom', histoLabel, nbins, edges)
+            #MET trigger paths also missing from Run2017B (https://hypernews.cern.ch/HyperNews/CMS/get/top-trigger/247/1.html)
+            datacutNum = datacutNum.replace(' || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60','')
+        histNum = TH1F('histNum', histoLabel, nbins, xmin, xmax)
+        histDenom = TH1F('histDenom', histoLabel, nbins, xmin, xmax)
         samples[dataset][filepath+'_Events'].Draw(var+'>>histNum',datacutNum)
         samples[dataset][filepath+'_Events'].Draw(var+'>>histDenom',datacutDenom)
         hists[prefix+'NumData'] += histNum
@@ -155,8 +155,8 @@ for prefix in ['1e', '1m']:
     for HTbin in samples['WPlusJets']:
         weight = str(samples['WPlusJets'][HTbin]['xsec']*lumi/samples['WPlusJets'][HTbin]['nevents']) + '*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*qcdWWeight*ewkWWeight'#*electronTriggerWeight'
         for filepath in samples['WPlusJets'][HTbin]['filepaths']:
-            histNum = TH1F('histNum', histoLabel, nbins, edges)
-            histDenom = TH1F('histDenom', histoLabel, nbins, edges)
+            histNum = TH1F('histNum', histoLabel, nbins, xmin, xmax)
+            histDenom = TH1F('histDenom', histoLabel, nbins, xmin, xmax)
             samples['WPlusJets'][HTbin][filepath+'_Events'].Draw(var+'>>histNum',MCcutNum)
             samples['WPlusJets'][HTbin][filepath+'_Events'].Draw(var+'>>histDenom',MCcutDenom)
             hists[prefix+'NumMC'] += histNum
@@ -190,8 +190,8 @@ for prefix in ['1e', '1m']:
 #Save root files with SFs if saveRootFiles == True
 if saveRootFiles:
     rootFile = TFile('MET_Trigger_SFs_'+str(year)+'.root', 'RECREATE')
-    ratioHist = TH1F('SF', histoLabel, nbins, edges)
-    for i in range(1,nbins+1):
+    ratioHist = TH1F('SF', histoLabel, nbins, xmin, xmax)
+    for i in range(1,nbins+2):
         binContent = hists['1eEffRatio'].GetBinContent(i)
         binError = hists['1eEffRatio'].GetBinError(i)
         ratioHist.SetBinContent(i, binContent)

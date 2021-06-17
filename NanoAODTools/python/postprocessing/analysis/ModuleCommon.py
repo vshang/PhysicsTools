@@ -8,14 +8,15 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.postprocessor import Pos
 from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collection 
 from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 from PhysicsTools.NanoAODTools.postprocessing.corrections.leptonSFs import *
+from PhysicsTools.NanoAODTools.postprocessing.corrections.METSFs import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.BTaggingTool import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.kFactorTool import *
 from PhysicsTools.NanoAODTools.postprocessing.corrections.PileupWeightTool import *
 from PhysicsTools.NanoAODTools.postprocessing.modules.jme.jetmetHelperRun2 import *
 
 #Set runLocal to false if running jobs through CRAB
-runLocal = False
-#runLocal = True
+#runLocal = False
+runLocal = True
 
 #Load shared object files that contains C++ code to calculate discriminating variables 
 if runLocal:
@@ -57,6 +58,7 @@ class CommonAnalysis(Module):
         if self.isMC:
             self.eleSFs = ElectronSFs(self.year)
             self.muSFs = MuonSFs(self.year)
+            self.METSFs = METSFs(self.year)
             self.btagTool = BTagWeightTool(tagger=self.btag,wp='medium',channel='ttbar',year=self.year)
             self.btagToolUp = BTagWeightTool(tagger=self.btag,wp='medium',sigma='up',channel='ttbar',year=self.year)
             self.btagToolDown = BTagWeightTool(tagger=self.btag,wp='medium',sigma='down',channel='ttbar',year=self.year)
@@ -236,6 +238,8 @@ class CommonAnalysis(Module):
             #Systematics - muon trigger weights
             self.out.branch("muonTriggerWeightUp", "F")
             self.out.branch("muonTriggerWeightDown", "F")
+
+            self.out.branch("METTriggerWeight", "F")
 
             self.out.branch("EE_L1_prefire_Weight", "F")
             #Systematics - EE L1 prefiring weights
@@ -958,6 +962,9 @@ to next event)"""
                 muonTriggerWeightUp *= self.muSFs.getWeight(tightMuon.pt, tightMuon.eta, event.run, 1)
                 muonTriggerWeightDown *= self.muSFs.getWeight(tightMuon.pt, tightMuon.eta, event.run, -1)
 
+            #Calculate MET trigger weight
+            METTriggerWeight = self.METSFs.getSF(METcorrected_pt)
+
             #Calculate EE L1 prefiring weight
             EE_L1_prefire_Weight = EE_L1_prefire_WeightUp = EE_L1_prefire_WeightDown = 1
 
@@ -1183,6 +1190,8 @@ to next event)"""
                 self.out.fillBranch("muonTriggerWeightUp", muonTriggerWeightUp)
                 self.out.fillBranch("muonTriggerWeightDown", muonTriggerWeightDown)
 
+                self.out.fillBranch("METTriggerWeight", METTriggerWeight)
+
                 self.out.fillBranch("EE_L1_prefire_Weight", EE_L1_prefire_Weight)
                 #Systematics - EE L1 prefiring weights
                 self.out.fillBranch("EE_L1_prefire_WeightUp", EE_L1_prefire_WeightUp)
@@ -1284,28 +1293,28 @@ countEvents = lambda : CountEvents()
 
 # #########################################################################################################################################
 
-# if runLocal:
-#     #Select PostProcessor options here
-#     selection=None
-#     #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-#     #outputDir = "testSamples/"
-#     outputDir = "."
-#     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-#     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-#     #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
-#     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-#     #inputFiles=["testSamples/nanoAODv7/ttbarDM_Run2016_v7.root"]
-#     inputFiles=["testSamples/nanoAODv7/ttbarPlusJets_Run2018_v7.root"]
-#     #inputFiles=["testSamples/nanoAODv7/SingleElectron_2016C_v7.root"]
-#     #inputFiles = ["testSamples/SingleElectron_2018A.root"]
-#     #inputFiles = ["testSamples/SingleElectron_2016H.root"]
-#     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
-#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
-#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+if runLocal:
+    #Select PostProcessor options here
+    selection=None
+    #outputDir = "outDir2016AnalysisSR/ttbarDM/"
+    #outputDir = "testSamples/"
+    outputDir = "."
+    #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+    outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+    #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+    #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
+    #inputFiles=["testSamples/nanoAODv7/ttbarDM_Run2016_v7.root"]
+    inputFiles=["testSamples/nanoAODv7/ttbarPlusJets_Run2018_v7.root"]
+    #inputFiles=["testSamples/nanoAODv7/SingleElectron_2016C_v7.root"]
+    #inputFiles = ["testSamples/SingleElectron_2018A.root"]
+    #inputFiles = ["testSamples/SingleElectron_2016H.root"]
+    #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
+    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_Skimv2",noOut=False,outputbranchsel=outputbranches)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_03182021",noOut=False,outputbranchsel=outputbranches)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_countEvents_dropAll",noOut=False,outputbranchsel=outputbranches)
-#     p.run()
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018MC()],postfix="_ModuleCommon_2016MC_Skim",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_03182021",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_countEvents_dropAll",noOut=False,outputbranchsel=outputbranches)
+    p.run()
