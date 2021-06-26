@@ -1282,7 +1282,7 @@ jetmetCorrector2017DataD = createJMECorrector(isMC=False, dataYear=2017, runPeri
 jetmetCorrector2017DataE = createJMECorrector(isMC=False, dataYear=2017, runPeriod="E", jesUncert="Total", metBranchName="METFixEE2017")
 jetmetCorrector2017DataF = createJMECorrector(isMC=False, dataYear=2017, runPeriod="F", jesUncert="Total", metBranchName="METFixEE2017")
 
-jetmetCorrector2018MC = createJMECorrector(isMC=True, dataYear=2018, jesUncert="Total", applyHEMfix=True)
+jetmetCorrector2018MC = createJMECorrector(isMC=True, dataYear=2018, jesUncert="Total", applyHEMfix=False)
 jetmetCorrector2018DataA = createJMECorrector(isMC=False, dataYear=2018, runPeriod="A", jesUncert="Total", applyHEMfix=True)
 jetmetCorrector2018DataB = createJMECorrector(isMC=False, dataYear=2018, runPeriod="B", jesUncert="Total", applyHEMfix=True)
 jetmetCorrector2018DataC = createJMECorrector(isMC=False, dataYear=2018, runPeriod="C", jesUncert="Total", applyHEMfix=True)
@@ -1313,8 +1313,9 @@ if runLocal:
     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018MC()],postfix="_ModuleCommon_2016MC_Skim",noOut=False,outputbranchsel=outputbranches)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_03182021",noOut=False,outputbranchsel=outputbranches)
+    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_noHEMissue",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018MC_Skim()],postfix="_ModuleCommon_2018MC_Skim",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_06172021",noOut=False,outputbranchsel=outputbranches)
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_countEvents_dropAll",noOut=False,outputbranchsel=outputbranches)
     p.run()
