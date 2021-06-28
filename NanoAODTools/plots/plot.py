@@ -9,9 +9,9 @@ import math
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/tagger_studies/FatJet_deepTag_TvsQCD/'
-date = '06_24_2021'
-year = 2016
+saveDirectory = 'plots/SR_2018/METcorrected_phi/'
+date = '06_28_2021'
+year = 2018
 useCondor = False
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
@@ -32,16 +32,6 @@ print 'Plotting start time:', datetime.datetime.now()
 
 #Define selection cuts and filters here
 cuts = {}
-
-cuts['cut 1'] = '(nTightElectrons + nTightMuons) >= 1 && njets >= 2 && METcorrected_pt >= 160'
-cuts['cut 2'] = cuts['cut 1'].replace('(nTightElectrons + nTightMuons) >= 1', '((nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0) || (nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0))')
-cuts['cut 3'] = cuts['cut 2'] + ' && nbjets >= 1'
-cuts['cut 4'] = cuts['cut 3'] + ' && M_T >= 160'
-cuts['cut 5'] = cuts['cut 4'] + ' && minDeltaPhi12 >= 0.8'
-
-cuts['cut 6'] = cuts['cut 5'].replace('METcorrected_pt >= 160', 'METcorrected_pt >= 250')
-cuts['cut 7'] = cuts['cut 5'] + ' && M_T2W >= 200'
-cuts['cut 8'] = cuts['cut 5'].replace('minDeltaPhi12 >= 0.8', 'minDeltaPhi12 >= 1.2')
 
 if year == 2016:
     cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter'
@@ -190,14 +180,12 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 
 #Select selection cut and variable to be plotted here by uncommenting
 
-#cut = 'cut 1'
-
 #cut = 'SL1e' #Pre-selection cuts
 #cut = 'SL1m'
 #cut = 'SL'
 #cut = 'SL1b'
 #cut = 'SL2b'
-#cut = 'AH'
+cut = 'AH'
 #cut = 'AH1b'
 #cut = 'AH2b'
 
@@ -222,7 +210,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL1m2bSR'
 #cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
-cut = 'AH0l2bSR'
+#cut = 'AH0l2bSR'
 #cut = 'SL1bSR'
 #cut = 'SL2bSR'
 #cut = 'AH1bSR'
@@ -312,7 +300,7 @@ cut = 'AH0l2bSR'
 #cuts[cut] = cuts[cut] + ' && deltaPhij3 >= 0.75'
 #cuts[cut] = cuts[cut] + ' && FatJet_deepTag_TvsQCD >= 0'
 #cuts[cut] = cuts[cut] + ' && M_T >= 140'# && M_T2W >= 180'
-#cuts[cut] = cuts[cut].replace(' && minDeltaPhi > 0.4', '') + ' && ((METcorrected_phi <= -1.77) || (METcorrected_phi >= -0.67))' #+ ' && ((Jet_phi[index_centralJets[0]] <= 1.27) || (Jet_phi[index_centralJets[0]] >= 2.57))'
+#cuts[cut] = cuts[cut].replace(' && minDeltaPhi > 0.4', '') + ' && METcorrected_pt > 470' #+ ' && ((METcorrected_phi <= -1.77) || (METcorrected_phi >= -0.67))' #+ ' && ((Jet_phi[index_centralJets[0]] <= 1.27) || (Jet_phi[index_centralJets[0]] >= 2.57))'
 #cuts[cut] = cuts[cut] + ' && ((METcorrected_phi <= -1.77) || (METcorrected_phi >= -0.67))' + ' && ((Jet_phi[index_centralJets[0]] <= 1.27) || (Jet_phi[index_centralJets[0]] >= 2.57))'
 #Uncomment replacements below to replace PFMET with PuppiMET variables
 # cuts[cut] = cuts[cut].replace('METcorrected', 'PuppiMET')
@@ -344,18 +332,18 @@ cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 #var = 'Muon_pt[1]'
 #var = 'Jet_pt'
 #var = 'Jet_phi[index_centralJets[0]]'
-#var = 'Electron_eta[1]'
+#var = 'Electron_phi[index_tightElectrons[0]]'
 #var = 'Muon_eta[1]'
 #var = 'nTightElectrons'
 #var = 'nTightMuons'
 #var = 'nTightElectrons + nTightMuons'
 #var = 'm_ll'
 #var = 'MET_phi'
-#var = 'METcorrected_phi'
+var = 'METcorrected_phi'
 #var = 'M_T2ll'
 #var = 'deltaPhij3'
 #var = 'nFatJet'
-var = 'FatJet_deepTag_TvsQCD[0]'
+#var = 'FatJet_deepTag_TvsQCD[0]'
 #var = 'Jet_qgl'
 #var = 'FatJet_pt[2]'
 #var = 'modified_topness'
@@ -375,7 +363,7 @@ elif year == 2018:
     # lumi = 6.90 #Run C
     # lumi = 31.84 #Run D
 if 'SR' in cut:
-    scaleFactor = 1
+    scaleFactor = 20
 else:
     scaleFactor = 1
 
@@ -393,23 +381,23 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 11
-xmin = -0.1
-xmax = 1.0
+nbins = 30
+xmin = -3.0
+xmax = 3.0
 auto_y = True
 doLogPlot = False
-drawData = False
+drawData = True
 mediatorType = 'scalar'
 mchi = 1
-mphi = 500
-normalizePlots = True
+mphi = 100
+normalizePlots = False
 useCentralSamples = True
 doBinned = False
 savePlots = True
 combineEleMu = False
 doSys = False
 drawOverflow = True
-drawUnderflow = True
+drawUnderflow = False
 if doBinned:
     useCentralSamples = True
     scaleFactor = 1
@@ -425,9 +413,10 @@ if not auto_y:
 #histoLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
 #histoLabel = '; M_{T}^{b} (GeV); Events'
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
-#histoLabel = '; #phi^{miss}; Events'
+histoLabel = '; #phi^{miss}; Events'
 #histoLabel = '; jet_{1} #phi; Events'
-histoLabel = '; DeepAK8 top tag discriminant value; Events'
+#histoLabel = '; DeepAK8 top tag discriminant value; Events'
+#histoLabel = '; leading electron #phi; Events'
 
 #histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
@@ -475,7 +464,7 @@ if doBinned:
     else:
         signal = ['ttbar scalar', 'ttbar pseudoscalar']
 else:
-    if year == 20162016:
+    if year == 2016:
         signal = ['ttbar ' + mediatorType,'tbar ' + mediatorType]
     else:
         signal = ['ttbar ' + mediatorType,'ttbar pseudoscalar']
@@ -799,10 +788,7 @@ for process in MCSamples:
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
-            if year == 2016:
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_05072021', 'countEvents_03182021'),'')
-            else:
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_03182021', 'countEvents_03182021'),'')
+            skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_06172021', 'countEvents_03182021'),'')
             if (process in signal) and useCentralSamples and ('ttbar' in process):
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
@@ -870,8 +856,10 @@ for process in MCSamples:
     print '  Process = ', process
     for dataset in MCSamples[process]:
         print '      Dataset = ', dataset, ' ||   nEvents = ', MCSamples[process][dataset]['nevents']
-        #weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight'#*electronTriggerWeight'
-        weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*leptonWeight*bjetWeight*puWeight*EE_L1_prefire_Weight'#*electronTriggerWeight'
+        weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight'
+        if datasetNames == ['MET']:
+            weight = weight + '*METTriggerWeight'
+        #weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*leptonWeight*bjetWeight*puWeight*EE_L1_prefire_Weight'#*electronTriggerWeight'
         #Apply appropriate NLO k-factors
         if process == 'WPlusJets':
             weight = weight + '*qcdWWeight*ewkWWeight'
@@ -978,12 +966,12 @@ print '-----------------------------'
 print 'Total tt+DM signal nEvents = ', hists['ttbar ' + mediatorType].GetEntries()/scaleFactor
 print 'Total tt+DM signal integral = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
 print '-----------------------------'
-if year == 20162016:
+if year == 2016:
     print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()/scaleFactor
     print 'Total t+DM signal integral = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
 print '-----------------------------'
 print 'FOM for tt+DM signal = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
-if year == 20162016:
+if year == 2016:
     print 'FOM for t+DM signal = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
 print '-----------------------------'
 print 'Data bin errors:'
@@ -1001,7 +989,7 @@ for i in range(nbins+1):
     bin_error = hists['ttbar ' + mediatorType].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
-if year == 20162016:
+if year == 2016:
     print 't+DM bin errors:'
     for i in range(nbins+1):
         bin_error = hists['tbar ' + mediatorType].GetBinError(i)
@@ -1221,7 +1209,7 @@ if savePlots:
             c.SetLogy(1)
     h_MCStack.Draw('hist')
     hists['ttbar '+mediatorType].Draw('hist same')
-    if year == 20162016:
+    if year == 2016:
         secondSignal = 'tbar '+mediatorType
     else:
         secondSignal = 'ttbar pseudoscalar'
@@ -1333,13 +1321,13 @@ if savePlots:
     legend.AddEntry(hists['bkgSum'], 'MC stat.', 'f')
     if scaleFactor != 1: 
         legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-        if year == 20162016:
+        if year == 2016:
             legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
         else:
             legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
     else:
         legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-        if year == 20162016:
+        if year == 2016:
             legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
         else:
             legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
@@ -1381,7 +1369,7 @@ if savePlots:
         c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
         #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
     else:
-        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + "_ttDM_1_500.png")
+        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
         #c.SaveAs(saveDirectory + cut + str(year) + "_" + var + "_" + date + "_withHEMfixv5_postHEM.png")
         #c.SaveAs("test.png")
 
