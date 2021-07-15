@@ -18,6 +18,10 @@ from PhysicsTools.NanoAODTools.postprocessing.modules.jme.jetmetHelperRun2 impor
 #runLocal = False
 runLocal = True
 
+#Set jesSys to "All" for split JES systematics and "Total" for combined JES systematics
+jesSys = "All"
+#jesSys = "Total"
+
 #Load shared object files that contains C++ code to calculate discriminating variables 
 if runLocal:
     ROOT.gSystem.Load("/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/mt2w_bisect_cc.so")
@@ -45,6 +49,12 @@ except:
 
 Mt2Com_bisect = ROOT.Mt2Com_bisect()
 asymm_mt2_lester_bisect = ROOT.asymm_mt2_lester_bisect()
+
+#List of all JES systematic uncertainties
+if jesSys == "All":
+    jesUnc = ["","AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeBal", "RelativeSample", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "SinglePionECAL", "SinglePionHCAL", "TimePtEta"]
+else:
+    jesUnc = [""]
 
 class CommonAnalysis(Module):
     def __init__(self, signalRegion, year=2016, isData=False, isSignal=False, btag='DeepCSV'):
@@ -103,18 +113,8 @@ class CommonAnalysis(Module):
         self.out.branch("M_T2ll", "F")
         self.out.branch("jet1p_TH_T", "F")
         self.out.branch("ntaus", "I")
-        self.out.branch("m_llExists","I")
         self.out.branch("m_ll","F")
         self.out.branch("recoilPtMiss","F")
-
-        self.out.branch("minDeltaPhi_puppi", "F")
-        self.out.branch("minDeltaPhi12_puppi", "F")
-        self.out.branch("M_Tb_puppi", "F")
-        self.out.branch("M_T_puppi", "F")
-        self.out.branch("M_T2W_puppi", "F")
-        self.out.branch("M_T2ll_puppi", "F")
-        self.out.branch("m_llExists_puppi","I")
-        self.out.branch("recoilPtMiss_puppi","F")
 
         self.out.branch("lepton1_charge","I")
         self.out.branch("lepton2_charge","I")
@@ -134,82 +134,93 @@ class CommonAnalysis(Module):
 
         if self.isMC:
             #Systematics - JES, JER
-            self.out.branch("njetsScaleUp", "I")
-            self.out.branch("njetsScaleDown", "I")
+            for sys in jesUnc:
+                self.out.branch("njetsScale"+sys+"Up", "I")
+                self.out.branch("njetsScale"+sys+"Down", "I")
+
+                self.out.branch("nfjetsScale"+sys+"Up", "I")
+                self.out.branch("nfjetsScale"+sys+"Down", "I")
+
+                self.out.branch("nbjetsScale"+sys+"Up", "I")
+                self.out.branch("nbjetsScale"+sys+"Down", "I")
+
+                self.out.branch("minDeltaPhiScale"+sys+"Up", "F")
+                self.out.branch("minDeltaPhiScale"+sys+"Down", "F")
+
+                self.out.branch("minDeltaPhi12Scale"+sys+"Up", "F")
+                self.out.branch("minDeltaPhi12Scale"+sys+"Down", "F")
+
+                self.out.branch("M_TbScale"+sys+"Up", "F")
+                self.out.branch("M_TbScale"+sys+"Down", "F")
+
+                self.out.branch("M_TScale"+sys+"Up", "F")
+                self.out.branch("M_TScale"+sys+"Down", "F")
+                
+                self.out.branch("M_T2WScale"+sys+"Up", "F")
+                self.out.branch("M_T2WScale"+sys+"Down", "F")
+                
+                self.out.branch("M_T2llScale"+sys+"Up", "F")
+                self.out.branch("M_T2llScale"+sys+"Down", "F")
+                
+                self.out.branch("jet1p_TH_TScale"+sys+"Up", "F")
+                self.out.branch("jet1p_TH_TScale"+sys+"Down", "F")
+                
+                self.out.branch("recoilPtMissScale"+sys+"Up", "F")
+                self.out.branch("recoilPtMissScale"+sys+"Down", "F")
+                
+                self.out.branch("modified_topnessScale"+sys+"Up", "F")
+                self.out.branch("modified_topnessScale"+sys+"Down", "F")
+                
+                self.out.branch("full_topnessScale"+sys+"Up", "F")
+                self.out.branch("full_topnessScale"+sys+"Down", "F")
+
+                self.out.branch("METcorrected_ptScale"+sys+"Up", "F")
+                self.out.branch("METcorrected_ptScale"+sys+"Down", "F")
+                self.out.branch("METcorrected_phiScale"+sys+"Up", "F")
+                self.out.branch("METcorrected_phiScale"+sys+"Down", "F")
+
             self.out.branch("njetsResUp", "I")
             self.out.branch("njetsResDown", "I")
 
-            self.out.branch("nfjetsScaleUp", "I")
-            self.out.branch("nfjetsScaleDown", "I")
+            
             self.out.branch("nfjetsResUp", "I")
             self.out.branch("nfjetsResDown", "I")
             
-            self.out.branch("nbjetsScaleUp", "I")
-            self.out.branch("nbjetsScaleDown", "I")
             self.out.branch("nbjetsResUp", "I")
             self.out.branch("nbjetsResDown", "I")
-            
-            self.out.branch("METcorrected_ptScaleUp", "F")
-            self.out.branch("METcorrected_ptScaleDown", "F")
+
             self.out.branch("METcorrected_ptResUp", "F")
             self.out.branch("METcorrected_ptResDown", "F")
-            self.out.branch("METcorrected_phiScaleUp", "F")
-            self.out.branch("METcorrected_phiScaleDown", "F")
             self.out.branch("METcorrected_phiResUp", "F")
             self.out.branch("METcorrected_phiResDown", "F")
             
-            self.out.branch("minDeltaPhiScaleUp", "F")
-            self.out.branch("minDeltaPhiScaleDown", "F")
             self.out.branch("minDeltaPhiResUp", "F")
             self.out.branch("minDeltaPhiResDown", "F")
             
-            self.out.branch("minDeltaPhi12ScaleUp", "F")
-            self.out.branch("minDeltaPhi12ScaleDown", "F")
             self.out.branch("minDeltaPhi12ResUp", "F")
             self.out.branch("minDeltaPhi12ResDown", "F")
             
-            self.out.branch("M_TbScaleUp", "F")
-            self.out.branch("M_TbScaleDown", "F")
             self.out.branch("M_TbResUp", "F")
             self.out.branch("M_TbResDown", "F")
             
-            self.out.branch("M_TScaleUp", "F")
-            self.out.branch("M_TScaleDown", "F")
             self.out.branch("M_TResUp", "F")
             self.out.branch("M_TResDown", "F")
             
-            self.out.branch("M_T2WScaleUp", "F")
-            self.out.branch("M_T2WScaleDown", "F")
             self.out.branch("M_T2WResUp", "F")
             self.out.branch("M_T2WResDown", "F")
             
-            self.out.branch("M_T2llScaleUp", "F")
-            self.out.branch("M_T2llScaleDown", "F")
             self.out.branch("M_T2llResUp", "F")
             self.out.branch("M_T2llResDown", "F")
             
-            self.out.branch("jet1p_TH_TScaleUp", "F")
-            self.out.branch("jet1p_TH_TScaleDown", "F")
             self.out.branch("jet1p_TH_TResUp", "F")
             self.out.branch("jet1p_TH_TResDown", "F")
             
-            self.out.branch("m_llExistsScaleUp", "I")
-            self.out.branch("m_llExistsScaleDown", "I")
-            self.out.branch("m_llExistsResUp", "I")
-            self.out.branch("m_llExistsResDown", "I")
-            
-            self.out.branch("recoilPtMissScaleUp", "F")
-            self.out.branch("recoilPtMissScaleDown", "F")
             self.out.branch("recoilPtMissResUp", "F")
             self.out.branch("recoilPtMissResDown", "F")
             
-            self.out.branch("modified_topnessScaleUp", "F")
-            self.out.branch("modified_topnessScaleDown", "F")
             self.out.branch("modified_topnessResUp", "F")
             self.out.branch("modified_topnessResDown", "F")
 
-            self.out.branch("full_topnessScaleUp", "F")
-            self.out.branch("full_topnessScaleDown", "F")
             self.out.branch("full_topnessResUp", "F")
             self.out.branch("full_topnessResDown", "F")
 
@@ -280,6 +291,7 @@ to next event)"""
         electrons = Collection(event, "Electron")
         muons = Collection(event, "Muon")
         jets = Collection(event, "Jet")
+        jesBranches = {}
 
         #Tight/Veto electrons are defined and counted
         if self.year == 2016:
@@ -331,14 +343,588 @@ to next event)"""
             else:
                 return True
 
+        #Helper function to return correct jet pt for corresponding JES systematic uncertainty
+        def getJESjetpt(jet, sys):
+            if sys == "Up":
+                return jet.pt_jesTotalUp
+            elif sys == "Down":
+                return jet.pt_jesTotalDown
+            elif sys == "AbsoluteMPFBiasUp":
+                return jet.pt_jesAbsoluteMPFBiasUp
+            elif sys == "AbsoluteMPFBiasDown":
+                return jet.pt_jesAbsoluteMPFBiasDown
+            elif sys == "AbsoluteScaleUp":
+                return jet.pt_jesAbsoluteScaleUp
+            elif sys == "AbsoluteScaleDown":
+                return jet.pt_jesAbsoluteScaleDown
+            elif sys == "AbsoluteStatUp":
+                return jet.pt_jesAbsoluteStatUp
+            elif sys == "AbsoluteStatDown":
+                return jet.pt_jesAbsoluteStatDown
+            elif sys == "FlavorQCDUp":
+                return jet.pt_jesFlavorQCDUp
+            elif sys == "FlavorQCDDown":
+                return jet.pt_jesFlavorQCDDown
+            elif sys == "FragmentationUp":
+                return jet.pt_jesFragmentationUp
+            elif sys == "FragmentationDown":
+                return jet.pt_jesFragmentationDown
+            elif sys == "PileUpDataMCUp":
+                return jet.pt_jesPileUpDataMCUp
+            elif sys == "PileUpDataMCDown":
+                return jet.pt_jesPileUpDataMCDown
+            elif sys == "PileUpPtBBUp":
+                return jet.pt_jesPileUpPtBBUp
+            elif sys == "PileUpPtBBDown":
+                return jet.pt_jesPileUpPtBBDown
+            elif sys == "PileUpPtEC1Up":
+                return jet.pt_jesPileUpPtEC1Up
+            elif sys == "PileUpPtEC1Down":
+                return jet.pt_jesPileUpPtEC1Down
+            elif sys == "PileUpPtEC2Up":
+                return jet.pt_jesPileUpPtEC2Up
+            elif sys == "PileUpPtEC2Down":
+                return jet.pt_jesPileUpPtEC2Down
+            elif sys == "PileUpPtHFUp":
+                return jet.pt_jesPileUpPtHFUp
+            elif sys == "PileUpPtHFDown":
+                return jet.pt_jesPileUpPtHFDown
+            elif sys == "PileUpPtRefUp":
+                return jet.pt_jesPileUpPtRefUp
+            elif sys == "PileUpPtRefDown":
+                return jet.pt_jesPileUpPtRefDown
+            elif sys == "RelativeFSRUp":
+                return jet.pt_jesRelativeFSRUp
+            elif sys == "RelativeFSRDown":
+                return jet.pt_jesRelativeFSRDown
+            elif sys == "RelativeJEREC1Up":
+                return jet.pt_jesRelativeJEREC1Up
+            elif sys == "RelativeJEREC1Down":
+                return jet.pt_jesRelativeJEREC1Down
+            elif sys == "RelativeJEREC2Up":
+                return jet.pt_jesRelativeJEREC2Up
+            elif sys == "RelativeJEREC2Down":
+                return jet.pt_jesRelativeJEREC2Down
+            elif sys == "RelativeJERHFUp":
+                return jet.pt_jesRelativeJERHFUp
+            elif sys == "RelativeJERHFDown":
+                return jet.pt_jesRelativeJERHFDown
+            elif sys == "RelativePtBBUp":
+                return jet.pt_jesRelativePtBBUp
+            elif sys == "RelativePtBBDown":
+                return jet.pt_jesRelativePtBBDown
+            elif sys == "RelativePtEC1Up":
+                return jet.pt_jesRelativePtEC1Up
+            elif sys == "RelativePtEC1Down":
+                return jet.pt_jesRelativePtEC1Down
+            elif sys == "RelativePtEC2Up":
+                return jet.pt_jesRelativePtEC2Up
+            elif sys == "RelativePtEC2Down":
+                return jet.pt_jesRelativePtEC2Down
+            elif sys == "RelativePtHFUp":
+                return jet.pt_jesRelativePtHFUp
+            elif sys == "RelativePtHFDown":
+                return jet.pt_jesRelativePtHFDown
+            elif sys == "RelativeBalUp":
+                return jet.pt_jesRelativeBalUp
+            elif sys == "RelativeBalDown":
+                return jet.pt_jesRelativeBalDown
+            elif sys == "RelativeSampleUp":
+                return jet.pt_jesRelativeSampleUp
+            elif sys == "RelativeSampleDown":
+                return jet.pt_jesRelativeSampleDown
+            elif sys == "RelativeStatECUp":
+                return jet.pt_jesRelativeStatECUp
+            elif sys == "RelativeStatECDown":
+                return jet.pt_jesRelativeStatECDown
+            elif sys == "RelativeStatFSRUp":
+                return jet.pt_jesRelativeStatFSRUp
+            elif sys == "RelativeStatFSRDown":
+                return jet.pt_jesRelativeStatFSRDown
+            elif sys == "RelativeStatHFUp":
+                return jet.pt_jesRelativeStatHFUp
+            elif sys == "RelativeStatHFDown":
+                return jet.pt_jesRelativeStatHFDown
+            elif sys == "SinglePionECALUp":
+                return jet.pt_jesSinglePionECALUp
+            elif sys == "SinglePionECALDown":
+                return jet.pt_jesSinglePionECALDown
+            elif sys == "SinglePionHCALUp":
+                return jet.pt_jesSinglePionHCALUp
+            elif sys == "SinglePionHCALDown":
+                return jet.pt_jesSinglePionHCALDown
+            elif sys == "TimePtEtaUp":
+                return jet.pt_jesTimePtEtaUp
+            elif sys == "TimePtEtaDown":
+                return jet.pt_jesTimePtEtaDown
+
+        #Helper function to return correct MET pt for corresponding JES systematic uncertainty
+        def getJESMETpt(sys):
+            if self.year == 2017:
+                if sys == "Up":
+                    return event.METFixEE2017_T1Smear_pt_jesTotalUp 
+                elif sys == "Down":
+                    return event.METFixEE2017_T1Smear_pt_jesTotalDown
+                elif sys == "AbsoluteMPFBiasUp":
+                    return event.METFixEE2017_T1Smear_pt_jesAbsoluteMPFBiasUp
+                elif sys == "AbsoluteMPFBiasDown":
+                    return event.METFixEE2017_T1Smear_pt_jesAbsoluteMPFBiasDown
+                elif sys == "AbsoluteScaleUp":
+                    return event.METFixEE2017_T1Smear_pt_jesAbsoluteScaleUp
+                elif sys == "AbsoluteScaleDown":
+                    return event.METFixEE2017_T1Smear_pt_jesAbsoluteScaleDown
+                elif sys == "AbsoluteStatUp":
+                    return event.METFixEE2017_T1Smear_pt_jesAbsoluteStatUp
+                elif sys == "AbsoluteStatDown":
+                    return event.METFixEE2017_T1Smear_pt_jesAbsoluteStatDown
+                elif sys == "FlavorQCDUp":
+                    return event.METFixEE2017_T1Smear_pt_jesFlavorQCDUp
+                elif sys == "FlavorQCDDown":
+                    return event.METFixEE2017_T1Smear_pt_jesFlavorQCDDown
+                elif sys == "FragmentationUp":
+                    return event.METFixEE2017_T1Smear_pt_jesFragmentationUp
+                elif sys == "FragmentationDown":
+                    return event.METFixEE2017_T1Smear_pt_jesFragmentationDown
+                elif sys == "PileUpDataMCUp":
+                    return event.METFixEE2017_T1Smear_pt_jesPileUpDataMCUp
+                elif sys == "PileUpDataMCDown":
+                    return event.METFixEE2017_T1Smear_pt_jesPileUpDataMCDown
+                elif sys == "PileUpPtBBUp":
+                    return event.METFixEE2017_T1Smear_pt_jesPileUpPtBBUp
+                elif sys == "PileUpPtBBDown":
+                    return event.METFixEE2017_T1Smear_pt_jesPileUpPtBBDown
+                elif sys == "PileUpPtEC1Up":
+                    return event.METFixEE2017_T1Smear_pt_jesPileUpPtEC1Up
+                elif sys == "PileUpPtEC1Down":
+                    return event.METFixEE2017_T1Smear_pt_jesPileUpPtEC1Down
+                elif sys == "PileUpPtEC2Up":
+                    return event.METFixEE2017_T1Smear_pt_jesPileUpPtEC2Up
+                elif sys == "PileUpPtEC2Down":
+                    return event.METFixEE2017_T1Smear_pt_jesPileUpPtEC2Down
+                elif sys == "PileUpPtHFUp":
+                    return event.METFixEE2017_T1Smear_pt_jesPileUpPtHFUp
+                elif sys == "PileUpPtHFDown":
+                    return event.METFixEE2017_T1Smear_pt_jesPileUpPtHFDown
+                elif sys == "PileUpPtRefUp":
+                    return event.METFixEE2017_T1Smear_pt_jesPileUpPtRefUp
+                elif sys == "PileUpPtRefDown":
+                    return event.METFixEE2017_T1Smear_pt_jesPileUpPtRefDown
+                elif sys == "RelativeFSRUp":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeFSRUp
+                elif sys == "RelativeFSRDown":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeFSRDown
+                elif sys == "RelativeJEREC1Up":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeJEREC1Up
+                elif sys == "RelativeJEREC1Down":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeJEREC1Down
+                elif sys == "RelativeJEREC2Up":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeJEREC2Up
+                elif sys == "RelativeJEREC2Down":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeJEREC2Down
+                elif sys == "RelativeJERHFUp":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeJERHFUp
+                elif sys == "RelativeJERHFDown":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeJERHFDown
+                elif sys == "RelativePtBBUp":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativePtBBUp
+                elif sys == "RelativePtBBDown":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativePtBBDown
+                elif sys == "RelativePtEC1Up":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativePtEC1Up
+                elif sys == "RelativePtEC1Down":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativePtEC1Down
+                elif sys == "RelativePtEC2Up":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativePtEC2Up
+                elif sys == "RelativePtEC2Down":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativePtEC2Down
+                elif sys == "RelativePtHFUp":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativePtHFUp
+                elif sys == "RelativePtHFDown":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativePtHFDown
+                elif sys == "RelativeBalUp":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeBalUp
+                elif sys == "RelativeBalDown":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeBalDown
+                elif sys == "RelativeSampleUp":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeSampleUp
+                elif sys == "RelativeSampleDown":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeSampleDown
+                elif sys == "RelativeStatECUp":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeStatECUp
+                elif sys == "RelativeStatECDown":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeStatECDown
+                elif sys == "RelativeStatFSRUp":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeStatFSRUp
+                elif sys == "RelativeStatFSRDown":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeStatFSRDown
+                elif sys == "RelativeStatHFUp":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeStatHFUp
+                elif sys == "RelativeStatHFDown":
+                    return event.METFixEE2017_T1Smear_pt_jesRelativeStatHFDown
+                elif sys == "SinglePionECALUp":
+                    return event.METFixEE2017_T1Smear_pt_jesSinglePionECALUp
+                elif sys == "SinglePionECALDown":
+                    return event.METFixEE2017_T1Smear_pt_jesSinglePionECALDown
+                elif sys == "SinglePionHCALUp":
+                    return event.METFixEE2017_T1Smear_pt_jesSinglePionHCALUp
+                elif sys == "SinglePionHCALDown":
+                    return event.METFixEE2017_T1Smear_pt_jesSinglePionHCALDown
+                elif sys == "TimePtEtaUp":
+                    return event.METFixEE2017_T1Smear_pt_jesTimePtEtaUp
+                elif sys == "TimePtEtaDown":
+                    return event.METFixEE2017_T1Smear_pt_jesTimePtEtaDown
+            else:
+                if sys == "Up":
+                    return event.MET_T1Smear_pt_jesTotalUp 
+                elif sys == "Down":
+                    return event.MET_T1Smear_pt_jesTotalDown
+                elif sys == "AbsoluteMPFBiasUp":
+                    return event.MET_T1Smear_pt_jesAbsoluteMPFBiasUp
+                elif sys == "AbsoluteMPFBiasDown":
+                    return event.MET_T1Smear_pt_jesAbsoluteMPFBiasDown
+                elif sys == "AbsoluteScaleUp":
+                    return event.MET_T1Smear_pt_jesAbsoluteScaleUp
+                elif sys == "AbsoluteScaleDown":
+                    return event.MET_T1Smear_pt_jesAbsoluteScaleDown
+                elif sys == "AbsoluteStatUp":
+                    return event.MET_T1Smear_pt_jesAbsoluteStatUp
+                elif sys == "AbsoluteStatDown":
+                    return event.MET_T1Smear_pt_jesAbsoluteStatDown
+                elif sys == "FlavorQCDUp":
+                    return event.MET_T1Smear_pt_jesFlavorQCDUp
+                elif sys == "FlavorQCDDown":
+                    return event.MET_T1Smear_pt_jesFlavorQCDDown
+                elif sys == "FragmentationUp":
+                    return event.MET_T1Smear_pt_jesFragmentationUp
+                elif sys == "FragmentationDown":
+                    return event.MET_T1Smear_pt_jesFragmentationDown
+                elif sys == "PileUpDataMCUp":
+                    return event.MET_T1Smear_pt_jesPileUpDataMCUp
+                elif sys == "PileUpDataMCDown":
+                    return event.MET_T1Smear_pt_jesPileUpDataMCDown
+                elif sys == "PileUpPtBBUp":
+                    return event.MET_T1Smear_pt_jesPileUpPtBBUp
+                elif sys == "PileUpPtBBDown":
+                    return event.MET_T1Smear_pt_jesPileUpPtBBDown
+                elif sys == "PileUpPtEC1Up":
+                    return event.MET_T1Smear_pt_jesPileUpPtEC1Up
+                elif sys == "PileUpPtEC1Down":
+                    return event.MET_T1Smear_pt_jesPileUpPtEC1Down
+                elif sys == "PileUpPtEC2Up":
+                    return event.MET_T1Smear_pt_jesPileUpPtEC2Up
+                elif sys == "PileUpPtEC2Down":
+                    return event.MET_T1Smear_pt_jesPileUpPtEC2Down
+                elif sys == "PileUpPtHFUp":
+                    return event.MET_T1Smear_pt_jesPileUpPtHFUp
+                elif sys == "PileUpPtHFDown":
+                    return event.MET_T1Smear_pt_jesPileUpPtHFDown
+                elif sys == "PileUpPtRefUp":
+                    return event.MET_T1Smear_pt_jesPileUpPtRefUp
+                elif sys == "PileUpPtRefDown":
+                    return event.MET_T1Smear_pt_jesPileUpPtRefDown
+                elif sys == "RelativeFSRUp":
+                    return event.MET_T1Smear_pt_jesRelativeFSRUp
+                elif sys == "RelativeFSRDown":
+                    return event.MET_T1Smear_pt_jesRelativeFSRDown
+                elif sys == "RelativeJEREC1Up":
+                    return event.MET_T1Smear_pt_jesRelativeJEREC1Up
+                elif sys == "RelativeJEREC1Down":
+                    return event.MET_T1Smear_pt_jesRelativeJEREC1Down
+                elif sys == "RelativeJEREC2Up":
+                    return event.MET_T1Smear_pt_jesRelativeJEREC2Up
+                elif sys == "RelativeJEREC2Down":
+                    return event.MET_T1Smear_pt_jesRelativeJEREC2Down
+                elif sys == "RelativeJERHFUp":
+                    return event.MET_T1Smear_pt_jesRelativeJERHFUp
+                elif sys == "RelativeJERHFDown":
+                    return event.MET_T1Smear_pt_jesRelativeJERHFDown
+                elif sys == "RelativePtBBUp":
+                    return event.MET_T1Smear_pt_jesRelativePtBBUp
+                elif sys == "RelativePtBBDown":
+                    return event.MET_T1Smear_pt_jesRelativePtBBDown
+                elif sys == "RelativePtEC1Up":
+                    return event.MET_T1Smear_pt_jesRelativePtEC1Up
+                elif sys == "RelativePtEC1Down":
+                    return event.MET_T1Smear_pt_jesRelativePtEC1Down
+                elif sys == "RelativePtEC2Up":
+                    return event.MET_T1Smear_pt_jesRelativePtEC2Up
+                elif sys == "RelativePtEC2Down":
+                    return event.MET_T1Smear_pt_jesRelativePtEC2Down
+                elif sys == "RelativePtHFUp":
+                    return event.MET_T1Smear_pt_jesRelativePtHFUp
+                elif sys == "RelativePtHFDown":
+                    return event.MET_T1Smear_pt_jesRelativePtHFDown
+                elif sys == "RelativeBalUp":
+                    return event.MET_T1Smear_pt_jesRelativeBalUp
+                elif sys == "RelativeBalDown":
+                    return event.MET_T1Smear_pt_jesRelativeBalDown
+                elif sys == "RelativeSampleUp":
+                    return event.MET_T1Smear_pt_jesRelativeSampleUp
+                elif sys == "RelativeSampleDown":
+                    return event.MET_T1Smear_pt_jesRelativeSampleDown
+                elif sys == "RelativeStatECUp":
+                    return event.MET_T1Smear_pt_jesRelativeStatECUp
+                elif sys == "RelativeStatECDown":
+                    return event.MET_T1Smear_pt_jesRelativeStatECDown
+                elif sys == "RelativeStatFSRUp":
+                    return event.MET_T1Smear_pt_jesRelativeStatFSRUp
+                elif sys == "RelativeStatFSRDown":
+                    return event.MET_T1Smear_pt_jesRelativeStatFSRDown
+                elif sys == "RelativeStatHFUp":
+                    return event.MET_T1Smear_pt_jesRelativeStatHFUp
+                elif sys == "RelativeStatHFDown":
+                    return event.MET_T1Smear_pt_jesRelativeStatHFDown
+                elif sys == "SinglePionECALUp":
+                    return event.MET_T1Smear_pt_jesSinglePionECALUp
+                elif sys == "SinglePionECALDown":
+                    return event.MET_T1Smear_pt_jesSinglePionECALDown
+                elif sys == "SinglePionHCALUp":
+                    return event.MET_T1Smear_pt_jesSinglePionHCALUp
+                elif sys == "SinglePionHCALDown":
+                    return event.MET_T1Smear_pt_jesSinglePionHCALDown
+                elif sys == "TimePtEtaUp":
+                    return event.MET_T1Smear_pt_jesTimePtEtaUp
+                elif sys == "TimePtEtaDown":
+                    return event.MET_T1Smear_pt_jesTimePtEtaDown
+
+        #Helper function to return correct MET phi for corresponding JES systematic uncertainty
+        def getJESMETphi(sys):
+            if self.year == 2017:
+                if sys == "Up":
+                    return event.METFixEE2017_T1Smear_phi_jesTotalUp 
+                elif sys == "Down":
+                    return event.METFixEE2017_T1Smear_phi_jesTotalDown
+                elif sys == "AbsoluteMPFBiasUp":
+                    return event.METFixEE2017_T1Smear_phi_jesAbsoluteMPFBiasUp
+                elif sys == "AbsoluteMPFBiasDown":
+                    return event.METFixEE2017_T1Smear_phi_jesAbsoluteMPFBiasDown
+                elif sys == "AbsoluteScaleUp":
+                    return event.METFixEE2017_T1Smear_phi_jesAbsoluteScaleUp
+                elif sys == "AbsoluteScaleDown":
+                    return event.METFixEE2017_T1Smear_phi_jesAbsoluteScaleDown
+                elif sys == "AbsoluteStatUp":
+                    return event.METFixEE2017_T1Smear_phi_jesAbsoluteStatUp
+                elif sys == "AbsoluteStatDown":
+                    return event.METFixEE2017_T1Smear_phi_jesAbsoluteStatDown
+                elif sys == "FlavorQCDUp":
+                    return event.METFixEE2017_T1Smear_phi_jesFlavorQCDUp
+                elif sys == "FlavorQCDDown":
+                    return event.METFixEE2017_T1Smear_phi_jesFlavorQCDDown
+                elif sys == "FragmentationUp":
+                    return event.METFixEE2017_T1Smear_phi_jesFragmentationUp
+                elif sys == "FragmentationDown":
+                    return event.METFixEE2017_T1Smear_phi_jesFragmentationDown
+                elif sys == "PileUpDataMCUp":
+                    return event.METFixEE2017_T1Smear_phi_jesPileUpDataMCUp
+                elif sys == "PileUpDataMCDown":
+                    return event.METFixEE2017_T1Smear_phi_jesPileUpDataMCDown
+                elif sys == "PileUpPtBBUp":
+                    return event.METFixEE2017_T1Smear_phi_jesPileUpPtBBUp
+                elif sys == "PileUpPtBBDown":
+                    return event.METFixEE2017_T1Smear_phi_jesPileUpPtBBDown
+                elif sys == "PileUpPtEC1Up":
+                    return event.METFixEE2017_T1Smear_phi_jesPileUpPtEC1Up
+                elif sys == "PileUpPtEC1Down":
+                    return event.METFixEE2017_T1Smear_phi_jesPileUpPtEC1Down
+                elif sys == "PileUpPtEC2Up":
+                    return event.METFixEE2017_T1Smear_phi_jesPileUpPtEC2Up
+                elif sys == "PileUpPtEC2Down":
+                    return event.METFixEE2017_T1Smear_phi_jesPileUpPtEC2Down
+                elif sys == "PileUpPtHFUp":
+                    return event.METFixEE2017_T1Smear_phi_jesPileUpPtHFUp
+                elif sys == "PileUpPtHFDown":
+                    return event.METFixEE2017_T1Smear_phi_jesPileUpPtHFDown
+                elif sys == "PileUpPtRefUp":
+                    return event.METFixEE2017_T1Smear_phi_jesPileUpPtRefUp
+                elif sys == "PileUpPtRefDown":
+                    return event.METFixEE2017_T1Smear_phi_jesPileUpPtRefDown
+                elif sys == "RelativeFSRUp":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeFSRUp
+                elif sys == "RelativeFSRDown":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeFSRDown
+                elif sys == "RelativeJEREC1Up":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeJEREC1Up
+                elif sys == "RelativeJEREC1Down":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeJEREC1Down
+                elif sys == "RelativeJEREC2Up":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeJEREC2Up
+                elif sys == "RelativeJEREC2Down":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeJEREC2Down
+                elif sys == "RelativeJERHFUp":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeJERHFUp
+                elif sys == "RelativeJERHFDown":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeJERHFDown
+                elif sys == "RelativePtBBUp":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativePtBBUp
+                elif sys == "RelativePtBBDown":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativePtBBDown
+                elif sys == "RelativePtEC1Up":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativePtEC1Up
+                elif sys == "RelativePtEC1Down":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativePtEC1Down
+                elif sys == "RelativePtEC2Up":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativePtEC2Up
+                elif sys == "RelativePtEC2Down":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativePtEC2Down
+                elif sys == "RelativePtHFUp":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativePtHFUp
+                elif sys == "RelativePtHFDown":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativePtHFDown
+                elif sys == "RelativeBalUp":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeBalUp
+                elif sys == "RelativeBalDown":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeBalDown
+                elif sys == "RelativeSampleUp":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeSampleUp
+                elif sys == "RelativeSampleDown":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeSampleDown
+                elif sys == "RelativeStatECUp":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeStatECUp
+                elif sys == "RelativeStatECDown":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeStatECDown
+                elif sys == "RelativeStatFSRUp":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeStatFSRUp
+                elif sys == "RelativeStatFSRDown":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeStatFSRDown
+                elif sys == "RelativeStatHFUp":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeStatHFUp
+                elif sys == "RelativeStatHFDown":
+                    return event.METFixEE2017_T1Smear_phi_jesRelativeStatHFDown
+                elif sys == "SinglePionECALUp":
+                    return event.METFixEE2017_T1Smear_phi_jesSinglePionECALUp
+                elif sys == "SinglePionECALDown":
+                    return event.METFixEE2017_T1Smear_phi_jesSinglePionECALDown
+                elif sys == "SinglePionHCALUp":
+                    return event.METFixEE2017_T1Smear_phi_jesSinglePionHCALUp
+                elif sys == "SinglePionHCALDown":
+                    return event.METFixEE2017_T1Smear_phi_jesSinglePionHCALDown
+                elif sys == "TimePtEtaUp":
+                    return event.METFixEE2017_T1Smear_phi_jesTimePtEtaUp
+                elif sys == "TimePtEtaDown":
+                    return event.METFixEE2017_T1Smear_phi_jesTimePtEtaDown
+            else:
+                if sys == "Up":
+                    return event.MET_T1Smear_phi_jesTotalUp 
+                elif sys == "Down":
+                    return event.MET_T1Smear_phi_jesTotalDown
+                elif sys == "AbsoluteMPFBiasUp":
+                    return event.MET_T1Smear_phi_jesAbsoluteMPFBiasUp
+                elif sys == "AbsoluteMPFBiasDown":
+                    return event.MET_T1Smear_phi_jesAbsoluteMPFBiasDown
+                elif sys == "AbsoluteScaleUp":
+                    return event.MET_T1Smear_phi_jesAbsoluteScaleUp
+                elif sys == "AbsoluteScaleDown":
+                    return event.MET_T1Smear_phi_jesAbsoluteScaleDown
+                elif sys == "AbsoluteStatUp":
+                    return event.MET_T1Smear_phi_jesAbsoluteStatUp
+                elif sys == "AbsoluteStatDown":
+                    return event.MET_T1Smear_phi_jesAbsoluteStatDown
+                elif sys == "FlavorQCDUp":
+                    return event.MET_T1Smear_phi_jesFlavorQCDUp
+                elif sys == "FlavorQCDDown":
+                    return event.MET_T1Smear_phi_jesFlavorQCDDown
+                elif sys == "FragmentationUp":
+                    return event.MET_T1Smear_phi_jesFragmentationUp
+                elif sys == "FragmentationDown":
+                    return event.MET_T1Smear_phi_jesFragmentationDown
+                elif sys == "PileUpDataMCUp":
+                    return event.MET_T1Smear_phi_jesPileUpDataMCUp
+                elif sys == "PileUpDataMCDown":
+                    return event.MET_T1Smear_phi_jesPileUpDataMCDown
+                elif sys == "PileUpPtBBUp":
+                    return event.MET_T1Smear_phi_jesPileUpPtBBUp
+                elif sys == "PileUpPtBBDown":
+                    return event.MET_T1Smear_phi_jesPileUpPtBBDown
+                elif sys == "PileUpPtEC1Up":
+                    return event.MET_T1Smear_phi_jesPileUpPtEC1Up
+                elif sys == "PileUpPtEC1Down":
+                    return event.MET_T1Smear_phi_jesPileUpPtEC1Down
+                elif sys == "PileUpPtEC2Up":
+                    return event.MET_T1Smear_phi_jesPileUpPtEC2Up
+                elif sys == "PileUpPtEC2Down":
+                    return event.MET_T1Smear_phi_jesPileUpPtEC2Down
+                elif sys == "PileUpPtHFUp":
+                    return event.MET_T1Smear_phi_jesPileUpPtHFUp
+                elif sys == "PileUpPtHFDown":
+                    return event.MET_T1Smear_phi_jesPileUpPtHFDown
+                elif sys == "PileUpPtRefUp":
+                    return event.MET_T1Smear_phi_jesPileUpPtRefUp
+                elif sys == "PileUpPtRefDown":
+                    return event.MET_T1Smear_phi_jesPileUpPtRefDown
+                elif sys == "RelativeFSRUp":
+                    return event.MET_T1Smear_phi_jesRelativeFSRUp
+                elif sys == "RelativeFSRDown":
+                    return event.MET_T1Smear_phi_jesRelativeFSRDown
+                elif sys == "RelativeJEREC1Up":
+                    return event.MET_T1Smear_phi_jesRelativeJEREC1Up
+                elif sys == "RelativeJEREC1Down":
+                    return event.MET_T1Smear_phi_jesRelativeJEREC1Down
+                elif sys == "RelativeJEREC2Up":
+                    return event.MET_T1Smear_phi_jesRelativeJEREC2Up
+                elif sys == "RelativeJEREC2Down":
+                    return event.MET_T1Smear_phi_jesRelativeJEREC2Down
+                elif sys == "RelativeJERHFUp":
+                    return event.MET_T1Smear_phi_jesRelativeJERHFUp
+                elif sys == "RelativeJERHFDown":
+                    return event.MET_T1Smear_phi_jesRelativeJERHFDown
+                elif sys == "RelativePtBBUp":
+                    return event.MET_T1Smear_phi_jesRelativePtBBUp
+                elif sys == "RelativePtBBDown":
+                    return event.MET_T1Smear_phi_jesRelativePtBBDown
+                elif sys == "RelativePtEC1Up":
+                    return event.MET_T1Smear_phi_jesRelativePtEC1Up
+                elif sys == "RelativePtEC1Down":
+                    return event.MET_T1Smear_phi_jesRelativePtEC1Down
+                elif sys == "RelativePtEC2Up":
+                    return event.MET_T1Smear_phi_jesRelativePtEC2Up
+                elif sys == "RelativePtEC2Down":
+                    return event.MET_T1Smear_phi_jesRelativePtEC2Down
+                elif sys == "RelativePtHFUp":
+                    return event.MET_T1Smear_phi_jesRelativePtHFUp
+                elif sys == "RelativePtHFDown":
+                    return event.MET_T1Smear_phi_jesRelativePtHFDown
+                elif sys == "RelativeBalUp":
+                    return event.MET_T1Smear_phi_jesRelativeBalUp
+                elif sys == "RelativeBalDown":
+                    return event.MET_T1Smear_phi_jesRelativeBalDown
+                elif sys == "RelativeSampleUp":
+                    return event.MET_T1Smear_phi_jesRelativeSampleUp
+                elif sys == "RelativeSampleDown":
+                    return event.MET_T1Smear_phi_jesRelativeSampleDown
+                elif sys == "RelativeStatECUp":
+                    return event.MET_T1Smear_phi_jesRelativeStatECUp
+                elif sys == "RelativeStatECDown":
+                    return event.MET_T1Smear_phi_jesRelativeStatECDown
+                elif sys == "RelativeStatFSRUp":
+                    return event.MET_T1Smear_phi_jesRelativeStatFSRUp
+                elif sys == "RelativeStatFSRDown":
+                    return event.MET_T1Smear_phi_jesRelativeStatFSRDown
+                elif sys == "RelativeStatHFUp":
+                    return event.MET_T1Smear_phi_jesRelativeStatHFUp
+                elif sys == "RelativeStatHFDown":
+                    return event.MET_T1Smear_phi_jesRelativeStatHFDown
+                elif sys == "SinglePionECALUp":
+                    return event.MET_T1Smear_phi_jesSinglePionECALUp
+                elif sys == "SinglePionECALDown":
+                    return event.MET_T1Smear_phi_jesSinglePionECALDown
+                elif sys == "SinglePionHCALUp":
+                    return event.MET_T1Smear_phi_jesSinglePionHCALUp
+                elif sys == "SinglePionHCALDown":
+                    return event.MET_T1Smear_phi_jesSinglePionHCALDown
+                elif sys == "TimePtEtaUp":
+                    return event.MET_T1Smear_phi_jesTimePtEtaUp
+                elif sys == "TimePtEtaDown":
+                    return event.MET_T1Smear_phi_jesTimePtEtaDown
+
         #Jet categories are defined and counted 
         if self.year == 2016:
             #Central jets  (2016)
             centralJetsEnumerate = filter(lambda j : ((30 < j[1].pt_nom < 50 and j[1].puId == 7) or j[1].pt_nom > 50) and abs(j[1].eta) < 2.4 and cleanJet(j[1]) and j[1].jetId == 7, enumerate(jets)) #Use tightLepVeto jet ID WP for 2016 with tight puId for jet_pt < 50
             #Systematics - JES, JER
             if self.isMC:
-                centralJetsScaleUp = filter(lambda j : ((30 < j.pt_jesTotalUp < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
-                centralJetsScaleDown = filter(lambda j : ((30 < j.pt_jesTotalDown < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
+                for sys in jesUnc:
+                    jesBranches["centralJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
+                    jesBranches["centralJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
                 centralJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
                 centralJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
 
@@ -346,8 +932,9 @@ to next event)"""
             forwardJetsEnumerate = filter(lambda j : ((30 < j[1].pt_nom < 50 and j[1].puId == 7) or j[1].pt_nom > 50) and 2.4 < abs(j[1].eta) < 4 and cleanJet(j[1]) and j[1].jetId == 7, enumerate(jets))
             #Systematics - JES, JER
             if self.isMC:
-                forwardJetsScaleUp = filter(lambda j : ((30 < j.pt_jesTotalUp < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
-                forwardJetsScaleDown = filter(lambda j : ((30 < j.pt_jesTotalDown < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
+                for sys in jesUnc:
+                    jesBranches["forwardJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
+                    jesBranches["forwardJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
                 forwardJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
                 forwardJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
 
@@ -356,8 +943,9 @@ to next event)"""
             centralJetsEnumerate = filter(lambda j : ((30 < j[1].pt_nom < 50 and j[1].puId == 7) or j[1].pt_nom > 50) and abs(j[1].eta) < 2.4 and cleanJet(j[1]) and j[1].jetId == 6, enumerate(jets)) #Use tightLepVeto jet ID WP for 2017 and 2018 with tight puId for jet_pt < 50
             #Systematics - JES, JER
             if self.isMC:
-                centralJetsScaleUp = filter(lambda j : ((30 < j.pt_jesTotalUp < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
-                centralJetsScaleDown = filter(lambda j : ((30 < j.pt_jesTotalDown < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
+                for sys in jesUnc:
+                    jesBranches["centralJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
+                    jesBranches["centralJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
                 centralJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
                 centralJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
 
@@ -365,8 +953,9 @@ to next event)"""
             forwardJetsEnumerate = filter(lambda j : ((30 < j[1].pt_nom < 50 and j[1].puId == 7) or j[1].pt_nom > 50) and 2.4 < abs(j[1].eta) < 4 and cleanJet(j[1]) and j[1].jetId == 6, enumerate(jets))
             #Systematics - JES, JER
             if self.isMC:
-                forwardJetsScaleUp = filter(lambda j : ((30 < j.pt_jesTotalUp < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
-                forwardJetsScaleDown = filter(lambda j : ((30 < j.pt_jesTotalDown < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
+                for sys in jesUnc:
+                    jesBranches["forwardJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
+                    jesBranches["forwardJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
                 forwardJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
                 forwardJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
 
@@ -376,8 +965,9 @@ to next event)"""
             bJetsEnumerate = filter(lambda j : j[1].btagCSVV2 > btag_WP, centralJetsEnumerate)
             #Systematics - JES, JER
             if self.isMC:
-                bJetsScaleUp = filter(lambda j : j.btagCSVV2 > btag_WP, centralJetsScaleUp)
-                bJetsScaleDown = filter(lambda j : j.btagCSVV2 > btag_WP, centralJetsScaleDown)
+                for sys in jesUnc:
+                    jesBranches["bJetsScale"+sys+"Up"] = filter(lambda j : j.btagCSVV2 > btag_WP, jesBranches["centralJetsScale"+sys+"Up"])
+                    jesBranches["bJetsScale"+sys+"Down"] = filter(lambda j : j.btagCSVV2 > btag_WP, jesBranches["centralJetsScale"+sys+"Down"])
                 bJetsResUp = filter(lambda j : j.btagCSVV2 > btag_WP, centralJetsResUp)
                 bJetsResDown = filter(lambda j : j.btagCSVV2 > btag_WP, centralJetsResDown)
 
@@ -385,8 +975,9 @@ to next event)"""
             bJetsEnumerate = filter(lambda j : j[1].btagDeepB > btag_WP, centralJetsEnumerate)
             #Systematics - JES, JER
             if self.isMC:
-                bJetsScaleUp = filter(lambda j : j.btagDeepB > btag_WP, centralJetsScaleUp)
-                bJetsScaleDown = filter(lambda j : j.btagDeepB > btag_WP, centralJetsScaleDown)
+                for sys in jesUnc:
+                    jesBranches["bJetsScale"+sys+"Up"] = filter(lambda j : j.btagDeepB > btag_WP, jesBranches["centralJetsScale"+sys+"Up"])
+                    jesBranches["bJetsScale"+sys+"Down"] = filter(lambda j : j.btagDeepB > btag_WP, jesBranches["centralJetsScale"+sys+"Down"])
                 bJetsResUp = filter(lambda j : j.btagDeepB > btag_WP, centralJetsResUp)
                 bJetsResDown = filter(lambda j : j.btagDeepB > btag_WP, centralJetsResDown)
 
@@ -415,18 +1006,23 @@ to next event)"""
         
         #Systematics - JES, JER
         if self.isMC:
-            njetsScaleUp = len(centralJetsScaleUp)
-            njetsScaleDown = len(centralJetsScaleDown)
+            for sys in jesUnc:
+                jesBranches["njetsScale"+sys+"Up"] = len(jesBranches["centralJetsScale"+sys+"Up"])
+                jesBranches["njetsScale"+sys+"Down"] = len(jesBranches["centralJetsScale"+sys+"Down"])
+
+
+                jesBranches["nfjetsScale"+sys+"Up"] = len(jesBranches["forwardJetsScale"+sys+"Up"])
+                jesBranches["nfjetsScale"+sys+"Down"] = len(jesBranches["forwardJetsScale"+sys+"Down"])
+
+                jesBranches["nbjetsScale"+sys+"Up"] = len(jesBranches["bJetsScale"+sys+"Up"])
+                jesBranches["nbjetsScale"+sys+"Down"] = len(jesBranches["bJetsScale"+sys+"Down"])
+
             njetsResUp = len(centralJetsResUp)
             njetsResDown = len(centralJetsResDown)
-            
-            nfjetsScaleUp = len(forwardJetsScaleUp)
-            nfjetsScaleDown = len(forwardJetsScaleDown)
+ 
             nfjetsResUp = len(forwardJetsResUp)
             nfjetsResDown = len(forwardJetsResDown)
-            
-            nbjetsScaleUp = len(bJetsScaleUp)
-            nbjetsScaleDown = len(bJetsScaleDown)
+  
             nbjetsResUp = len(bJetsResUp)
             nbjetsResDown = len(bJetsResDown)
 
@@ -439,8 +1035,9 @@ to next event)"""
             #Systematics - JES, JER
             else:
                 METcorrected_pt_phi = ROOT.METXYCorr_Met_MetPhi(event.METFixEE2017_T1Smear_pt, event.METFixEE2017_T1Smear_phi, event.run, self.year, self.isMC, event.PV_npvs)
-                METcorrected_pt_phiScaleUp = ROOT.METXYCorr_Met_MetPhi(event.METFixEE2017_T1Smear_pt_jesTotalUp, event.METFixEE2017_T1Smear_phi_jesTotalUp, event.run, self.year, self.isMC, event.PV_npvs)
-                METcorrected_pt_phiScaleDown = ROOT.METXYCorr_Met_MetPhi(event.METFixEE2017_T1Smear_pt_jesTotalDown, event.METFixEE2017_T1Smear_phi_jesTotalDown, event.run, self.year, self.isMC, event.PV_npvs)
+                for sys in jesUnc:
+                    jesBranches["METcorrected_pt_phiScale"+sys+"Up"] = ROOT.METXYCorr_Met_MetPhi(getJESMETpt(sys+"Up"), getJESMETphi(sys+"Up"), event.run, self.year, self.isMC, event.PV_npvs)
+                    jesBranches["METcorrected_pt_phiScale"+sys+"Down"] = ROOT.METXYCorr_Met_MetPhi(getJESMETpt(sys+"Down"), getJESMETphi(sys+"Down"), event.run, self.year, self.isMC, event.PV_npvs)
                 METcorrected_pt_phiResUp = ROOT.METXYCorr_Met_MetPhi(event.METFixEE2017_T1Smear_pt_jerUp, event.METFixEE2017_T1Smear_phi_jerUp, event.run, self.year, self.isMC, event.PV_npvs)
                 METcorrected_pt_phiResDown = ROOT.METXYCorr_Met_MetPhi(event.METFixEE2017_T1Smear_pt_jerDown, event.METFixEE2017_T1Smear_phi_jerDown, event.run, self.year, self.isMC, event.PV_npvs)
 
@@ -450,8 +1047,9 @@ to next event)"""
             #Systematics - JES, JER
             else:
                 METcorrected_pt_phi = ROOT.METXYCorr_Met_MetPhi(event.MET_T1Smear_pt, event.MET_T1Smear_phi, event.run, self.year, self.isMC, event.PV_npvs)
-                METcorrected_pt_phiScaleUp = ROOT.METXYCorr_Met_MetPhi(event.MET_T1Smear_pt_jesTotalUp, event.MET_T1Smear_phi_jesTotalUp, event.run, self.year, self.isMC, event.PV_npvs)
-                METcorrected_pt_phiScaleDown = ROOT.METXYCorr_Met_MetPhi(event.MET_T1Smear_pt_jesTotalDown, event.MET_T1Smear_phi_jesTotalDown, event.run, self.year, self.isMC, event.PV_npvs)
+                for sys in jesUnc:
+                    jesBranches["METcorrected_pt_phiScale"+sys+"Up"] = ROOT.METXYCorr_Met_MetPhi(getJESMETpt(sys+"Up"), getJESMETphi(sys+"Up"), event.run, self.year, self.isMC, event.PV_npvs)
+                    jesBranches["METcorrected_pt_phiScale"+sys+"Down"] = ROOT.METXYCorr_Met_MetPhi(getJESMETpt(sys+"Down"), getJESMETphi(sys+"Down"), event.run, self.year, self.isMC, event.PV_npvs)
                 METcorrected_pt_phiResUp = ROOT.METXYCorr_Met_MetPhi(event.MET_T1Smear_pt_jerUp, event.MET_T1Smear_phi_jerUp, event.run, self.year, self.isMC, event.PV_npvs)
                 METcorrected_pt_phiResDown = ROOT.METXYCorr_Met_MetPhi(event.MET_T1Smear_pt_jerDown, event.MET_T1Smear_phi_jerDown, event.run, self.year, self.isMC, event.PV_npvs)
 
@@ -460,23 +1058,76 @@ to next event)"""
 
         #Systematics - JES, JER
         if self.isMC:
-            METcorrected_ptScaleUp = METcorrected_pt_phiScaleUp[0]
-            METcorrected_phiScaleUp = METcorrected_pt_phiScaleUp[1]
-            METcorrected_ptScaleDown = METcorrected_pt_phiScaleDown[0]
-            METcorrected_phiScaleDown = METcorrected_pt_phiScaleDown[1]
+            for sys in jesUnc:
+                jesBranches["METcorrected_ptScale"+sys+"Up"] = jesBranches["METcorrected_pt_phiScale"+sys+"Up"][0]
+                jesBranches["METcorrected_phiScale"+sys+"Up"] = jesBranches["METcorrected_pt_phiScale"+sys+"Up"][1]
+                jesBranches["METcorrected_ptScale"+sys+"Down"] = jesBranches["METcorrected_pt_phiScale"+sys+"Down"][0]
+                jesBranches["METcorrected_phiScale"+sys+"Down"] = jesBranches["METcorrected_pt_phiScale"+sys+"Down"][1]
+
             METcorrected_ptResUp = METcorrected_pt_phiResUp[0]
             METcorrected_phiResUp = METcorrected_pt_phiResUp[1]
             METcorrected_ptResDown = METcorrected_pt_phiResDown[0]
             METcorrected_phiResDown = METcorrected_pt_phiResDown[1]
 
+        #Determine if there exists two tight electrons/muons such that their invariant mass m_ll is between 60-120 GeV and the hadronic recoil >= 250 GeV
+        m_ll = recoilPtMiss = lepton1_charge = lepton2_charge = 0
+        #Systematics - JES, JER
+        if self.isMC:
+            for sys in jesUnc:
+                jesBranches["recoilPtMissScale"+sys+"Up"] = jesBranches["recoilPtMissScale"+sys+"Down"] = 0
+            recoilPtMissResUp = recoilPtMissResDown = 0
+
+        #Only calculate m_ll and recoilPtMiss when two tight leptons exist (2e, 2m, or 1e1m)
+        if (nTightElectrons >= 2 and nLooseMuons == 0) or (nVetoElectrons == 0 and nTightMuons >= 2):
+            if nTightElectrons >= 2:
+                tightLeptons = tightElectrons
+            elif nTightMuons >= 2:
+                tightLeptons = tightMuons
+            lepton1 = tightLeptons[0]
+            lepton2 = tightLeptons[1]
+            eventSum = lepton1.p4() + lepton2.p4()
+            m_ll = eventSum.M()
+
+            recoilPtMiss = math.sqrt(pow(METcorrected_pt*math.cos(METcorrected_phi) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_pt*math.sin(METcorrected_phi) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
+
+            lepton1_charge = lepton1.charge
+            lepton2_charge = lepton2.charge
+
+            #Systematics - JES, JER
+            if self.isMC:
+                for sys in jesUnc:
+                    jesBranches["recoilPtMissScale"+sys+"Up"] = math.sqrt(pow(jesBranches["METcorrected_ptScale"+sys+"Up"]*math.cos(jesBranches["METcorrected_phiScale"+sys+"Up"]) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(jesBranches["METcorrected_ptScale"+sys+"Up"]*math.sin(jesBranches["METcorrected_phiScale"+sys+"Up"]) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
+                    jesBranches["recoilPtMissScale"+sys+"Down"] = math.sqrt(pow(jesBranches["METcorrected_ptScale"+sys+"Down"]*math.cos(jesBranches["METcorrected_phiScale"+sys+"Down"]) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(jesBranches["METcorrected_ptScale"+sys+"Down"]*math.sin(jesBranches["METcorrected_phiScale"+sys+"Down"]) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
+                recoilPtMissResUp = math.sqrt(pow(METcorrected_ptResUp*math.cos(METcorrected_phiResUp) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_ptResUp*math.sin(METcorrected_phiResUp) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
+                recoilPtMissResDown = math.sqrt(pow(METcorrected_ptResDown*math.cos(METcorrected_phiResDown) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_ptResDown*math.sin(METcorrected_phiResDown) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
+
+        #Define skimming cuts to be applied
+        #Skim = ((nTightElectrons + nTightMuons) <= 1 and njets >= 2 and event.MET_pt > 140) or ((nTightElectrons + nTightMuons) == 2 and njets >= 2)
+        Skim = ((nTightElectrons + nTightMuons) <= 1 and njets >= 2 and METcorrected_pt > 240) or ((nTightElectrons + nTightMuons) == 2 and njets >= 2 and (METcorrected_pt > 240 or recoilPtMiss > 240) )
+
+        #Signal region chosen here
+        if self.signalRegion == "All":
+            signalRegion = True
+        elif self.signalRegion == "Skim":
+            signalRegion = Skim
+        else:
+            signalRegion = False
+
+        #Immediately return false if event doesn't pass skimming cut to skip calculating the rest of the branches and speed up runtime
+        if not signalRegion:
+            return False
+
         #Calculate minDeltaPhi and minDeltaPhi(j_(1,2), missing pt) preselection variable of all central jets 
-        minDeltaPhi = minDeltaPhi12 = minDeltaPhi_puppi = minDeltaPhi12_puppi = -9 #If there is less than 2 jets, set value to -9 to indicate  minDeltaPhi cannot be calculated
+        minDeltaPhi = minDeltaPhi12 = -9 #If there is less than 2 jets, set value to -9 to indicate  minDeltaPhi cannot be calculated
         deltaPhij1 = deltaPhij2 = deltaPhij3 = deltaPhib1 = deltaPhib2 = -9
 
         #Systematics - JES, JER
         if self.isMC:
-            minDeltaPhiScaleUp = minDeltaPhiScaleDown = minDeltaPhiResUp = minDeltaPhiResDown = -9 
-            minDeltaPhi12ScaleUp = minDeltaPhi12ScaleDown = minDeltaPhi12ResUp = minDeltaPhi12ResDown = -9
+            for sys in jesUnc:
+                jesBranches["minDeltaPhiScale"+sys+"Up"] = jesBranches["minDeltaPhiScale"+sys+"Down"] = -9
+                jesBranches["minDeltaPhiScale12"+sys+"Up"] = jesBranches["minDeltaPhiScale12"+sys+"Down"] = -9
+            minDeltaPhiResUp = minDeltaPhiResDown = -9 
+            minDeltaPhi12ResUp = minDeltaPhi12ResDown = -9
 
         if nbjets > 0:
             bjet1 = bJets[0]
@@ -495,16 +1146,18 @@ to next event)"""
             deltaPhi1 = min(abs(jet1.phi - METcorrected_phi), 2 * math.pi - abs(jet1.phi - METcorrected_phi)) #phi angle between jet1 and missing pt
             #Systematics - JES, JER
             if self.isMC:
-                deltaPhi1ScaleUp = min(abs(jet1.phi - METcorrected_phiScaleUp), 2 * math.pi - abs(jet1.phi - METcorrected_phiScaleUp))
-                deltaPhi1ScaleDown = min(abs(jet1.phi - METcorrected_phiScaleDown), 2 * math.pi - abs(jet1.phi - METcorrected_phiScaleDown))
+                for sys in jesUnc:
+                    jesBranches["deltaPhi1Scale"+sys+"Up"] = min(abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]), 2 * math.pi - abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]))
+                    jesBranches["deltaPhi1Scale"+sys+"Down"] = min(abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]), 2 * math.pi - abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]))
                 deltaPhi1ResUp = min(abs(jet1.phi - METcorrected_phiResUp), 2 * math.pi - abs(jet1.phi - METcorrected_phiResUp))
                 deltaPhi1ResDown = min(abs(jet1.phi - METcorrected_phiResDown), 2 * math.pi - abs(jet1.phi - METcorrected_phiResDown))
 
             deltaPhi2 = min(abs(jet2.phi - METcorrected_phi), 2 * math.pi - abs(jet2.phi - METcorrected_phi)) #phi angle between jet2 and missing pt
             #Systematics - JES, JER
             if self.isMC:
-                deltaPhi2ScaleUp = min(abs(jet2.phi - METcorrected_phiScaleUp), 2 * math.pi - abs(jet2.phi - METcorrected_phiScaleUp))
-                deltaPhi2ScaleDown = min(abs(jet2.phi - METcorrected_phiScaleDown), 2 * math.pi - abs(jet2.phi - METcorrected_phiScaleDown))
+                for sys in jesUnc:
+                    jesBranches["deltaPhi2Scale"+sys+"Up"] = min(abs(jet2.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]), 2 * math.pi - abs(jet2.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]))
+                    jesBranches["deltaPhi2Scale"+sys+"Down"] = min(abs(jet2.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]), 2 * math.pi - abs(jet2.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]))
                 deltaPhi2ResUp = min(abs(jet2.phi - METcorrected_phiResUp), 2 * math.pi - abs(jet2.phi - METcorrected_phiResUp))
                 deltaPhi2ResDown = min(abs(jet2.phi - METcorrected_phiResDown), 2 * math.pi - abs(jet2.phi - METcorrected_phiResDown))
 
@@ -516,47 +1169,42 @@ to next event)"""
 
             #Systematics - JES, JER
             if self.isMC:
-                minDeltaPhi12ScaleUp = min(deltaPhi1ScaleUp, deltaPhi2ScaleUp)
-                minDeltaPhi12ScaleDown = min(deltaPhi1ScaleDown, deltaPhi2ScaleDown)
+                for sys in jesUnc:
+                    jesBranches["minDeltaPhi12Scale"+sys+"Up"] = min(jesBranches["deltaPhi1Scale"+sys+"Up"], jesBranches["deltaPhi2Scale"+sys+"Up"])
+                    jesBranches["minDeltaPhi12Scale"+sys+"Down"] = min(jesBranches["deltaPhi1Scale"+sys+"Down"], jesBranches["deltaPhi2Scale"+sys+"Down"])
                 minDeltaPhi12ResUp = min(deltaPhi1ResUp, deltaPhi2ResUp)
                 minDeltaPhi12ResDown = min(deltaPhi1ResDown, deltaPhi2ResDown)
 
-            deltaPhi1_puppi = min(abs(jet1.phi - event.PuppiMET_phi), 2 * math.pi - abs(jet1.phi - event.PuppiMET_phi)) #phi angle between jet1 and Puppi missing pt
-            deltaPhi2_puppi = min(abs(jet2.phi - event.PuppiMET_phi), 2 * math.pi - abs(jet2.phi - event.PuppiMET_phi)) #phi angle between jet2 and Puppi missing pt
-            minDeltaPhi12_puppi = min(deltaPhi1_puppi, deltaPhi2_puppi) #First calculate minDeltaPhi12_puppi 
-
-            #Now calculate minDeltaPhi and minDeltaPhi_puppi
+            #Now calculate minDeltaPhi 
             minDeltaPhi = min(abs(jet1.phi - METcorrected_phi), 2 * math.pi - abs(jet1.phi - METcorrected_phi)) #phi angle between jet1 and missing pt
-            minDeltaPhi_puppi = min(abs(jet1.phi - event.PuppiMET_phi), 2 * math.pi - abs(jet1.phi - event.PuppiMET_phi)) #phi angle between jet1 and Puppi missing pt
             #Systematics - JES, JER
             if self.isMC:
-                minDeltaPhiScaleUp = min(abs(jet1.phi - METcorrected_phiScaleUp), 2 * math.pi - abs(jet1.phi - METcorrected_phiScaleUp))
-                minDeltaPhiScaleDown = min(abs(jet1.phi - METcorrected_phiScaleDown), 2 * math.pi - abs(jet1.phi - METcorrected_phiScaleDown))
+                for sys in jesUnc:
+                    jesBranches["minDeltaPhiScale"+sys+"Up"] = min(abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]), 2 * math.pi - abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]))
+                    jesBranches["minDeltaPhiScale"+sys+"Down"] = min(abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]), 2 * math.pi - abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]))
                 minDeltaPhiResUp = min(abs(jet1.phi - METcorrected_phiResUp), 2 * math.pi - abs(jet1.phi - METcorrected_phiResUp))
                 minDeltaPhiResDown = min(abs(jet1.phi - METcorrected_phiResDown), 2 * math.pi - abs(jet1.phi - METcorrected_phiResDown))
 
             for i in range(1, njets):
                 jeti = centralJets[i]
                 minDeltaPhi_i = min(abs(jeti.phi - METcorrected_phi), 2 * math.pi - abs(jeti.phi - METcorrected_phi)) #phi angle between jeti and missing pt
-                minDeltaPhi_puppi_i = min(abs(jeti.phi - event.PuppiMET_phi), 2 * math.pi - abs(jeti.phi - event.PuppiMET_phi)) #phi angle between jeti and Puppi missing pt
                 if minDeltaPhi_i < minDeltaPhi: #Choose lowest minDeltaPhi out of all central jets
                     minDeltaPhi = minDeltaPhi_i
-                if minDeltaPhi_puppi_i < minDeltaPhi_puppi: #Choose lowest minDeltaPhi_puppi out of all central jets
-                    minDeltaPhi_puppi = minDeltaPhi_puppi_i
 
             #Systematics - JES, JER
             if self.isMC:
-                for i in range(1, njetsScaleUp):
-                    jetiScaleUp = centralJetsScaleUp[i]
-                    minDeltaPhiScaleUp_i = min(abs(jeti.phi - METcorrected_phiScaleUp), 2 * math.pi - abs(jeti.phi - METcorrected_phiScaleUp)) #phi angle between jeti and missing pt
-                    if minDeltaPhiScaleUp_i < minDeltaPhiScaleUp: #Choose lowest minDeltaPhi out of all central jets
-                        minDeltaPhiScaleUp = minDeltaPhiScaleUp_i
+                for sys in jesUnc:
+                    for i in range(1, jesBranches["njetsScale"+sys+"Up"]):
+                        jesBranches["jetiScale"+sys+"Up"] = jesBranches["centralJetsScale"+sys+"Up"][i]
+                        jesBranches["minDeltaPhiScale"+sys+"Up_i"] = min(abs(jeti.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]), 2 * math.pi - abs(jeti.phi - jesBranches["METcorrected_phiScale"+sys+"Up"])) #phi angle between jeti and missing pt
+                        if jesBranches["minDeltaPhiScale"+sys+"Up_i"] < jesBranches["minDeltaPhiScale"+sys+"Up"]: #Choose lowest minDeltaPhi out of all central jets
+                            jesBranches["minDeltaPhiScale"+sys+"Up"] = jesBranches["minDeltaPhiScale"+sys+"Up_i"]
 
-                for i in range(1, njetsScaleDown):
-                    jetiScaleDown = centralJetsScaleDown[i]
-                    minDeltaPhiScaleDown_i = min(abs(jeti.phi - METcorrected_phiScaleDown), 2 * math.pi - abs(jeti.phi - METcorrected_phiScaleDown)) #phi angle between jeti and missing pt
-                    if minDeltaPhiScaleDown_i < minDeltaPhiScaleDown: #Choose lowest minDeltaPhi out of all central jets
-                        minDeltaPhiScaleDown = minDeltaPhiScaleDown_i
+                    for i in range(1, jesBranches["njetsScale"+sys+"Down"]):
+                        jesBranches["jetiScale"+sys+"Down"] = jesBranches["centralJetsScale"+sys+"Down"][i]
+                        jesBranches["minDeltaPhiScale"+sys+"Down_i"] = min(abs(jeti.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]), 2 * math.pi - abs(jeti.phi - jesBranches["METcorrected_phiScale"+sys+"Down"])) #phi angle between jeti and missing pt
+                        if jesBranches["minDeltaPhiScale"+sys+"Down_i"] < jesBranches["minDeltaPhiScale"+sys+"Down"]: #Choose lowest minDeltaPhi out of all central jets
+                            jesBranches["minDeltaPhiScale"+sys+"Down"] = jesBranches["minDeltaPhiScale"+sys+"Down_i"]
 
                 for i in range(1, njetsResUp):
                     jetiResUp = centralJetsResUp[i]
@@ -575,10 +1223,11 @@ to next event)"""
         bjetVector = ROOT.vector("TLorentzVector")()
         #Systematics - JES, JER
         if self.isMC:
-            ljetVectorScaleUp = ROOT.vector("TLorentzVector")()
-            bjetVectorScaleUp = ROOT.vector("TLorentzVector")()
-            ljetVectorScaleDown = ROOT.vector("TLorentzVector")()
-            bjetVectorScaleDown = ROOT.vector("TLorentzVector")()
+            for sys in jesUnc:
+                jesBranches["ljetVectorScale"+sys+"Up"] = ROOT.vector("TLorentzVector")()
+                jesBranches["bjetVectorScale"+sys+"Up"] = ROOT.vector("TLorentzVector")()
+                jesBranches["ljetVectorScale"+sys+"Down"] = ROOT.vector("TLorentzVector")()
+                jesBranches["bjetVectorScale"+sys+"Down"] = ROOT.vector("TLorentzVector")()
             ljetVectorResUp = ROOT.vector("TLorentzVector")()
             bjetVectorResUp = ROOT.vector("TLorentzVector")()
             ljetVectorResDown = ROOT.vector("TLorentzVector")()
@@ -589,8 +1238,11 @@ to next event)"""
         jet1p_TH_T = 9 #If there are no jets, set value to +9 to indicate jet1p_T/H_T cannnot be calculated
         #Systematics - JES, JER
         if self.isMC:
-            H_TScaleUp = H_TScaleDown = H_TResUp = H_TResDown = 0
-            jet1p_TH_TScaleUp = jet1p_TH_TScaleDown = jet1p_TH_TResUp = jet1p_TH_TResDown = -9
+            for sys in jesUnc:
+                jesBranches["H_TScale"+sys+"Up"] = jesBranches["H_TScale"+sys+"Down"] = 0
+                jesBranches["jet1p_TH_TScale"+sys+"Up"] = jesBranches["jet1p_TH_TScale"+sys+"Down"] = -9
+            H_TResUp = H_TResDown = 0
+            jet1p_TH_TResUp = jet1p_TH_TResDown = -9
         
         if njets > 0:
             for jet in centralJets:
@@ -605,27 +1257,28 @@ to next event)"""
 
         #Systematics - JES, JER
         if self.isMC:
-            if njetsScaleUp > 0:
-                for jetScaleUp in centralJetsScaleUp:
-                    H_TScaleUp += jetScaleUp.pt_nom
-                    if self.btag == 'CSVv2':
-                        jetScaleUp_btag = jetScaleUp.btagCSVV2
-                    elif self.btag == 'DeepCSV':
-                        jetScaleUp_btag = jetScaleUp.btagDeepB
-                    if jetScaleUp_btag < btag_WP:
-                        ljetVectorScaleUp.push_back(jetScaleUp.p4()*(jetScaleUp.pt_jesTotalUp/jetScaleUp.pt_nom))
-                jet1p_TH_TScaleUp = centralJetsScaleUp[0].pt_nom/H_TScaleUp
+            for sys in jesUnc:
+                if jesBranches["njetsScale"+sys+"Up"] > 0:
+                    for jetScaleUp in jesBranches["centralJetsScale"+sys+"Up"]:
+                        jesBranches["H_TScale"+sys+"Up"] += jetScaleUp.pt_nom
+                        if self.btag == 'CSVv2':
+                            jetScaleUp_btag = jetScaleUp.btagCSVV2
+                        elif self.btag == 'DeepCSV':
+                            jetScaleUp_btag = jetScaleUp.btagDeepB
+                        if jetScaleUp_btag < btag_WP:
+                            jesBranches["ljetVectorScale"+sys+"Up"].push_back(jetScaleUp.p4()*(getJESjetpt(jetScaleUp, sys+"Up")/jetScaleUp.pt_nom))
+                    jesBranches["jet1p_TH_TScale"+sys+"Up"] = jesBranches["centralJetsScale"+sys+"Up"][0].pt_nom/jesBranches["H_TScale"+sys+"Up"]
 
-            if njetsScaleDown > 0:
-                for jetScaleDown in centralJetsScaleDown:
-                    H_TScaleDown += jetScaleDown.pt_nom
-                    if self.btag == 'CSVv2':
-                        jetScaleDown_btag = jetScaleDown.btagCSVV2
-                    elif self.btag == 'DeepCSV':
-                        jetScaleDown_btag = jetScaleDown.btagDeepB
-                    if jetScaleDown_btag < btag_WP:
-                        ljetVectorScaleDown.push_back(jetScaleDown.p4()*(jetScaleDown.pt_jesTotalDown/jetScaleDown.pt_nom))
-                jet1p_TH_TScaleDown = centralJetsScaleDown[0].pt_nom/H_TScaleDown
+                if jesBranches["njetsScale"+sys+"Down"] > 0:
+                    for jetScaleDown in jesBranches["centralJetsScale"+sys+"Down"]:
+                        jesBranches["H_TScale"+sys+"Down"] += jetScaleDown.pt_nom
+                        if self.btag == 'CSVv2':
+                            jetScaleDown_btag = jetScaleDown.btagCSVV2
+                        elif self.btag == 'DeepCSV':
+                            jetScaleDown_btag = jetScaleDown.btagDeepB
+                        if jetScaleDown_btag < btag_WP:
+                            jesBranches["ljetVectorScale"+sys+"Down"].push_back(jetScaleDown.p4()*(getJESjetpt(jetScaleDown, sys+"Down")/jetScaleDown.pt_nom))
+                    jesBranches["jet1p_TH_TScale"+sys+"Down"] = jesBranches["centralJetsScale"+sys+"Down"][0].pt_nom/jesBranches["H_TScale"+sys+"Down"]
 
             if njetsResUp > 0:
                 for jetResUp in centralJetsResUp:
@@ -651,10 +1304,11 @@ to next event)"""
 
         #Calculate M_T^b
         M_Tb = -9 #If there are no bjets, set value to -9 to indicate M_Tb cannot be calculated
-        M_Tb_puppi = -9
         #Systematics - JES, JER
         if self.isMC:
-            M_TbScaleUp = M_TbScaleDown = M_TbResUp = M_TbResDown = -9
+            for sys in jesUnc:
+                jesBranches["M_TbScale"+sys+"Up"] = jesBranches["M_TbScale"+sys+"Down"] = -9
+            M_TbResUp = M_TbResDown = -9
         
         if nbjets > 0:
             bjet1 = bJets[0]
@@ -670,43 +1324,42 @@ to next event)"""
                     bjet1 = bjet
 
             deltaPhiMTb = bjet1.phi - METcorrected_phi
-            deltaPhiMTb_puppi = bjet1.phi - event.PuppiMET_phi
             M_Tb = math.sqrt(2 * METcorrected_pt * bjet1.pt * (1 - math.cos(deltaPhiMTb)))
-            M_Tb_puppi = math.sqrt(2 * event.PuppiMET_pt * bjet1.pt * (1 - math.cos(deltaPhiMTb_puppi)))
 
         #Systematics - JES, JER
         if self.isMC:
-            if nbjetsScaleUp > 0:
-                bjetScaleUp1 = bJetsScaleUp[0]
-                for bjetScaleUp in bJetsScaleUp:
-                    bjetVectorScaleUp.push_back(bjetScaleUp.p4()*(bjetScaleUp.pt_jesTotalUp/bjetScaleUp.pt_nom))
-                    if self.btag == 'CSVv2':
-                        bjetScaleUp_btag = bjetScaleUp.btagCSVV2
-                        bjetScaleUp1_btag = bjetScaleUp1.btagCSVV2
-                    elif self.btag == 'DeepCSV':
-                        bjetScaleUp_btag = bjetScaleUp.btagDeepB
-                        bjetScaleUp1_btag = bjetScaleUp1.btagDeepB
-                    if bjetScaleUp_btag > bjetScaleUp1_btag:
-                        bjetScaleUp1 = bjetScaleUp
+            for sys in jesUnc:
+                if jesBranches["nbjetsScale"+sys+"Up"] > 0:
+                    bjetScaleUp1 = jesBranches["bJetsScale"+sys+"Up"][0]
+                    for bjetScaleUp in jesBranches["bJetsScale"+sys+"Up"]:
+                        jesBranches["bjetVectorScale"+sys+"Up"].push_back(bjetScaleUp.p4()*(getJESjetpt(bjetScaleUp, sys+"Up")/bjetScaleUp.pt_nom))
+                        if self.btag == 'CSVv2':
+                            bjetScaleUp_btag = bjetScaleUp.btagCSVV2
+                            bjetScaleUp1_btag = bjetScaleUp1.btagCSVV2
+                        elif self.btag == 'DeepCSV':
+                            bjetScaleUp_btag = bjetScaleUp.btagDeepB
+                            bjetScaleUp1_btag = bjetScaleUp1.btagDeepB
+                        if bjetScaleUp_btag > bjetScaleUp1_btag:
+                            bjetScaleUp1 = bjetScaleUp
 
-                deltaPhiMTbScaleUp = bjetScaleUp1.phi - METcorrected_phiScaleUp
-                M_TbScaleUp = math.sqrt(2 * METcorrected_ptScaleUp * bjetScaleUp1.pt_nom * (1 - math.cos(deltaPhiMTbScaleUp)))
+                    jesBranches["deltaPhiMTbScale"+sys+"Up"] = bjetScaleUp1.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]
+                    jesBranches["M_TbScale"+sys+"Up"] = math.sqrt(2 * jesBranches["METcorrected_ptScale"+sys+"Up"] * bjetScaleUp1.pt_nom * (1 - math.cos(jesBranches["deltaPhiMTbScale"+sys+"Up"])))
 
-            if nbjetsScaleDown > 0:
-                bjetScaleDown1 = bJetsScaleDown[0]
-                for bjetScaleDown in bJetsScaleDown:
-                    bjetVectorScaleDown.push_back(bjetScaleDown.p4()*(bjetScaleDown.pt_jesTotalDown/bjetScaleDown.pt_nom))
-                    if self.btag == 'CSVv2':
-                        bjetScaleDown_btag = bjetScaleDown.btagCSVV2
-                        bjetScaleDown1_btag = bjetScaleDown1.btagCSVV2
-                    elif self.btag == 'DeepCSV':
-                        bjetScaleDown_btag = bjetScaleDown.btagDeepB
-                        bjetScaleDown1_btag = bjetScaleDown1.btagDeepB
-                    if bjetScaleDown_btag > bjetScaleDown1_btag:
-                        bjetScaleDown1 = bjetScaleDown
+                if jesBranches["nbjetsScale"+sys+"Down"] > 0:
+                    bjetScaleDown1 = jesBranches["bJetsScale"+sys+"Down"][0]
+                    for bjetScaleDown in jesBranches["bJetsScale"+sys+"Down"]:
+                        jesBranches["bjetVectorScale"+sys+"Down"].push_back(bjetScaleDown.p4()*(getJESjetpt(bjetScaleDown, sys+"Down")/bjetScaleDown.pt_nom))
+                        if self.btag == 'CSVv2':
+                            bjetScaleDown_btag = bjetScaleDown.btagCSVV2
+                            bjetScaleDown1_btag = bjetScaleDown1.btagCSVV2
+                        elif self.btag == 'DeepCSV':
+                            bjetScaleDown_btag = bjetScaleDown.btagDeepB
+                            bjetScaleDown1_btag = bjetScaleDown1.btagDeepB
+                        if bjetScaleDown_btag > bjetScaleDown1_btag:
+                            bjetScaleDown1 = bjetScaleDown
 
-                deltaPhiMTbScaleDown = bjetScaleDown1.phi - METcorrected_phiScaleDown
-                M_TbScaleDown = math.sqrt(2 * METcorrected_ptScaleDown * bjetScaleDown1.pt_nom * (1 - math.cos(deltaPhiMTbScaleDown)))
+                    jesBranches["deltaPhiMTbScale"+sys+"Down"] = bjetScaleDown1.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]
+                    jesBranches["M_TbScale"+sys+"Down"] = math.sqrt(2 * jesBranches["METcorrected_ptScale"+sys+"Down"] * bjetScaleDown1.pt_nom * (1 - math.cos(jesBranches["deltaPhiMTbScale"+sys+"Down"])))
 
             if nbjetsResUp > 0:
                 bjetResUp1 = bJetsResUp[0]
@@ -741,16 +1394,22 @@ to next event)"""
                 M_TbResDown = math.sqrt(2 * METcorrected_ptResDown * bjetResDown1.pt_nom * (1 - math.cos(deltaPhiMTbResDown)))
 
         #Calculate M_T, M_T2^W, M_T2^ll, and topness variables using PFMET
-        M_T = M_T2W = M_T2ll = M_T_puppi = M_T2W_puppi = M_T2ll_puppi = -9 #If there are not enough tight leptons, set value to -9 to indicate variable cannot be calculated
+        M_T = M_T2W = M_T2ll  = -9 #If there are not enough tight leptons, set value to -9 to indicate variable cannot be calculated
         modified_topness = full_topness = -999
         full_topness = -999
         #Systematics - JES, JER
         if self.isMC:
-            M_TScaleUp = M_TScaleDown = M_TResUp = M_TResDown = -9
-            M_T2WScaleUp = M_T2WScaleDown = M_T2WResUp = M_T2WResDown = -9
-            M_T2llScaleUp = M_T2llScaleDown = M_T2llResUp = M_T2llResDown = -9
-            modified_topnessScaleUp = modified_topnessScaleDown = modified_topnessResUp = modified_topnessResDown = -999
-            full_topnessScaleUp = full_topnessScaleDown = full_topnessResUp = full_topnessResDown = -999
+            for sys in jesUnc:
+                jesBranches["M_TScale"+sys+"Up"] = jesBranches["M_TScale"+sys+"Down"] = -9
+                jesBranches["M_T2WScale"+sys+"Up"] = jesBranches["M_T2WScale"+sys+"Down"] = -9
+                jesBranches["M_T2llScale"+sys+"Up"] = jesBranches["M_T2llScale"+sys+"Down"] = -9
+                jesBranches["modified_topnessScale"+sys+"Up"] = jesBranches["modified_topnessScale"+sys+"Down"] = -999
+                jesBranches["full_topnessScale"+sys+"Up"] = jesBranches["full_topnessScale"+sys+"Down"] = -999
+            M_TResUp = M_TResDown = -9
+            M_T2WResUp = M_T2WResDown = -9
+            M_T2llResUp = M_T2llResDown = -9
+            modified_topnessResUp = modified_topnessResDown = -999
+            full_topnessResUp = full_topnessResDown = -999
 
         if nTightElectrons > 0 or nTightMuons > 0: #Default to using electron if both tight electron and muon exist
             if nTightElectrons > 0:
@@ -760,15 +1419,14 @@ to next event)"""
 
             #Calculate M_T
             deltaPhiMT = lepton.phi - METcorrected_phi
-            deltaPhiMT_puppi = lepton.phi - event.PuppiMET_phi
             M_T = math.sqrt(2 * METcorrected_pt * lepton.pt * (1 - math.cos(deltaPhiMT)))
-            M_T_puppi = math.sqrt(2 * event.PuppiMET_pt * lepton.pt * (1 - math.cos(deltaPhiMT_puppi)))
             #Systematics - JES, JER
             if self.isMC:
-                deltaPhiMTScaleUp = lepton.phi - METcorrected_phiScaleUp
-                M_TScaleUp = math.sqrt(2 * METcorrected_ptScaleUp * lepton.pt * (1 - math.cos(deltaPhiMTScaleUp)))
-                deltaPhiMTScaleDown = lepton.phi - METcorrected_phiScaleDown
-                M_TScaleDown = math.sqrt(2 * METcorrected_ptScaleDown * lepton.pt * (1 - math.cos(deltaPhiMTScaleDown)))
+                for sys in jesUnc:
+                    jesBranches["deltaPhiMTScale"+sys+"Up"] = lepton.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]
+                    jesBranches["M_TScale"+sys+"Up"] = math.sqrt(2 * jesBranches["METcorrected_ptScale"+sys+"Up"] * lepton.pt * (1 - math.cos(jesBranches["deltaPhiMTScale"+sys+"Up"])))
+                    jesBranches["deltaPhiMTScale"+sys+"Down"] = lepton.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]
+                    jesBranches["M_TScale"+sys+"Down"] = math.sqrt(2 * jesBranches["METcorrected_ptScale"+sys+"Down"] * lepton.pt * (1 - math.cos(jesBranches["deltaPhiMTScale"+sys+"Down"])))
                 deltaPhiMTResUp = lepton.phi - METcorrected_phiResUp
                 M_TResUp = math.sqrt(2 * METcorrected_ptResUp * lepton.pt * (1 - math.cos(deltaPhiMTResUp)))
                 deltaPhiMTResDown = lepton.phi - METcorrected_phiResDown
@@ -777,15 +1435,14 @@ to next event)"""
             #Calculate M_T2^W 
             leptonTLorentz = lepton.p4()
             metTVector2 = ROOT.TVector2(METcorrected_pt * math.cos(METcorrected_phi), METcorrected_pt * math.sin(METcorrected_phi))
-            PuppimetTVector2 = ROOT.TVector2(event.PuppiMET_pt * math.cos(event.PuppiMET_phi), event.PuppiMET_pt * math.sin(event.PuppiMET_phi))
             M_T2W = Mt2Com_bisect.calculateMT2w(ljetVector, bjetVector, leptonTLorentz, metTVector2, "MT2w")
-            M_T2W_puppi = Mt2Com_bisect.calculateMT2w(ljetVector, bjetVector, leptonTLorentz, PuppimetTVector2, "MT2w")
             #Systematics - JES, JER
             if self.isMC:
-                metTVector2ScaleUp = ROOT.TVector2(METcorrected_ptScaleUp * math.cos(METcorrected_phiScaleUp), METcorrected_ptScaleUp * math.sin(METcorrected_phiScaleUp))
-                M_T2WScaleUp = Mt2Com_bisect.calculateMT2w(ljetVectorScaleUp, bjetVectorScaleUp, leptonTLorentz, metTVector2ScaleUp, "MT2w")
-                metTVector2ScaleDown = ROOT.TVector2(METcorrected_ptScaleDown * math.cos(METcorrected_phiScaleDown), METcorrected_ptScaleDown * math.sin(METcorrected_phiScaleDown))
-                M_T2WScaleDown = Mt2Com_bisect.calculateMT2w(ljetVectorScaleDown, bjetVectorScaleDown, leptonTLorentz, metTVector2ScaleDown, "MT2w")
+                for sys in jesUnc:
+                    jesBranches["metTVector2Scale"+sys+"Up"] = ROOT.TVector2(jesBranches["METcorrected_ptScale"+sys+"Up"] * math.cos(jesBranches["METcorrected_phiScale"+sys+"Up"]), jesBranches["METcorrected_ptScale"+sys+"Up"] * math.sin(jesBranches["METcorrected_phiScale"+sys+"Up"]))
+                    jesBranches["M_T2WScale"+sys+"Up"] = Mt2Com_bisect.calculateMT2w(jesBranches["ljetVectorScale"+sys+"Up"], jesBranches["bjetVectorScale"+sys+"Up"], leptonTLorentz, jesBranches["metTVector2Scale"+sys+"Up"], "MT2w")
+                    jesBranches["metTVector2Scale"+sys+"Down"] = ROOT.TVector2(jesBranches["METcorrected_ptScale"+sys+"Down"] * math.cos(jesBranches["METcorrected_phiScale"+sys+"Down"]), jesBranches["METcorrected_ptScale"+sys+"Down"] * math.sin(jesBranches["METcorrected_phiScale"+sys+"Down"]))
+                    jesBranches["M_T2WScale"+sys+"Down"] = Mt2Com_bisect.calculateMT2w(jesBranches["ljetVectorScale"+sys+"Down"], jesBranches["bjetVectorScale"+sys+"Down"], leptonTLorentz, jesBranches["metTVector2Scale"+sys+"Down"], "MT2w")
                 metTVector2ResUp = ROOT.TVector2(METcorrected_ptResUp * math.cos(METcorrected_phiResUp), METcorrected_ptResUp * math.sin(METcorrected_phiResUp))
                 M_T2WResUp = Mt2Com_bisect.calculateMT2w(ljetVectorResUp, bjetVectorResUp, leptonTLorentz, metTVector2ResUp, "MT2w")
                 metTVector2ResDown = ROOT.TVector2(METcorrected_ptResDown * math.cos(METcorrected_phiResDown), METcorrected_ptResDown * math.sin(METcorrected_phiResDown))
@@ -797,10 +1454,11 @@ to next event)"""
                 full_topness = ROOT.CalcTopness_(2, METcorrected_pt, METcorrected_phi, leptonTLorentz, bjetVector, ljetVector)
                 #Systematics - JES, JER
                 if self.isMC:
-                    modified_topnessScaleUp = ROOT.CalcTopness_(1, METcorrected_ptScaleUp, METcorrected_phiScaleUp, leptonTLorentz, bjetVectorScaleUp, ljetVectorScaleUp)
-                    full_topnessScaleUp = ROOT.CalcTopness_(2, METcorrected_ptScaleUp, METcorrected_phiScaleUp, leptonTLorentz, bjetVectorScaleUp, ljetVectorScaleUp)
-                    modified_topnessScaleDown = ROOT.CalcTopness_(1, METcorrected_ptScaleDown, METcorrected_phiScaleDown, leptonTLorentz, bjetVectorScaleDown, ljetVectorScaleDown)
-                    full_topnessScaleDown = ROOT.CalcTopness_(2, METcorrected_ptScaleDown, METcorrected_phiScaleDown, leptonTLorentz, bjetVectorScaleDown, ljetVectorScaleDown)
+                    for sys in jesUnc:
+                        jesBranches["modified_topnessScale"+sys+"Up"] = ROOT.CalcTopness_(1, jesBranches["METcorrected_ptScale"+sys+"Up"], jesBranches["METcorrected_phiScale"+sys+"Up"], leptonTLorentz, jesBranches["bjetVectorScale"+sys+"Up"], jesBranches["ljetVectorScale"+sys+"Up"])
+                        jesBranches["full_topnessScale"+sys+"Up"] = ROOT.CalcTopness_(2, jesBranches["METcorrected_ptScale"+sys+"Up"], jesBranches["METcorrected_phiScale"+sys+"Up"], leptonTLorentz, jesBranches["bjetVectorScale"+sys+"Up"], jesBranches["ljetVectorScale"+sys+"Up"])
+                        jesBranches["modified_topnessScale"+sys+"Down"] = ROOT.CalcTopness_(1, jesBranches["METcorrected_ptScale"+sys+"Down"], jesBranches["METcorrected_phiScale"+sys+"Down"], leptonTLorentz, jesBranches["bjetVectorScale"+sys+"Down"], jesBranches["ljetVectorScale"+sys+"Down"])
+                        jesBranches["full_topnessScale"+sys+"Down"] = ROOT.CalcTopness_(2, jesBranches["METcorrected_ptScale"+sys+"Down"], jesBranches["METcorrected_phiScale"+sys+"Down"], leptonTLorentz, jesBranches["bjetVectorScale"+sys+"Down"], jesBranches["ljetVectorScale"+sys+"Down"])
                     modified_topnessResUp = ROOT.CalcTopness_(1, METcorrected_ptResUp, METcorrected_phiResUp, leptonTLorentz, bjetVectorResUp, ljetVectorResUp)
                     full_topnessResUp = ROOT.CalcTopness_(2, METcorrected_ptResUp, METcorrected_phiResUp, leptonTLorentz, bjetVectorResUp, ljetVectorResUp)
                     modified_topnessResDown = ROOT.CalcTopness_(1, METcorrected_ptResDown, METcorrected_phiResDown, leptonTLorentz, bjetVectorResDown, ljetVectorResDown)
@@ -833,28 +1491,27 @@ to next event)"""
 
             pxMiss = METcorrected_pt*math.cos(METcorrected_phi) #x component of missing transverse momentum
             pyMiss = METcorrected_pt*math.sin(METcorrected_phi) #y component of missing transverse momentum
-            
-            pxMiss_puppi = event.PuppiMET_pt*math.cos(event.PuppiMET_phi) #x component of Puppi missing transverse momentum
-            pyMiss_puppi = event.PuppiMET_pt*math.sin(event.PuppiMET_phi) #y component of Puppi missing transverse momentum
 
             desiredPrecisionOnM_T2ll = 0 #Must be >= 0. If = 0 algorithm aims for machine precision. If > 0 MT2 computed to supplied absolute precision
 
             M_T2ll = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,pxMiss,pyMiss,chiA,chiB,desiredPrecisionOnM_T2ll)
-            M_T2ll_puppi = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,pxMiss_puppi,pyMiss_puppi,chiA,chiB,desiredPrecisionOnM_T2ll)
 
             #Systematics - JES, JER
             if self.isMC:
-                pxMissScaleUp = METcorrected_ptScaleUp*math.cos(METcorrected_phiScaleUp)
-                pyMissScaleUp = METcorrected_ptScaleUp*math.sin(METcorrected_phiScaleUp)
-                pxMissScaleDown = METcorrected_ptScaleDown*math.cos(METcorrected_phiScaleDown)
-                pyMissScaleDown = METcorrected_ptScaleDown*math.sin(METcorrected_phiScaleDown)
+                for sys in jesUnc:
+                    jesBranches["pxMissScale"+sys+"Up"] = jesBranches["METcorrected_ptScale"+sys+"Up"]*math.cos(jesBranches["METcorrected_phiScale"+sys+"Up"])
+                    jesBranches["pyMissScale"+sys+"Up"] = jesBranches["METcorrected_ptScale"+sys+"Up"]*math.sin(jesBranches["METcorrected_phiScale"+sys+"Up"])
+                    jesBranches["pxMissScale"+sys+"Down"] = jesBranches["METcorrected_ptScale"+sys+"Down"]*math.cos(jesBranches["METcorrected_phiScale"+sys+"Down"])
+                    jesBranches["pyMissScale"+sys+"Down"] = jesBranches["METcorrected_ptScale"+sys+"Down"]*math.sin(jesBranches["METcorrected_phiScale"+sys+"Down"])
+
+                    jesBranches["M_T2llScale"+sys+"Up"] = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,jesBranches["pxMissScale"+sys+"Up"],jesBranches["pyMissScale"+sys+"Up"],chiA,chiB,desiredPrecisionOnM_T2ll)
+                    jesBranches["M_T2llScale"+sys+"Down"] = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,jesBranches["pxMissScale"+sys+"Down"],jesBranches["pyMissScale"+sys+"Down"],chiA,chiB,desiredPrecisionOnM_T2ll)
+
                 pxMissResUp = METcorrected_ptResUp*math.cos(METcorrected_phiResUp)
                 pyMissResUp = METcorrected_ptResUp*math.sin(METcorrected_phiResUp)
                 pxMissResDown = METcorrected_ptResDown*math.cos(METcorrected_phiResDown)
                 pyMissResDown = METcorrected_ptResDown*math.sin(METcorrected_phiResDown)
                 
-                M_T2llScaleUp = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,pxMissScaleUp,pyMissScaleUp,chiA,chiB,desiredPrecisionOnM_T2ll)
-                M_T2llScaleDown = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,pxMissScaleDown,pyMissScaleDown,chiA,chiB,desiredPrecisionOnM_T2ll)
                 M_T2llResUp = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,pxMissResUp,pyMissResUp,chiA,chiB,desiredPrecisionOnM_T2ll)
                 M_T2llResDown = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,pxMissResDown,pyMissResDown,chiA,chiB,desiredPrecisionOnM_T2ll)
         
@@ -865,54 +1522,6 @@ to next event)"""
         else:
             skimmedTaus = filter(lambda tau : tau.pt > 20 and abs(tau.eta) < 2.3 and tau.idMVAoldDM2017v2 >= 31 and cleanJet(tau), tauCandidates)
         ntaus = len(skimmedTaus)
-
-        #Determine if there exists two tight electrons/muons such that their invariant mass m_ll is between 60-120 GeV and the hadronic recoil >= 250 GeV
-        m_llExists = m_llExists_puppi = False
-        m_ll = 0
-        recoilPtMiss = recoilPtMiss_puppi = 0
-        lepton1_charge = lepton2_charge = 0
-        #Systematics - JES, JER
-        if self.isMC:
-            m_llExistsScaleUp = m_llExistsScaleDown = m_llExistsResUp = m_llExistsResDown = False
-            recoilPtMissScaleUp = recoilPtMissScaleDown = recoilPtMissResUp = recoilPtMissResDown = 0
-
-        #Only calculate m_ll and recoilPtMiss when two tight leptons exist (2e, 2m, or 1e1m)
-        if (nTightElectrons >= 2 and nLooseMuons == 0) or (nVetoElectrons == 0 and nTightMuons >= 2):
-            if nTightElectrons >= 2:
-                tightLeptons = tightElectrons
-            elif nTightMuons >= 2:
-                tightLeptons = tightMuons
-            lepton1 = tightLeptons[0]
-            lepton2 = tightLeptons[1]
-            eventSum = lepton1.p4() + lepton2.p4()
-            m_ll = eventSum.M()
-
-            recoilPtMiss = math.sqrt(pow(METcorrected_pt*math.cos(METcorrected_phi) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_pt*math.sin(METcorrected_phi) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
-            recoilPtMiss_puppi = math.sqrt(pow(event.PuppiMET_pt*math.cos(event.PuppiMET_phi) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(event.PuppiMET_pt*math.sin(event.PuppiMET_phi) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
-
-            lepton1_charge = lepton1.charge
-            lepton2_charge = lepton2.charge
-
-            if 60 <= m_ll <= 120 and recoilPtMiss >= 250 and lepton1.charge == -lepton2.charge:
-                m_llExists = True  
-            if 60 <= m_ll <= 120 and recoilPtMiss_puppi >= 250 and lepton1.charge == -lepton2.charge:
-                m_llExists_puppi = True
-
-            #Systematics - JES, JER
-            if self.isMC:
-                recoilPtMissScaleUp = math.sqrt(pow(METcorrected_ptScaleUp*math.cos(METcorrected_phiScaleUp) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_ptScaleUp*math.sin(METcorrected_phiScaleUp) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
-                recoilPtMissScaleDown = math.sqrt(pow(METcorrected_ptScaleDown*math.cos(METcorrected_phiScaleDown) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_ptScaleDown*math.sin(METcorrected_phiScaleDown) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
-                recoilPtMissResUp = math.sqrt(pow(METcorrected_ptResUp*math.cos(METcorrected_phiResUp) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_ptResUp*math.sin(METcorrected_phiResUp) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
-                recoilPtMissResDown = math.sqrt(pow(METcorrected_ptResDown*math.cos(METcorrected_phiResDown) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_ptResDown*math.sin(METcorrected_phiResDown) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
-
-                if 60 <= m_ll <= 120 and recoilPtMissScaleUp >= 250 and lepton1.charge == -lepton2.charge:
-                    m_llExistsScaleUp = True
-                if 60 <= m_ll <= 120 and recoilPtMissScaleDown >= 250 and lepton1.charge == -lepton2.charge:
-                    m_llExistsScaleDown = True 
-                if 60 <= m_ll <= 120 and recoilPtMissResUp >= 250 and lepton1.charge == -lepton2.charge:
-                    m_llExistsResUp = True 
-                if 60 <= m_ll <= 120 and recoilPtMissResDown >= 250 and lepton1.charge == -lepton2.charge:
-                    m_llExistsResDown = True 
 
         #Only calculate scale factors if sample is MC
         if self.isMC:
@@ -1013,18 +1622,6 @@ to next event)"""
                 passEle32WPTightGsf2017 = True
                 break
 
-        #Define skimming cuts to be applied
-        #Skim = ((nTightElectrons + nTightMuons) <= 1 and njets >= 2 and event.MET_pt > 140) or ((nTightElectrons + nTightMuons) == 2 and njets >= 2)
-        Skim = ((nTightElectrons + nTightMuons) <= 1 and njets >= 2 and METcorrected_pt > 200) or ((nTightElectrons + nTightMuons) == 2 and njets >= 2 and (METcorrected_pt > 200 or recoilPtMiss > 200) )
-
-        #Signal region chosen here
-        if self.signalRegion == "All":
-            signalRegion = True
-        elif self.signalRegion == "Skim":
-            signalRegion = Skim
-        else:
-            signalRegion = False
-
         if signalRegion: #True if event satisfies all selection cuts for specified signal region
             #fill output branches
             self.out.fillBranch("nTightElectrons", nTightElectrons)
@@ -1054,18 +1651,8 @@ to next event)"""
             self.out.fillBranch("M_T2ll", M_T2ll)
             self.out.fillBranch("jet1p_TH_T", jet1p_TH_T)
             self.out.fillBranch("ntaus", ntaus)
-            self.out.fillBranch("m_llExists", m_llExists)
             self.out.fillBranch("m_ll", m_ll)
             self.out.fillBranch("recoilPtMiss", recoilPtMiss)
-
-            self.out.fillBranch("minDeltaPhi_puppi", minDeltaPhi_puppi)
-            self.out.fillBranch("minDeltaPhi12_puppi", minDeltaPhi12_puppi)
-            self.out.fillBranch("M_Tb_puppi", M_Tb_puppi)
-            self.out.fillBranch("M_T_puppi", M_T_puppi)
-            self.out.fillBranch("M_T2W_puppi", M_T2W_puppi)
-            self.out.fillBranch("M_T2ll_puppi", M_T2ll_puppi)
-            self.out.fillBranch("m_llExists_puppi", m_llExists_puppi)
-            self.out.fillBranch("recoilPtMiss_puppi", recoilPtMiss_puppi)
 
             self.out.fillBranch("lepton1_charge", lepton1_charge)
             self.out.fillBranch("lepton2_charge", lepton2_charge)
@@ -1085,82 +1672,92 @@ to next event)"""
             
             if self.isMC:
                 #Systematics - JES, JER
-                self.out.fillBranch("njetsScaleUp", njetsScaleUp)
-                self.out.fillBranch("njetsScaleDown", njetsScaleDown)
+                for sys in jesUnc:
+                    self.out.fillBranch("njetsScale"+sys+"Up", jesBranches["njetsScale"+sys+"Up"])
+                    self.out.fillBranch("njetsScale"+sys+"Down", jesBranches["njetsScale"+sys+"Down"])
+
+                    self.out.fillBranch("nfjetsScale"+sys+"Up", jesBranches["nfjetsScale"+sys+"Up"])
+                    self.out.fillBranch("nfjetsScale"+sys+"Down", jesBranches["nfjetsScale"+sys+"Down"])
+                    
+                    self.out.fillBranch("nbjetsScale"+sys+"Up", jesBranches["nbjetsScale"+sys+"Up"])
+                    self.out.fillBranch("nbjetsScale"+sys+"Down", jesBranches["nbjetsScale"+sys+"Down"])
+                    
+                    self.out.fillBranch("minDeltaPhiScale"+sys+"Up", jesBranches["minDeltaPhiScale"+sys+"Up"])
+                    self.out.fillBranch("minDeltaPhiScale"+sys+"Down", jesBranches["minDeltaPhiScale"+sys+"Down"])
+                    
+                    self.out.fillBranch("minDeltaPhi12Scale"+sys+"Up", jesBranches["minDeltaPhi12Scale"+sys+"Up"])
+                    self.out.fillBranch("minDeltaPhi12Scale"+sys+"Down", jesBranches["minDeltaPhi12Scale"+sys+"Down"])
+                    
+                    self.out.fillBranch("M_TbScale"+sys+"Up", jesBranches["M_TbScale"+sys+"Up"])
+                    self.out.fillBranch("M_TbScale"+sys+"Down", jesBranches["M_TbScale"+sys+"Down"])
+                    
+                    self.out.fillBranch("M_TScale"+sys+"Up", jesBranches["M_TScale"+sys+"Up"])
+                    self.out.fillBranch("M_TScale"+sys+"Down", jesBranches["M_TScale"+sys+"Down"])
+                    
+                    self.out.fillBranch("M_T2WScale"+sys+"Up", jesBranches["M_T2WScale"+sys+"Up"])
+                    self.out.fillBranch("M_T2WScale"+sys+"Down", jesBranches["M_T2WScale"+sys+"Down"])
+                    
+                    self.out.fillBranch("M_T2llScale"+sys+"Up", jesBranches["M_T2llScale"+sys+"Up"])
+                    self.out.fillBranch("M_T2llScale"+sys+"Down", jesBranches["M_T2llScale"+sys+"Down"])
+                    
+                    self.out.fillBranch("jet1p_TH_TScale"+sys+"Up", jesBranches["jet1p_TH_TScale"+sys+"Up"])
+                    self.out.fillBranch("jet1p_TH_TScale"+sys+"Down", jesBranches["jet1p_TH_TScale"+sys+"Down"])
+                    
+                    self.out.fillBranch("recoilPtMissScale"+sys+"Up", jesBranches["recoilPtMissScale"+sys+"Up"])
+                    self.out.fillBranch("recoilPtMissScale"+sys+"Down", jesBranches["recoilPtMissScale"+sys+"Down"])
+                    
+                    self.out.fillBranch("modified_topnessScale"+sys+"Up", jesBranches["modified_topnessScale"+sys+"Up"])
+                    self.out.fillBranch("modified_topnessScale"+sys+"Down", jesBranches["modified_topnessScale"+sys+"Down"])
+                    
+                    self.out.fillBranch("full_topnessScale"+sys+"Up", jesBranches["full_topnessScale"+sys+"Up"])
+                    self.out.fillBranch("full_topnessScale"+sys+"Down", jesBranches["full_topnessScale"+sys+"Down"])
+
+                    self.out.fillBranch("METcorrected_ptScale"+sys+"Up", jesBranches["METcorrected_ptScale"+sys+"Up"])
+                    self.out.fillBranch("METcorrected_ptScale"+sys+"Down", jesBranches["METcorrected_ptScale"+sys+"Down"])
+                    self.out.fillBranch("METcorrected_phiScale"+sys+"Up", jesBranches["METcorrected_phiScale"+sys+"Up"])
+                    self.out.fillBranch("METcorrected_phiScale"+sys+"Down", jesBranches["METcorrected_phiScale"+sys+"Down"])
+
                 self.out.fillBranch("njetsResUp", njetsResUp)
                 self.out.fillBranch("njetsResDown", njetsResDown)
                 
-                self.out.fillBranch("nfjetsScaleUp", nfjetsScaleUp)
-                self.out.fillBranch("nfjetsScaleDown", nfjetsScaleDown)
                 self.out.fillBranch("nfjetsResUp", nfjetsResUp)
                 self.out.fillBranch("nfjetsResDown", nfjetsResDown)
                 
-                self.out.fillBranch("nbjetsScaleUp", nbjetsScaleUp)
-                self.out.fillBranch("nbjetsScaleDown", nbjetsScaleDown)
                 self.out.fillBranch("nbjetsResUp", nbjetsResUp)
                 self.out.fillBranch("nbjetsResDown", nbjetsResDown)
                 
-                self.out.fillBranch("METcorrected_ptScaleUp", METcorrected_ptScaleUp)
-                self.out.fillBranch("METcorrected_ptScaleDown", METcorrected_ptScaleDown)
                 self.out.fillBranch("METcorrected_ptResUp", METcorrected_ptResUp)
                 self.out.fillBranch("METcorrected_ptResDown", METcorrected_ptResDown)
-                self.out.fillBranch("METcorrected_phiScaleUp", METcorrected_phiScaleUp)
-                self.out.fillBranch("METcorrected_phiScaleDown", METcorrected_phiScaleDown)
                 self.out.fillBranch("METcorrected_phiResUp", METcorrected_phiResUp)
                 self.out.fillBranch("METcorrected_phiResDown", METcorrected_phiResDown)
                 
-                self.out.fillBranch("minDeltaPhiScaleUp", minDeltaPhiScaleUp)
-                self.out.fillBranch("minDeltaPhiScaleDown", minDeltaPhiScaleDown)
                 self.out.fillBranch("minDeltaPhiResUp", minDeltaPhiResUp)
                 self.out.fillBranch("minDeltaPhiResDown", minDeltaPhiResDown)
                 
-                self.out.fillBranch("minDeltaPhi12ScaleUp", minDeltaPhi12ScaleUp)
-                self.out.fillBranch("minDeltaPhi12ScaleDown", minDeltaPhi12ScaleDown)
                 self.out.fillBranch("minDeltaPhi12ResUp", minDeltaPhiResUp)
                 self.out.fillBranch("minDeltaPhi12ResDown", minDeltaPhiResDown)
                 
-                self.out.fillBranch("M_TbScaleUp", M_TbScaleUp)
-                self.out.fillBranch("M_TbScaleDown", M_TbScaleDown)
                 self.out.fillBranch("M_TbResUp", M_TbResUp)
                 self.out.fillBranch("M_TbResDown", M_TbResDown)
                 
-                self.out.fillBranch("M_TScaleUp", M_TScaleUp)
-                self.out.fillBranch("M_TScaleDown", M_TScaleDown)
                 self.out.fillBranch("M_TResUp", M_TResUp)
                 self.out.fillBranch("M_TResDown", M_TResDown)
                 
-                self.out.fillBranch("M_T2WScaleUp", M_T2WScaleUp)
-                self.out.fillBranch("M_T2WScaleDown", M_T2WScaleDown)
                 self.out.fillBranch("M_T2WResUp", M_T2WResUp)
                 self.out.fillBranch("M_T2WResDown", M_T2WResDown)
                 
-                self.out.fillBranch("M_T2llScaleUp", M_T2llScaleUp)
-                self.out.fillBranch("M_T2llScaleDown", M_T2llScaleDown)
                 self.out.fillBranch("M_T2llResUp", M_T2llResUp)
                 self.out.fillBranch("M_T2llResDown", M_T2llResDown)
                 
-                self.out.fillBranch("jet1p_TH_TScaleUp", jet1p_TH_TScaleUp)
-                self.out.fillBranch("jet1p_TH_TScaleDown", jet1p_TH_TScaleDown)
                 self.out.fillBranch("jet1p_TH_TResUp", jet1p_TH_TResUp)
                 self.out.fillBranch("jet1p_TH_TResDown", jet1p_TH_TResDown)
                 
-                self.out.fillBranch("m_llExistsScaleUp", m_llExistsScaleUp)
-                self.out.fillBranch("m_llExistsScaleDown", m_llExistsScaleDown)
-                self.out.fillBranch("m_llExistsResUp", m_llExistsResUp)
-                self.out.fillBranch("m_llExistsResDown", m_llExistsResDown)
-                
-                self.out.fillBranch("recoilPtMissScaleUp", recoilPtMissScaleUp)
-                self.out.fillBranch("recoilPtMissScaleDown", recoilPtMissScaleDown)
                 self.out.fillBranch("recoilPtMissResUp", recoilPtMissResUp)
                 self.out.fillBranch("recoilPtMissResDown", recoilPtMissResDown)
 
-                self.out.fillBranch("modified_topnessScaleUp", modified_topnessScaleUp)
-                self.out.fillBranch("modified_topnessScaleDown", modified_topnessScaleDown)
                 self.out.fillBranch("modified_topnessResUp", modified_topnessResUp)
                 self.out.fillBranch("modified_topnessResDown", modified_topnessResDown)
                 
-                self.out.fillBranch("full_topnessScaleUp", full_topnessScaleUp)
-                self.out.fillBranch("full_topnessScaleDown", full_topnessScaleDown)
                 self.out.fillBranch("full_topnessResUp", full_topnessResUp)
                 self.out.fillBranch("full_topnessResDown", full_topnessResDown)
 
@@ -1266,27 +1863,27 @@ analyze2018SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=False
 analyze2018Data_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=True,isSignal=False,btag='DeepCSV')
 
 #Define jetmetHelperRun2 modules for all years to calculate systematic uncertanties
-jetmetCorrector2016MC = createJMECorrector(isMC=True, dataYear=2016, jesUncert="Total")
-jetmetCorrector2016DataB = createJMECorrector(isMC=False, dataYear=2016, runPeriod="B", jesUncert="Total")
-jetmetCorrector2016DataC = createJMECorrector(isMC=False, dataYear=2016, runPeriod="C", jesUncert="Total")
-jetmetCorrector2016DataD = createJMECorrector(isMC=False, dataYear=2016, runPeriod="D", jesUncert="Total")
-jetmetCorrector2016DataE = createJMECorrector(isMC=False, dataYear=2016, runPeriod="E", jesUncert="Total")
-jetmetCorrector2016DataF = createJMECorrector(isMC=False, dataYear=2016, runPeriod="F", jesUncert="Total")
-jetmetCorrector2016DataG = createJMECorrector(isMC=False, dataYear=2016, runPeriod="G", jesUncert="Total")
-jetmetCorrector2016DataH = createJMECorrector(isMC=False, dataYear=2016, runPeriod="H", jesUncert="Total")
+jetmetCorrector2016MC = createJMECorrector(isMC=True, dataYear=2016, jesUncert=jesSys)
+jetmetCorrector2016DataB = createJMECorrector(isMC=False, dataYear=2016, runPeriod="B", jesUncert=jesSys)
+jetmetCorrector2016DataC = createJMECorrector(isMC=False, dataYear=2016, runPeriod="C", jesUncert=jesSys)
+jetmetCorrector2016DataD = createJMECorrector(isMC=False, dataYear=2016, runPeriod="D", jesUncert=jesSys)
+jetmetCorrector2016DataE = createJMECorrector(isMC=False, dataYear=2016, runPeriod="E", jesUncert=jesSys)
+jetmetCorrector2016DataF = createJMECorrector(isMC=False, dataYear=2016, runPeriod="F", jesUncert=jesSys)
+jetmetCorrector2016DataG = createJMECorrector(isMC=False, dataYear=2016, runPeriod="G", jesUncert=jesSys)
+jetmetCorrector2016DataH = createJMECorrector(isMC=False, dataYear=2016, runPeriod="H", jesUncert=jesSys)
 
-jetmetCorrector2017MC = createJMECorrector(isMC=True, dataYear=2017, jesUncert="Total", metBranchName="METFixEE2017")
-jetmetCorrector2017DataB = createJMECorrector(isMC=False, dataYear=2017, runPeriod="B", jesUncert="Total", metBranchName="METFixEE2017")
-jetmetCorrector2017DataC = createJMECorrector(isMC=False, dataYear=2017, runPeriod="C", jesUncert="Total", metBranchName="METFixEE2017")
-jetmetCorrector2017DataD = createJMECorrector(isMC=False, dataYear=2017, runPeriod="D", jesUncert="Total", metBranchName="METFixEE2017")
-jetmetCorrector2017DataE = createJMECorrector(isMC=False, dataYear=2017, runPeriod="E", jesUncert="Total", metBranchName="METFixEE2017")
-jetmetCorrector2017DataF = createJMECorrector(isMC=False, dataYear=2017, runPeriod="F", jesUncert="Total", metBranchName="METFixEE2017")
+jetmetCorrector2017MC = createJMECorrector(isMC=True, dataYear=2017, jesUncert=jesSys, metBranchName="METFixEE2017")
+jetmetCorrector2017DataB = createJMECorrector(isMC=False, dataYear=2017, runPeriod="B", jesUncert=jesSys, metBranchName="METFixEE2017")
+jetmetCorrector2017DataC = createJMECorrector(isMC=False, dataYear=2017, runPeriod="C", jesUncert=jesSys, metBranchName="METFixEE2017")
+jetmetCorrector2017DataD = createJMECorrector(isMC=False, dataYear=2017, runPeriod="D", jesUncert=jesSys, metBranchName="METFixEE2017")
+jetmetCorrector2017DataE = createJMECorrector(isMC=False, dataYear=2017, runPeriod="E", jesUncert=jesSys, metBranchName="METFixEE2017")
+jetmetCorrector2017DataF = createJMECorrector(isMC=False, dataYear=2017, runPeriod="F", jesUncert=jesSys, metBranchName="METFixEE2017")
 
-jetmetCorrector2018MC = createJMECorrector(isMC=True, dataYear=2018, jesUncert="Total", applyHEMfix=False)
-jetmetCorrector2018DataA = createJMECorrector(isMC=False, dataYear=2018, runPeriod="A", jesUncert="Total", applyHEMfix=True)
-jetmetCorrector2018DataB = createJMECorrector(isMC=False, dataYear=2018, runPeriod="B", jesUncert="Total", applyHEMfix=True)
-jetmetCorrector2018DataC = createJMECorrector(isMC=False, dataYear=2018, runPeriod="C", jesUncert="Total", applyHEMfix=True)
-jetmetCorrector2018DataD = createJMECorrector(isMC=False, dataYear=2018, runPeriod="D", jesUncert="Total", applyHEMfix=True)
+jetmetCorrector2018MC = createJMECorrector(isMC=True, dataYear=2018, jesUncert="All", applyHEMfix=True)
+jetmetCorrector2018DataA = createJMECorrector(isMC=False, dataYear=2018, runPeriod="A", jesUncert=jesSys, applyHEMfix=True)
+jetmetCorrector2018DataB = createJMECorrector(isMC=False, dataYear=2018, runPeriod="B", jesUncert=jesSys, applyHEMfix=True)
+jetmetCorrector2018DataC = createJMECorrector(isMC=False, dataYear=2018, runPeriod="C", jesUncert=jesSys, applyHEMfix=True)
+jetmetCorrector2018DataD = createJMECorrector(isMC=False, dataYear=2018, runPeriod="D", jesUncert=jesSys, applyHEMfix=True)
 
 #Define module to count number of events in root file
 countEvents = lambda : CountEvents()
@@ -1304,8 +1901,8 @@ if runLocal:
     #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root","samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
     #inputFiles=["testSamples/nanoAODv7/ttbarDM_Run2016_v7.root"]
-    inputFiles=["testSamples/nanoAODv7/ttbarPlusJets_Run2018_v7.root"]
-    #inputFiles=["testSamples/nanoAODv7/SingleElectron_2016C_v7.root"]
+    inputFiles=["testSamples/nanoAODv7/ttbarPlusJets_Run2016_v7.root"]
+    #inputFiles=["testSamples/nanoAODv7/SingleElectron_2018C_v7.root"]
     #inputFiles = ["testSamples/SingleElectron_2018A.root"]
     #inputFiles = ["testSamples/SingleElectron_2016H.root"]
     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
@@ -1313,9 +1910,9 @@ if runLocal:
     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_noHEMissue",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018MC_Skim()],postfix="_ModuleCommon_2018MC_Skim",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon_2016MC_Skimv2",noOut=False,outputbranchsel=outputbranches)
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_06172021",noOut=False,outputbranchsel=outputbranches)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018DataC(),analyze2018Data_Skim()],postfix="_ModuleCommon_2018Data_Skim",noOut=False,outputbranchsel=outputbranches)
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_countEvents_dropAll",noOut=False,outputbranchsel=outputbranches)
     p.run()
