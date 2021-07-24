@@ -10,9 +10,9 @@ import math
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
 saveDirectory = 'plots/CR_2018/METcorrected_pt/'
-date = '07_15_2021'
-year = 2018
-useCondor = False
+date = '07_22_2021'
+year = 2016
+useCondor = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
     dataSamples = data2016
@@ -774,7 +774,7 @@ for process in MCSamples:
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
-            skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_06172021', 'countEvents_03182021'),'')
+            skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_07152021', 'countEvents_03182021'),'')
             if (process in signal) and useCentralSamples and ('ttbar' in process):
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
