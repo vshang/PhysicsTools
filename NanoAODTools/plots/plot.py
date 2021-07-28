@@ -263,11 +263,11 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'AH0b'
 #cut = 'AH0l0bQR'
 
-cut = 'SL2lTR'
+#cut = 'SL2lTR'
 #cut = 'SL1lWR'
 #cut = 'AH1lTR'
 #cut = 'AH1lWR'
-#cut = 'AH2lZR'
+cut = 'AH2lZR'
 
 #cut = 'SLeCR'
 #cut = 'SLmCR'
@@ -307,8 +307,8 @@ cut = 'SL2lTR'
 #Only apply ee badSC noise filter to data (https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2)
 cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 
-var = 'METcorrected_pt'
-#var = 'recoilPtMiss'
+#var = 'METcorrected_pt'
+var = 'recoilPtMiss'
 #var = 'METcorrected_phi'
 #var = 'M_T'
 #var = 'M_T2W'
@@ -382,10 +382,10 @@ mchi = 1
 mphi = 100
 normalizePlots = False
 useCentralSamples = True
-doBinned = False
-savePlots = True
+doBinned = True
+savePlots = False
 combineEleMu = True
-doSys = False
+doSys = True
 drawOverflow = True
 drawUnderflow = False
 if doBinned:
@@ -396,8 +396,8 @@ if not auto_y:
     ymin = 60
     ymax = 20000
 
-histoLabel = '; p_{T}^{miss} (GeV); Events'
-#histoLabel = '; Hadronic recoil (GeV); Events'
+#histoLabel = '; p_{T}^{miss} (GeV); Events'
+histoLabel = '; Hadronic recoil (GeV); Events'
 #histoLabel = '; #phi^{miss}; Events'
 #histoLabel = '; M_{T} (GeV); Events'
 #histoLabel = '; M_{T2}^{W} (GeV); Events'
@@ -460,7 +460,10 @@ else:
         signal = ['ttbar ' + mediatorType,'ttbar pseudoscalar']
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
-sys = ['CMS_scale_j','CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF','CMS_HF_V','CMS_eff_b', 'CMS_scale_pu', 'CMS_eff_met_trigger', 'CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e', 'pdf_accept_2l','pdf_accept_1l','pdf_accept_0l','CMS_eff_e', 'CMS_eff_m','CMS_eff_e_old', 'CMS_eff_m_old','CMS_HF_Z','CMS_HF_W','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_ZewkWeight','QCDscale_ren', 'QCDscale_fac', 'QCDscale_ren_TT', 'QCDscale_fac_TT', 'QCDscale_ren_VV', 'QCDscale_fac_VV', 'QCDscale_ren_O', 'QCDscale_fac_O',]
+sys = ['CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF','CMS_HF_V','CMS_eff_b', 'CMS_scale_pu', 'CMS_eff_met_trigger', 'CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e', 'pdf_accept_2l','pdf_accept_1l','pdf_accept_0l','CMS_eff_e', 'CMS_eff_m','CMS_eff_e_old', 'CMS_eff_m_old','CMS_HF_Z','CMS_HF_W','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_ZewkWeight','QCDscale_ren', 'QCDscale_fac', 'QCDscale_ren_TT', 'QCDscale_fac_TT', 'QCDscale_ren_VV', 'QCDscale_fac_VV', 'QCDscale_ren_O', 'QCDscale_fac_O',]
+jesUnc = ["","AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeBal", "RelativeSample", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "SinglePionECAL", "SinglePionHCAL", "TimePtEta"]
+for unc in jesUnc:
+    sys.append('CMS_scale'+unc+'_j')
 for name in ['data','bkgSum'] + signal + back:
     hists[name] = TH1F(name, histoLabel, nbins, xmin, xmax)
 if doBinned:
@@ -491,43 +494,44 @@ def addSys(histName, eventTree, var, cut, sysName):
     cutUp = cutDown = cut
 
     #Systematics
-    if sysName == 'CMS_scale_j':
-        if var == 'METcorrected_pt':
-            varUp = var.replace('METcorrected_pt','METcorrected_ptScaleUp')
-            varDown = var.replace('METcorrected_pt','METcorrected_ptScaleDown')
-        elif var == 'recoilPtMiss':
-            varUp = var.replace('recoilPtMiss','recoilPtMissScaleUp')
-            varDown = var.replace('recoilPtMiss','recoilPtMissScaleDown')
+    for unc in jesUnc:
+        if sysName == 'CMS_scale'+unc+'_j':
+            if var == 'METcorrected_pt':
+                varUp = var.replace('METcorrected_pt','METcorrected_ptScale'+unc+'Up')
+                varDown = var.replace('METcorrected_pt','METcorrected_ptScale'+unc+'Down')
+            elif var == 'recoilPtMiss':
+                varUp = var.replace('recoilPtMiss','recoilPtMissScale'+unc+'Up')
+                varDown = var.replace('recoilPtMiss','recoilPtMissScale'+unc+'Down')
         
-        cutUp = cut.replace('METcorrected_pt ','METcorrected_ptScaleUp ')
-        cutUp = cutUp.replace('njets ','njetsScaleUp ')
-        cutUp = cutUp.replace('nfjets ','nfjetsScaleUp ')
-        cutUp = cutUp.replace('nbjets ','nbjetsScaleUp ')
-        cutUp = cutUp.replace('minDeltaPhi ','minDeltaPhiScaleUp ')
-        cutUp = cutUp.replace('minDeltaPhi12 ','minDeltaPhi12ScaleUp ')
-        cutUp = cutUp.replace('M_Tb ','M_TbScaleUp ')
-        cutUp = cutUp.replace('M_T ','M_TScaleUp ')
-        cutUp = cutUp.replace('M_T2W ','M_T2WScaleUp ')
-        cutUp = cutUp.replace('M_T2ll ','M_T2llScaleUp ')
-        cutUp = cutUp.replace('jet1p_TH_T ','jet1p_TH_TScaleUp ')
-        cutUp = cutUp.replace('modified_topness ','modified_topnessScaleUp ')
-        cutUp = cutUp.replace('full_topness ','full_topnessScaleUp ')
+            cutUp = cut.replace('METcorrected_pt ','METcorrected_ptScale'+unc+'Up ')
+            cutUp = cutUp.replace('njets ','njetsScale'+unc+'Up ')
+            cutUp = cutUp.replace('nfjets ','nfjetsScale'+unc+'Up ')
+            cutUp = cutUp.replace('nbjets ','nbjetsScale'+unc+'Up ')
+            cutUp = cutUp.replace('minDeltaPhi ','minDeltaPhiScale'+unc+'Up ')
+            cutUp = cutUp.replace('minDeltaPhi12 ','minDeltaPhi12Scale'+unc+'Up ')
+            cutUp = cutUp.replace('M_Tb ','M_TbScale'+unc+'Up ')
+            cutUp = cutUp.replace('M_T ','M_TScale'+unc+'Up ')
+            cutUp = cutUp.replace('M_T2W ','M_T2WScale'+unc+'Up ')
+            cutUp = cutUp.replace('M_T2ll ','M_T2llScale'+unc+'Up ')
+            cutUp = cutUp.replace('jet1p_TH_T ','jet1p_TH_TScale'+unc+'Up ')
+            cutUp = cutUp.replace('modified_topness ','modified_topnessScale'+unc+'Up ')
+            cutUp = cutUp.replace('full_topness ','full_topnessScale'+unc+'Up ')
 
-        cutDown = cut.replace('METcorrected_pt ','METcorrected_ptScaleDown ')
-        cutDown = cutDown.replace('njets ','njetsScaleDown ')
-        cutDown = cutDown.replace('nfjets ','nfjetsScaleDown ')
-        cutDown = cutDown.replace('nbjets ','nbjetsScaleDown ')
-        cutDown = cutDown.replace('minDeltaPhi ','minDeltaPhiScaleDown ')
-        cutDown = cutDown.replace('minDeltaPhi12 ','minDeltaPhi12ScaleDown ')
-        cutDown = cutDown.replace('M_Tb ','M_TbScaleDown ')
-        cutDown = cutDown.replace('M_T ','M_TScaleDown ')
-        cutDown = cutDown.replace('M_T2W ','M_T2WScaleDown ')
-        cutDown = cutDown.replace('M_T2ll ','M_T2llScaleDown ')
-        cutDown = cutDown.replace('jet1p_TH_T ','jet1p_TH_TScaleDown ')
-        cutDown = cutDown.replace('modified_topness ','modified_topnessScaleDown ')
-        cutDown = cutDown.replace('full_topness ','full_topnessScaleDown ')
+            cutDown = cut.replace('METcorrected_pt ','METcorrected_ptScale'+unc+'Down ')
+            cutDown = cutDown.replace('njets ','njetsScale'+unc+'Down ')
+            cutDown = cutDown.replace('nfjets ','nfjetsScale'+unc+'Down ')
+            cutDown = cutDown.replace('nbjets ','nbjetsScale'+unc+'Down ')
+            cutDown = cutDown.replace('minDeltaPhi ','minDeltaPhiScale'+unc+'Down ')
+            cutDown = cutDown.replace('minDeltaPhi12 ','minDeltaPhi12Scale'+unc+'Down ')
+            cutDown = cutDown.replace('M_Tb ','M_TbScale'+unc+'Down ')
+            cutDown = cutDown.replace('M_T ','M_TScale'+unc+'Down ')
+            cutDown = cutDown.replace('M_T2W ','M_T2WScale'+unc+'Down ')
+            cutDown = cutDown.replace('M_T2ll ','M_T2llScale'+unc+'Down ')
+            cutDown = cutDown.replace('jet1p_TH_T ','jet1p_TH_TScale'+unc+'Down ')
+            cutDown = cutDown.replace('modified_topness ','modified_topnessScale'+unc+'Down ')
+            cutDown = cutDown.replace('full_topness ','full_topnessScale'+unc+'Down ')
 
-    elif sysName == 'CMS_res_j':
+    if sysName == 'CMS_res_j':
         if var == 'METcorrected_pt':
             varUp = var.replace('METcorrected_pt','METcorrected_ptResUp')
             varDown = var.replace('METcorrected_pt','METcorrected_ptResDown')

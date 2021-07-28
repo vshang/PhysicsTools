@@ -93,10 +93,10 @@ if __name__ == '__main__':
  isData = True
  isSignal = False
  
- for run in runs2016:
-  submitWrapper('MET', '2016', isData, isSignal, run, getDatasetinputs('MET', '2016', run))
-  submitWrapper('SingleElectron', '2016', isData, isSignal, run, getDatasetinputs('SingleElectron', '2016', run))
-  submitWrapper('SingleMuon', '2016', isData, isSignal, run, getDatasetinputs('SingleMuon', '2016', run))
+ # for run in runs2016:
+ #  submitWrapper('MET', '2016', isData, isSignal, run, getDatasetinputs('MET', '2016', run))
+ #  submitWrapper('SingleElectron', '2016', isData, isSignal, run, getDatasetinputs('SingleElectron', '2016', run))
+ #  submitWrapper('SingleMuon', '2016', isData, isSignal, run, getDatasetinputs('SingleMuon', '2016', run))
  # for run in runs2017:
  #  submitWrapper('MET', '2017', isData, isSignal, run, getDatasetinputs('MET', '2017', run))
  #  submitWrapper('SingleElectron', '2017', isData, isSignal, run, getDatasetinputs('SingleElectron', '2017', run))
@@ -108,9 +108,9 @@ if __name__ == '__main__':
  
  isData = False
  run = ''
- #datasetnames = ['WPlusJets']
- datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD']
- years = ['2016']
+ datasetnames = ['WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
+ #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD','WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
+ years = ['2017','2018']
  #years = ['2016','2017','2018']
  for year in years:
   for dataset in datasetnames:
