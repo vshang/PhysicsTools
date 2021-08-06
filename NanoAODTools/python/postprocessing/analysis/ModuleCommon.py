@@ -920,66 +920,24 @@ to next event)"""
         if self.year == 2016:
             #Central jets  (2016)
             centralJetsEnumerate = filter(lambda j : ((30 < j[1].pt_nom < 50 and j[1].puId == 7) or j[1].pt_nom > 50) and abs(j[1].eta) < 2.4 and cleanJet(j[1]) and j[1].jetId == 7, enumerate(jets)) #Use tightLepVeto jet ID WP for 2016 with tight puId for jet_pt < 50
-            #Systematics - JES, JER
-            if self.isMC:
-                for sys in jesUnc:
-                    jesBranches["centralJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
-                    jesBranches["centralJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
-                centralJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
-                centralJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
 
             #Forward jets (2016)
             forwardJetsEnumerate = filter(lambda j : ((30 < j[1].pt_nom < 50 and j[1].puId == 7) or j[1].pt_nom > 50) and 2.4 < abs(j[1].eta) < 4 and cleanJet(j[1]) and j[1].jetId == 7, enumerate(jets))
-            #Systematics - JES, JER
-            if self.isMC:
-                for sys in jesUnc:
-                    jesBranches["forwardJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
-                    jesBranches["forwardJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
-                forwardJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
-                forwardJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
 
         else:
             #Central jets (2017, 2018)
             centralJetsEnumerate = filter(lambda j : ((30 < j[1].pt_nom < 50 and j[1].puId == 7) or j[1].pt_nom > 50) and abs(j[1].eta) < 2.4 and cleanJet(j[1]) and j[1].jetId == 6, enumerate(jets)) #Use tightLepVeto jet ID WP for 2017 and 2018 with tight puId for jet_pt < 50
-            #Systematics - JES, JER
-            if self.isMC:
-                for sys in jesUnc:
-                    jesBranches["centralJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
-                    jesBranches["centralJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
-                centralJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
-                centralJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
 
             #Forward jets (2017, 2018)
             forwardJetsEnumerate = filter(lambda j : ((30 < j[1].pt_nom < 50 and j[1].puId == 7) or j[1].pt_nom > 50) and 2.4 < abs(j[1].eta) < 4 and cleanJet(j[1]) and j[1].jetId == 6, enumerate(jets))
-            #Systematics - JES, JER
-            if self.isMC:
-                for sys in jesUnc:
-                    jesBranches["forwardJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
-                    jesBranches["forwardJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
-                forwardJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
-                forwardJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
 
         #B-jets
         btag_WP = getattr(BTagWPs(self.btag,self.year),'medium')
         if self.btag == 'CSVv2':
             bJetsEnumerate = filter(lambda j : j[1].btagCSVV2 > btag_WP, centralJetsEnumerate)
-            #Systematics - JES, JER
-            if self.isMC:
-                for sys in jesUnc:
-                    jesBranches["bJetsScale"+sys+"Up"] = filter(lambda j : j.btagCSVV2 > btag_WP, jesBranches["centralJetsScale"+sys+"Up"])
-                    jesBranches["bJetsScale"+sys+"Down"] = filter(lambda j : j.btagCSVV2 > btag_WP, jesBranches["centralJetsScale"+sys+"Down"])
-                bJetsResUp = filter(lambda j : j.btagCSVV2 > btag_WP, centralJetsResUp)
-                bJetsResDown = filter(lambda j : j.btagCSVV2 > btag_WP, centralJetsResDown)
 
         elif self.btag == 'DeepCSV':
             bJetsEnumerate = filter(lambda j : j[1].btagDeepB > btag_WP, centralJetsEnumerate)
-            #Systematics - JES, JER
-            if self.isMC:
-                for sys in jesUnc:
-                    jesBranches["bJetsScale"+sys+"Up"] = filter(lambda j : j.btagDeepB > btag_WP, jesBranches["centralJetsScale"+sys+"Up"])
-                    jesBranches["bJetsScale"+sys+"Down"] = filter(lambda j : j.btagDeepB > btag_WP, jesBranches["centralJetsScale"+sys+"Down"])
-                bJetsResUp = filter(lambda j : j.btagDeepB > btag_WP, centralJetsResUp)
-                bJetsResDown = filter(lambda j : j.btagDeepB > btag_WP, centralJetsResDown)
 
         #Define central, forward, and b-tagged jet collections
         centralJets = [j[1] for j in centralJetsEnumerate]
@@ -1003,9 +961,106 @@ to next event)"""
         nPrefireJets = len(prefireCentralJets) + len(prefireForwardJets)
         if nPrefireJets > 0:
             EE_L1_prefire = True
-        
-        #Systematics - JES, JER
+
+
+        #Apply MET corrections (JEC, JER, METFixEE2017, xy-Shift)
+        if self.year == 2017:
+            #Apply EE noise fix for 2017 (https://twiki.cern.ch/twiki/bin/viewauth/CMS/ExoPreapprovalChecklist)
+            if self.isData:
+                METcorrected_pt_phi = ROOT.METXYCorr_Met_MetPhi(event.METFixEE2017_T1_pt, event.METFixEE2017_T1_phi, event.run, self.year, self.isMC, event.PV_npvs)
+            else:
+                METcorrected_pt_phi = ROOT.METXYCorr_Met_MetPhi(event.METFixEE2017_T1Smear_pt, event.METFixEE2017_T1Smear_phi, event.run, self.year, self.isMC, event.PV_npvs)
+
+        else:
+            if self.isData:
+                METcorrected_pt_phi = ROOT.METXYCorr_Met_MetPhi(event.MET_T1_pt, event.MET_T1_phi, event.run, self.year, self.isMC, event.PV_npvs)
+            else:
+                METcorrected_pt_phi = ROOT.METXYCorr_Met_MetPhi(event.MET_T1Smear_pt, event.MET_T1Smear_phi, event.run, self.year, self.isMC, event.PV_npvs)
+
+        METcorrected_pt = METcorrected_pt_phi[0]
+        METcorrected_phi = METcorrected_pt_phi[1]
+
+        #Determine if there exists two tight electrons/muons such that their invariant mass m_ll is between 60-120 GeV and the hadronic recoil >= 250 GeV
+        m_ll = recoilPtMiss = lepton1_charge = lepton2_charge = 0
+
+        #Only calculate m_ll and recoilPtMiss when two tight leptons exist (2e, 2m, or 1e1m)
+        if (nTightElectrons >= 2 and nLooseMuons == 0) or (nVetoElectrons == 0 and nTightMuons >= 2):
+            if nTightElectrons >= 2:
+                tightLeptons = tightElectrons
+            elif nTightMuons >= 2:
+                tightLeptons = tightMuons
+            lepton1 = tightLeptons[0]
+            lepton2 = tightLeptons[1]
+            eventSum = lepton1.p4() + lepton2.p4()
+            m_ll = eventSum.M()
+
+            recoilPtMiss = math.sqrt(pow(METcorrected_pt*math.cos(METcorrected_phi) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_pt*math.sin(METcorrected_phi) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
+
+            lepton1_charge = lepton1.charge
+            lepton2_charge = lepton2.charge
+
+        #Define skimming cuts to be applied
+        #Skim = ((nTightElectrons + nTightMuons) <= 1 and njets >= 2 and event.MET_pt > 140) or ((nTightElectrons + nTightMuons) == 2 and njets >= 2)
+        Skim = ((nTightElectrons + nTightMuons) <= 1 and njets >= 2 and METcorrected_pt > 240) or ((nTightElectrons + nTightMuons) == 2 and njets >= 2 and (METcorrected_pt > 240 or recoilPtMiss > 240) )
+
+        #Signal region chosen here
+        if self.signalRegion == "All":
+            signalRegion = True
+        elif self.signalRegion == "Skim":
+            signalRegion = Skim
+        else:
+            signalRegion = False
+
+        #Immediately return false if event doesn't pass skimming cut to skip calculating the rest of the branches and speed up runtime
+        if not signalRegion:
+            return False
+
+        #Systematics - JES, JER (jets)
         if self.isMC:
+            if self.year == 2016:
+                #Central jets  (2016)
+                for sys in jesUnc:
+                    jesBranches["centralJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
+                    jesBranches["centralJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
+                centralJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
+                centralJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
+                #Forward jets (2016)
+                for sys in jesUnc:
+                    jesBranches["forwardJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
+                    jesBranches["forwardJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
+                forwardJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
+                forwardJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
+
+            else:
+                #Central jets (2017, 2018)
+                for sys in jesUnc:
+                    jesBranches["centralJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
+                    jesBranches["centralJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
+                centralJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
+                centralJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
+                #Forward jets (2017, 2018)
+                for sys in jesUnc:
+                    jesBranches["forwardJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
+                    jesBranches["forwardJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
+                forwardJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
+                forwardJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
+
+            #B-jets
+            if self.btag == 'CSVv2':
+                for sys in jesUnc:
+                    jesBranches["bJetsScale"+sys+"Up"] = filter(lambda j : j.btagCSVV2 > btag_WP, jesBranches["centralJetsScale"+sys+"Up"])
+                    jesBranches["bJetsScale"+sys+"Down"] = filter(lambda j : j.btagCSVV2 > btag_WP, jesBranches["centralJetsScale"+sys+"Down"])
+                bJetsResUp = filter(lambda j : j.btagCSVV2 > btag_WP, centralJetsResUp)
+                bJetsResDown = filter(lambda j : j.btagCSVV2 > btag_WP, centralJetsResDown)
+
+            elif self.btag == 'DeepCSV':
+                for sys in jesUnc:
+                    jesBranches["bJetsScale"+sys+"Up"] = filter(lambda j : j.btagDeepB > btag_WP, jesBranches["centralJetsScale"+sys+"Up"])
+                    jesBranches["bJetsScale"+sys+"Down"] = filter(lambda j : j.btagDeepB > btag_WP, jesBranches["centralJetsScale"+sys+"Down"])
+                bJetsResUp = filter(lambda j : j.btagDeepB > btag_WP, centralJetsResUp)
+                bJetsResDown = filter(lambda j : j.btagDeepB > btag_WP, centralJetsResDown)
+
+            #Count central, forward, and b-tagged jets
             for sys in jesUnc:
                 jesBranches["njetsScale"+sys+"Up"] = len(jesBranches["centralJetsScale"+sys+"Up"])
                 jesBranches["njetsScale"+sys+"Down"] = len(jesBranches["centralJetsScale"+sys+"Down"])
@@ -1027,37 +1082,24 @@ to next event)"""
             nbjetsResDown = len(bJetsResDown)
 
 
-        #Apply MET corrections (JEC, JER, METFixEE2017, xy-Shift)
-        if self.year == 2017:
-            #Apply EE noise fix for 2017 (https://twiki.cern.ch/twiki/bin/viewauth/CMS/ExoPreapprovalChecklist)
-            if self.isData:
-                METcorrected_pt_phi = ROOT.METXYCorr_Met_MetPhi(event.METFixEE2017_T1_pt, event.METFixEE2017_T1_phi, event.run, self.year, self.isMC, event.PV_npvs)
-            #Systematics - JES, JER
-            else:
-                METcorrected_pt_phi = ROOT.METXYCorr_Met_MetPhi(event.METFixEE2017_T1Smear_pt, event.METFixEE2017_T1Smear_phi, event.run, self.year, self.isMC, event.PV_npvs)
+        #Systematics - JES, JER (MET)
+        if self.isMC:
+            #Apply MET corrections (JEC, JER, METFixEE2017, xy-Shift)
+            if self.year == 2017:
+                #Apply EE noise fix for 2017 (https://twiki.cern.ch/twiki/bin/viewauth/CMS/ExoPreapprovalChecklist)
                 for sys in jesUnc:
                     jesBranches["METcorrected_pt_phiScale"+sys+"Up"] = ROOT.METXYCorr_Met_MetPhi(getJESMETpt(sys+"Up"), getJESMETphi(sys+"Up"), event.run, self.year, self.isMC, event.PV_npvs)
                     jesBranches["METcorrected_pt_phiScale"+sys+"Down"] = ROOT.METXYCorr_Met_MetPhi(getJESMETpt(sys+"Down"), getJESMETphi(sys+"Down"), event.run, self.year, self.isMC, event.PV_npvs)
                 METcorrected_pt_phiResUp = ROOT.METXYCorr_Met_MetPhi(event.METFixEE2017_T1Smear_pt_jerUp, event.METFixEE2017_T1Smear_phi_jerUp, event.run, self.year, self.isMC, event.PV_npvs)
                 METcorrected_pt_phiResDown = ROOT.METXYCorr_Met_MetPhi(event.METFixEE2017_T1Smear_pt_jerDown, event.METFixEE2017_T1Smear_phi_jerDown, event.run, self.year, self.isMC, event.PV_npvs)
 
-        else:
-            if self.isData:
-                METcorrected_pt_phi = ROOT.METXYCorr_Met_MetPhi(event.MET_T1_pt, event.MET_T1_phi, event.run, self.year, self.isMC, event.PV_npvs)
-            #Systematics - JES, JER
             else:
-                METcorrected_pt_phi = ROOT.METXYCorr_Met_MetPhi(event.MET_T1Smear_pt, event.MET_T1Smear_phi, event.run, self.year, self.isMC, event.PV_npvs)
                 for sys in jesUnc:
                     jesBranches["METcorrected_pt_phiScale"+sys+"Up"] = ROOT.METXYCorr_Met_MetPhi(getJESMETpt(sys+"Up"), getJESMETphi(sys+"Up"), event.run, self.year, self.isMC, event.PV_npvs)
                     jesBranches["METcorrected_pt_phiScale"+sys+"Down"] = ROOT.METXYCorr_Met_MetPhi(getJESMETpt(sys+"Down"), getJESMETphi(sys+"Down"), event.run, self.year, self.isMC, event.PV_npvs)
                 METcorrected_pt_phiResUp = ROOT.METXYCorr_Met_MetPhi(event.MET_T1Smear_pt_jerUp, event.MET_T1Smear_phi_jerUp, event.run, self.year, self.isMC, event.PV_npvs)
                 METcorrected_pt_phiResDown = ROOT.METXYCorr_Met_MetPhi(event.MET_T1Smear_pt_jerDown, event.MET_T1Smear_phi_jerDown, event.run, self.year, self.isMC, event.PV_npvs)
 
-        METcorrected_pt = METcorrected_pt_phi[0]
-        METcorrected_phi = METcorrected_pt_phi[1]
-
-        #Systematics - JES, JER
-        if self.isMC:
             for sys in jesUnc:
                 jesBranches["METcorrected_ptScale"+sys+"Up"] = jesBranches["METcorrected_pt_phiScale"+sys+"Up"][0]
                 jesBranches["METcorrected_phiScale"+sys+"Up"] = jesBranches["METcorrected_pt_phiScale"+sys+"Up"][1]
@@ -1069,53 +1111,21 @@ to next event)"""
             METcorrected_ptResDown = METcorrected_pt_phiResDown[0]
             METcorrected_phiResDown = METcorrected_pt_phiResDown[1]
 
-        #Determine if there exists two tight electrons/muons such that their invariant mass m_ll is between 60-120 GeV and the hadronic recoil >= 250 GeV
-        m_ll = recoilPtMiss = lepton1_charge = lepton2_charge = 0
-        #Systematics - JES, JER
+
+        #Systematics - JES, JER (recoilPtMiss)
         if self.isMC:
             for sys in jesUnc:
                 jesBranches["recoilPtMissScale"+sys+"Up"] = jesBranches["recoilPtMissScale"+sys+"Down"] = 0
             recoilPtMissResUp = recoilPtMissResDown = 0
-
-        #Only calculate m_ll and recoilPtMiss when two tight leptons exist (2e, 2m, or 1e1m)
-        if (nTightElectrons >= 2 and nLooseMuons == 0) or (nVetoElectrons == 0 and nTightMuons >= 2):
-            if nTightElectrons >= 2:
-                tightLeptons = tightElectrons
-            elif nTightMuons >= 2:
-                tightLeptons = tightMuons
-            lepton1 = tightLeptons[0]
-            lepton2 = tightLeptons[1]
-            eventSum = lepton1.p4() + lepton2.p4()
-            m_ll = eventSum.M()
-
-            recoilPtMiss = math.sqrt(pow(METcorrected_pt*math.cos(METcorrected_phi) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_pt*math.sin(METcorrected_phi) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
-
-            lepton1_charge = lepton1.charge
-            lepton2_charge = lepton2.charge
-
-            #Systematics - JES, JER
-            if self.isMC:
+            #Only calculate recoilPtMiss when two tight leptons exist (2e, 2m, or 1e1m)
+            if (nTightElectrons >= 2 and nLooseMuons == 0) or (nVetoElectrons == 0 and nTightMuons >= 2):
                 for sys in jesUnc:
                     jesBranches["recoilPtMissScale"+sys+"Up"] = math.sqrt(pow(jesBranches["METcorrected_ptScale"+sys+"Up"]*math.cos(jesBranches["METcorrected_phiScale"+sys+"Up"]) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(jesBranches["METcorrected_ptScale"+sys+"Up"]*math.sin(jesBranches["METcorrected_phiScale"+sys+"Up"]) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
                     jesBranches["recoilPtMissScale"+sys+"Down"] = math.sqrt(pow(jesBranches["METcorrected_ptScale"+sys+"Down"]*math.cos(jesBranches["METcorrected_phiScale"+sys+"Down"]) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(jesBranches["METcorrected_ptScale"+sys+"Down"]*math.sin(jesBranches["METcorrected_phiScale"+sys+"Down"]) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
                 recoilPtMissResUp = math.sqrt(pow(METcorrected_ptResUp*math.cos(METcorrected_phiResUp) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_ptResUp*math.sin(METcorrected_phiResUp) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
                 recoilPtMissResDown = math.sqrt(pow(METcorrected_ptResDown*math.cos(METcorrected_phiResDown) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_ptResDown*math.sin(METcorrected_phiResDown) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
 
-        #Define skimming cuts to be applied
-        #Skim = ((nTightElectrons + nTightMuons) <= 1 and njets >= 2 and event.MET_pt > 140) or ((nTightElectrons + nTightMuons) == 2 and njets >= 2)
-        Skim = ((nTightElectrons + nTightMuons) <= 1 and njets >= 2 and METcorrected_pt > 240) or ((nTightElectrons + nTightMuons) == 2 and njets >= 2 and (METcorrected_pt > 240 or recoilPtMiss > 240) )
 
-        #Signal region chosen here
-        if self.signalRegion == "All":
-            signalRegion = True
-        elif self.signalRegion == "Skim":
-            signalRegion = Skim
-        else:
-            signalRegion = False
-
-        #Immediately return false if event doesn't pass skimming cut to skip calculating the rest of the branches and speed up runtime
-        if not signalRegion:
-            return False
 
         #Calculate minDeltaPhi and minDeltaPhi(j_(1,2), missing pt) preselection variable of all central jets 
         minDeltaPhi = minDeltaPhi12 = -9 #If there is less than 2 jets, set value to -9 to indicate  minDeltaPhi cannot be calculated
@@ -1897,12 +1907,12 @@ countEvents = lambda : CountEvents()
 #     #outputDir = "testSamples/"
 #     outputDir = "."
 #     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-#     #outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-#     outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
-#     inputFiles=["samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
+#     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+#     #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
+#     #inputFiles=["samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
 #     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
 #     #inputFiles=["testSamples/nanoAODv7/ttbarDM_Run2016_v7.root"]
-#     #inputFiles=["testSamples/nanoAODv7/ttbarPlusJets_Run2016_v7.root"]
+#     inputFiles=["testSamples/nanoAODv7/ttbarPlusJets_Run2016_v7.root"]
 #     #inputFiles=["testSamples/nanoAODv7/SingleElectron_2018C_v7.root"]
 #     #inputFiles = ["testSamples/SingleElectron_2018A.root"]
 #     #inputFiles = ["testSamples/SingleElectron_2016H.root"]
@@ -1912,8 +1922,8 @@ countEvents = lambda : CountEvents()
 
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon_2016MC_Skimv2",noOut=False,outputbranchsel=outputbranches)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon_2016MC_Skimv3",noOut=False,outputbranchsel=outputbranches)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_2016MC_ModuleCommonSkim_07152021",noOut=False,outputbranchsel=outputbranches)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018DataC(),analyze2018Data_Skim()],postfix="_ModuleCommon_2018Data_Skim",noOut=False,outputbranchsel=outputbranches)
-#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
 #     p.run()

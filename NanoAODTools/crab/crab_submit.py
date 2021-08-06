@@ -2,8 +2,8 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'ModuleCommonSkim_07152021' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
- #task          = 'getBTagHist_DeepCSV_08062020'
+ task          = 'ModuleCommonSkim_07152021v2' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ #task          = 'countEvents_03182021'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
