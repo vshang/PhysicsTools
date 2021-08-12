@@ -2,12 +2,12 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'ModuleCommonSkim_07152021v2' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
- #task          = 'countEvents_03182021'
+ #task          = 'ModuleCommonSkim_07152021v2' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'countEvents_03182021v3'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
- countNEntries = False
+ countNEntries = True
 
  #####
  ##   Helper function to set appropriate text file containing DAS file paths for input datasets
@@ -52,6 +52,7 @@ if __name__ == '__main__':
   #config.JobType.outputFiles = ['hist.root'] #Enable for making BTag histograms using getBTagHist.py
   config.JobType.sendPythonFolder = True
   config.JobType.allowUndistributedCMSSW = True
+  config.JobType.maxJobRuntimeMin = 2000
   config.section_('Data')
   config.Data.inputDataset        = datasetinputs[index]
   #config.Data.userInputFiles      = [datasetinputs[index]]
@@ -108,9 +109,9 @@ if __name__ == '__main__':
  
  isData = False
  run = ''
- datasetnames = ['WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
+ datasetnames = ['ZTo2NuNLO']
  #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD','WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
- years = ['2017','2018']
+ years = ['2017']
  #years = ['2016','2017','2018']
  for year in years:
   for dataset in datasetnames:
