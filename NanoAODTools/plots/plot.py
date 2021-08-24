@@ -9,9 +9,9 @@ import math
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/SR_2018/Jet_eta/'
-date = '08_11_2021'
-year = 2018
+saveDirectory = 'plots/CR_2017/QCD_CR/'
+date = '08_19_2021'
+year = 2017
 useCondor = False
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
@@ -53,12 +53,12 @@ elif year == 2018:
     cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
 
 #Pre-selection cut definitions
-cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' + ' && ((METcorrected_phi <= -1.62) || (METcorrected_phi >= -0.82))'
-cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' + ' && ((METcorrected_phi <= -1.62) || (METcorrected_phi >= -0.82))' 
+cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' #+ ' && ((METcorrected_phi <= -1.62) || (METcorrected_phi >= -0.82))'
+cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' #+ ' && ((METcorrected_phi <= -1.62) || (METcorrected_phi >= -0.82))' 
 cuts['SL'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + '))' 
 cuts['SL1b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets == 1')
 cuts['SL2b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets >= 2')
-cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ((METcorrected_phi <= -1.62) || (METcorrected_phi >= -0.82))' 
+cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' #+ ' && ((METcorrected_phi <= -1.62) || (METcorrected_phi >= -0.82))' 
 cuts['AH1b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1')
 cuts['AH2b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2')
 
@@ -89,9 +89,17 @@ cuts['SL1e2bSR'] = cuts['SL1e'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 140' + ' 
 cuts['SL1m0fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['SL1m1fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['SL1m2bSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+
 cuts['AH0l0fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets == 0 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['AH0l1fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets >= 1 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['AH0l2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && jet1p_TH_T <= 0.5'
+
+cuts['SL1e1bSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['SL1eSR'] = cuts['SL1e'] + ' && ' + 'nbjets >= 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['SL1m1bSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['SL1mSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['SL1l1bSR'] = '(' + cuts['SL1e1bSR'] + ') || (' + cuts['SL1m1bSR'] + ')'
+cuts['SL1lSR'] = '(' + cuts['SL1eSR'] + ') || (' + cuts['SL1mSR'] + ')'
 
 cuts['SL1bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets == 1 && M_T >= 140 && M_T2W >= 180 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['SL2bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets >= 2 && M_T >= 140 && M_T2W >= 180 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
@@ -199,14 +207,16 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
-#cut = 'SL1bSR'
-#cut = 'SL2bSR'
-#cut = 'AH1bSR'
-#cut = 'AH2bSR'
 
 #cut = 'SL1l0fSR'
 #cut = 'SL1l1fSR'
-cut = 'SL1l2bSR'
+#cut = 'SL1l2bSR'
+
+#cut = 'SL1l1bSR'
+#cut = 'SL1lSR'
+
+#cut = 'SL1e1bSR'
+#cut = 'SL1eSR'
 
 #cut = 'SL1l0fT1SR'
 #cut = 'SL1l0fT2SR'
@@ -245,7 +255,7 @@ cut = 'SL1l2bSR'
 #cut = 'AH1lTR'
 #cut = 'AH1lWR'
 #cut = 'AH2lZR'
-#cut = 'AH0lQR'
+cut = 'AH0lQR'
 
 #cut = 'SLeCR'
 #cut = 'SLmCR'
@@ -262,7 +272,7 @@ cut = 'SL1l2bSR'
 #Only apply ee badSC noise filter to data (https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2)
 cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 
-#var = 'METcorrected_pt'
+var = 'METcorrected_pt'
 #var = 'recoilPtMiss'
 #var = 'METcorrected_phi'
 #var = 'M_T'
@@ -277,8 +287,8 @@ cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 #var = 'Electron_pt[1]'
 #var = 'Muon_pt[1]'
 #var = 'Jet_pt'
-var = 'Jet_eta[index_centralJets[0]]'
-#var = 'Electron_phi[index_tightElectrons[0]]'
+#var = 'Jet_pt[index_centralJets[0]]'
+#var = 'Electron_eta[index_tightElectrons[0]]'
 #var = 'Muon_eta[1]'
 #var = 'nTightElectrons'
 #var = 'nTightMuons'
@@ -326,11 +336,11 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 12
-xmin = -2.4
-xmax = 2.4
+nbins = 15
+xmin = 250
+xmax = 550
 auto_y = True
-doLogPlot = False
+doLogPlot = True
 drawData = True
 mediatorType = 'scalar'
 mchi = 1
@@ -339,7 +349,7 @@ normalizePlots = False
 useCentralSamples = True
 doBinned = False
 savePlots = True
-combineEleMu = False
+combineEleMu = True
 doSys = False
 drawOverflow = True
 drawUnderflow = False
@@ -351,7 +361,7 @@ if not auto_y:
     ymin = 60
     ymax = 20000
 
-#histoLabel = '; p_{T}^{miss} (GeV); Events'
+histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; Hadronic recoil (GeV); Events'
 #histoLabel = '; #phi^{miss}; Events'
 #histoLabel = '; M_{T} (GeV); Events'
@@ -359,10 +369,10 @@ if not auto_y:
 #histoLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
 #histoLabel = '; M_{T}^{b} (GeV); Events'
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
-histoLabel = '; jet_{1} #eta; Events'
+#histoLabel = '; jet_{2} #phi; Events'
 #histoLabel = '; jet_{1} p_{T}; Events'
 #histoLabel = '; DeepAK8 top tag discriminant value; Events'
-#histoLabel = '; leading electron #phi; Events'
+#histoLabel = '; electron #eta; Events'
 
 #histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
@@ -790,8 +800,8 @@ for dataset in dataSamples:
             if 'MET_Run2017B' in filepath: #MET trigger paths also missing from Run2017B (https://hypernews.cern.ch/HyperNews/CMS/get/top-trigger/247/1.html)
                 datacut = datacut.replace(' || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60','')
                 print '   Using cut = ', datacut
-            #datacut = datacut + ' && run >= 319077'
-            datacut = datacut + ' && (event%5 == 0)' 
+            #datacut = datacut + ' && run < 319077'
+            #datacut = datacut + ' && (event%5 == 0)' 
             dataSamples[dataset][filepath+'_Events'].Draw(var+'>>hist',datacut)
             print '    hist nEntries = ', hist.GetEntries()
             print '    hist integral = ', hist.Integral(1,nbins+1)
@@ -1178,8 +1188,10 @@ if savePlots:
     elif year == 2017:
         title.DrawLatexNDC(title_x, title_y, "#bf{41.5 fb^{-1} (13 TeV)}")
     elif year == 2018:
-        #title.DrawLatexNDC(title_x, title_y, "#bf{59.8 fb^{-1} (13 TeV)}")
-        title.DrawLatexNDC(title_x, title_y, "#bf{12.0 fb^{-1} (13 TeV)}") #1/5 partial unblind
+        title.DrawLatexNDC(title_x, title_y, "#bf{59.8 fb^{-1} (13 TeV)}")
+        #title.DrawLatexNDC(title_x, title_y, "#bf{21.1 fb^{-1} (13 TeV)}") #preHEM
+        #title.DrawLatexNDC(title_x, title_y, "#bf{38.8 fb^{-1} (13 TeV)}") #postHEM
+        #title.DrawLatexNDC(title_x, title_y, "#bf{12.0 fb^{-1} (13 TeV)}") #1/5 partial unblind
         #title.DrawLatexNDC(title_x, title_y, "#bf{4.2 fb^{-1} (13 TeV)}")   #1/5 partial unblind preHEM
         #title.DrawLatexNDC(title_x, title_y, "#bf{7.8 fb^{-1} (13 TeV)}")  #1/5 partial unblind postHEM
     #Set "CMS, work in progress" text
@@ -1319,7 +1331,7 @@ if savePlots:
         c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
         #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
     else:
-        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + "_withHEMfix_partialunblind.png")
+        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
         #c.SaveAs(saveDirectory + cut + str(year) + "_" + var + "_" + date + "_withHEMfixv5_postHEM.png")
         #c.SaveAs("test.png")
 
