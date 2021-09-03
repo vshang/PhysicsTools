@@ -2,7 +2,7 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'ModuleCommonSkim_07152021v4' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'ModuleCommonSkim_07152021v2' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'countEvents_03182021v3'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
@@ -52,8 +52,8 @@ if __name__ == '__main__':
   #config.JobType.outputFiles = ['hist.root'] #Enable for making BTag histograms using getBTagHist.py
   config.JobType.sendPythonFolder = True
   config.JobType.allowUndistributedCMSSW = True
-  config.JobType.maxJobRuntimeMin = 2630
-  config.JobType.maxMemoryMB      = 4000
+  #config.JobType.maxJobRuntimeMin = 2630
+  #config.JobType.maxMemoryMB      = 4000
   config.section_('Data')
   config.Data.inputDataset        = datasetinputs[index]
   #config.Data.userInputFiles      = [datasetinputs[index]]
@@ -81,7 +81,7 @@ if __name__ == '__main__':
  #####
  from multiprocessing import Process
  def submitWrapper(analysis, year, isData, isSignal, run, datasetinputs):
-  for d in range(6,8):#0,len(datasetinputs)):
+  for d in range(0,len(datasetinputs)):
    p = Process(target=submit, args=(config, analysis, year, isData, isSignal, run, datasetinputs, d))
    p.start()
    p.join()
@@ -110,7 +110,7 @@ if __name__ == '__main__':
  
  isData = False
  run = ''
- datasetnames = ['ZTo2NuNLO']
+ datasetnames = ['ZTo2Nu']
  #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD','WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
  years = ['2018']
  #years = ['2016','2017','2018']
