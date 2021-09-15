@@ -2,7 +2,7 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'ModuleCommonSkim_07152021v2' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'ModuleCommonSkim_09072021' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'countEvents_03182021v3'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
@@ -110,9 +110,9 @@ if __name__ == '__main__':
  
  isData = False
  run = ''
- datasetnames = ['ZTo2Nu']
- #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD','WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
- years = ['2018']
+ datasetnames = ['QCDPt']
+ #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD']#,'WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
+ years = ['2017']
  #years = ['2016','2017','2018']
  for year in years:
   for dataset in datasetnames:
