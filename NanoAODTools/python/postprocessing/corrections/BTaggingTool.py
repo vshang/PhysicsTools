@@ -16,7 +16,7 @@ path = modulepath+"/btag/"
 
 class BTagWPs:
   """Contain b tagging working points."""
-  def __init__( self, tagger, year=2016 ):
+  def __init__( self, tagger, year=2016, UL=False ):
     assert( year in [2016,2017,2018] ), "You must choose a year from: 2016, 2017, or 2018."
     if year==2016:
       if 'deep' in tagger.lower():
@@ -28,7 +28,11 @@ class BTagWPs:
         self.medium   = 0.8484
         self.tight    = 0.9535
     elif year==2017:
-      if 'deep' in tagger.lower():
+      if UL: #See https://twiki.cern.ch/twiki/bin/view/CMS/BtagRecommendation106XUL17#AK4_b_tagging for WPs
+        self.loose    = 0.1355
+        self.medium   = 0.4506
+        self.tight    = 0.7738
+      elif 'deep' in tagger.lower():
         self.loose    = 0.1522 # for 94X
         self.medium   = 0.4941
         self.tight    = 0.8001
@@ -49,7 +53,7 @@ class BTagWPs:
 
 class BTagWeightTool:
     
-    def __init__(self, tagger='CSVv2', wp='medium', sigma='central', channel='ttbar', year=2016):
+    def __init__(self, tagger='CSVv2', wp='medium', sigma='central', channel='ttbar', year=2016, UL=False):
         """Load b tag weights from CSV file."""
         
         assert(year in [2016,2017,2018]), "You must choose a year from: 2016, 2017, or 2018."
@@ -67,15 +71,18 @@ class BTagWeightTool:
             csvname = path+'CSVv2_Moriond17_B_H.csv'
             effname = path+'CSVv2_2016_Moriond17_eff.root'
         elif year==2017:
-          if 'deep' in tagger.lower():
-            csvname = path+'DeepCSV_94XSF_V5_B_F.csv'
+          if UL:
+            csvname = path+'DeepCSV_106XUL17SF_WPonly_V2p1.csv'
+            effname = path+'DeepCSV_2017_Fall17_eff.root'
+          elif 'deep' in tagger.lower():
+            csvname = path+'DeepCSV_94XSF_WP_V4_B_F.csv'
             effname = path+'DeepCSV_2017_Fall17_eff.root'
           else:
             csvname = path+'CSVv2_94XSF_V2_B_F.csv'
             effname = path+'CSVv2_2017_Fall17_eff.root'
         elif year==2018:
           if 'deep' in tagger.lower():
-            csvname = path+'DeepCSV_102XSF_V2.csv'
+            csvname = path+'DeepCSV_102XSF_WP_V1.csv'
             effname = path+'DeepCSV_2018_Autumn18_eff.root'
           else:
             csvname = path+'CSVv2_94XSF_V2_B_F.csv'
@@ -83,7 +90,7 @@ class BTagWeightTool:
         
         # TAGGING WP
         self.wpname = wp
-        self.wp     = getattr(BTagWPs(tagger,year),wp)
+        self.wp     = getattr(BTagWPs(tagger,year, UL),wp)
         if 'deep' in tagger.lower():
           tagged = lambda j: j.btagDeepB>self.wp
         else:

@@ -5,7 +5,7 @@ path = modulepath+"/pileup/"
 
 class PileupWeightTool:
     
-    def __init__( self, year=2016, sigma='central' ):
+    def __init__( self, year=2016, sigma='central', UL=False ):
         """Load data and MC pilup profiles."""
         
         assert( year in [2016,2017,2018] ), "You must choose a year from: 2016, 2017, or 2018."
@@ -15,8 +15,12 @@ class PileupWeightTool:
           self.datafile = ensureTFile( path+'PileupData_GoldenJSON_Full2016.root', 'READ')
           self.mcfile   = ensureTFile( path+'pileup_profile_Summer16.root', 'READ')
         elif year==2017:
-          self.datafile = ensureTFile( path+'PileupHistogram-goldenJSON-13tev-2017-99bins_withVar.root', 'READ')
-          self.mcfile   = ensureTFile( path+'mcPileup2017.root', 'READ')
+          if UL:
+              self.datafile = ensureTFile( path+'PileupHistogram-UL2017-100bins_withVar.root', 'READ')
+              self.mcfile   = ensureTFile( path+'mcPileupUL2017.root', 'READ')
+          else:
+              self.datafile = ensureTFile( path+'PileupHistogram-goldenJSON-13tev-2017-99bins_withVar.root', 'READ')
+              self.mcfile   = ensureTFile( path+'mcPileup2017.root', 'READ')
         elif year==2018:
           self.datafile = ensureTFile( path+'PileupHistogram-goldenJSON-13tev-2018-100bins_withVar.root', 'READ')
           self.mcfile   = ensureTFile( path+'mcPileup2018.root', 'READ')

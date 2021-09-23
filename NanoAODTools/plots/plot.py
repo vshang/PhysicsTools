@@ -9,10 +9,10 @@ import math
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/2018_QCDCR_debugging/RunII_plots/METcorrected_phi/'
-date = '09_14_2021'
-year = 2016
-useCondor = False
+saveDirectory = 'plots/CR_2017/METcorrected_pt/'
+date = '09_21_2021'
+year = 2017
+useCondor = True
 applyHEMfix = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
@@ -72,50 +72,22 @@ if (year == 2018) and applyHEMfix:
     for cut in preselect_cuts:
         cuts[cut] = cuts[cut] + ' && ((METcorrected_phi <= -1.62) || (METcorrected_phi >= -0.82))'
 
-cuts['SL1e1b1FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet <= 1'
-cuts['SL1e2b1FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet <= 1'
-cuts['SL1m1b1FJ'] = cuts['SL1m'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet <= 1'
-cuts['SL1m2b1FJ'] = cuts['SL1m'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet <= 1'
-cuts['AH1b1FJ'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet <= 1'
-cuts['AH2b1FJ'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet <= 1'
-
-cuts['SL1e1b2FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet >= 2'
-cuts['SL1e2b2FJ'] = cuts['SL1e'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet >= 2'
-cuts['SL1m1b2FJ'] = cuts['SL1m'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet >= 2'
-cuts['SL1m2b2FJ'] = cuts['SL1m'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet >= 2'
-cuts['AH1b2FJ'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nFatJet >= 2'
-cuts['AH2b2FJ'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nFatJet >= 2'
-
-cuts['AHminSR'] = '(nVetoElectrons + nLooseMuons) == 0 && METcorrected_pt >= 250'
-cuts['AH2j0bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets == 0'
-cuts['AH2j1bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets == 1'
-cuts['AH2j2bSR'] = cuts['AHminSR'] + ' && njets >= 2 && nbjets >= 2'
-
 #Signal region definitions
 cuts['SL1e0fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['SL1e1fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['SL1e2bSR'] = cuts['SL1e'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['SL1e1fSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140' #+ ' && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]'
+cuts['SL1e2bSR'] = cuts['SL1e'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140' + ' && nfjets == 0' #+ ' && ((nfjets == 0) || (nfjets >= 1 && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]))'
 
 cuts['SL1m0fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets == 0' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['SL1m1fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['SL1m2bSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
+cuts['SL1m1fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140' #+ ' && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]'
+cuts['SL1m2bSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140' #+ ' && ((nfjets == 0) || (nfjets >= 1 && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]))'
 
 cuts['AH0l0fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets == 0 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['AH0l1fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets >= 1 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['AH0l2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && jet1p_TH_T <= 0.5'
+cuts['AH0l1fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets >= 1 && minDeltaPhi12 >= 0.8 && M_Tb >= 140' #+ ' && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]'
+cuts['AH0l2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && jet1p_TH_T <= 0.5' #+ ' && ((nfjets == 0) || (nfjets >= 1 && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]))'
 
-cuts['SL1e1bSR'] = cuts['SL1e'] + ' && ' + 'nbjets == 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['SL1eSR'] = cuts['SL1e'] + ' && ' + 'nbjets >= 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['SL1m1bSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['SL1mSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 1' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['SL1l1bSR'] = '(' + cuts['SL1e1bSR'] + ') || (' + cuts['SL1m1bSR'] + ')'
-cuts['SL1lSR'] = '(' + cuts['SL1eSR'] + ') || (' + cuts['SL1mSR'] + ')'
-
-cuts['SL1bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets == 1 && M_T >= 140 && M_T2W >= 180 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['SL2bSR'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + ')) && nbjets >= 2 && M_T >= 140 && M_T2W >= 180 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['SL1l0fSR'] = cuts['SL1bSR'] + ' && nfjets == 0'
-cuts['SL1l1fSR'] = cuts['SL1bSR'] + ' && nfjets >= 1'
-cuts['SL1l2bSR'] = cuts['SL2bSR']
+cuts['SL1l0fSR'] = '(' + cuts['SL1e0fSR'] + ') || (' + cuts['SL1m0fSR'] + ')'
+cuts['SL1l1fSR'] = '(' + cuts['SL1e1fSR'] + ') || (' + cuts['SL1m1fSR'] + ')'
+cuts['SL1l2bSR'] = '(' + cuts['SL1e2bSR'] + ') || (' + cuts['SL1m2bSR'] + ')'
 
 #modified topness categories
 cuts['SL1e0fT1SR'] = cuts['SL1e0fSR'] + ' && modified_topness <= 0'
@@ -149,18 +121,12 @@ cuts['SL1l2bT2SR'] = cuts['SL1l2bSR'] + ' && modified_topness > 0 && modified_to
 cuts['SL1l2bT3SR'] = cuts['SL1l2bSR'] + ' && modified_topness > 10'
 
 #nFatJet categories
-cuts['AHSR'] = cuts['AH'] + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['AH1bSR'] = cuts['AHSR'].replace('nbjets >= 1', 'nbjets ==1')
-cuts['AH2bSR'] = cuts['AHSR'].replace('nbjets >= 1', 'nbjets >= 2') + ' && jet1p_TH_T <= 0.5'
-cuts['AH1b1FJSR'] = cuts['AH1bSR'] + ' && nFatJet <= 1'
-cuts['AH1b2FJSR'] = cuts['AH1bSR'] + ' && nFatJet >= 2'
-cuts['AH2b1FJSR'] = cuts['AH0l2bSR'] + ' && nFatJet <= 1'
-cuts['AH2b2FJSR'] = cuts['AH0l2bSR'] + ' && nFatJet >= 2'
-
 cuts['AH1b0f1FJSR'] = cuts['AH0l0fSR'] + ' && nFatJet <= 1'
 cuts['AH1b0f2FJSR'] = cuts['AH0l0fSR'] + ' && nFatJet >= 2'
 cuts['AH1b1f1FJSR'] = cuts['AH0l1fSR'] + ' && nFatJet <= 1'
 cuts['AH1b1f2FJSR'] = cuts['AH0l1fSR'] + ' && nFatJet >= 2'
+cuts['AH2b1FJSR'] = cuts['AH0l2bSR'] + ' && nFatJet <= 1'
+cuts['AH2b2FJSR'] = cuts['AH0l2bSR'] + ' && nFatJet >= 2'
 
 
 #Control region definitions
@@ -179,9 +145,10 @@ cuts['AH2eZR'] = 'njets >= 3 && nbjets == 0 && nTightElectrons == 2 && nVetoElec
 cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' 
 cuts['AH0lQR'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 <= 0.8 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')'  
 
-#Apply primary vertex selection cuts to all CRs
-for cut in controlRegion_cuts:
+#Apply primary vertex selection cuts and leading fjet veto to all CRs
+#for cut in controlRegion_cuts:
     cuts[cut] = cuts[cut] + ' && ' + cuts['PV']
+    #cuts[cut] = cuts[cut] + ' && ((nfjets == 0) || (nfjets >= 1 && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]))'
 
 #Apply HEM fix to CR for 2018 if applyHEMfix == True
 if (year == 2018) and applyHEMfix:
@@ -205,19 +172,6 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'AH1b'
 #cut = 'AH2b'
 
-#cut = 'SL1e1b1FJ'
-#cut = 'SL1e2b1FJ'
-#cut = 'SL1m1b1FJ'
-#cut = 'SL1m2b1FJ'
-#cut = 'SL1e1b2FJ'
-#cut = 'SL1e2b2FJ'
-#cut = 'SL1m1b2FJ'
-#cut = 'SL1m2b2FJ'
-#cut = 'AH1b1FJ'
-#cut = 'AH2b1FJ'
-#cut = 'AH1b2FJ'
-#cut = 'AH2b2FJ'
-
 #cut = 'SL1e0fSR' #Signal region cuts
 #cut = 'SL1e1fSR'
 #cut = 'SL1e2bSR'
@@ -232,12 +186,6 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL1l1fSR'
 #cut = 'SL1l2bSR'
 
-#cut = 'SL1l1bSR'
-#cut = 'SL1lSR'
-
-#cut = 'SL1e1bSR'
-#cut = 'SL1eSR'
-
 #cut = 'SL1l0fT1SR'
 #cut = 'SL1l0fT2SR'
 #cut = 'SL1l0fT3SR'
@@ -247,9 +195,6 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL1l2bT1SR'
 #cut = 'SL1l2bT2SR'
 #cut = 'SL1l2bT3SR'
-
-#cut = 'AH1b1FJSR'
-#cut = 'AH1b2FJSR'
 
 #cut = 'AH1b0f1FJSR'
 #cut = 'AH1b0f2FJSR'
@@ -277,28 +222,16 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'AH2lZR'
 cut = 'AH0lQR'
 
-#cut = 'SLeCR'
-#cut = 'SLmCR'
-#cut = 'SL1eCR'
-#cut = 'SL1mCR'
-#cut = 'SL1e0bCR'
-#cut = 'SL1m0bCR'
-
-#cut = 'SL1e1bCR'
-#cut = 'SL1m1bCR'
-
-#cuts[cut] = cuts[cut].replace('&& M_T >= 140 ', '')
+#cuts[cut] = cuts[cut] + ' && nfjets >= 1'
 #cuts[cut] = cuts[cut].replace(' && M_T2ll <= 80', '')
 #cuts[cut] = cuts[cut].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 160')
 #cuts['AH0lQR'] = cuts['AH0lQR'].replace('&& minDeltaPhi12 <= 0.8 ', '')
-cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets >= 1 && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]'
+#cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets >= 1 && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]'
 
-#Only apply ee badSC noise filter to data (https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2)
-cuts['data'] = cuts[cut] + ' && Flag_eeBadScFilter'
 
-#var = 'METcorrected_pt'
+var = 'METcorrected_pt'
 #var = 'recoilPtMiss'
-var = 'METcorrected_phi'
+#var = 'METcorrected_phi'
 #var = 'M_T'
 #var = 'M_T2W'
 #var = 'minDeltaPhi12'
@@ -311,7 +244,9 @@ var = 'METcorrected_phi'
 #var = 'Electron_pt[1]'
 #var = 'Muon_pt[1]'
 #var = 'Jet_pt'
-#var = 'Jet_pt[index_centralJets[1]]'
+#var = 'Jet_pt[index_centralJets[0]]'
+#var = 'Jet_pt[index_centralJets[0]]/Jet_pt[index_forwardJets[0]]'
+#var = 'Jet_chEmEF[index_forwardJets[0]]'
 #var = 'Electron_eta[index_tightElectrons[0]]'
 #var = 'Muon_eta[1]'
 #var = 'nTightElectrons'
@@ -351,7 +286,7 @@ else:
 
 print 'Cut name = ', cut
 print 'MC Selection Cuts = ', cuts[cut]
-print 'Data Selection Cuts = ', cuts['data']
+print 'Data Selection Cuts = ', cuts[cut] + ' && Flag_eeBadScFilter'
 print 'var = ', var
 print 'year = ', str(year)
 print 'lumi = ', str(lumi)
@@ -360,11 +295,11 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 30
-xmin = -3.0
-xmax = 3.0
+nbins = 15
+xmin = 250
+xmax = 550
 auto_y = True
-doLogPlot = False
+doLogPlot = True
 drawData = True
 mediatorType = 'scalar'
 mchi = 1
@@ -385,16 +320,18 @@ if not auto_y:
     ymin = 60
     ymax = 20000
 
-#histoLabel = '; p_{T}^{miss} (GeV); Events'
+histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; Hadronic recoil (GeV); Events'
-histoLabel = '; #phi^{miss}; Events'
+#histoLabel = '; #phi^{miss}; Events'
 #histoLabel = '; M_{T} (GeV); Events'
 #histoLabel = '; M_{T2}^{W} (GeV); Events'
 #histoLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
 #histoLabel = '; M_{T}^{b} (GeV); Events'
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = '; forward jet_{2} #eta; Events'
-#histoLabel = '; central jet_{2} p_{T}; Events'
+#histoLabel = '; central jet_{1} p_{T}; Events'
+#histoLabel = '; central jet_{1} p_{T}/forward jet_{1} p_{T}; Events'
+#histoLabel = '; forward jet_{1} charged Electromagnetic Energy Fraction; Events'
 #histoLabel = '; DeepAK8 top tag discriminant value; Events'
 #histoLabel = '; electron #eta; Events'
 #histoLabel = '; number of b-tagged jets; Events'
@@ -428,7 +365,6 @@ histoLabel = '; #phi^{miss}; Events'
 #histoLabel = cut + ' FatJet_{3} phi^{miss} distribution; FatJet_{3} phi^{miss} (GeV); Events'
 #histoLabel = cut + ' Modified topness distribution; modified topness; Events'
 #histoLabel = cut + ' Full topness distribution; full topness; Events'
-
 
 if drawData:
     ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Data / Bkg')
@@ -808,6 +744,7 @@ for dataset in dataSamples:
         print '  Dataset = ', dataset, ' ||   nEvents = ', dataSamples[dataset]['nevents']
         for filepath in dataSamples[dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
+            #Only apply ee badSC noise filter to data (https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2)
             if combineEleMu:
                 if dataset == 'SingleMuon':
                     if cut == 'SL2lTR':
@@ -820,9 +757,9 @@ for dataset in dataSamples:
                     datacut = cuts[cut.replace('l','e')] + ' && Flag_eeBadScFilter'
                     print '  Using cut = ', datacut
                 else:
-                    datacut = cuts['data']
+                    datacut = cuts[cut] + ' && Flag_eeBadScFilter'
             else:
-                datacut = cuts['data']
+                datacut = cuts[cut] + ' && Flag_eeBadScFilter'
             if 'SingleElectron_Run2017B' in filepath: #HLT_Ele115_CaloIdVT_GsfTrkIdT trigger path not available in Run2017B (https://hypernews.cern.ch/HyperNews/CMS/get/b2g-selections/346.html?inline=-1)
                 datacut = datacut.replace('HLT_Ele115_CaloIdVT_GsfTrkIdT || ','')
                 print '   Using cut = ', datacut
@@ -1362,7 +1299,7 @@ if savePlots:
         suffix = date
         if (year == 2018) and applyHEMfix:
             suffix += '_withHEMfix'
-        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + suffix + "_noleadingfjet.png")
+        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + suffix + ".png")
         #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
         #c.SaveAs(saveDirectory + cut + str(year) + "_" + var + "_" + date + "_withHEMfixv5_postHEM.png")
         #c.SaveAs("test.png")

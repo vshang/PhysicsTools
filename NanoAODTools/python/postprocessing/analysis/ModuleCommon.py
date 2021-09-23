@@ -15,12 +15,12 @@ from PhysicsTools.NanoAODTools.postprocessing.corrections.PileupWeightTool impor
 from PhysicsTools.NanoAODTools.postprocessing.modules.jme.jetmetHelperRun2 import *
 
 #Set runLocal to false if running jobs through CRAB
-#runLocal = False
-runLocal = True
+runLocal = False
+#runLocal = True
 
 #Set jesSys to "All" for split JES systematics and "Total" for combined JES systematics
-jesSys = "All"
-#jesSys = "Total"
+#jesSys = "All"
+jesSys = "Total"
 
 #Load shared object files that contains C++ code to calculate discriminating variables 
 if runLocal:
@@ -57,7 +57,7 @@ else:
     jesUnc = [""]
 
 class CommonAnalysis(Module):
-    def __init__(self, signalRegion, year=2016, isData=False, isSignal=False, btag='DeepCSV'):
+    def __init__(self, signalRegion, year=2016, isData=False, isSignal=False, btag='DeepCSV', UL=False):
         self.signalRegion = signalRegion
         self.year = year
         self.isData = isData
@@ -65,16 +65,17 @@ class CommonAnalysis(Module):
         self.isSignal = isSignal
         self.btag = btag
         self.nEvent = 0
+        self.UL = UL
         if self.isMC:
             self.eleSFs = ElectronSFs(self.year)
             self.muSFs = MuonSFs(self.year)
             self.METSFs = METSFs(self.year)
-            self.btagTool = BTagWeightTool(tagger=self.btag,wp='medium',channel='ttbar',year=self.year)
-            self.btagToolUp = BTagWeightTool(tagger=self.btag,wp='medium',sigma='up',channel='ttbar',year=self.year)
-            self.btagToolDown = BTagWeightTool(tagger=self.btag,wp='medium',sigma='down',channel='ttbar',year=self.year)
-            self.puTool = PileupWeightTool(year=self.year)
-            self.puToolUp = PileupWeightTool(year=self.year,sigma='up')
-            self.puToolDown = PileupWeightTool(year=self.year,sigma='down')
+            self.btagTool = BTagWeightTool(tagger=self.btag,wp='medium',channel='ttbar',year=self.year, UL=self.UL)
+            self.btagToolUp = BTagWeightTool(tagger=self.btag,wp='medium',sigma='up',channel='ttbar',year=self.year, UL=self.UL)
+            self.btagToolDown = BTagWeightTool(tagger=self.btag,wp='medium',sigma='down',channel='ttbar',year=self.year, UL=self.UL)
+            self.puTool = PileupWeightTool(year=self.year, UL=self.UL)
+            self.puToolUp = PileupWeightTool(year=self.year,sigma='up', UL=self.UL)
+            self.puToolDown = PileupWeightTool(year=self.year,sigma='down', UL=self.UL)
             self.kFactorTool = KFactorTool(year=self.year)
 
     def beginJob(self):
@@ -460,7 +461,7 @@ to next event)"""
 
         #Helper function to return correct MET pt for corresponding JES systematic uncertainty
         def getJESMETpt(sys):
-            if self.year == 2017:
+            if self.year == 2017 and not self.UL:
                 if sys == "Up":
                     return event.METFixEE2017_T1Smear_pt_jesTotalUp 
                 elif sys == "Down":
@@ -689,7 +690,7 @@ to next event)"""
 
         #Helper function to return correct MET phi for corresponding JES systematic uncertainty
         def getJESMETphi(sys):
-            if self.year == 2017:
+            if self.year == 2017 and not self.UL:
                 if sys == "Up":
                     return event.METFixEE2017_T1Smear_phi_jesTotalUp 
                 elif sys == "Down":
@@ -964,7 +965,7 @@ to next event)"""
 
 
         #Apply MET corrections (JEC, JER, METFixEE2017, xy-Shift)
-        if self.year == 2017:
+        if self.year == 2017 and not self.UL:
             #Apply EE noise fix for 2017 (https://twiki.cern.ch/twiki/bin/viewauth/CMS/ExoPreapprovalChecklist)
             if self.isData:
                 METcorrected_pt_phi = ROOT.METXYCorr_Met_MetPhi(event.METFixEE2017_T1_pt, event.METFixEE2017_T1_phi, event.run, self.year, self.isMC, event.PV_npvs)
@@ -1085,7 +1086,7 @@ to next event)"""
         #Systematics - JES, JER (MET)
         if self.isMC:
             #Apply MET corrections (JEC, JER, METFixEE2017, xy-Shift)
-            if self.year == 2017:
+            if self.year == 2017 and not self.UL:
                 #Apply EE noise fix for 2017 (https://twiki.cern.ch/twiki/bin/viewauth/CMS/ExoPreapprovalChecklist)
                 for sys in jesUnc:
                     jesBranches["METcorrected_pt_phiScale"+sys+"Up"] = ROOT.METXYCorr_Met_MetPhi(getJESMETpt(sys+"Up"), getJESMETphi(sys+"Up"), event.run, self.year, self.isMC, event.PV_npvs)
@@ -1872,6 +1873,14 @@ analyze2018MC_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=False,isSig
 analyze2018SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=False,isSignal=True,btag='DeepCSV')
 analyze2018Data_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=True,isSignal=False,btag='DeepCSV')
 
+analyzeUL2017MC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=False,btag='DeepCSV',UL=True)
+analyzeUL2017SignalMC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=True,btag='DeepCSV',UL=True)
+analyzeUL2017Data = lambda : CommonAnalysis("All",year=2017,isData=True,isSignal=False,btag='DeepCSV',UL=True)
+
+analyzeUL2017MC_Skim = lambda : CommonAnalysis("Skim",year=2017,isData=False,isSignal=False,btag='DeepCSV',UL=True)
+analyzeUL2017SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2017,isData=False,isSignal=True,btag='DeepCSV',UL=True)
+analyzeUL2017Data_Skim = lambda : CommonAnalysis("Skim",year=2017,isData=True,isSignal=False,btag='DeepCSV',UL=True)
+
 #Define jetmetHelperRun2 modules for all years to calculate systematic uncertanties
 jetmetCorrector2016MC = createJMECorrector(isMC=True, dataYear=2016, jesUncert=jesSys)
 jetmetCorrector2016DataB = createJMECorrector(isMC=False, dataYear=2016, runPeriod="B", jesUncert=jesSys)
@@ -1882,12 +1891,12 @@ jetmetCorrector2016DataF = createJMECorrector(isMC=False, dataYear=2016, runPeri
 jetmetCorrector2016DataG = createJMECorrector(isMC=False, dataYear=2016, runPeriod="G", jesUncert=jesSys)
 jetmetCorrector2016DataH = createJMECorrector(isMC=False, dataYear=2016, runPeriod="H", jesUncert=jesSys)
 
-jetmetCorrector2017MC = createJMECorrector(isMC=True, dataYear=2017, jesUncert=jesSys, metBranchName="METFixEE2017")
-jetmetCorrector2017DataB = createJMECorrector(isMC=False, dataYear=2017, runPeriod="B", jesUncert=jesSys, metBranchName="METFixEE2017")
-jetmetCorrector2017DataC = createJMECorrector(isMC=False, dataYear=2017, runPeriod="C", jesUncert=jesSys, metBranchName="METFixEE2017")
-jetmetCorrector2017DataD = createJMECorrector(isMC=False, dataYear=2017, runPeriod="D", jesUncert=jesSys, metBranchName="METFixEE2017")
-jetmetCorrector2017DataE = createJMECorrector(isMC=False, dataYear=2017, runPeriod="E", jesUncert=jesSys, metBranchName="METFixEE2017")
-jetmetCorrector2017DataF = createJMECorrector(isMC=False, dataYear=2017, runPeriod="F", jesUncert=jesSys, metBranchName="METFixEE2017")
+jetmetCorrector2017MC = createJMECorrector(isMC=True, dataYear='2017', jesUncert=jesSys, metBranchName="METFixEE2017")
+jetmetCorrector2017DataB = createJMECorrector(isMC=False, dataYear='2017', runPeriod="B", jesUncert=jesSys, metBranchName="METFixEE2017")
+jetmetCorrector2017DataC = createJMECorrector(isMC=False, dataYear='2017', runPeriod="C", jesUncert=jesSys, metBranchName="METFixEE2017")
+jetmetCorrector2017DataD = createJMECorrector(isMC=False, dataYear='2017', runPeriod="D", jesUncert=jesSys, metBranchName="METFixEE2017")
+jetmetCorrector2017DataE = createJMECorrector(isMC=False, dataYear='2017', runPeriod="E", jesUncert=jesSys, metBranchName="METFixEE2017")
+jetmetCorrector2017DataF = createJMECorrector(isMC=False, dataYear='2017', runPeriod="F", jesUncert=jesSys, metBranchName="METFixEE2017")
 
 jetmetCorrector2018MC = createJMECorrector(isMC=True, dataYear=2018, jesUncert="All", applyHEMfix=True)
 jetmetCorrector2018DataA = createJMECorrector(isMC=False, dataYear=2018, runPeriod="A", jesUncert=jesSys, applyHEMfix=True)
@@ -1895,34 +1904,43 @@ jetmetCorrector2018DataB = createJMECorrector(isMC=False, dataYear=2018, runPeri
 jetmetCorrector2018DataC = createJMECorrector(isMC=False, dataYear=2018, runPeriod="C", jesUncert=jesSys, applyHEMfix=True)
 jetmetCorrector2018DataD = createJMECorrector(isMC=False, dataYear=2018, runPeriod="D", jesUncert=jesSys, applyHEMfix=True)
 
+jetmetCorrectorUL2017MC = createJMECorrector(isMC=True, dataYear='UL2017', jesUncert=jesSys)
+jetmetCorrectorUL2017DataB = createJMECorrector(isMC=False, dataYear='UL2017', runPeriod="B")
+jetmetCorrectorUL2017DataC = createJMECorrector(isMC=False, dataYear='UL2017', runPeriod="C")
+jetmetCorrectorUL2017DataD = createJMECorrector(isMC=False, dataYear='UL2017', runPeriod="D")
+jetmetCorrectorUL2017DataE = createJMECorrector(isMC=False, dataYear='UL2017', runPeriod="E")
+jetmetCorrectorUL2017DataF = createJMECorrector(isMC=False, dataYear='UL2017', runPeriod="F")
+
 #Define module to count number of events in root file
 countEvents = lambda : CountEvents()
 
 # #########################################################################################################################################
 
-if runLocal:
-    #Select PostProcessor options here
-    selection=None
-    #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-    #outputDir = "testSamples/"
-    outputDir = "."
-    #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-    outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-    #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
-    inputFiles=["samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
-    #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-    #inputFiles=["testSamples/nanoAODv7/ttbarDM_Run2016_v7.root"]
-    #inputFiles=["testSamples/nanoAODv7/ttbarPlusJets_Run2016_v7.root"]
-    #inputFiles=["testSamples/nanoAODv7/SingleElectron_2017C_v7.root"]
-    #inputFiles=["testSamples/nanoAODv7/QCDPt_3200toInf_Run2017_v7.root"]
-    #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+# if runLocal:
+#     #Select PostProcessor options here
+#     selection=None
+#     #outputDir = "outDir2016AnalysisSR/ttbarDM/"
+#     #outputDir = "testSamples/"
+#     outputDir = "."
+#     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+#     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+#     #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
+#     #inputFiles=["samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
+#     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
+#     #inputFiles=["testSamples/nanoAODv7/ttbarDM_Run2016_v7.root"]
+#     #inputFiles=["testSamples/nanoAODv7/ttbarPlusJets_Run2016_v7.root"]
+#     #inputFiles=["testSamples/nanoAODv7/SingleElectron_2017C_v7.root"]
+#     inputFiles=["testSamples/nanoAODv8/QCDPt_15to30_RunUL2017_v8.root"]
+#     #inputFiles=["testSamples/nanoAODv8/MET_UL2017C_v8.root"]
+#     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt"
 
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2017MC(),analyze2017MC_Skim()],postfix="_ModuleCommon_2017MC_Skim",noOut=False,outputbranchsel=outputbranches)
-    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_2016MC_ModuleCommonSkim_09072021",noOut=False,outputbranchsel=outputbranches)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2017DataC(),analyze2017Data()],postfix="_ModuleCommon_2017Datav2",noOut=False,outputbranchsel=outputbranches)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
-    p.run()
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrectorUL2017MC(),analyzeUL2017MC_Skim()],postfix="_ModuleCommon_UL2017MC_Skim",noOut=False,outputbranchsel=outputbranches)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_2016MC_ModuleCommonSkim_09072021",noOut=False,outputbranchsel=outputbranches)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrectorUL2017DataC(),analyzeUL2017Data_Skim()],postfix="_ModuleCommon_UL2017Data_Skim",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
+#     p.run()
