@@ -1873,6 +1873,7 @@ analyze2018MC_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=False,isSig
 analyze2018SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=False,isSignal=True,btag='DeepCSV')
 analyze2018Data_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=True,isSignal=False,btag='DeepCSV')
 
+#UL
 analyzeUL2017MC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=False,btag='DeepCSV',UL=True)
 analyzeUL2017SignalMC = lambda : CommonAnalysis("All",year=2017,isData=False,isSignal=True,btag='DeepCSV',UL=True)
 analyzeUL2017Data = lambda : CommonAnalysis("All",year=2017,isData=True,isSignal=False,btag='DeepCSV',UL=True)
@@ -1880,6 +1881,14 @@ analyzeUL2017Data = lambda : CommonAnalysis("All",year=2017,isData=True,isSignal
 analyzeUL2017MC_Skim = lambda : CommonAnalysis("Skim",year=2017,isData=False,isSignal=False,btag='DeepCSV',UL=True)
 analyzeUL2017SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2017,isData=False,isSignal=True,btag='DeepCSV',UL=True)
 analyzeUL2017Data_Skim = lambda : CommonAnalysis("Skim",year=2017,isData=True,isSignal=False,btag='DeepCSV',UL=True)
+
+analyzeUL2018MC = lambda : CommonAnalysis("All",year=2018,isData=False,isSignal=False,btag='DeepCSV',UL=True)
+analyzeUL2018SignalMC = lambda : CommonAnalysis("All",year=2018,isData=False,isSignal=True,btag='DeepCSV',UL=True)
+analyzeUL2018Data = lambda : CommonAnalysis("All",year=2018,isData=True,isSignal=False,btag='DeepCSV',UL=True)
+
+analyzeUL2018MC_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=False,isSignal=False,btag='DeepCSV',UL=True)
+analyzeUL2018SignalMC_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=False,isSignal=True,btag='DeepCSV',UL=True)
+analyzeUL2018Data_Skim = lambda : CommonAnalysis("Skim",year=2018,isData=True,isSignal=False,btag='DeepCSV',UL=True)
 
 #Define jetmetHelperRun2 modules for all years to calculate systematic uncertanties
 jetmetCorrector2016MC = createJMECorrector(isMC=True, dataYear=2016, jesUncert=jesSys)
@@ -1904,12 +1913,19 @@ jetmetCorrector2018DataB = createJMECorrector(isMC=False, dataYear=2018, runPeri
 jetmetCorrector2018DataC = createJMECorrector(isMC=False, dataYear=2018, runPeriod="C", jesUncert=jesSys, applyHEMfix=True)
 jetmetCorrector2018DataD = createJMECorrector(isMC=False, dataYear=2018, runPeriod="D", jesUncert=jesSys, applyHEMfix=True)
 
+#UL
 jetmetCorrectorUL2017MC = createJMECorrector(isMC=True, dataYear='UL2017', jesUncert=jesSys)
 jetmetCorrectorUL2017DataB = createJMECorrector(isMC=False, dataYear='UL2017', runPeriod="B")
 jetmetCorrectorUL2017DataC = createJMECorrector(isMC=False, dataYear='UL2017', runPeriod="C")
 jetmetCorrectorUL2017DataD = createJMECorrector(isMC=False, dataYear='UL2017', runPeriod="D")
 jetmetCorrectorUL2017DataE = createJMECorrector(isMC=False, dataYear='UL2017', runPeriod="E")
 jetmetCorrectorUL2017DataF = createJMECorrector(isMC=False, dataYear='UL2017', runPeriod="F")
+
+jetmetCorrectorUL2018MC = createJMECorrector(isMC=True, dataYear='UL2018', jesUncert=jesSys)
+jetmetCorrectorUL2018DataB = createJMECorrector(isMC=False, dataYear='UL2018', runPeriod="A")
+jetmetCorrectorUL2018DataB = createJMECorrector(isMC=False, dataYear='UL2018', runPeriod="B")
+jetmetCorrectorUL2018DataC = createJMECorrector(isMC=False, dataYear='UL2018', runPeriod="C")
+jetmetCorrectorUL2018DataD = createJMECorrector(isMC=False, dataYear='UL2018', runPeriod="D")
 
 #Define module to count number of events in root file
 countEvents = lambda : CountEvents()
@@ -1930,17 +1946,18 @@ countEvents = lambda : CountEvents()
 #     #inputFiles=["testSamples/nanoAODv7/ttbarDM_Run2016_v7.root"]
 #     #inputFiles=["testSamples/nanoAODv7/ttbarPlusJets_Run2016_v7.root"]
 #     #inputFiles=["testSamples/nanoAODv7/SingleElectron_2017C_v7.root"]
-#     inputFiles=["testSamples/nanoAODv8/QCDPt_15to30_RunUL2017_v8.root"]
-#     #inputFiles=["testSamples/nanoAODv8/MET_UL2017C_v8.root"]
+#     inputFiles=["testSamples/nanoAODv8/QCDPt_15to30_RunUL2018_v8.root"]
+#     #inputFiles=["testSamples/nanoAODv8/MET_UL2018C_v8.root"]
 #     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 #     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
 #     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 #     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt"
+#     jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrectorUL2017MC(),analyzeUL2017MC_Skim()],postfix="_ModuleCommon_UL2017MC_Skim",noOut=False,outputbranchsel=outputbranches)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrectorUL2018MC(),analyzeUL2018MC_Skim()],postfix="_ModuleCommon_UL2018MC_Skim",noOut=False,outputbranchsel=outputbranches)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_2016MC_ModuleCommonSkim_09072021",noOut=False,outputbranchsel=outputbranches)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrectorUL2017DataC(),analyzeUL2017Data_Skim()],postfix="_ModuleCommon_UL2017Data_Skim",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrectorUL2018DataC(),analyzeUL2018Data_Skim()],postfix="_ModuleCommon_UL2018Data_Skim",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
 #     p.run()

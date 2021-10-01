@@ -41,7 +41,11 @@ class BTagWPs:
         self.medium   = 0.8838
         self.tight    = 0.9693
     elif year==2018:
-      if 'deep' in tagger.lower():
+      if UL: #See https://twiki.cern.ch/twiki/bin/view/CMS/BtagRecommendation106XUL18#AK4_b_tagging for WPs
+        self.loose    = 0.1208
+        self.medium   = 0.4168
+        self.tight    = 0.7665
+      elif 'deep' in tagger.lower():
         self.loose    = 0.1241 # for 102X
         self.medium   = 0.4184
         self.tight    = 0.7527
@@ -81,7 +85,10 @@ class BTagWeightTool:
             csvname = path+'CSVv2_94XSF_V2_B_F.csv'
             effname = path+'CSVv2_2017_Fall17_eff.root'
         elif year==2018:
-          if 'deep' in tagger.lower():
+          if UL:
+            csvname = path+'DeepCSV_106XUL18SF_WPonly_V1p1.csv'
+            effname = path+'DeepCSV_2018_Autumn18_eff.root'
+          elif 'deep' in tagger.lower():
             csvname = path+'DeepCSV_102XSF_WP_V1.csv'
             effname = path+'DeepCSV_2018_Autumn18_eff.root'
           else:

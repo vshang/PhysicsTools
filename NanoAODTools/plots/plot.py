@@ -9,13 +9,17 @@ import math
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/CR_2017/METcorrected_pt/'
-date = '09_21_2021'
+saveDirectory = 'plots/2018_QCDCR_debugging/RunII_plots/Jet_pt_ratio/'
+date = '09_26_2021'
 year = 2017
-useCondor = True
+useUL = True
+useCondor = False
 applyHEMfix = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
-if year == 2016:
+if useUL == True and year == 2017:
+    dataSamples = dataUL2017
+    MCSamples = samplesUL2017
+elif year == 2016:
     dataSamples = data2016
     MCSamples = samples2016
 elif year == 2017:
@@ -34,20 +38,26 @@ print 'Plotting start time:', datetime.datetime.now()
 #Define selection cuts and filters here
 cuts = {}
 
-if year == 2016:
+if useUL and year == 2017:
+    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilter && Flag_eeBadScFilter'
+    cuts['singleIsoEle'] = 'passEle32WPTightGsf2017'
+    cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
+    cuts['singleIsoMu'] = 'HLT_IsoMu27' 
+    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
+elif year == 2016:
     cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter'
     cuts['singleIsoEle'] = 'HLT_Ele27_WPTight_Gsf'
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon175'
     cuts['singleIsoMu'] = 'HLT_IsoMu24 || HLT_IsoTkMu24'
     cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight'
 elif year == 2017:
-    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2 && Flag_eeBadScFilter'
+    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'# && Flag_eeBadScFilter'
     cuts['singleIsoEle'] = 'passEle32WPTightGsf2017'
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
     cuts['singleIsoMu'] = 'HLT_IsoMu27' 
     cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
 elif year == 2018:
-    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2 && Flag_eeBadScFilter'
+    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'# && Flag_eeBadScFilter'
     cuts['singleIsoEle'] = 'HLT_Ele32_WPTight_Gsf'
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
     cuts['singleIsoMu'] = 'HLT_IsoMu24' 
@@ -146,7 +156,7 @@ cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuon
 cuts['AH0lQR'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 <= 0.8 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')'  
 
 #Apply primary vertex selection cuts and leading fjet veto to all CRs
-#for cut in controlRegion_cuts:
+for cut in controlRegion_cuts:
     cuts[cut] = cuts[cut] + ' && ' + cuts['PV']
     #cuts[cut] = cuts[cut] + ' && ((nfjets == 0) || (nfjets >= 1 && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]))'
 
@@ -222,14 +232,14 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'AH2lZR'
 cut = 'AH0lQR'
 
-#cuts[cut] = cuts[cut] + ' && nfjets >= 1'
+#cuts[cut] = cuts[cut] + ' && nfjets == 0'
 #cuts[cut] = cuts[cut].replace(' && M_T2ll <= 80', '')
 #cuts[cut] = cuts[cut].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 160')
 #cuts['AH0lQR'] = cuts['AH0lQR'].replace('&& minDeltaPhi12 <= 0.8 ', '')
-#cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets >= 1 && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]'
+cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets >= 1'# && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]'
 
 
-var = 'METcorrected_pt'
+#var = 'METcorrected_pt'
 #var = 'recoilPtMiss'
 #var = 'METcorrected_phi'
 #var = 'M_T'
@@ -245,7 +255,7 @@ var = 'METcorrected_pt'
 #var = 'Muon_pt[1]'
 #var = 'Jet_pt'
 #var = 'Jet_pt[index_centralJets[0]]'
-#var = 'Jet_pt[index_centralJets[0]]/Jet_pt[index_forwardJets[0]]'
+var = 'Jet_pt[index_centralJets[0]]/Jet_pt[index_forwardJets[0]]'
 #var = 'Jet_chEmEF[index_forwardJets[0]]'
 #var = 'Electron_eta[index_tightElectrons[0]]'
 #var = 'Muon_eta[1]'
@@ -295,11 +305,11 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 15
-xmin = 250
-xmax = 550
+nbins = 20
+xmin = 0
+xmax = 40
 auto_y = True
-doLogPlot = True
+doLogPlot = False
 drawData = True
 mediatorType = 'scalar'
 mchi = 1
@@ -320,7 +330,7 @@ if not auto_y:
     ymin = 60
     ymax = 20000
 
-histoLabel = '; p_{T}^{miss} (GeV); Events'
+#histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; Hadronic recoil (GeV); Events'
 #histoLabel = '; #phi^{miss}; Events'
 #histoLabel = '; M_{T} (GeV); Events'
@@ -330,7 +340,7 @@ histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = '; forward jet_{2} #eta; Events'
 #histoLabel = '; central jet_{1} p_{T}; Events'
-#histoLabel = '; central jet_{1} p_{T}/forward jet_{1} p_{T}; Events'
+histoLabel = '; central jet_{1} p_{T}/forward jet_{1} p_{T}; Events'
 #histoLabel = '; forward jet_{1} charged Electromagnetic Energy Fraction; Events'
 #histoLabel = '; DeepAK8 top tag discriminant value; Events'
 #histoLabel = '; electron #eta; Events'
@@ -780,8 +790,8 @@ for process in MCSamples:
     for dataset in MCSamples[process]:
         print '      Dataset = ', dataset, ' ||   nEvents = ', MCSamples[process][dataset]['nevents']
         weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight'
-        if datasetNames == ['MET']:
-            weight = weight + '*METTriggerWeight'
+        # if datasetNames == ['MET']:
+        #     weight = weight + '*METTriggerWeight'
         #Apply appropriate NLO k-factors
         if process == 'WPlusJets':
             weight = weight + '*qcdWWeight*ewkWWeight'
@@ -1293,13 +1303,22 @@ if drawData and savePlots:
 #Save histogram if savePlots == True
 if savePlots:
     if useCondor:
-        c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".png")
+        suffix = date
+        nameYear = str(year)
+        if (year == 2018) and applyHEMfix:
+            suffix += '_withHEMfix'
+        if useUL:
+            nameYear = 'UL'+str(year)
+        c.SaveAs(cut + nameYear + "_" + var.replace('/','over') + "_" + suffix + ".png")
         #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
     else:
         suffix = date
+        nameYear = str(year)
         if (year == 2018) and applyHEMfix:
             suffix += '_withHEMfix'
-        c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + suffix + ".png")
+        if useUL:
+            nameYear = 'UL'+str(year)
+        c.SaveAs(saveDirectory + date + '/' + cut + nameYear + "_" + var.replace('/','over') + "_" + suffix + "_mixedv2.png")
         #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
         #c.SaveAs(saveDirectory + cut + str(year) + "_" + var + "_" + date + "_withHEMfixv5_postHEM.png")
         #c.SaveAs("test.png")

@@ -18,3 +18,8 @@ data2018 = {
     'SingleElectron' : { 'nevents' : 1, 'filepaths' : ['/hdfs/store/user/vshang/SingleElectron_Run2018A/EGamma/ModuleCommonSkim_09072021/tree_all.root','/hdfs/store/user/vshang/SingleElectron_Run2018B/EGamma/ModuleCommonSkim_09072021/tree_all.root','/hdfs/store/user/vshang/SingleElectron_Run2018C/EGamma/ModuleCommonSkim_09072021/tree_all.root','/hdfs/store/user/vshang/SingleElectron_Run2018D/EGamma/ModuleCommonSkim_09072021/tree_all.root'] },
     'SingleMuon' : { 'nevents' : 1, 'filepaths' : ['/hdfs/store/user/vshang/SingleMuon_Run2018A/SingleMuon/ModuleCommonSkim_09072021/tree_all.root','/hdfs/store/user/vshang/SingleMuon_Run2018B/SingleMuon/ModuleCommonSkim_09072021/tree_all.root','/hdfs/store/user/vshang/SingleMuon_Run2018C/SingleMuon/ModuleCommonSkim_09072021/tree_all.root','/hdfs/store/user/vshang/SingleMuon_Run2018D/SingleMuon/ModuleCommonSkim_09072021/tree_all.root'] },
     }
+
+#UL2017 Data samples
+dataUL2017 = { 
+    'MET' : { 'nevents' : 1, 'filepaths' : ['/hdfs/store/user/vshang/MET_RunUL2017B/MET/ModuleCommonSkim_09222021/tree_all.root','/hdfs/store/user/vshang/MET_RunUL2017C/MET/ModuleCommonSkim_09222021/tree_all.root','/hdfs/store/user/vshang/MET_RunUL2017D/MET/ModuleCommonSkim_09222021/tree_all.root','/hdfs/store/user/vshang/MET_RunUL2017E/MET/ModuleCommonSkim_09222021/tree_all.root','/hdfs/store/user/vshang/MET_RunUL2017F/MET/ModuleCommonSkim_09222021/tree_all.root'] },
+    }

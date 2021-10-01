@@ -22,8 +22,12 @@ class PileupWeightTool:
               self.datafile = ensureTFile( path+'PileupHistogram-goldenJSON-13tev-2017-99bins_withVar.root', 'READ')
               self.mcfile   = ensureTFile( path+'mcPileup2017.root', 'READ')
         elif year==2018:
-          self.datafile = ensureTFile( path+'PileupHistogram-goldenJSON-13tev-2018-100bins_withVar.root', 'READ')
-          self.mcfile   = ensureTFile( path+'mcPileup2018.root', 'READ')
+          if UL:
+              self.datafile = ensureTFile( path+'PileupHistogram-UL2018-100bins_withVar.root', 'READ')
+              self.mcfile   = ensureTFile( path+'mcPileupUL2018.root', 'READ')
+          else:
+              self.datafile = ensureTFile( path+'PileupHistogram-goldenJSON-13tev-2018-100bins_withVar.root', 'READ')
+              self.mcfile   = ensureTFile( path+'mcPileup2018.root', 'READ')
 
         if sigma=='central':
             self.datahist = self.datafile.Get('pileup')
@@ -45,6 +49,6 @@ class PileupWeightTool:
         data = self.datahist.GetBinContent(self.datahist.GetXaxis().FindBin(npu))
         mc   = self.mchist.GetBinContent(self.mchist.GetXaxis().FindBin(npu))
         if mc>0.:
-          return data/mc
+          return data/mc 
         print ">>> Warning! PileupWeightTools.getWeight: Could not make pileup weight for npu=%s data=%s, mc=%s"%(npu,data,mc)  
         return 1.

@@ -46,7 +46,7 @@ if __name__ == '__main__':
   if countNEntries:
    crab_script = 'crab_scripts/crab_script_count'
   config.JobType.scriptExe       = crab_script + '.sh'
-  config.JobType.inputFiles      =  [crab_script + '.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropSR_out.txt','../python/postprocessing/analysis/keep_and_dropCount_out.txt','../python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt','../python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt','../python/postprocessing/data/json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt','../python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt'] + C_files
+  config.JobType.inputFiles      =  [crab_script + '.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropSR_out.txt','../python/postprocessing/analysis/keep_and_dropCount_out.txt','../python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt','../python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt','../python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt','../python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt','../python/postprocessing/data/json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt'] + C_files
   #config.JobType.inputFiles       = ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropBTag_out.txt']
    #hadd nano will not be needed once nano tools are in cmssw
   #config.JobType.outputFiles = ['hist.root'] #Enable for making BTag histograms using getBTagHist.py
@@ -99,12 +99,12 @@ if __name__ == '__main__':
  #  submitWrapper('MET', '2016', isData, isSignal, run, getDatasetinputs('MET', '2016', run))
  #  submitWrapper('SingleElectron', '2016', isData, isSignal, run, getDatasetinputs('SingleElectron', '2016', run))
  #  submitWrapper('SingleMuon', '2016', isData, isSignal, run, getDatasetinputs('SingleMuon', '2016', run))
- for run in runs2017:
-  submitWrapper('MET', 'UL2017', isData, isSignal, run, getDatasetinputs('MET', 'UL2017', run))
+ # for run in runs2017:
+  # submitWrapper('MET', 'UL2017', isData, isSignal, run, getDatasetinputs('MET', 'UL2017', run))
   # submitWrapper('SingleElectron', '2017', isData, isSignal, run, getDatasetinputs('SingleElectron', '2017', run))
   # submitWrapper('SingleMuon', '2017', isData, isSignal, run, getDatasetinputs('SingleMuon', '2017', run))
- # for run in runs2018:
- #  submitWrapper('MET', '2018', isData, isSignal, run, getDatasetinputs('MET', '2018', run))
+ for run in runs2018:
+  submitWrapper('MET', 'UL2018', isData, isSignal, run, getDatasetinputs('MET', 'UL2018', run))
  #  submitWrapper('SingleElectron', '2018', isData, isSignal, run, getDatasetinputs('SingleElectron', '2018', run))
  #  submitWrapper('SingleMuon', '2018', isData, isSignal, run, getDatasetinputs('SingleMuon', '2018', run))
  
@@ -112,7 +112,7 @@ if __name__ == '__main__':
  run = ''
  datasetnames = ['QCD']
  #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD']#,'WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
- years = ['UL2017']
+ years = ['UL2018']
  #years = ['2016','2017','2018']
  for year in years:
   for dataset in datasetnames:
