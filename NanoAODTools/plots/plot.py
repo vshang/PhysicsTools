@@ -9,25 +9,30 @@ import math
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/2018_QCDCR_debugging/RunII_plots/Jet_pt_ratio/'
-date = '09_26_2021'
-year = 2017
+saveDirectory = 'plots/2018_QCDCR_debugging/RunII_plots/METcorrected_pt/'
+date = '10_05_2021'
+year = 2018
 useUL = True
-useCondor = False
+useCondor = True
 applyHEMfix = True
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
-if useUL == True and year == 2017:
-    dataSamples = dataUL2017
-    MCSamples = samplesUL2017
-elif year == 2016:
+if year == 2016:
     dataSamples = data2016
     MCSamples = samples2016
 elif year == 2017:
-    dataSamples = data2017
-    MCSamples = samples2017
+    if useUL:
+        dataSamples = dataUL2017
+        MCSamples = samplesUL2017
+    else:
+        dataSamples = data2017
+        MCSamples = samples2017
 elif year == 2018:
-    dataSamples = data2018
-    MCSamples = samples2018
+    if useUL:
+        dataSamples = dataUL2018
+        MCSamples = samplesUL2018
+    else:
+        dataSamples = data2018
+        MCSamples = samples2018
 #Make sure save directory is available if not using Condor
 if not useCondor:
     if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
@@ -38,30 +43,38 @@ print 'Plotting start time:', datetime.datetime.now()
 #Define selection cuts and filters here
 cuts = {}
 
-if useUL and year == 2017:
-    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilter && Flag_eeBadScFilter'
-    cuts['singleIsoEle'] = 'passEle32WPTightGsf2017'
-    cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
-    cuts['singleIsoMu'] = 'HLT_IsoMu27' 
-    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
-elif year == 2016:
+if year == 2016:
     cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter'
     cuts['singleIsoEle'] = 'HLT_Ele27_WPTight_Gsf'
     cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon175'
     cuts['singleIsoMu'] = 'HLT_IsoMu24 || HLT_IsoTkMu24'
     cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight'
 elif year == 2017:
-    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'# && Flag_eeBadScFilter'
-    cuts['singleIsoEle'] = 'passEle32WPTightGsf2017'
-    cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
-    cuts['singleIsoMu'] = 'HLT_IsoMu27' 
-    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
+    if useUL:
+        cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilter && Flag_eeBadScFilter'
+        cuts['singleIsoEle'] = 'passEle32WPTightGsf2017'
+        cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
+        cuts['singleIsoMu'] = 'HLT_IsoMu27' 
+        cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
+    else:
+        cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'# && Flag_eeBadScFilter'
+        cuts['singleIsoEle'] = 'passEle32WPTightGsf2017'
+        cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
+        cuts['singleIsoMu'] = 'HLT_IsoMu27' 
+        cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
 elif year == 2018:
-    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'# && Flag_eeBadScFilter'
-    cuts['singleIsoEle'] = 'HLT_Ele32_WPTight_Gsf'
-    cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
-    cuts['singleIsoMu'] = 'HLT_IsoMu24' 
-    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
+    if useUL:
+        cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilter && Flag_eeBadScFilter'
+        cuts['singleIsoEle'] = 'passEle32WPTightGsf2017'
+        cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
+        cuts['singleIsoMu'] = 'HLT_IsoMu27' 
+        cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
+    else:
+        cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'# && Flag_eeBadScFilter'
+        cuts['singleIsoEle'] = 'HLT_Ele32_WPTight_Gsf'
+        cuts['singleEle'] = 'HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200'
+        cuts['singleIsoMu'] = 'HLT_IsoMu24' 
+        cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
 
 #Primary vertex cut definitions
 cuts['PV'] = 'PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,2)+pow(PV_y,2)) < 2'
@@ -236,10 +249,10 @@ cut = 'AH0lQR'
 #cuts[cut] = cuts[cut].replace(' && M_T2ll <= 80', '')
 #cuts[cut] = cuts[cut].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 160')
 #cuts['AH0lQR'] = cuts['AH0lQR'].replace('&& minDeltaPhi12 <= 0.8 ', '')
-cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets >= 1'# && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]'
+#cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets >= 1 && Jet_pt[index_forwardJets[0]] > Jet_pt[index_centralJets[0]]'
 
 
-#var = 'METcorrected_pt'
+var = 'METcorrected_pt'
 #var = 'recoilPtMiss'
 #var = 'METcorrected_phi'
 #var = 'M_T'
@@ -255,7 +268,7 @@ cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets >= 1'# && Jet_pt[index_forwardJets
 #var = 'Muon_pt[1]'
 #var = 'Jet_pt'
 #var = 'Jet_pt[index_centralJets[0]]'
-var = 'Jet_pt[index_centralJets[0]]/Jet_pt[index_forwardJets[0]]'
+#var = 'Jet_pt[index_centralJets[0]]/Jet_pt[index_forwardJets[0]]'
 #var = 'Jet_chEmEF[index_forwardJets[0]]'
 #var = 'Electron_eta[index_tightElectrons[0]]'
 #var = 'Muon_eta[1]'
@@ -305,11 +318,11 @@ print 'date = ', date
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 20
-xmin = 0
-xmax = 40
+nbins = 15
+xmin = 250
+xmax = 550
 auto_y = True
-doLogPlot = False
+doLogPlot = True
 drawData = True
 mediatorType = 'scalar'
 mchi = 1
@@ -330,7 +343,7 @@ if not auto_y:
     ymin = 60
     ymax = 20000
 
-#histoLabel = '; p_{T}^{miss} (GeV); Events'
+histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; Hadronic recoil (GeV); Events'
 #histoLabel = '; #phi^{miss}; Events'
 #histoLabel = '; M_{T} (GeV); Events'
@@ -340,7 +353,7 @@ if not auto_y:
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = '; forward jet_{2} #eta; Events'
 #histoLabel = '; central jet_{1} p_{T}; Events'
-histoLabel = '; central jet_{1} p_{T}/forward jet_{1} p_{T}; Events'
+#histoLabel = '; central jet_{1} p_{T}/forward jet_{1} p_{T}; Events'
 #histoLabel = '; forward jet_{1} charged Electromagnetic Energy Fraction; Events'
 #histoLabel = '; DeepAK8 top tag discriminant value; Events'
 #histoLabel = '; electron #eta; Events'
@@ -713,6 +726,7 @@ for process in MCSamples:
     for dataset in MCSamples[process]:
         nevents = 0
         for filepath in MCSamples[process][dataset]['filepaths']:
+            print 'MC filepath = ', filepath
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
             if (process in signal) and useCentralSamples and ('ttbar' in process):
@@ -1318,7 +1332,7 @@ if savePlots:
             suffix += '_withHEMfix'
         if useUL:
             nameYear = 'UL'+str(year)
-        c.SaveAs(saveDirectory + date + '/' + cut + nameYear + "_" + var.replace('/','over') + "_" + suffix + "_mixedv2.png")
+        c.SaveAs(saveDirectory + date + '/' + cut + nameYear + "_" + var.replace('/','over') + "_" + suffix + "_leadingfjet.png")
         #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
         #c.SaveAs(saveDirectory + cut + str(year) + "_" + var + "_" + date + "_withHEMfixv5_postHEM.png")
         #c.SaveAs("test.png")

@@ -91,7 +91,7 @@ if __name__ == '__main__':
  #####
  runs2016 = ['B','C','D','E','F','G','H']
  runs2017 = ['B','C','D','E','F']
- runs2018 = ['A','B','C','D']
+ runs2018 = ['A']#,'B','C','D']
  isData = True
  isSignal = False
  
@@ -110,14 +110,14 @@ if __name__ == '__main__':
  
  isData = False
  run = ''
- datasetnames = ['QCD']
+ datasetnames = ['QCDPt']
  #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD']#,'WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
- years = ['UL2018']
+ years = ['2018']
  #years = ['2016','2017','2018']
- for year in years:
-  for dataset in datasetnames:
-   if dataset == 'ttbarDM':
-    submitWrapper(dataset, year, isData, True, '', getDatasetinputs(dataset, year, run=''))
-   else:
-    submitWrapper(dataset, year, isData, isSignal, '', getDatasetinputs(dataset, year, run=''))
+ # for year in years:
+ #  for dataset in datasetnames:
+ #   if dataset == 'ttbarDM':
+ #    submitWrapper(dataset, year, isData, True, '', getDatasetinputs(dataset, year, run=''))
+ #   else:
+ #    submitWrapper(dataset, year, isData, isSignal, '', getDatasetinputs(dataset, year, run=''))
  

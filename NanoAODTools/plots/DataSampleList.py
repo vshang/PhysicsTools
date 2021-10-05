@@ -23,3 +23,8 @@ data2018 = {
 dataUL2017 = { 
     'MET' : { 'nevents' : 1, 'filepaths' : ['/hdfs/store/user/vshang/MET_RunUL2017B/MET/ModuleCommonSkim_09222021/tree_all.root','/hdfs/store/user/vshang/MET_RunUL2017C/MET/ModuleCommonSkim_09222021/tree_all.root','/hdfs/store/user/vshang/MET_RunUL2017D/MET/ModuleCommonSkim_09222021/tree_all.root','/hdfs/store/user/vshang/MET_RunUL2017E/MET/ModuleCommonSkim_09222021/tree_all.root','/hdfs/store/user/vshang/MET_RunUL2017F/MET/ModuleCommonSkim_09222021/tree_all.root'] },
     }
+
+#UL2018 Data samples
+data2018 = { 
+    'MET' : { 'nevents' : 1, 'filepaths' : ['/hdfs/store/user/vshang/MET_RunUL2018A/MET/ModuleCommonSkim_09222021/tree_all.root','/hdfs/store/user/vshang/MET_RunUL2018B/MET/ModuleCommonSkim_09222021/tree_all.root','/hdfs/store/user/vshang/MET_RunUL2018C/MET/ModuleCommonSkim_09222021/tree_all.root','/hdfs/store/user/vshang/MET_RunUL2018D/MET/ModuleCommonSkim_09222021/tree_all.root'] },
+    }

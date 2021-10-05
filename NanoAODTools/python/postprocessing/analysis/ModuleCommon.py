@@ -1922,7 +1922,7 @@ jetmetCorrectorUL2017DataE = createJMECorrector(isMC=False, dataYear='UL2017', r
 jetmetCorrectorUL2017DataF = createJMECorrector(isMC=False, dataYear='UL2017', runPeriod="F")
 
 jetmetCorrectorUL2018MC = createJMECorrector(isMC=True, dataYear='UL2018', jesUncert=jesSys)
-jetmetCorrectorUL2018DataB = createJMECorrector(isMC=False, dataYear='UL2018', runPeriod="A")
+jetmetCorrectorUL2018DataA = createJMECorrector(isMC=False, dataYear='UL2018', runPeriod="A")
 jetmetCorrectorUL2018DataB = createJMECorrector(isMC=False, dataYear='UL2018', runPeriod="B")
 jetmetCorrectorUL2018DataC = createJMECorrector(isMC=False, dataYear='UL2018', runPeriod="C")
 jetmetCorrectorUL2018DataD = createJMECorrector(isMC=False, dataYear='UL2018', runPeriod="D")
