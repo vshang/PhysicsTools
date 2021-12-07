@@ -9,14 +9,14 @@ import math
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-#saveDirectory = 'plots/2018_QCDCR_debugging/RunII_plots/fJet_pt/'
-saveDirectory = 'plots/SR_2018/METcorrected_pt/'
-date = '10_29_2021'
-year = 2018
+saveDirectory = 'plots/AN/QCDCR_Study/'
+#saveDirectory = 'plots/CR_2016/METcorrected_pt/'
+date = '11_17_2021'
+year = 2016
 useUL = False
 useCondor = False
 applyHEMfix = True
-partialUnblind = True
+partialUnblind = False
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
     dataSamples = data2016
@@ -210,7 +210,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
-cut = 'AH0l0fSR'
+#cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
 
@@ -254,18 +254,18 @@ cut = 'AH0l0fSR'
 #cut = 'SL1lWR'
 #cut = 'AH1lTR'
 #cut = 'AH1lWR'
-#cut = 'AH2lZR'
+cut = 'AH2lZR'
 #cut = 'AH0lQR'
 
 #cut = 'AH0l0fQR'
 #cut = 'AH0l1fQR'
 
-#cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets == 0'
+#cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets >= 1'
 #cuts[cut] = cuts[cut].replace(' && M_T2ll <= 80', '')
 #cuts[cut] = cuts[cut].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 160')
 #cuts['AH0lQR'] = cuts['AH0lQR'].replace('&& minDeltaPhi12 <= 0.8 ', '')
 
-# cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets >= 1 && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]'
+# cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets >= 1 && Jet_pt[index_forwardJets[0]] > Jet_pt[index_centralJets[0]]'
 # cuts['AH0l1fSR'] = cuts['AH0l1fSR'] + ' && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]'
 # cuts['AH0l2bSR'] = cuts['AH0l2bSR'] + ' && nfjets >= 1 && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]'
 
@@ -274,7 +274,7 @@ cut = 'AH0l0fSR'
 # cuts['AH0l2bSR'] = cuts['AH0l2bSR'] + ' && nfjets >= 1'# && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 
 
-var = 'METcorrected_pt'
+#var = 'METcorrected_pt'
 #var = 'recoilPtMiss'
 #var = 'METcorrected_phi'
 #var = 'M_T'
@@ -289,7 +289,7 @@ var = 'METcorrected_pt'
 #var = 'Electron_pt[1]'
 #var = 'Muon_pt[1]'
 #var = 'Jet_pt'
-#var = 'Jet_pt[index_forwardJets[0]]'
+var = 'Jet_pt[index_centralJets[0]]'
 #var = 'Jet_pt[index_centralJets[0]]/Jet_pt[index_forwardJets[0]]'
 #var = 'Jet_chEmEF[index_forwardJets[0]]'
 #var = 'min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi))'
@@ -349,11 +349,11 @@ if partialUnblind:
 print("Creating histograms..")
 
 #Set histogram options
-nbins = 15
-xmin = 250
-xmax = 550
+nbins = 30
+xmin = 0
+xmax = 900
 auto_y = True
-doLogPlot = True
+doLogPlot = False
 drawData = True
 mediatorType = 'scalar'
 mchi = 1
@@ -374,7 +374,7 @@ if not auto_y:
     ymin = 60
     ymax = 20000
 
-histoLabel = '; p_{T}^{miss} (GeV); Events'
+#histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; Hadronic recoil (GeV); Events'
 #histoLabel = '; #phi^{miss}; Events'
 #histoLabel = '; M_{T} (GeV); Events'
@@ -382,13 +382,13 @@ histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
 #histoLabel = '; M_{T}^{b} (GeV); Events'
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
-#histoLabel = '; forward jet_{2} #eta; Events'
-#histoLabel = '; forward jet_{1} p_{T}; Events'
+#histoLabel = '; forward jet_{1} #eta; Events'
+histoLabel = '; central jet_{1} p_{T}; Events'
 #histoLabel = '; central jet_{1} p_{T}/forward jet_{1} p_{T}; Events'
 #histoLabel = '; #Delta#phi(fjet_{1},p_{T}^{miss}); Events'
 #histoLabel = '; forward jet_{1} charged Electromagnetic Energy Fraction; Events'
 #histoLabel = '; DeepAK8 top tag discriminant value; Events'
-#histoLabel = '; electron #eta; Events'
+#histoLabel = '; leading electron #eta; Events'
 #histoLabel = '; number of forward jets; Events'
 
 #histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
@@ -821,7 +821,7 @@ for dataset in dataSamples:
             if 'MET_Run2017B' in filepath: #MET trigger paths also missing from Run2017B (https://hypernews.cern.ch/HyperNews/CMS/get/top-trigger/247/1.html)
                 datacut = datacut.replace(' || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60','')
                 print '   Using cut = ', datacut
-            #datacut = datacut + ' && run < 319077'
+            #datacut = datacut + ' && run >= 319077'
             if partialUnblind:
                 datacut = datacut + ' && (event%5 == 0)' 
             dataSamples[dataset][filepath+'_Events'].Draw(var+'>>hist',datacut)
@@ -1219,12 +1219,12 @@ if savePlots:
             title.DrawLatexNDC(title_x, title_y, "#bf{12.0 fb^{-1} (13 TeV)}")
         else:
             title.DrawLatexNDC(title_x, title_y, "#bf{59.8 fb^{-1} (13 TeV)}")
-        #title.DrawLatexNDC(title_x, title_y, "#bf{21.1 fb^{-1} (13 TeV)}") #preHEM
-        #title.DrawLatexNDC(title_x, title_y, "#bf{38.8 fb^{-1} (13 TeV)}") #postHEM
-        #title.DrawLatexNDC(title_x, title_y, "#bf{12.0 fb^{-1} (13 TeV)}") #1/5 partial unblind
-        #title.DrawLatexNDC(title_x, title_y, "#bf{4.2 fb^{-1} (13 TeV)}")   #1/5 partial unblind preHEM
-        #title.DrawLatexNDC(title_x, title_y, "#bf{7.8 fb^{-1} (13 TeV)}")  #1/5 partial unblind postHEM
-    #Set "CMS, work in progress" text
+            #title.DrawLatexNDC(title_x, title_y, "#bf{21.1 fb^{-1} (13 TeV)}") #preHEM
+            #title.DrawLatexNDC(title_x, title_y, "#bf{38.8 fb^{-1} (13 TeV)}") #postHEM
+            #title.DrawLatexNDC(title_x, title_y, "#bf{12.0 fb^{-1} (13 TeV)}") #1/5 partial unblind
+            #title.DrawLatexNDC(title_x, title_y, "#bf{4.2 fb^{-1} (13 TeV)}")   #1/5 partial unblind preHEM
+            #title.DrawLatexNDC(title_x, title_y, "#bf{7.8 fb^{-1} (13 TeV)}")  #1/5 partial unblind postHEM
+    #Set "CMS, Preliminary" text
     pt = TPaveText(0.18, 0.75, 0.35, 0.85, "NDC")
     if drawData:
         pt.SetTextSize(0.04)
@@ -1232,7 +1232,7 @@ if savePlots:
         pt.SetTextSize(0.03)
     pt.SetFillColor(0)
     pt.SetTextAlign(11)
-    pt.AddText('#splitline{CMS}{#bf{#it{work in progress}}}')
+    pt.AddText('#splitline{CMS}{#bf{#it{Preliminary}}}')
     pt.Draw('same')
     #Set MC background histogram options 
     hists['QCD'].SetFillColor(kGray+1)
@@ -1366,7 +1366,7 @@ if savePlots:
             nameYear = 'UL'+str(year)
         if partialUnblind:
             suffix += '_partialUnblind'
-        c.SaveAs(cut + nameYear + "_" + var.replace('/','over') + "_" + suffix + ".png")
+        c.SaveAs(cut + nameYear + "_" + var.replace('/','over') + "_" + suffix + ".pdf")
         #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
     else:
         suffix = date
@@ -1377,7 +1377,7 @@ if savePlots:
             nameYear = 'UL'+str(year)
         if partialUnblind:
             suffix += '_partialUnblind'
-        c.SaveAs(saveDirectory + date + '/' + cut + nameYear + "_" + var.replace('/','over') + "_" + suffix + ".png")
+        c.SaveAs(saveDirectory + date + '/' + cut + nameYear + "_" + var.replace('/','over') + "_" + suffix + ".pdf")
         #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
         #c.SaveAs(saveDirectory + cut + str(year) + "_" + var + "_" + date + "_withHEMfixv5_postHEM.png")
         #c.SaveAs("test.png")

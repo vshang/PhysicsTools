@@ -19,8 +19,8 @@ runLocal = False
 #runLocal = True
 
 #Set jesSys to "All" for split JES systematics and "Total" for combined JES systematics
-#jesSys = "All"
-jesSys = "Total"
+jesSys = "All"
+#jesSys = "Total"
 
 #Load shared object files that contains C++ code to calculate discriminating variables 
 if runLocal:
@@ -225,16 +225,16 @@ class CommonAnalysis(Module):
             self.out.branch("full_topnessResUp", "F")
             self.out.branch("full_topnessResDown", "F")
 
-            # if not self.isSignal:
+            if not self.isSignal:
                 #Systematics - PDF
-                # self.out.branch("pdfWeightUp", "F")
-                # self.out.branch("pdfWeightDown", "F")
+                self.out.branch("pdfWeightUp", "F")
+                self.out.branch("pdfWeightDown", "F")
 
                 #Systematics - QCD Renormalization and Factorization scales
-                # self.out.branch("qcdRenWeightUp", "F")
-                # self.out.branch("qcdRenWeightDown", "F")
-                # self.out.branch("qcdFacWeightUp", "F")
-                # self.out.branch("qcdFacWeightDown", "F")
+                self.out.branch("qcdRenWeightUp", "F")
+                self.out.branch("qcdRenWeightDown", "F")
+                self.out.branch("qcdFacWeightUp", "F")
+                self.out.branch("qcdFacWeightDown", "F")
 
             self.out.branch("leptonWeight", "F")
             #Systematics - lepton weights
@@ -1016,6 +1016,12 @@ to next event)"""
         if not signalRegion:
             return False
 
+        #Leading forward jet veto: veto any events where leading pT jet is in the forward region and is back-to-back with MET
+        if njets > 0 and nfjets > 0:
+            fjetMinDeltaPhi = min(abs(forwardJets[0].phi-METcorrected_phi),2*math.pi-abs(forwardJets[0].phi-METcorrected_phi))
+            if (forwardJets[0].pt > centralJets[0].pt) and (fjetMinDeltaPhi > 2.8):
+                return False
+
         #Systematics - JES, JER (jets)
         if self.isMC:
             if self.year == 2016:
@@ -1537,27 +1543,27 @@ to next event)"""
         #Only calculate scale factors if sample is MC
         if self.isMC:
 
-            # if not self.isSignal:
+            if not self.isSignal:
                 #Calculate PDF up/down systematics
-                # if event.nLHEPdfWeight > 0:
-                #     pdfWeights = [event.LHEPdfWeight[i] for i in range(event.nLHEPdfWeight)]
-                #     pdfMean = sum(pdfWeights)/event.nLHEPdfWeight
-                #     pdfSquareSum = sum(i*i for i in pdfWeights)
-                #     pdfRMS = math.sqrt(pdfSquareSum/event.nLHEPdfWeight - pdfMean*pdfMean)
-                #     pdfWeightUp = 1 + pdfRMS
-                #     pdfWeightDown = 1 - pdfRMS
-                # else:
-                #     pdfWeightUp = pdfWeightDown = -9
+                if event.nLHEPdfWeight > 0:
+                    pdfWeights = [event.LHEPdfWeight[i] for i in range(event.nLHEPdfWeight)]
+                    pdfMean = sum(pdfWeights)/event.nLHEPdfWeight
+                    pdfSquareSum = sum(i*i for i in pdfWeights)
+                    pdfRMS = math.sqrt(pdfSquareSum/event.nLHEPdfWeight - pdfMean*pdfMean)
+                    pdfWeightUp = 1 + pdfRMS
+                    pdfWeightDown = 1 - pdfRMS
+                else:
+                    pdfWeightUp = pdfWeightDown = -9
 
                 #Get QCD renormalization and factorization scale weight systematics (see [1] for more info)
                 #[1] https://hypernews.cern.ch/HyperNews/CMS/get/physTools/3663.html?inline=-1
-                # if event.nLHEScaleWeight > 0:
-                #     qcdRenWeightUp = event.LHEScaleWeight[7]
-                #     qcdRenWeightDown = event.LHEScaleWeight[1]
-                #     qcdFacWeightUp = event.LHEScaleWeight[5]
-                #     qcdFacWeightDown = event.LHEScaleWeight[3]
-                # else:
-                #     qcdRenWeightUp = qcdRenWeightDown = qcdFacWeightUp = qcdFacWeightDown = -9 
+                if event.nLHEScaleWeight > 0:
+                    qcdRenWeightUp = event.LHEScaleWeight[7]
+                    qcdRenWeightDown = event.LHEScaleWeight[1]
+                    qcdFacWeightUp = event.LHEScaleWeight[5]
+                    qcdFacWeightDown = event.LHEScaleWeight[3]
+                else:
+                    qcdRenWeightUp = qcdRenWeightDown = qcdFacWeightUp = qcdFacWeightDown = -9 
 
             #Calculate lepton scale factor and trigger weights
             leptonWeight = leptonWeightUp = leptonWeightDown = 1
@@ -1772,16 +1778,16 @@ to next event)"""
                 self.out.fillBranch("full_topnessResUp", full_topnessResUp)
                 self.out.fillBranch("full_topnessResDown", full_topnessResDown)
 
-                # if not self.isSignal:
+                if not self.isSignal:
                     #Systematics - PDF
-                    # self.out.fillBranch("pdfWeightUp", pdfWeightUp)
-                    # self.out.fillBranch("pdfWeightDown", pdfWeightDown)
+                    self.out.fillBranch("pdfWeightUp", pdfWeightUp)
+                    self.out.fillBranch("pdfWeightDown", pdfWeightDown)
 
                     #Systematics - QCD Renormalization and Factorization scales
-                    # self.out.fillBranch("qcdRenWeightUp", qcdRenWeightUp)
-                    # self.out.fillBranch("qcdRenWeightDown", qcdRenWeightDown)
-                    # self.out.fillBranch("qcdFacWeightUp", qcdFacWeightUp)
-                    # self.out.fillBranch("qcdFacWeightDown", qcdFacWeightDown)
+                    self.out.fillBranch("qcdRenWeightUp", qcdRenWeightUp)
+                    self.out.fillBranch("qcdRenWeightDown", qcdRenWeightDown)
+                    self.out.fillBranch("qcdFacWeightUp", qcdFacWeightUp)
+                    self.out.fillBranch("qcdFacWeightDown", qcdFacWeightDown)
 
                 self.out.fillBranch("leptonWeight", leptonWeight)
                 #Systematics - lepton weights
@@ -1945,19 +1951,19 @@ countEvents = lambda : CountEvents()
 #     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
 #     #inputFiles=["testSamples/nanoAODv7/ttbarDM_Run2016_v7.root"]
 #     #inputFiles=["testSamples/nanoAODv7/ttbarPlusJets_Run2016_v7.root"]
-#     #inputFiles=["testSamples/nanoAODv7/SingleElectron_2017C_v7.root"]
-#     inputFiles=["testSamples/nanoAODv8/QCDPt_15to30_RunUL2018_v8.root"]
+#     inputFiles=["testSamples/nanoAODv7/SingleElectron_2016C_v7.root"]
+#     #inputFiles=["testSamples/nanoAODv8/QCDPt_15to30_RunUL2018_v8.root"]
 #     #inputFiles=["testSamples/nanoAODv8/MET_UL2018C_v8.root"]
 #     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
-#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
 #     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 #     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt"
-#     jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrectorUL2018MC(),analyzeUL2018MC_Skim()],postfix="_ModuleCommon_UL2018MC_Skim",noOut=False,outputbranchsel=outputbranches)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon_2016MC_Skim",noOut=False,outputbranchsel=outputbranches)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_2016MC_ModuleCommonSkim_09072021",noOut=False,outputbranchsel=outputbranches)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrectorUL2018DataC(),analyzeUL2018Data_Skim()],postfix="_ModuleCommon_UL2018Data_Skim",noOut=False,outputbranchsel=outputbranches,jsonInput=jsonFile)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
 #     p.run()
