@@ -53,30 +53,23 @@ class getBTagHist(Module):
         #Tight/Veto electrons are defined and counted
         if self.year == 2016:
             vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased_Sum16 != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
-            tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased_Sum16 == 4, vetoElectrons)
+            tightElectrons = filter(lambda lep : lep.pt > 35 and abs(lep.eta) < 2.1 and lep.cutBased_Sum16 == 4, vetoElectrons)
         else:
             vetoElectrons = filter(lambda lep : lep.pt > 10 and lep.cutBased != 0 and (abs(lep.eta) < 1.4442 or 1.566 < abs(lep.eta) < 2.5), electrons)
-            tightElectrons = filter(lambda lep : lep.pt > 30 and abs(lep.eta) < 2.1 and lep.cutBased == 4, vetoElectrons)
-
-        nVetoElectrons = len(vetoElectrons)
-        nTightElectrons = len(tightElectrons)
+            tightElectrons = filter(lambda lep : lep.pt > 35 and abs(lep.eta) < 2.1 and lep.cutBased == 4, vetoElectrons)
         
         #Tight/Loose muons are defined and counted
         looseMuons = filter(lambda lep : lep.pt > 10 and lep.looseId and lep.pfRelIso04_all < 0.25 and abs(lep.eta) < 2.4, muons)
         tightMuons = filter(lambda lep : lep.pt > 30 and lep.tightId and lep.pfRelIso04_all < 0.15, looseMuons)
 
-        nLooseMuons = len(looseMuons)
-        nTightMuons = len(tightMuons)
-
         #Jets (including tau jets) are not considered if they are within Delta R < 0.4 of a loose/veto lepton
         def cleanJet(jet):
-            for vetoElectron in vetoElectrons:
-                if vetoElectron.p4().DeltaR(jet.p4()) < 0.4:
-                    return False
-            for looseMuon in looseMuons:
-                if looseMuon.p4().DeltaR(jet.p4()) < 0.4:
-                    return False
-            return True
+            dirtyElectrons = filter(lambda e : e.p4().DeltaR(jet.p4()) < 0.4, vetoElectrons)
+            dirtyMuons = filter(lambda m : m.p4().DeltaR(jet.p4()) < 0.4, looseMuons)
+            if len(dirtyElectrons) + len(dirtyMuons) > 0:
+                return False
+            else:
+                return True
 
         #Calculate and fill bjet efficiency histograms
         if self.year == 2016:
@@ -108,21 +101,21 @@ getBTagHist2018_DeepCSV = lambda : getBTagHist('DeepCSV','medium',2018,'ttbar')
 
 #########################################################################################################################################
 
-# #Select PostProcessor options here
-# preselection=None
-# #outputDir = "python/postprocessing/corrections/btag/ttbar2017/"
-# outputDir = "."
-# #inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root", "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root", "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
-# #inputFile1=["testSample.root"]
-# #inputFile1=["samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
-# inputFile2=["samples/tDM_tChan_Mchi1Mphi100_scalar_full.root"]
-# #inputFile3=["samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+#Select PostProcessor options here
+preselection=None
+#outputDir = "python/postprocessing/corrections/btag/ttbar2017/"
+outputDir = "."
+#inputFiles=["samples/ttbarDM_Mchi1Mphi100_scalar_full1.root", "samples/ttbarDM_Mchi1Mphi100_scalar_full2.root", "samples/tDM_tChan_Mchi1Mphi100_scalar_full.root", "samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
+inputFile1=["testSamples/nanoAODv8/QCDPt_15to30_RunUL2018_v8.root"]
+#inputFile1=["samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
+#inputFile2=["samples/tDM_tChan_Mchi1Mphi100_scalar_full.root"]
+#inputFile3=["samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]
 
-# #p=PostProcessor(".",inputFiles,cut=preselection,branchsel=None,modules=[testModule()],noOut=True,histFileName=outputDir+"ttbarDM_Mchi1Mphi100_scalar_full1_btagHists.root",histDirName="ttbar")
-# #p1=PostProcessor(outputDir,inputFile1,cut=preselection,branchsel=None,modules=[getBTagHist2016_DeepCSV()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="ttbarDM_Mchi1Mphi100_scalar_full2_btagHists.root",histDirName="ttbar")
-# p2=PostProcessor(outputDir,inputFile2,cut=preselection,branchsel=None,modules=[getBTagHist2016_DeepCSV()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="tDM_tChan_Mchi1MPhi100_scalar_full_btagHists.root",histDirName="ttbar")
-# #p3=PostProcessor(outputDir,inputFile3,cut=preselection,branchsel=None,modules=[getBTagHist2016_DeepCSV()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="tDM_tWChan_Mchi1MPhi100_scalar_full_btagHists.root",histDirName="ttbar")
-# #p.run()
-# #p1.run()
-# p2.run()
-# #p3.run()
+#p=PostProcessor(".",inputFiles,cut=preselection,branchsel=None,modules=[testModule()],noOut=True,histFileName=outputDir+"ttbarDM_Mchi1Mphi100_scalar_full1_btagHists.root",histDirName="ttbar")
+p1=PostProcessor(outputDir,inputFile1,cut=preselection,branchsel=None,modules=[getBTagHist2018_DeepCSV()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="hist.root",histDirName="ttbar")
+#p2=PostProcessor(outputDir,inputFile2,cut=preselection,branchsel=None,modules=[getBTagHist2016_DeepCSV()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="tDM_tChan_Mchi1MPhi100_scalar_full_btagHists.root",histDirName="ttbar")
+#p3=PostProcessor(outputDir,inputFile3,cut=preselection,branchsel=None,modules=[getBTagHist2016_DeepCSV()],noOut=False,outputbranchsel="python/postprocessing/analysis/keep_and_dropBTag_out.txt",histFileName="tDM_tWChan_Mchi1MPhi100_scalar_full_btagHists.root",histDirName="ttbar")
+#p.run()
+p1.run()
+#p2.run()
+#p3.run()
