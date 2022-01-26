@@ -2,12 +2,12 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- #task          = 'ModuleCommonSkim_11292021' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
- task          = 'getBTagHist_12222021'
+ task          = 'ModuleCommonSkim_01182021' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ #task          = 'getBTagHist_12222021'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
- getBTagHist = True
+ getBTagHist = False
 
  #####
  ##   Helper function to set appropriate text file containing DAS file paths for input datasets
@@ -50,7 +50,7 @@ if __name__ == '__main__':
   #hadd nano will not be needed once nano tools are in cmssw
   if getBTagHist:
    config.JobType.inputFiles       = [crab_script + '.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropBTag_out.txt']
-   config.JobType.outputFiles = ['hist.root'] #Enable for making BTag histograms using getBTagHist.py
+   #config.JobType.outputFiles = ['hist.root'] #Enable for making BTag histograms using getBTagHist.py
   config.JobType.sendPythonFolder = True
   config.JobType.allowUndistributedCMSSW = True
   #config.JobType.maxJobRuntimeMin = 2630
@@ -111,9 +111,11 @@ if __name__ == '__main__':
  
  isData = False
  run = ''
- datasetnames = ['WW','WZ','ZZ','TTV','QCD']
- #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD','WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
- years = ['UL2016']
+ #datasetnames = ['WW','WZ','ZZ','TTV','QCD']
+ datasetnames = ['TTV']
+ #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD']#,'WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
+ #years = ['UL2016']
+ years = ['2018']
  #years = ['2016','2017','2018']
  for year in years:
   for dataset in datasetnames:

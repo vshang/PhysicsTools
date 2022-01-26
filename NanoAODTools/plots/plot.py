@@ -11,10 +11,10 @@ gErrorIgnoreLevel = kError
 #Set save directory and date for file names
 saveDirectory = 'plots/AN/QCDCR_Study/'
 #saveDirectory = 'plots/CR_2016/METcorrected_pt/'
-date = '11_17_2021'
+date = '1_25_2022'
 year = 2016
 useUL = False
-useCondor = False
+useCondor = True
 applyHEMfix = True
 partialUnblind = False
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -254,8 +254,8 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL1lWR'
 #cut = 'AH1lTR'
 #cut = 'AH1lWR'
-cut = 'AH2lZR'
-#cut = 'AH0lQR'
+#cut = 'AH2lZR'
+cut = 'AH0lQR'
 
 #cut = 'AH0l0fQR'
 #cut = 'AH0l1fQR'
@@ -269,7 +269,7 @@ cut = 'AH2lZR'
 # cuts['AH0l1fSR'] = cuts['AH0l1fSR'] + ' && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]'
 # cuts['AH0l2bSR'] = cuts['AH0l2bSR'] + ' && nfjets >= 1 && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]'
 
-# cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets >= 1 && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
+cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets >= 1 && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 # cuts['AH0l1fSR'] = cuts['AH0l1fSR'] + ' && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 # cuts['AH0l2bSR'] = cuts['AH0l2bSR'] + ' && nfjets >= 1'# && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 
@@ -757,11 +757,12 @@ print("Loading MC sample root files and event trees...")
 for process in MCSamples:
     for dataset in MCSamples[process]:
         nevents = 0
+        print '    ----Loading', dataset
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
             if (process in signal) and useCentralSamples and ('ttbar' in process):
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_09072021', 'countEvents_03182021'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_112920215', 'countEvents_03182021'),'')
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
                 MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -1366,7 +1367,7 @@ if savePlots:
             nameYear = 'UL'+str(year)
         if partialUnblind:
             suffix += '_partialUnblind'
-        c.SaveAs(cut + nameYear + "_" + var.replace('/','over') + "_" + suffix + ".pdf")
+        c.SaveAs(cut + nameYear + "_" + var.replace('/','over') + "_" + suffix + "_noB2Bleadingfjet_QCDHt.png")
         #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
     else:
         suffix = date
