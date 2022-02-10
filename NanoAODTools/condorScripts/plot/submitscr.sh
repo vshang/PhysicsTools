@@ -5,7 +5,7 @@
 # Create the name of the rundir
 while :
 do
-    RUNDIR="SL1l1fT1SR2016v2"
+    RUNDIR="SL1l0fSR2016v1"
     if [ ! -d "${RUNDIR}" ]; then 
 	echo "using ${RUNDIR}"
 	break
@@ -23,7 +23,7 @@ output = ${RUNDIR}/runplot.stdoutD
 error = ${RUNDIR}/runplot.stderr
 log = ${RUNDIR}/runplot.condor_log
 requirements = HAS_CMS_HDFS
-requestdisk = 50G
+requestdisk = 20G
 requestmemory = 16G
 transfer_input_files = /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/plots/plot.py,/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/plots/MCsampleList.py,/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/plots/DataSampleList.py,/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/plots/utils.py
 use_x509userproxy = True

@@ -7,6 +7,18 @@ import datetime
 import re
 import math
 
+import optparse
+usage = 'usage: %prog [options]'
+parser = optparse.OptionParser(usage)
+parser.add_option('-c', '--cutName', action='store', type='string', default='', dest='cutName')
+parser.add_option('-f', '--sysFirstHalf', action='store_true', default=False, dest='sysFirstHalf')
+parser.add_option('-s', '--sysSecondHalf', action='store_true', default=False, dest='sysSecondHalf')
+(options, args) = parser.parse_args()
+
+condor_cut = options.cutName
+condor_sysFirstHalf = options.sysFirstHalf
+condor_sysSecondHalf = options.sysSecondHalf
+
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
 #saveDirectory = 'plots/AN/QCDCR_Study/'
@@ -208,14 +220,14 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
-cut = 'AH0l0fSR'
+#cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
 
 #cut = 'AH0l0f2bSR'
 #cut = 'AH0l1f2bSR'
 
-#cut = 'SL1l0fSR'
+cut = 'SL1l0fSR'
 #cut = 'SL1l1fSR'
 #cut = 'SL1l2bSR'
 
@@ -271,7 +283,6 @@ cut = 'AH0l0fSR'
 # cuts['AH0l1fSR'] = cuts['AH0l1fSR'] + ' && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 # cuts['AH0l2bSR'] = cuts['AH0l2bSR'] + ' && nfjets >= 1'# && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 
-
 var = 'METcorrected_pt'
 #var = 'recoilPtMiss'
 #var = 'METcorrected_phi'
@@ -306,6 +317,12 @@ var = 'METcorrected_pt'
 #var = 'FatJet_pt[2]'
 #var = 'modified_topness'
 #var = 'full_topness'
+
+#If using Condor, use command line option instead
+if useCondor:
+    cut = condor_cut
+    if (cut== 'AH2lZR') or (cut == 'AH2eZR') or (cut == 'AH2mZR'):
+        var = 'recoilPtMiss'
 
 #Set lumi (fb^-1) and overall signal sample scale factor here
 if year == 2016:
@@ -344,12 +361,12 @@ if applyHEMfix:
     print 'applying HEM fix for 2018...'
 if partialUnblind:
     print 'partially unblinding 1/5 data...'
-print("Creating histograms..")
+print('Creating histograms..')
 
 #Set histogram options
-nbins = 15
+nbins = 9
 xmin = 250
-xmax = 550
+xmax = 610
 auto_y = True
 doLogPlot = False
 drawData = True
@@ -359,8 +376,6 @@ mphi = 100
 normalizePlots = False
 useCentralSamples = True
 doBinned = True
-doBinnedFirstHalf = True
-doBinnedSecondHalf = False
 savePlots = False
 combineEleMu = True
 doSys = True
@@ -368,6 +383,18 @@ doSysFirstHalf = True
 doSysSecondHalf = False
 drawOverflow = True
 drawUnderflow = False
+#If using Condor, use command line option instead
+if useCondor:
+    doSysFirstHalf = condor_sysFirstHalf
+    doSysSecondHalf = condor_sysSecondHalf
+    if 'SL' in condor_cut:
+        nbins = 9
+        xmin = 250
+        xmax = 610
+    elif 'AH' in condor_cut:
+        nbins = 15
+        xmin = 250
+        xmax = 550
 if doSysFirstHalf or doSysSecondHalf:
     doSys = True
 if doBinned:
@@ -394,6 +421,10 @@ histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; DeepAK8 top tag discriminant value; Events'
 #histoLabel = '; leading electron #eta; Events'
 #histoLabel = '; number of forward jets; Events'
+
+if useCondor:
+    if (cut== 'AH2lZR') or (cut == 'AH2eZR') or (cut == 'AH2mZR'):
+        histoLabel = '; Hadronic recoil (GeV); Events'
 
 #histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
@@ -429,6 +460,28 @@ if drawData:
     ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Data / Bkg')
     histoLabel = re.sub(';.*;', '; ;', histoLabel)
 
+#Print histogram options
+print 'Histogram options: '
+print '    nbins = ', nbins
+print '    xmin = ', xmin
+print '    xmax = ', xmax
+print '    auto_y = ', str(auto_y)
+print '    doLogPlot = ', str(doLogPlot)
+print '    drawData = ', str(drawData)
+print '    mediatorType = ', mediatorType
+print '    mchi = ', str(mchi)
+print '    mphi = ', str(mphi)
+print '    normalizePlots = ', str(normalizePlots)
+print '    useCentralSamples = ', str(useCentralSamples)
+print '    doBinned = ', str(doBinned)
+print '    savePlots = ', str(savePlots)
+print '    combineEleMu = ', str(combineEleMu)
+print '    doSys = ', str(doSys)
+print '    doSysFirstHalf = ', str(doSysFirstHalf)
+print '    doSysSecondHalf = ', str(doSysSecondHalf)
+print '    drawOverflow = ', str(drawOverflow)
+print '    drawUnderflow = ', str(drawUnderflow)
+
 #Remove stats box from histograms
 gStyle.SetOptStat(0)
 
@@ -450,7 +503,7 @@ if doSysFirstHalf:
     sys = ['CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF','CMS_HF_V','CMS_eff_b', 'CMS_scale_pu', 'CMS_eff_met_trigger', 'CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e', 'pdf_accept_2l','pdf_accept_1l','pdf_accept_0l','CMS_eff_e', 'CMS_eff_m','CMS_eff_e_old', 'CMS_eff_m_old','CMS_HF_Z','CMS_HF_W','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_ZewkWeight','QCDscale_ren', 'QCDscale_fac', 'QCDscale_ren_TT', 'QCDscale_fac_TT', 'QCDscale_ren_VV', 'QCDscale_fac_VV', 'QCDscale_ren_O', 'QCDscale_fac_O','preFire']
 else:
     sys = []
-jesUnc = ["","AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeBal", "RelativeSample", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "SinglePionECAL", "SinglePionHCAL", "TimePtEta"]
+jesUnc = ['','AbsoluteMPFBias', 'AbsoluteScale', 'AbsoluteStat', 'FlavorQCD', 'Fragmentation', 'PileUpDataMC', 'PileUpPtBB', 'PileUpPtEC1', 'PileUpPtEC2', 'PileUpPtHF', 'PileUpPtRef', 'RelativeFSR', 'RelativeJEREC1', 'RelativeJEREC2', 'RelativeJERHF', 'RelativePtBB', 'RelativePtEC1', 'RelativePtEC2', 'RelativePtHF', 'RelativeBal', 'RelativeSample', 'RelativeStatEC', 'RelativeStatFSR', 'RelativeStatHF', 'SinglePionECAL', 'SinglePionHCAL', 'TimePtEta']
 if doSysSecondHalf:
     for unc in jesUnc:
         sys.append('CMS_scale'+unc+'_j')
@@ -586,9 +639,14 @@ def addSys(histName, eventTree, var, cut, sysName):
         cutDown = cut
 
     elif sysName == 'CMS_pdf':
-        if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
-            cutUp = cut + '*pdfWeightUp'
-            cutDown = cut + '*pdfWeightDown'
+        if year == 2016:
+            if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName): 
+                cutUp = cut + '*pdfWeightUp'
+                cutDown = cut + '*pdfWeightDown'
+        elif (year == 2017) or (year == 2018):
+            if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName)  and ('QCD' not in histName): 
+                cutUp = cut + '*pdfWeightUp'
+                cutDown = cut + '*pdfWeightDown'
 
     elif sysName == 'CMS_HF':
         if ('WPlusJets' in histName) or ('ZTo2L' in histName) or ('ZTo2Nu' in histName):
@@ -666,34 +724,64 @@ def addSys(histName, eventTree, var, cut, sysName):
             cutDown = cutDown + '*0.986'
     
     elif ('QCDscale' in sysName) and ('ren' in sysName):
-        if ('TT' in sysName) and ('TT' in histName):
-            cutUp = cut + '*qcdRenWeightUp'
-            cutDown = cut + '*qcdRenWeightDown'
-        elif ('VV' in sysName) and ('VV' in histName):
-            cutUp = cut + '*qcdRenWeightUp'
-            cutDown = cut + '*qcdRenWeightDown'
-        elif ('O' in sysName) and (('QCD' in histName) or ('singleTop' in histName)):
-            cutUp = cut + '*qcdRenWeightUp'
-            cutDown = cut + '*qcdRenWeightDown'
-        elif sysName == 'QCDscale_ren':
-            if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
+        if year == 2016:
+            if ('TT' in sysName) and ('TT' in histName):
                 cutUp = cut + '*qcdRenWeightUp'
                 cutDown = cut + '*qcdRenWeightDown'
+            elif ('VV' in sysName) and ('VV' in histName):
+                cutUp = cut + '*qcdRenWeightUp'
+                cutDown = cut + '*qcdRenWeightDown'
+            elif ('O' in sysName) and (('QCD' in histName) or ('singleTop' in histName)):
+                cutUp = cut + '*qcdRenWeightUp'
+                cutDown = cut + '*qcdRenWeightDown'
+            elif sysName == 'QCDscale_ren':
+                if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
+                    cutUp = cut + '*qcdRenWeightUp'
+                    cutDown = cut + '*qcdRenWeightDown'
+        elif (year == 2017) or (year == 2018):
+            if ('TT' in sysName) and ('TT' in histName):
+                cutUp = cut + '*qcdRenWeightUp'
+                cutDown = cut + '*qcdRenWeightDown'
+            elif ('VV' in sysName) and ('VV' in histName):
+                cutUp = cut + '*qcdRenWeightUp'
+                cutDown = cut + '*qcdRenWeightDown'
+            elif ('O' in sysName) and ('singleTop' in histName):
+                cutUp = cut + '*qcdRenWeightUp'
+                cutDown = cut + '*qcdRenWeightDown'
+            elif sysName == 'QCDscale_ren':
+                if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName) and ('QCD' not in histName):
+                    cutUp = cut + '*qcdRenWeightUp'
+                    cutDown = cut + '*qcdRenWeightDown'
 
     elif ('QCDscale' in sysName) and ('fac' in sysName):
-        if ('TT' in sysName) and ('TT' in histName):
-            cutUp = cut + '*qcdFacWeightUp'
-            cutDown = cut + '*qcdFacWeightDown'
-        elif ('VV' in sysName) and ('VV' in histName):
-            cutUp = cut + '*qcdFacWeightUp'
-            cutDown = cut + '*qcdFacWeightDown'
-        elif ('O' in sysName) and (('QCD' in histName) or ('singleTop' in histName)):
-            cutUp = cut + '*qcdFacWeightUp'
-            cutDown = cut + '*qcdFacWeightDown'
-        elif sysName == 'QCDscale_fac':
-            if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
+        if year == 2016:
+            if ('TT' in sysName) and ('TT' in histName):
                 cutUp = cut + '*qcdFacWeightUp'
                 cutDown = cut + '*qcdFacWeightDown'
+            elif ('VV' in sysName) and ('VV' in histName):
+                cutUp = cut + '*qcdFacWeightUp'
+                cutDown = cut + '*qcdFacWeightDown'
+            elif ('O' in sysName) and (('QCD' in histName) or ('singleTop' in histName)):
+                cutUp = cut + '*qcdFacWeightUp'
+                cutDown = cut + '*qcdFacWeightDown'
+            elif sysName == 'QCDscale_fac':
+                if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
+                    cutUp = cut + '*qcdFacWeightUp'
+                    cutDown = cut + '*qcdFacWeightDown'
+        elif (year == 2017) or (year == 2018):
+            if ('TT' in sysName) and ('TT' in histName):
+                cutUp = cut + '*qcdFacWeightUp'
+                cutDown = cut + '*qcdFacWeightDown'
+            elif ('VV' in sysName) and ('VV' in histName):
+                cutUp = cut + '*qcdFacWeightUp'
+                cutDown = cut + '*qcdFacWeightDown'
+            elif ('O' in sysName) and ('singleTop' in histName):
+                cutUp = cut + '*qcdFacWeightUp'
+                cutDown = cut + '*qcdFacWeightDown'
+            elif sysName == 'QCDscale_fac':
+                if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName) and ('QCD' not in histName):
+                    cutUp = cut + '*qcdFacWeightUp'
+                    cutDown = cut + '*qcdFacWeightDown'
 
     elif sys == 'pdf_accept_2l':
         if ('2e' in cut) or ('2m' in cut) or ('2l' in cut):
@@ -729,7 +817,7 @@ def addSys(histName, eventTree, var, cut, sysName):
 #Select dataset to use based on cut
 datasetNames = []
 if drawData:
-    print("Drawing data and ratio plot...")
+    print('Drawing data and ratio plot...')
     if combineEleMu:
         if ('1l' in cut) or ('2l' in cut) or (cut == 'SL'):
             datasetNames.append('SingleMuon')
@@ -741,16 +829,16 @@ if drawData:
     else:
         if 'm' in cut:
             datasetNames.append('SingleMuon')
-            print("Selected SingleMuon dataset")
+            print('Selected SingleMuon dataset')
         elif 'e' in cut:
             datasetNames.append('SingleElectron')
-            print("Selected SingleElectron dataset")
+            print('Selected SingleElectron dataset')
         else:
             datasetNames.append('MET')
-            print("Selected MET dataset")
+            print('Selected MET dataset')
 
 #Get data root files and event trees
-print("Loading data sample root files and event trees...")
+print('Loading data sample root files and event trees...')
 for dataset in dataSamples:
     if dataset in datasetNames:
         nevents = 0
@@ -763,10 +851,10 @@ for dataset in dataSamples:
             print '    nevents in filepath = ' + filepath + ': ' + str(dataset_nevents)
         dataSamples[dataset]['nevents'] = nevents
         print '    total nevents in ', dataset, ': ', nevents
-print("Got data sample root files and event trees")
+print('Got data sample root files and event trees')
 
 #Get MC background root files and event trees
-print("Loading MC sample root files and event trees...")
+print('Loading MC sample root files and event trees...')
 for process in MCSamples:
     for dataset in MCSamples[process]:
         nevents = 0
@@ -792,7 +880,7 @@ for process in MCSamples:
                     nevents += runsTree.genEventCount
         MCSamples[process][dataset]['nevents'] = nevents
         print '    nevents in ', process, ' ', dataset, ': ', nevents
-print("Got MC sample root files and event trees")
+print('Got MC sample root files and event trees')
 
 # #Uncomment this section for quickly testing plot settings
 # counter = 1.
@@ -806,7 +894,7 @@ print("Got MC sample root files and event trees")
 #     hists['data'].SetBinError(i,300)
 
 #Fill histograms
-print("Filling histograms...")
+print('Filling histograms...')
 #Loop through each root file for each dataset
 for dataset in dataSamples:
     if dataset in datasetNames:
@@ -991,7 +1079,7 @@ for name in hists:
     print name + ' hist info:'
     print '    nEvents = ', hists[name].GetEntries()
     print '    integral = ', hists[name].Integral(1,nbins+1)
-print("Finished filling histograms")
+print('Finished filling histograms')
 
 #Add overflow and underflow bins to histograms
 for name in hists:
@@ -1001,15 +1089,15 @@ for name in hists:
         hists[name].SetBinContent(1, hists[name].GetBinContent(0) + hists[name].GetBinContent(1))
 
 #Add up MC background histos into stacked histogram
-print("Creating stacked MC background histogram...")
+print('Creating stacked MC background histogram...')
 h_MCStack = THStack('h_MCbackground', histoLabel)
 for name in back:
     h_MCStack.Add(hists[name])
-print("Finished stacking MC background histograms.")
+print('Finished stacking MC background histograms.')
 
 #Create binned histogram root files if doBinned == True
 if doBinned:
-    print("Creating binned histogram root files...")
+    print('Creating binned histogram root files...')
     savePrefix = saveDirectory + date + '/' + str(year) + '/'
     stepSize = (xmax-xmin)/nbins
     for i in range(1,nbins+1):
@@ -1021,7 +1109,7 @@ if doBinned:
         if doSysFirstHalf:
             binnedRootFile = TFile(cut+'bin_'+str(leftbin)+'_'+str(rightbin)+'v1.root', 'RECREATE')
         elif doSysSecondHalf:
-            binnedRootFile = TFile(cut+'bin_'+str(leftbin)+'_'+str(rightbin)+'v1.root', 'RECREATE')
+            binnedRootFile = TFile(cut+'bin_'+str(leftbin)+'_'+str(rightbin)+'v2.root', 'RECREATE')
         else:
             binnedRootFile = TFile(cut+'bin_'+str(leftbin)+'_'+str(rightbin)+'.root', 'RECREATE')
         if doSysFirstHalf:
@@ -1177,7 +1265,7 @@ if doBinned:
                         binnedHist.SetBinError(1, binError)
                         binnedHist.Write()
                         print '    tttDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin content: ' + str(binContent) + ', tttDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin error: ' + str(binError)
-    print("Finished creating binned histogram root files...")
+    print('Finished creating binned histogram root files...')
 
 #Normalize plots to area 1 if normalizePlots == True
 if normalizePlots:
@@ -1188,11 +1276,11 @@ if normalizePlots:
     if drawData:
         hists['data'].Scale(1./hists['data'].Integral())
     hists['bkgSum'].Scale(1./hists['bkgSum'].Integral())
-    print("Normalized plots")
+    print('Normalized plots')
         
 #Draw histograms and save if savePlots == True
 if savePlots:
-    print("Drawing histograms...")
+    print('Drawing histograms...')
     c = TCanvas('c', 'c', 800, 800)
     if drawData:
         c.Divide(1,2)
@@ -1226,26 +1314,26 @@ if savePlots:
         title_y = .91
     if year == 2016:
         if partialUnblind:
-            title.DrawLatexNDC(title_x, title_y, "#bf{7.2 fb^{-1} (13 TeV)}")
+            title.DrawLatexNDC(title_x, title_y, '#bf{7.2 fb^{-1} (13 TeV)}')
         else:
-            title.DrawLatexNDC(title_x, title_y, "#bf{35.9 fb^{-1} (13 TeV)}")
+            title.DrawLatexNDC(title_x, title_y, '#bf{35.9 fb^{-1} (13 TeV)}')
     elif year == 2017:
         if partialUnblind:
-            title.DrawLatexNDC(title_x, title_y, "#bf{8.3 fb^{-1} (13 TeV)}")
+            title.DrawLatexNDC(title_x, title_y, '#bf{8.3 fb^{-1} (13 TeV)}')
         else:
-            title.DrawLatexNDC(title_x, title_y, "#bf{41.5 fb^{-1} (13 TeV)}")
+            title.DrawLatexNDC(title_x, title_y, '#bf{41.5 fb^{-1} (13 TeV)}')
     elif year == 2018:
         if partialUnblind:
-            title.DrawLatexNDC(title_x, title_y, "#bf{12.0 fb^{-1} (13 TeV)}")
+            title.DrawLatexNDC(title_x, title_y, '#bf{12.0 fb^{-1} (13 TeV)}')
         else:
-            title.DrawLatexNDC(title_x, title_y, "#bf{59.8 fb^{-1} (13 TeV)}")
-            #title.DrawLatexNDC(title_x, title_y, "#bf{21.1 fb^{-1} (13 TeV)}") #preHEM
-            #title.DrawLatexNDC(title_x, title_y, "#bf{38.8 fb^{-1} (13 TeV)}") #postHEM
-            #title.DrawLatexNDC(title_x, title_y, "#bf{12.0 fb^{-1} (13 TeV)}") #1/5 partial unblind
-            #title.DrawLatexNDC(title_x, title_y, "#bf{4.2 fb^{-1} (13 TeV)}")   #1/5 partial unblind preHEM
-            #title.DrawLatexNDC(title_x, title_y, "#bf{7.8 fb^{-1} (13 TeV)}")  #1/5 partial unblind postHEM
-    #Set "CMS, Preliminary" text
-    pt = TPaveText(0.18, 0.75, 0.35, 0.85, "NDC")
+            title.DrawLatexNDC(title_x, title_y, '#bf{59.8 fb^{-1} (13 TeV)}')
+            #title.DrawLatexNDC(title_x, title_y, '#bf{21.1 fb^{-1} (13 TeV)}') #preHEM
+            #title.DrawLatexNDC(title_x, title_y, '#bf{38.8 fb^{-1} (13 TeV)}') #postHEM
+            #title.DrawLatexNDC(title_x, title_y, '#bf{12.0 fb^{-1} (13 TeV)}') #1/5 partial unblind
+            #title.DrawLatexNDC(title_x, title_y, '#bf{4.2 fb^{-1} (13 TeV)}')   #1/5 partial unblind preHEM
+            #title.DrawLatexNDC(title_x, title_y, '#bf{7.8 fb^{-1} (13 TeV)}')  #1/5 partial unblind postHEM
+    #Set 'CMS, Preliminary' text
+    pt = TPaveText(0.18, 0.75, 0.35, 0.85, 'NDC')
     if drawData:
         pt.SetTextSize(0.04)
     else:
@@ -1346,11 +1434,11 @@ if savePlots:
     legend.Draw('same')
     legend.SetBorderSize(0)
     legend.SetFillStyle(0)
-    print("Finished drawing histograms")
+    print('Finished drawing histograms')
 
 #Create and draw ratio plot histogram if drawData == True and savePlots == True
 if drawData and savePlots:
-    print("Drawing ratio plot...")
+    print('Drawing ratio plot...')
     c.cd(2)
     h_ratio = TH1F('h_ratio', ratioLabel, nbins, xmin, xmax)
     setHistStyle(h_ratio) #Set settings for ratio histogram title/labels
@@ -1373,7 +1461,7 @@ if drawData and savePlots:
     h_ratio.SetMarkerStyle(20)
     h_ratio.SetMarkerSize(1.25)
     h_ratio.SetLineColor(1)
-    print("Finished drawing ratio plot")
+    print('Finished drawing ratio plot')
         
 #Save histogram if savePlots == True
 if savePlots:
@@ -1386,8 +1474,8 @@ if savePlots:
             nameYear = 'UL'+str(year)
         if partialUnblind:
             suffix += '_partialUnblind'
-        c.SaveAs(cut + nameYear + "_" + var.replace('/','over') + "_" + suffix + ".png")
-        #c.SaveAs(cut + str(year) + "_" + var + "_" + date + ".root")
+        c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
+        #c.SaveAs(cut + str(year) + '_' + var + '_' + date + '.root')
     else:
         suffix = date
         nameYear = str(year)
@@ -1397,9 +1485,9 @@ if savePlots:
             nameYear = 'UL'+str(year)
         if partialUnblind:
             suffix += '_partialUnblind'
-        c.SaveAs(saveDirectory + date + '/' + cut + nameYear + "_" + var.replace('/','over') + "_" + suffix + ".pdf")
-        #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + "_" + var + "_" + date + ".png")
-        #c.SaveAs(saveDirectory + cut + str(year) + "_" + var + "_" + date + "_withHEMfixv5_postHEM.png")
-        #c.SaveAs("test.png")
+        c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.pdf')
+        #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
+        #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
+        #c.SaveAs('test.png')
 
 print 'Plotting end time:', datetime.datetime.now()
