@@ -22,10 +22,10 @@ condor_sysSecondHalf = options.sysSecondHalf
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/systematics/'
+saveDirectory = 'plots/systematics/CMS_res_j/'
 #saveDirectory = 'plots/CR_2016/METcorrected_pt/'
-date = '02_17_2022'
-year = 2016
+date = '02_22_2022'
+year = 2018
 useUL = False
 useCondor = True
 applyHEMfix = True
@@ -322,7 +322,7 @@ var = 'METcorrected_pt'
 #If using Condor, use command line option instead
 if useCondor:
     cut = condor_cut
-    if (cut== 'AH2lZR') or (cut == 'AH2eZR') or (cut == 'AH2mZR'):
+    if (cut == 'AH2lZR') or (cut == 'AH2eZR') or (cut == 'AH2mZR'):
         var = 'recoilPtMiss'
 
 #Set lumi (fb^-1) and overall signal sample scale factor here
@@ -365,9 +365,9 @@ if partialUnblind:
 print('Creating histograms..')
 
 #Set histogram options
-nbins = 9
+nbins = 7
 xmin = 250
-xmax = 610
+xmax = 530
 auto_y = True
 doLogPlot = False
 drawData = True
@@ -385,15 +385,16 @@ doSysSecondHalf = False
 drawOverflow = True
 drawUnderflow = False
 plotSys = False
+plotSysVar = 'CMS_res_j'
 
 #If using Condor, use command line option instead
 if useCondor:
     doSysFirstHalf = condor_sysFirstHalf
     doSysSecondHalf = condor_sysSecondHalf
     if 'SL' in condor_cut:
-        nbins = 9
+        nbins = 7
         xmin = 250
-        xmax = 610
+        xmax = 530
     elif 'AH' in condor_cut:
         nbins = 15
         xmin = 250
@@ -428,6 +429,8 @@ histoLabel = '; p_{T}^{miss} (GeV); Events'
 if useCondor:
     if (cut== 'AH2lZR') or (cut == 'AH2eZR') or (cut == 'AH2mZR'):
         histoLabel = '; Hadronic recoil (GeV); Events'
+    else:
+        histoLabel = '; p_{T}^{miss} (GeV); Events'
 
 #histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
@@ -461,6 +464,9 @@ if useCondor:
 
 if drawData:
     ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Data / Bkg')
+    histoLabel = re.sub(';.*;', '; ;', histoLabel)
+if plotSys:
+    ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Var / Bkg')
     histoLabel = re.sub(';.*;', '; ;', histoLabel)
 
 #Print histogram options
@@ -834,19 +840,27 @@ def addSysPlot(process, eventTree, var, cut):
     varSysUp = varSysDown = var
 
     #Substitute systematic up/down variations into cut
-    for sysName in ['CMS_res_j']:
-        cutUp_temp = addSys(process, eventTree, var, cut, sysName, addHist=False)[0]
-        cutDown_temp = addSys(process, eventTree, var, cut, sysName, addHist=False)[1]
-        cutUpPlot = cutUp_temp
-        cutDownPlot = cutDown_temp
+    cutUp_temp = addSys(process, eventTree, var, cut, plotSysVar, addHist=False)[0]
+    cutDown_temp = addSys(process, eventTree, var, cut, plotSysVar, addHist=False)[1]
+    cutUpPlot = cutUp_temp
+    cutDownPlot = cutDown_temp
 
     #Check to see if var needs to be modified for up/down variation
-    if var == 'METcorrected_pt':
-        varSysUp = var.replace('METcorrected_pt','METcorrected_ptResUp')
-        varSysDown = var.replace('METcorrected_pt','METcorrected_ptResDown')
-    elif var == 'recoilPtMiss':
-        varSysUp = var.replace('recoilPtMiss','recoilPtMissResUp')
-        varSysDown = var.replace('recoilPtMiss','recoilPtMissResDown')
+    if 'CMS_scale' in plotSysVar and plotSysVar != 'CMS_scale_pu':
+        unc = plotSysVar.replace('CMS_scale','').replace('_j','')
+        if var == 'METcorrected_pt':
+            varSysUp = var.replace('METcorrected_pt','METcorrected_ptScale'+unc+'Up')
+            varSysDown = var.replace('METcorrected_pt','METcorrected_ptScale'+unc+'Down')
+        elif var == 'recoilPtMiss':
+            varSysUp = var.replace('recoilPtMiss','recoilPtMissScale'+unc+'Up')
+            varSysDown = var.replace('recoilPtMiss','recoilPtMissScale'+unc+'Down')
+    if plotSysVar == 'CMS_res_j':
+        if var == 'METcorrected_pt':
+            varSysUp = var.replace('METcorrected_pt','METcorrected_ptResUp')
+            varSysDown = var.replace('METcorrected_pt','METcorrected_ptResDown')
+        elif var == 'recoilPtMiss':
+            varSysUp = var.replace('recoilPtMiss','recoilPtMissResUp')
+            varSysDown = var.replace('recoilPtMiss','recoilPtMissResDown')
     #print '          varSysUp = ', varSysUp
     #print '          varSysDown = ', varSyDown
 
@@ -917,7 +931,7 @@ for process in MCSamples:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
             if (process in signal) and useCentralSamples and ('ttbar' in process):
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_09072021', 'countEvents_03182021'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_01182022', 'countEvents_03182021'),'')
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
                 MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -1061,7 +1075,7 @@ for process in MCSamples:
                         addSys(process, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
             #Add MC histograms for total systematic up/down variations for plotting
             if plotSys:
-                print '          Adding total systematic up/down varations for MC background histograms...'
+                print '          Adding up/down varations for systematic given by plotSysVar to MC background histograms...'
                 if process in signal:
                     continue
                 elif process == 'ttbarPlusJets':
@@ -1140,8 +1154,17 @@ print('Finished filling histograms')
 for name in hists:
     if drawOverflow:
         hists[name].SetBinContent(nbins, hists[name].GetBinContent(nbins) + hists[name].GetBinContent(nbins+1))
+        hists[name].SetBinError(nbins, math.sqrt(math.pow(hists[name].GetBinError(nbins),2)+math.pow(hists[name].GetBinError(nbins+1),2)))
     if drawUnderflow:
         hists[name].SetBinContent(1, hists[name].GetBinContent(0) + hists[name].GetBinContent(1))
+        hists[name].SetBinError(1, math.sqrt(math.pow(hists[name].GetBinError(0),2)+math.pow(hists[name].GetBinError(1),2)))
+for name in syshists:
+    if drawOverflow:
+        syshists[name].SetBinContent(nbins, syshists[name].GetBinContent(nbins) + syshists[name].GetBinContent(nbins+1))
+        syshists[name].SetBinError(nbins, math.sqrt(math.pow(syshists[name].GetBinError(nbins),2)+math.pow(syshists[name].GetBinError(nbins+1),2)))
+    if drawUnderflow:
+        syshists[name].SetBinContent(1, syshists[name].GetBinContent(0) + syshists[name].GetBinContent(1))
+        syshists[name].SetBinError(1, math.sqrt(math.pow(syshists[name].GetBinError(0),2)+math.pow(syshists[name].GetBinError(1),2)))
 
 #Add up MC background histos into stacked histogram
 print('Creating stacked MC background histogram...')
@@ -1343,7 +1366,8 @@ if normalizePlots:
 if savePlots:
     print('Drawing histograms...')
     c = TCanvas('c', 'c', 800, 800)
-    if drawData:
+    #Make two canvases if drawing data for ratio plot or plotting systematics, otherwise make one canvas
+    if drawData or plotSys:
         c.Divide(1,2)
         setTopPad(c.GetPad(1),4)
         setBotPad(c.GetPad(2),4)
@@ -1354,21 +1378,25 @@ if savePlots:
         setCanvas(c)
         if doLogPlot:
             c.SetLogy(1)
-    h_MCStack.Draw('hist')
-    hists['ttbar '+mediatorType].Draw('hist same')
+    #Temporary fix since single top sample for 2017/2018 is not available yet
     if year == 2016:
         secondSignal = 'tbar '+mediatorType
     else:
         secondSignal = 'ttbar pseudoscalar'
-    hists[secondSignal].Draw('hist same')
-    hists['data'].Draw('ep same')
-    hists['bkgSum'].Draw('e2 same')
-    if plotSys:
+    #Draw relevant histograms depending on if plotting systematics or not
+    if not plotSys:
+        h_MCStack.Draw('hist')
+        hists['ttbar '+mediatorType].Draw('hist same')
+        hists[secondSignal].Draw('hist same')
+        hists['data'].Draw('ep same')
+        hists['bkgSum'].Draw('e2 same')
+    elif plotSys:
+        hists['bkgSum'].Draw('hist')
         syshists['bkgSum_sysUp'].Draw('hist same')
         syshists['bkgSum_sysDown'].Draw('hist same')
     #Draw title with lumi and beam energy
     title = TLatex()
-    if drawData:
+    if drawData or plotSys:
         title.SetTextSize(0.035)
         title_x = .76
         title_y = .91
@@ -1398,7 +1426,7 @@ if savePlots:
             #title.DrawLatexNDC(title_x, title_y, '#bf{7.8 fb^{-1} (13 TeV)}')  #1/5 partial unblind postHEM
     #Set 'CMS, Preliminary' text
     pt = TPaveText(0.18, 0.75, 0.35, 0.85, 'NDC')
-    if drawData:
+    if drawData or plotSys:
         pt.SetTextSize(0.04)
     else:
         pt.SetTextSize(0.03)
@@ -1407,26 +1435,28 @@ if savePlots:
     pt.AddText('#splitline{CMS}{#bf{#it{Preliminary}}}')
     pt.Draw('same')
     #Set MC background histogram options 
-    hists['QCD'].SetFillColor(kGray+1)
-    hists['ZTo2L'].SetFillColor(kGreen+1)
-    hists['VV'].SetFillColor(kBlue+2)
-    hists['singleTop'].SetFillColor(kOrange+7)
-    hists['WPlusJets'].SetFillColor(kViolet-1)
-    hists['TTV'].SetFillColor(kOrange+4)
-    hists['TTTo2L2Nu'].SetFillColor(kOrange-2)
-    hists['TTToSemiLepton'].SetFillColor(kOrange-3)
-    hists['ZTo2Nu'].SetFillColor(kAzure-4)
+    if not plotSys:
+        hists['QCD'].SetFillColor(kGray+1)
+        hists['ZTo2L'].SetFillColor(kGreen+1)
+        hists['VV'].SetFillColor(kBlue+2)
+        hists['singleTop'].SetFillColor(kOrange+7)
+        hists['WPlusJets'].SetFillColor(kViolet-1)
+        hists['TTV'].SetFillColor(kOrange+4)
+        hists['TTTo2L2Nu'].SetFillColor(kOrange-2)
+        hists['TTToSemiLepton'].SetFillColor(kOrange-3)
+        hists['ZTo2Nu'].SetFillColor(kAzure-4)
 
-    hists['QCD'].SetLineWidth(0)
-    hists['ZTo2L'].SetLineWidth(0)
-    hists['VV'].SetLineWidth(0)
-    hists['singleTop'].SetLineWidth(0)
-    hists['WPlusJets'].SetLineWidth(0)
-    hists['TTV'].SetLineWidth(0)
-    hists['TTTo2L2Nu'].SetLineWidth(0)
-    hists['TTToSemiLepton'].SetLineWidth(0)
-    hists['ZTo2Nu'].SetLineWidth(0)
+        hists['QCD'].SetLineWidth(0)
+        hists['ZTo2L'].SetLineWidth(0)
+        hists['VV'].SetLineWidth(0)
+        hists['singleTop'].SetLineWidth(0)
+        hists['WPlusJets'].SetLineWidth(0)
+        hists['TTV'].SetLineWidth(0)
+        hists['TTTo2L2Nu'].SetLineWidth(0)
+        hists['TTToSemiLepton'].SetLineWidth(0)
+        hists['ZTo2Nu'].SetLineWidth(0)
 
+    #Automatically scale y-axis based on largest histogram bins
     if auto_y:
         if doLogPlot:
             if drawData:
@@ -1443,10 +1473,14 @@ if savePlots:
                 ymax = 1.25*max(hists['bkgSum'].GetBinContent(hists['bkgSum'].GetMaximumBin()), hists['ttbar '+mediatorType].GetBinContent(hists['ttbar '+mediatorType].GetMaximumBin()), hists[secondSignal].GetBinContent(hists[secondSignal].GetMaximumBin()))
     if normalizePlots:
         ymin = 5.e-4
-    h_MCStack.SetMinimum(ymin)
-    h_MCStack.SetMaximum(ymax)
+    if not plotSys:
+        h_MCStack.SetMinimum(ymin)
+        h_MCStack.SetMaximum(ymax)
+    elif plotSys:
+        hists['bkgSum'].SetMinimum(ymin)
+        hists['bkgSum'].SetMaximum(ymax)
     #Set settings for data and MC background histogram title/labels
-    if drawData:
+    if drawData and not plotSys:
         setHistStyle(h_MCStack)
         h_MCStack.GetXaxis().SetLabelOffset(999)
         h_MCStack.GetXaxis().SetLabelSize(0)
@@ -1454,59 +1488,67 @@ if savePlots:
         setHistStyle(hists[secondSignal])
         setHistStyle(hists['data'])
         setHistStyle(hists['bkgSum'])
-        if plotSys:
-            setHistStyle(syshists['bkgSum_sysUp'])
-            setHistStyle(syshists['bkgSum_sysDown'])
-    #Set tbar histogram options
-    hists[secondSignal].SetLineColor(kRed)
-    hists[secondSignal].SetLineWidth(3)
-    #Set ttbar histogram options
-    hists['ttbar '+mediatorType].SetLineColor(kRed)
-    hists['ttbar '+mediatorType].SetLineStyle(2)
-    hists['ttbar '+mediatorType].SetLineWidth(3)
-    #Set data histogram options
-    hists['data'].SetMarkerStyle(20)
-    hists['data'].SetMarkerSize(1.25)
-    hists['data'].SetLineColor(1)
-    #Set bkgSum histogram options
-    hists['bkgSum'].SetFillStyle(3002)
-    hists['bkgSum'].SetFillColor(1)
+    elif plotSys:
+        setHistStyle(hists['bkgSum'])
+        hists['bkgSum'].GetXaxis().SetLabelOffset(999)
+        hists['bkgSum'].GetXaxis().SetLabelSize(0)
+        setHistStyle(syshists['bkgSum_sysUp'])
+        setHistStyle(syshists['bkgSum_sysDown'])
+    if not plotSys:
+        #Set tbar histogram options
+        hists[secondSignal].SetLineColor(kRed)
+        hists[secondSignal].SetLineWidth(3)
+        #Set ttbar histogram options
+        hists['ttbar '+mediatorType].SetLineColor(kRed)
+        hists['ttbar '+mediatorType].SetLineStyle(2)
+        hists['ttbar '+mediatorType].SetLineWidth(3)
+        #Set data histogram options
+        hists['data'].SetMarkerStyle(20)
+        hists['data'].SetMarkerSize(1.25)
+        hists['data'].SetLineColor(1)
+        #Set bkgSum histogram options
+        hists['bkgSum'].SetFillStyle(3002)
+        hists['bkgSum'].SetFillColor(1)
     #Set up/down systematic variation of bkgSum histogram options
-    if plotSys:
+    elif plotSys:
+        hists['bkgSum'].SetFillColor(kOrange-5)
+        hists['bkgSum'].SetLineWidth(0)
         syshists['bkgSum_sysUp'].SetLineColor(kBlue)
         syshists['bkgSum_sysDown'].SetLineColor(kGreen)
-        syshists['bkgSum_sysUp'].SetLineWidth(3)
-        syshists['bkgSum_sysDown'].SetLineWidth(3)
+        syshists['bkgSum_sysUp'].SetLineWidth(2)
+        syshists['bkgSum_sysDown'].SetLineWidth(2)
     #Add legend
     legend = TLegend(0.4, 0.65, 0.85, 0.85)
     legend.SetNColumns(3)
     if drawData:
         legend.AddEntry(hists['data'], 'Data', 'pe')
-    legend.AddEntry(hists['ZTo2Nu'], 'Z(#nu#nu) + jets', 'f')
-    legend.AddEntry(hists['TTToSemiLepton'], 't#bar{t}(1l)', 'f')
-    legend.AddEntry(hists['TTTo2L2Nu'], 't#bar{t}(2l)', 'f')
-    legend.AddEntry(hists['TTV'], 't#bar{t}+V', 'f')
-    legend.AddEntry(hists['WPlusJets'], 'W(l#nu) + jets', 'f')
-    legend.AddEntry(hists['singleTop'], 't+X', 'f')
-    legend.AddEntry(hists['VV'], 'VV,VH', 'f')
-    legend.AddEntry(hists['ZTo2L'], 'Z(ll) + jets', 'f')
-    legend.AddEntry(hists['QCD'], 'multijet', 'f')
-    legend.AddEntry(hists['bkgSum'], 'MC stat.', 'f')
-    if plotSys:
-        legend.AddEntry(syshists['bkgSum_sysUp'], 'JER sysUp', 'l')
-        legend.AddEntry(syshists['bkgSum_sysDown'], 'JER sysDown', 'l')
-    if scaleFactor != 1: 
-        legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-        if year == 2016:
-            legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+    if not plotSys:
+        legend.AddEntry(hists['ZTo2Nu'], 'Z(#nu#nu) + jets', 'f')
+        legend.AddEntry(hists['TTToSemiLepton'], 't#bar{t}(1l)', 'f')
+        legend.AddEntry(hists['TTTo2L2Nu'], 't#bar{t}(2l)', 'f')
+        legend.AddEntry(hists['TTV'], 't#bar{t}+V', 'f')
+        legend.AddEntry(hists['WPlusJets'], 'W(l#nu) + jets', 'f')
+        legend.AddEntry(hists['singleTop'], 't+X', 'f')
+        legend.AddEntry(hists['VV'], 'VV,VH', 'f')
+        legend.AddEntry(hists['ZTo2L'], 'Z(ll) + jets', 'f')
+        legend.AddEntry(hists['QCD'], 'multijet', 'f')
+        legend.AddEntry(hists['bkgSum'], 'MC stat.', 'f')
+        if scaleFactor != 1: 
+            legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+            if year == 2016:
+                legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+            else:
+                legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
         else:
-            legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-    else:
-        legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-        if year == 2016:
-            legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
-        else:
-            legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+            legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+            if year == 2016:
+                legend.AddEntry(hists['tbar '+mediatorType], '#splitline{'+mediatorType + ', t+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+            else:
+                legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+    elif plotSys:
+        legend.AddEntry(hists['bkgSum'], 'MC background', 'f')
+        legend.AddEntry(syshists['bkgSum_sysUp'], plotSysVar+'Up', 'l')
+        legend.AddEntry(syshists['bkgSum_sysDown'], plotSysVar+'Down', 'l')
     legend.Draw('same')
     legend.SetBorderSize(0)
     legend.SetFillStyle(0)
@@ -1539,30 +1581,32 @@ if drawData and savePlots:
     h_ratio.SetMarkerSize(1.25)
     h_ratio.SetLineColor(1)
 
-    #Add ratio plot for up/down systematic variation of bkgSum 
-    if plotSys:
-        h_ratioUp = TH1F('h_ratioUp', ratioLabel, nbins, xmin, xmax)
-        h_ratioDown = TH1F('h_ratioDown', ratioLabel, nbins, xmin, xmax)
-        setHistStyle(h_ratioUp)
-        setHistStyle(h_ratioDown)
-        for i in range(1, nbins+1):
-            if syshists['bkgSum_sysUp'].GetBinContent(i) > 0:
-                h_ratioUp.SetBinContent(i,hists['data'].GetBinContent(i)/syshists['bkgSum_sysUp'].GetBinContent(i))
-                h_ratioDown.SetBinContent(i,hists['data'].GetBinContent(i)/syshists['bkgSum_sysDown'].GetBinContent(i))
-                h_ratioUp.SetBinError(i,hists['data'].GetBinError(i)/syshists['bkgSum_sysUp'].GetBinContent(i))
-                h_ratioDown.SetBinError(i,hists['data'].GetBinError(i)/syshists['bkgSum_sysDown'].GetBinContent(i))
-        #Set settings for sysUp/down ratio histogram axes/labels
-        setBotStyle(h_ratioUp)
-        setBotStyle(h_ratioDown)
-        h_ratioUp.Draw('hist same')
-        h_ratioDown.Draw('hist same')
-        #Set sysUp/down ratio histogram marker options
-        h_ratioUp.SetMarkerStyle(20)
-        h_ratioDown.SetMarkerStyle(20)
-        h_ratioUp.SetMarkerSize(2)
-        h_ratioDown.SetMarkerSize(2)
-        h_ratioUp.SetLineColor(kBlue)
-        h_ratioDown.SetLineColor(kGreen)
+#Add ratio plot for up/down systematic variation of bkgSum if plotSys == True and savePlots == True
+elif plotSys and savePlots:
+    print('Drawing ratio plot...')
+    c.cd(2)
+    h_err = TH1F('h_ratio', ratioLabel, nbins, xmin, xmax)
+    h_ratioUp = TH1F('h_ratioUp', ratioLabel, nbins, xmin, xmax)
+    h_ratioDown = TH1F('h_ratioDown', ratioLabel, nbins, xmin, xmax)
+    setHistStyle(h_ratioUp)
+    setHistStyle(h_ratioDown)
+    for i in range(1, nbins+1):
+        if hists['bkgSum'].GetBinContent(i) > 0:
+            h_ratioUp.SetBinContent(i,syshists['bkgSum_sysUp'].GetBinContent(i)/hists['bkgSum'].GetBinContent(i))
+            h_ratioDown.SetBinContent(i,syshists['bkgSum_sysDown'].GetBinContent(i)/hists['bkgSum'].GetBinContent(i))
+            h_err.SetBinContent(i,hists['bkgSum'].GetBinContent(i)/hists['bkgSum'].GetBinContent(i))
+            h_err.SetBinError(i,hists['bkgSum'].GetBinError(i)/hists['bkgSum'].GetBinContent(i))
+    #Set settings for sysUp/down ratio histograms 
+    setBotStyle(h_err)
+    h_err.Draw('e2')
+    h_ratioUp.Draw('hist same')
+    h_ratioDown.Draw('hist same')
+    #Set settings for MC statistical error ratio histogram
+    h_err.SetFillStyle(3002)
+    h_err.SetFillColor(1)
+    #Set sysUp/down ratio histogram marker options
+    h_ratioUp.SetLineColor(kBlue)
+    h_ratioDown.SetLineColor(kGreen)
 
     print('Finished drawing ratio plot')
         
@@ -1582,6 +1626,8 @@ if savePlots:
     else:
         suffix = date
         nameYear = str(year)
+        if plotSys:
+            suffix = plotSysVar + '_' + date
         if (year == 2018) and applyHEMfix:
             suffix += '_withHEMfix'
         if useUL:

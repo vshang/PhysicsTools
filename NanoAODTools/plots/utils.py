@@ -32,7 +32,7 @@ def setBotStyle(h, r=4, fixRange=True):
     h.GetYaxis().SetTitleOffset((h.GetYaxis().GetTitleOffset()+1)/(r-1))
     if fixRange:
         #h.GetYaxis().SetRangeUser(-0.3, 2.3)
-        h.GetYaxis().SetRangeUser(0.5,1.5)
+        h.GetYaxis().SetRangeUser(0.4,1.6)
         for i in range(1, h.GetNbinsX()+1):
             if h.GetBinContent(i)<1.e-6:
                 h.SetBinContent(i, -1.e-6)
