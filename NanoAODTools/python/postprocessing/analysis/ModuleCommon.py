@@ -1027,30 +1027,30 @@ to next event)"""
             if self.year == 2016:
                 #Central jets  (2016)
                 for sys in jesUnc:
-                    jesBranches["centralJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
-                    jesBranches["centralJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
-                centralJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
-                centralJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
+                    jesBranches["centralJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or getJESjetpt(j, sys+"Up") > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
+                    jesBranches["centralJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or getJESjetpt(j, sys+"Down") > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
+                centralJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt_jerUp > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
+                centralJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt_jerDown > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 7, jets)
                 #Forward jets (2016)
                 for sys in jesUnc:
-                    jesBranches["forwardJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
-                    jesBranches["forwardJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
-                forwardJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
-                forwardJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
+                    jesBranches["forwardJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or getJESjetpt(j, sys+"Up") > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
+                    jesBranches["forwardJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or getJESjetpt(j, sys+"Down") > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
+                forwardJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt_jerUp > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
+                forwardJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt_jerDown > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 7, jets)
 
             else:
                 #Central jets (2017, 2018)
                 for sys in jesUnc:
-                    jesBranches["centralJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
-                    jesBranches["centralJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
-                centralJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
-                centralJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
+                    jesBranches["centralJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or getJESjetpt(j, sys+"Up") > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
+                    jesBranches["centralJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or getJESjetpt(j, sys+"Down") > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
+                centralJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt_jerUp > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
+                centralJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt_jerDown > 50) and abs(j.eta) < 2.4 and cleanJet(j) and j.jetId == 6, jets)
                 #Forward jets (2017, 2018)
                 for sys in jesUnc:
-                    jesBranches["forwardJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
-                    jesBranches["forwardJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
-                forwardJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
-                forwardJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
+                    jesBranches["forwardJetsScale"+sys+"Up"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Up") < 50 and j.puId == 7) or getJESjetpt(j, sys+"Up") > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
+                    jesBranches["forwardJetsScale"+sys+"Down"] = filter(lambda j : ((30 < getJESjetpt(j, sys+"Down") < 50 and j.puId == 7) or getJESjetpt(j, sys+"Down") > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
+                forwardJetsResUp = filter(lambda j : ((30 < j.pt_jerUp < 50 and j.puId == 7) or j.pt_jerUp > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
+                forwardJetsResDown = filter(lambda j : ((30 < j.pt_jerDown < 50 and j.puId == 7) or j.pt_jerDown > 50) and 2.4 < abs(j.eta) < 4 and cleanJet(j) and j.jetId == 6, jets)
 
             #B-jets
             if self.btag == 'CSVv2':
@@ -1154,86 +1154,80 @@ to next event)"""
                 deltaPhib2 = min(abs(bjet2.phi - METcorrected_phi), 2 * math.pi - abs(bjet2.phi - METcorrected_phi))
 
         if njets > 0:
-            jet1 = centralJets[0]
-            deltaPhij1 = min(abs(jet1.phi - METcorrected_phi), 2 * math.pi - abs(jet1.phi - METcorrected_phi))
+            jet1 = centralJets[0] #jet1 is the jet with the largest pt
+            minDeltaPhi = minDeltaPhi12 = deltaPhi1 = deltaPhij1 = min(abs(jet1.phi - METcorrected_phi), 2 * math.pi - abs(jet1.phi - METcorrected_phi)) #phi angle between jet1 and missing pt
+            if njets > 1: #Should always be true for both SL and AH signal regions
+                jet2 = centralJets[1] #jet2 is the jet with the second-largest pt
+                deltaPhi2 = deltaPhij2 = min(abs(jet2.phi - METcorrected_phi), 2 * math.pi - abs(jet2.phi - METcorrected_phi)) #phi angle between jet2 and missing pt
+                minDeltaPhi = minDeltaPhi12 = min(deltaPhi1, deltaPhi2) #First calculate minDeltaPhi12
+                if njets > 2:
+                    jet3 = centralJets[2]
+                    deltaPhij3 = min(abs(jet3.phi - METcorrected_phi), 2 * math.pi - abs(jet3.phi - METcorrected_phi))
+                #Now calculate minDeltaPhi 
+                for i in range(2, njets):
+                    jeti = centralJets[i]
+                    minDeltaPhi_i = min(abs(jeti.phi - METcorrected_phi), 2 * math.pi - abs(jeti.phi - METcorrected_phi)) #phi angle between jeti and missing pt
+                    if minDeltaPhi_i < minDeltaPhi: #Choose lowest minDeltaPhi out of all central jets
+                        minDeltaPhi = minDeltaPhi_i
 
-        if njets > 1: #Should always be true for both SL and AH signal regions
-            jet1 = centralJets[0] #jet1 (jet2) is the jet with the largest (second-largest) pt
-            jet2 = centralJets[1]
-            deltaPhi1 = min(abs(jet1.phi - METcorrected_phi), 2 * math.pi - abs(jet1.phi - METcorrected_phi)) #phi angle between jet1 and missing pt
-            #Systematics - JES, JER
-            if self.isMC:
-                for sys in jesUnc:
-                    jesBranches["deltaPhi1Scale"+sys+"Up"] = min(abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]), 2 * math.pi - abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]))
-                    jesBranches["deltaPhi1Scale"+sys+"Down"] = min(abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]), 2 * math.pi - abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]))
-                deltaPhi1ResUp = min(abs(jet1.phi - METcorrected_phiResUp), 2 * math.pi - abs(jet1.phi - METcorrected_phiResUp))
-                deltaPhi1ResDown = min(abs(jet1.phi - METcorrected_phiResDown), 2 * math.pi - abs(jet1.phi - METcorrected_phiResDown))
-
-            deltaPhi2 = min(abs(jet2.phi - METcorrected_phi), 2 * math.pi - abs(jet2.phi - METcorrected_phi)) #phi angle between jet2 and missing pt
-            #Systematics - JES, JER
-            if self.isMC:
-                for sys in jesUnc:
-                    jesBranches["deltaPhi2Scale"+sys+"Up"] = min(abs(jet2.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]), 2 * math.pi - abs(jet2.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]))
-                    jesBranches["deltaPhi2Scale"+sys+"Down"] = min(abs(jet2.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]), 2 * math.pi - abs(jet2.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]))
-                deltaPhi2ResUp = min(abs(jet2.phi - METcorrected_phiResUp), 2 * math.pi - abs(jet2.phi - METcorrected_phiResUp))
-                deltaPhi2ResDown = min(abs(jet2.phi - METcorrected_phiResDown), 2 * math.pi - abs(jet2.phi - METcorrected_phiResDown))
-
-            minDeltaPhi12 = min(deltaPhi1, deltaPhi2) #First calculate minDeltaPhi12
-            deltaPhij2 = deltaPhi2 
-            if njets > 2:
-                jet3 = centralJets[2]
-                deltaPhij3 = min(abs(jet3.phi - METcorrected_phi), 2 * math.pi - abs(jet3.phi - METcorrected_phi))
-
-            #Systematics - JES, JER
-            if self.isMC:
-                for sys in jesUnc:
-                    jesBranches["minDeltaPhi12Scale"+sys+"Up"] = min(jesBranches["deltaPhi1Scale"+sys+"Up"], jesBranches["deltaPhi2Scale"+sys+"Up"])
-                    jesBranches["minDeltaPhi12Scale"+sys+"Down"] = min(jesBranches["deltaPhi1Scale"+sys+"Down"], jesBranches["deltaPhi2Scale"+sys+"Down"])
-                minDeltaPhi12ResUp = min(deltaPhi1ResUp, deltaPhi2ResUp)
-                minDeltaPhi12ResDown = min(deltaPhi1ResDown, deltaPhi2ResDown)
-
-            #Now calculate minDeltaPhi 
-            minDeltaPhi = min(abs(jet1.phi - METcorrected_phi), 2 * math.pi - abs(jet1.phi - METcorrected_phi)) #phi angle between jet1 and missing pt
-            #Systematics - JES, JER
-            if self.isMC:
-                for sys in jesUnc:
-                    jesBranches["minDeltaPhiScale"+sys+"Up"] = min(abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]), 2 * math.pi - abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]))
-                    jesBranches["minDeltaPhiScale"+sys+"Down"] = min(abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]), 2 * math.pi - abs(jet1.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]))
-                minDeltaPhiResUp = min(abs(jet1.phi - METcorrected_phiResUp), 2 * math.pi - abs(jet1.phi - METcorrected_phiResUp))
-                minDeltaPhiResDown = min(abs(jet1.phi - METcorrected_phiResDown), 2 * math.pi - abs(jet1.phi - METcorrected_phiResDown))
-
-            for i in range(1, njets):
-                jeti = centralJets[i]
-                minDeltaPhi_i = min(abs(jeti.phi - METcorrected_phi), 2 * math.pi - abs(jeti.phi - METcorrected_phi)) #phi angle between jeti and missing pt
-                if minDeltaPhi_i < minDeltaPhi: #Choose lowest minDeltaPhi out of all central jets
-                    minDeltaPhi = minDeltaPhi_i
-
-            #Systematics - JES, JER
-            if self.isMC:
-                for sys in jesUnc:
-                    for i in range(1, jesBranches["njetsScale"+sys+"Up"]):
-                        jesBranches["jetiScale"+sys+"Up"] = jesBranches["centralJetsScale"+sys+"Up"][i]
-                        jesBranches["minDeltaPhiScale"+sys+"Up_i"] = min(abs(jeti.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]), 2 * math.pi - abs(jeti.phi - jesBranches["METcorrected_phiScale"+sys+"Up"])) #phi angle between jeti and missing pt
-                        if jesBranches["minDeltaPhiScale"+sys+"Up_i"] < jesBranches["minDeltaPhiScale"+sys+"Up"]: #Choose lowest minDeltaPhi out of all central jets
-                            jesBranches["minDeltaPhiScale"+sys+"Up"] = jesBranches["minDeltaPhiScale"+sys+"Up_i"]
-
-                    for i in range(1, jesBranches["njetsScale"+sys+"Down"]):
-                        jesBranches["jetiScale"+sys+"Down"] = jesBranches["centralJetsScale"+sys+"Down"][i]
-                        jesBranches["minDeltaPhiScale"+sys+"Down_i"] = min(abs(jeti.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]), 2 * math.pi - abs(jeti.phi - jesBranches["METcorrected_phiScale"+sys+"Down"])) #phi angle between jeti and missing pt
-                        if jesBranches["minDeltaPhiScale"+sys+"Down_i"] < jesBranches["minDeltaPhiScale"+sys+"Down"]: #Choose lowest minDeltaPhi out of all central jets
-                            jesBranches["minDeltaPhiScale"+sys+"Down"] = jesBranches["minDeltaPhiScale"+sys+"Down_i"]
-
-                for i in range(1, njetsResUp):
-                    jetiResUp = centralJetsResUp[i]
-                    minDeltaPhiResUp_i = min(abs(jeti.phi - METcorrected_phiResUp), 2 * math.pi - abs(jeti.phi - METcorrected_phiResUp)) #phi angle between jeti and missing pt
-                    if minDeltaPhiResUp_i < minDeltaPhiResUp: #Choose lowest minDeltaPhi out of all central jets
-                        minDeltaPhiResUp = minDeltaPhiResUp_i
-
-                for i in range(1, njetsResDown):
-                    jetiResDown = centralJetsResDown[i]
-                    minDeltaPhiResDown_i = min(abs(jeti.phi - METcorrected_phiResDown), 2 * math.pi - abs(jeti.phi - METcorrected_phiResDown)) #phi angle between jeti and missing pt
-                    if minDeltaPhiResDown_i < minDeltaPhiResDown: #Choose lowest minDeltaPhi out of all central jets
-                        minDeltaPhiResDown = minDeltaPhiResDown_i
+        #Systematics - JES, JER
+        if self.isMC:
+            #JES (including split uncertainties)
+            for sys in jesUnc:
+                #First do JES up variation
+                if jesBranches["njetsScale"+sys+"Up"] > 0:
+                    jesBranches["jet1Scale"+sys+"Up"] = jesBranches["centralJetsScale"+sys+"Up"][0] #jet1 is the jet with the largest pt
+                    jesBranches["minDeltaPhiScale"+sys+"Up"] = jesBranches["minDeltaPhi12Scale"+sys+"Up"] = jesBranches["deltaPhi1Scale"+sys+"Up"] = min(abs(jesBranches["jet1Scale"+sys+"Up"].phi - jesBranches["METcorrected_phiScale"+sys+"Up"]), 2 * math.pi - abs(jesBranches["jet1Scale"+sys+"Up"].phi - jesBranches["METcorrected_phiScale"+sys+"Up"]))
+                    if jesBranches["njetsScale"+sys+"Up"] > 1: #Should always be true for both SL and AH signal regions
+                        jesBranches["jet2Scale"+sys+"Up"] = jesBranches["centralJetsScale"+sys+"Up"][1] #jet2 is the jet with the second-largest pt
+                        jesBranches["deltaPhi2Scale"+sys+"Up"] = min(abs(jesBranches["jet2Scale"+sys+"Up"].phi - jesBranches["METcorrected_phiScale"+sys+"Up"]), 2 * math.pi - abs(jesBranches["jet2Scale"+sys+"Up"].phi - jesBranches["METcorrected_phiScale"+sys+"Up"]))
+                        jesBranches["minDeltaPhiScale"+sys+"Up"] = jesBranches["minDeltaPhi12Scale"+sys+"Up"] = min(jesBranches["deltaPhi1Scale"+sys+"Up"], jesBranches["deltaPhi2Scale"+sys+"Up"])
+                        for i in range(2, jesBranches["njetsScale"+sys+"Up"]):
+                            jesBranches["jetiScale"+sys+"Up"] = jesBranches["centralJetsScale"+sys+"Up"][i]
+                            jesBranches["minDeltaPhiScale"+sys+"Up_i"] = min(abs(jesBranches["jetiScale"+sys+"Up"].phi - jesBranches["METcorrected_phiScale"+sys+"Up"]), 2 * math.pi - abs(jesBranches["jetiScale"+sys+"Up"].phi - jesBranches["METcorrected_phiScale"+sys+"Up"])) #phi angle between jeti and missing pt
+                            if jesBranches["minDeltaPhiScale"+sys+"Up_i"] < jesBranches["minDeltaPhiScale"+sys+"Up"]: #Choose lowest minDeltaPhi out of all central jets
+                                jesBranches["minDeltaPhiScale"+sys+"Up"] = jesBranches["minDeltaPhiScale"+sys+"Up_i"]
+                #Then do JES down variation
+                if jesBranches["njetsScale"+sys+"Down"] > 0:
+                    jesBranches["jet1Scale"+sys+"Down"] = jesBranches["centralJetsScale"+sys+"Down"][0] #jet1 is the jet with the largest pt
+                    jesBranches["minDeltaPhiScale"+sys+"Down"] = jesBranches["minDeltaPhi12Scale"+sys+"Down"] = jesBranches["deltaPhi1Scale"+sys+"Down"] = min(abs(jesBranches["jet1Scale"+sys+"Down"].phi - jesBranches["METcorrected_phiScale"+sys+"Down"]), 2 * math.pi - abs(jesBranches["jet1Scale"+sys+"Down"].phi - jesBranches["METcorrected_phiScale"+sys+"Down"]))
+                    if jesBranches["njetsScale"+sys+"Down"] > 1: #Should always be true for both SL and AH signal regions
+                        jesBranches["jet2Scale"+sys+"Down"] = jesBranches["centralJetsScale"+sys+"Down"][1] #jet2 is the jet with the second-largest pt
+                        jesBranches["deltaPhi2Scale"+sys+"Down"] = min(abs(jesBranches["jet2Scale"+sys+"Down"].phi - jesBranches["METcorrected_phiScale"+sys+"Down"]), 2 * math.pi - abs(jesBranches["jet2Scale"+sys+"Down"].phi - jesBranches["METcorrected_phiScale"+sys+"Down"]))
+                        jesBranches["minDeltaPhiScale"+sys+"Down"] = jesBranches["minDeltaPhi12Scale"+sys+"Down"] = min(jesBranches["deltaPhi1Scale"+sys+"Down"], jesBranches["deltaPhi2Scale"+sys+"Down"])
+                        for i in range(2, jesBranches["njetsScale"+sys+"Down"]):
+                            jesBranches["jetiScale"+sys+"Down"] = jesBranches["centralJetsScale"+sys+"Down"][i]
+                            jesBranches["minDeltaPhiScale"+sys+"Down_i"] = min(abs(jesBranches["jetiScale"+sys+"Down"].phi - jesBranches["METcorrected_phiScale"+sys+"Down"]), 2 * math.pi - abs(jesBranches["jetiScale"+sys+"Down"].phi - jesBranches["METcorrected_phiScale"+sys+"Down"])) #phi angle between jeti and missing pt
+                            if jesBranches["minDeltaPhiScale"+sys+"Down_i"] < jesBranches["minDeltaPhiScale"+sys+"Down"]: #Choose lowest minDeltaPhi out of all central jets
+                                jesBranches["minDeltaPhiScale"+sys+"Down"] = jesBranches["minDeltaPhiScale"+sys+"Down_i"]
+            #JER up variation
+            if njetsResUp > 0:
+                jet1ResUp = centralJetsResUp[0] #jet1 is the jet with the largest pt
+                minDeltaPhiResUp = minDeltaPhi12ResUp = deltaPhi1ResUp = min(abs(jet1ResUp.phi - METcorrected_phiResUp), 2 * math.pi - abs(jet1ResUp.phi - METcorrected_phiResUp)) #phi angle between jet1 and missing pt
+                if njetsResUp > 1: #Should always be true for both SL and AH signal regions
+                    jet2ResUp = centralJetsResUp[1] #jet2 is the jet with the second-largest pt
+                    deltaPhi2ResUp = min(abs(jet2ResUp.phi - METcorrected_phiResUp), 2 * math.pi - abs(jet2ResUp.phi - METcorrected_phiResUp)) #phi angle between jet2 and missing pt
+                    minDeltaPhiResUp = minDeltaPhi12ResUp = min(deltaPhi1ResUp, deltaPhi2ResUp) #First calculate minDeltaPhi12
+                    #Now calculate minDeltaPhi 
+                    for i in range(2, njetsResUp):
+                        jetiResUp = centralJetsResUp[i]
+                        minDeltaPhiResUp_i = min(abs(jetiResUp.phi - METcorrected_phiResUp), 2 * math.pi - abs(jetiResUp.phi - METcorrected_phiResUp)) #phi angle between jeti and missing pt
+                        if minDeltaPhiResUp_i < minDeltaPhiResUp: #Choose lowest minDeltaPhi out of all central jets
+                            minDeltaPhiResUp = minDeltaPhiResUp_i
+            #JER down variation
+            if njetsResDown > 0:
+                jet1ResDown = centralJetsResDown[0] #jet1 is the jet with the largest pt
+                minDeltaPhiResDown = minDeltaPhi12ResDown = deltaPhi1ResDown = min(abs(jet1ResDown.phi - METcorrected_phiResDown), 2 * math.pi - abs(jet1ResDown.phi - METcorrected_phiResDown)) #phi angle between jet1 and missing pt
+                if njetsResDown > 1: #Should always be true for both SL and AH signal regions
+                    jet2ResDown = centralJetsResDown[1] #jet2 is the jet with the second-largest pt
+                    deltaPhi2ResDown = min(abs(jet2ResDown.phi - METcorrected_phiResDown), 2 * math.pi - abs(jet2ResDown.phi - METcorrected_phiResDown)) #phi angle between jet2 and missing pt
+                    minDeltaPhiResDown = minDeltaPhi12ResDown = min(deltaPhi1ResDown, deltaPhi2ResDown) #First calculate minDeltaPhi12
+                    #Now calculate minDeltaPhi 
+                    for i in range(2, njetsResDown):
+                        jetiResDown = centralJetsResDown[i]
+                        minDeltaPhiResDown_i = min(abs(jetiResDown.phi - METcorrected_phiResDown), 2 * math.pi - abs(jetiResDown.phi - METcorrected_phiResDown)) #phi angle between jeti and missing pt
+                        if minDeltaPhiResDown_i < minDeltaPhiResDown: #Choose lowest minDeltaPhi out of all central jets
+                            minDeltaPhiResDown = minDeltaPhiResDown_i
 
         #Jet TLorentzVectors are constructed to calculate M_T2^W and topness variables
         ljetVector = ROOT.vector("TLorentzVector")()
@@ -1751,8 +1745,8 @@ to next event)"""
                 self.out.fillBranch("minDeltaPhiResUp", minDeltaPhiResUp)
                 self.out.fillBranch("minDeltaPhiResDown", minDeltaPhiResDown)
                 
-                self.out.fillBranch("minDeltaPhi12ResUp", minDeltaPhiResUp)
-                self.out.fillBranch("minDeltaPhi12ResDown", minDeltaPhiResDown)
+                self.out.fillBranch("minDeltaPhi12ResUp", minDeltaPhi12ResUp)
+                self.out.fillBranch("minDeltaPhi12ResDown", minDeltaPhi12ResDown)
                 
                 self.out.fillBranch("M_TbResUp", M_TbResUp)
                 self.out.fillBranch("M_TbResDown", M_TbResDown)
@@ -1947,12 +1941,13 @@ if runLocal:
     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
     #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
-    inputFiles=["samples/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"samples/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
+    #inputFiles=["samples/2016/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/2016/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"samples/2016/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/2016/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
+    #inputFiles=["samples/2016/ttbarDM_Mchi1Mphi10_scalar_full.root"]
     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
     #inputFiles=["testSamples/nanoAODv7/ttbarDM_Run2016_v7.root"]
     #inputFiles=["testSamples/nanoAODv7/ttbarPlusJets_Run2016_v7.root"]
     #inputFiles=["testSamples/nanoAODv7/SingleElectron_2016C_v7.root"]
-    #inputFiles=["testSamples/nanoAODv7/QCDPt_3200toInf_Run2017_v7.root"]
+    inputFiles=["testSamples/nanoAODv7/QCDHT1500to2000_Run2016_v7.root"]
     #inputFiles=["testSamples/nanoAODv8/MET_UL2018C_v8.root"]
     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
@@ -1962,8 +1957,8 @@ if runLocal:
 
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2017MC(),analyze2017MC_Skim()],postfix="_ModuleCommon_2017MC_Skim",noOut=False,outputbranchsel=outputbranches)
-    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_2016MC_ModuleCommonSkim_01182022",noOut=False,outputbranchsel=outputbranches)
+    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon_2016MC_fixedv2",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_2016MC_ModuleCommonSkim_01182022",noOut=False,outputbranchsel=outputbranches)
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
     p.run()

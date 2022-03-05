@@ -1,7 +1,7 @@
 from ROOT import *
 gROOT.SetBatch(True)
-from MCsampleList import *
-from DataSampleList import *
+from MCsampleListv2 import *
+from DataSampleListv2 import *
 from utils import *
 import os
 import datetime
@@ -20,14 +20,17 @@ condor_cut = options.cutName
 condor_sysFirstHalf = options.sysFirstHalf
 condor_sysSecondHalf = options.sysSecondHalf
 
+global counter
+counter = True
+
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/systematics/CMS_res_j/'
+saveDirectory = 'plots/systematics/CMS_eff_b/'
 #saveDirectory = 'plots/CR_2016/METcorrected_pt/'
-date = '02_22_2022'
-year = 2018
+date = '03_04_2022'
+year = 2016
 useUL = False
-useCondor = True
+useCondor = False
 applyHEMfix = True
 partialUnblind = False
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -232,7 +235,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL1l1fSR'
 #cut = 'SL1l2bSR'
 
-#cut = 'SL1l0fT1SR'
+cut = 'SL1l0fT1SR'
 #cut = 'SL1l0fT2SR'
 #cut = 'SL1l0fT3SR'
 #cut = 'SL1l1fT1SR'
@@ -271,6 +274,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'AH0l0fQR'
 #cut = 'AH0l1fQR'
 
+#cuts['AH'] = cuts['AH'].replace('&& minDeltaPhi > 0.4 ','')
 #cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets == 0'
 #cuts[cut] = cuts[cut].replace(' && M_T2ll <= 80', '')
 #cuts[cut] = cuts[cut].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 160')
@@ -341,7 +345,7 @@ elif year == 2018:
 if partialUnblind:
     lumi = lumi/5.0
 if 'SR' in cut:
-    scaleFactor = 20
+    scaleFactor = 1
 else:
     scaleFactor = 1
 
@@ -365,36 +369,37 @@ if partialUnblind:
 print('Creating histograms..')
 
 #Set histogram options
-nbins = 7
+nbins = 9
 xmin = 250
-xmax = 530
+xmax = 610
 auto_y = True
 doLogPlot = False
-drawData = True
+drawData = False
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
 normalizePlots = False
 useCentralSamples = True
-doBinned = True
-savePlots = False
+doBinned = False
+savePlots = True
 combineEleMu = True
 doSys = False
 doSysFirstHalf = False
 doSysSecondHalf = False
 drawOverflow = True
 drawUnderflow = False
-plotSys = False
-plotSysVar = 'CMS_res_j'
+plotSys = True
+plotSysVar = 'CMS_eff_b'
+plotSysSignal = False
 
 #If using Condor, use command line option instead
 if useCondor:
     doSysFirstHalf = condor_sysFirstHalf
     doSysSecondHalf = condor_sysSecondHalf
     if 'SL' in condor_cut:
-        nbins = 7
+        nbins = 9
         xmin = 250
-        xmax = 530
+        xmax = 610
     elif 'AH' in condor_cut:
         nbins = 15
         xmin = 250
@@ -424,13 +429,11 @@ histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; forward jet_{1} charged Electromagnetic Energy Fraction; Events'
 #histoLabel = '; DeepAK8 top tag discriminant value; Events'
 #histoLabel = '; leading electron #eta; Events'
-#histoLabel = '; number of forward jets; Events'
+#histoLabel = '; number of central jets; Events'
 
 if useCondor:
     if (cut== 'AH2lZR') or (cut == 'AH2eZR') or (cut == 'AH2mZR'):
         histoLabel = '; Hadronic recoil (GeV); Events'
-    else:
-        histoLabel = '; p_{T}^{miss} (GeV); Events'
 
 #histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
@@ -466,7 +469,7 @@ if drawData:
     ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Data / Bkg')
     histoLabel = re.sub(';.*;', '; ;', histoLabel)
 if plotSys:
-    ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Var / Bkg')
+    ratioLabel = re.sub('.*distribution;', ';', histoLabel).replace('Events','Var / Nom')
     histoLabel = re.sub(';.*;', '; ;', histoLabel)
 
 #Print histogram options
@@ -491,6 +494,7 @@ print '    doSysSecondHalf = ', str(doSysSecondHalf)
 print '    drawOverflow = ', str(drawOverflow)
 print '    drawUnderflow = ', str(drawUnderflow)
 print '    plotSys = ', str(plotSys)
+print '    plotSysSignal = ', str(plotSysSignal)
 
 #Remove stats box from histograms
 gStyle.SetOptStat(0)
@@ -537,7 +541,7 @@ if doSys:
     print 'Finished making systematic histogram dictionary'
 if plotSys:
     print 'Adding background up/down variation histograms...'
-    for name in back + ['bkgSum']:
+    for name in back + ['bkgSum'] + signal:
         for suffix in ['Up', 'Down']:
             syshists[name + '_sys' + suffix] = TH1F(name + '_sys' + suffix, histoLabel, nbins, xmin, xmax)
             print '    ' + name + '_sys' + suffix + ' histogram made'
@@ -848,19 +852,11 @@ def addSysPlot(process, eventTree, var, cut):
     #Check to see if var needs to be modified for up/down variation
     if 'CMS_scale' in plotSysVar and plotSysVar != 'CMS_scale_pu':
         unc = plotSysVar.replace('CMS_scale','').replace('_j','')
-        if var == 'METcorrected_pt':
-            varSysUp = var.replace('METcorrected_pt','METcorrected_ptScale'+unc+'Up')
-            varSysDown = var.replace('METcorrected_pt','METcorrected_ptScale'+unc+'Down')
-        elif var == 'recoilPtMiss':
-            varSysUp = var.replace('recoilPtMiss','recoilPtMissScale'+unc+'Up')
-            varSysDown = var.replace('recoilPtMiss','recoilPtMissScale'+unc+'Down')
+        varSysUp = var+'Scale'+unc+'Up'
+        varSysDown = var+'Scale'+unc+'Down'
     if plotSysVar == 'CMS_res_j':
-        if var == 'METcorrected_pt':
-            varSysUp = var.replace('METcorrected_pt','METcorrected_ptResUp')
-            varSysDown = var.replace('METcorrected_pt','METcorrected_ptResDown')
-        elif var == 'recoilPtMiss':
-            varSysUp = var.replace('recoilPtMiss','recoilPtMissResUp')
-            varSysDown = var.replace('recoilPtMiss','recoilPtMissResDown')
+        varSysUp = var+'ResUp'
+        varSysDown = var+'ResDown'
     #print '          varSysUp = ', varSysUp
     #print '          varSysDown = ', varSyDown
 
@@ -878,6 +874,17 @@ def addSysPlot(process, eventTree, var, cut):
     #print '          histUp integral = ', syshists[process + '_sysUp'].Integral(1,nbins+1)
     #print '          histDown nEntries = ', syshists[process + '_sysDown'].GetEntries()
     #print '          histDown integral = ', syshists[process + '_sysDown'].Integral(1,nbins+1)
+
+    if process == 'QCD' and counter:
+        print 'DEBUG OUTPUT HERE: '
+        print 'cut = ', cut
+        print 'cutUp = ', cutUpPlot
+        print 'cutDown = ', cutDownPlot
+        print 'var = ', var
+        print 'varUp = ', varSysUp
+        print 'varDown = ', varSysDown
+        global counter
+        counter = False
     
 
 ########################################################
@@ -931,7 +938,7 @@ for process in MCSamples:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
             if (process in signal) and useCentralSamples and ('ttbar' in process):
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_01182022', 'countEvents_03182021'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_09072021', 'countEvents_03182021'),'')
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
                 MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -1077,7 +1084,7 @@ for process in MCSamples:
             if plotSys:
                 print '          Adding up/down varations for systematic given by plotSysVar to MC background histograms...'
                 if process in signal:
-                    continue
+                    addSysPlot(process, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')')
                 elif process == 'ttbarPlusJets':
                     addSysPlot(dataset, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')')
                 elif (process == 'WW' or process == 'WZ' or process == 'ZZ'):
@@ -1141,7 +1148,7 @@ for name in hists:
     print name + ' hist info:'
     print '    nEvents = ', hists[name].GetEntries()
     print '    integral = ', hists[name].Integral(1,nbins+1)
-    if plotSys and (name in back + ['bkgSum']):
+    if plotSys and (name in back + ['bkgSum'] + signal):
         print name + ' histUp info:'
         print '    nEvents = ', syshists[name + '_sysUp'].GetEntries()
         print '    integral = ', syshists[name + '_sysUp'].Integral(1,nbins+1)
@@ -1358,9 +1365,15 @@ if normalizePlots:
         hists['data'].Scale(1./hists['data'].Integral())
     hists['bkgSum'].Scale(1./hists['bkgSum'].Integral())
     if plotSys:
-            syshists['bkgSum' + '_sysUp'].Scale(1/hists['bkgSum'].Integral())
-            syshists['bkgSum' + '_sysDown'].Scale(1/hists['bkgSum'].Integral())
+            syshists['bkgSum_sysUp'].Scale(1/hists['bkgSum'].Integral())
+            syshists['bkgSum_sysDown'].Scale(1/hists['bkgSum'].Integral())
     print('Normalized plots')
+
+#Uncomment to set bkgSum hist to signal hist for plotting purposes if needed
+if plotSysSignal:
+    hists['bkgSum'] = hists['ttbar '+mediatorType]
+    syshists['bkgSum_sysUp'] = syshists['ttbar '+mediatorType+'_sysUp']
+    syshists['bkgSum_sysDown'] = syshists['ttbar '+mediatorType+'_sysDown']
         
 #Draw histograms and save if savePlots == True
 if savePlots:
@@ -1511,8 +1524,12 @@ if savePlots:
         hists['bkgSum'].SetFillColor(1)
     #Set up/down systematic variation of bkgSum histogram options
     elif plotSys:
-        hists['bkgSum'].SetFillColor(kOrange-5)
-        hists['bkgSum'].SetLineWidth(0)
+        if plotSysSignal:
+            hists['bkgSum'].SetLineColor(kRed)
+            hists['bkgSum'].SetLineWidth(3)
+        else:
+            hists['bkgSum'].SetFillColor(kOrange-5)
+            hists['bkgSum'].SetLineWidth(0)
         syshists['bkgSum_sysUp'].SetLineColor(kBlue)
         syshists['bkgSum_sysDown'].SetLineColor(kGreen)
         syshists['bkgSum_sysUp'].SetLineWidth(2)
@@ -1546,7 +1563,10 @@ if savePlots:
             else:
                 legend.AddEntry(hists['ttbar pseudoscalar'], '#splitline{pseudoscalar, t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
     elif plotSys:
-        legend.AddEntry(hists['bkgSum'], 'MC background', 'f')
+        if plotSysSignal:
+            legend.AddEntry(hists['bkgSum'], '#splitline{'+mediatorType + ', t#bar{t}+DM}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
+        else:
+            legend.AddEntry(hists['bkgSum'], 'MC background', 'f')
         legend.AddEntry(syshists['bkgSum_sysUp'], plotSysVar+'Up', 'l')
         legend.AddEntry(syshists['bkgSum_sysDown'], plotSysVar+'Down', 'l')
     legend.Draw('same')
@@ -1634,9 +1654,12 @@ if savePlots:
             nameYear = 'UL'+str(year)
         if partialUnblind:
             suffix += '_partialUnblind'
-        c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
-        #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
-        #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
-        #c.SaveAs('test.png')
+        if plotSysSignal:
+            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_ttDM_scalar_Mchi'+str(mchi)+'_Mphi'+str(mphi)+'.png')
+        else:
+            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
+            #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
+            #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
+            #c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_09072022.png')
 
 print 'Plotting end time:', datetime.datetime.now()
