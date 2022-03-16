@@ -1,7 +1,7 @@
 from ROOT import *
 gROOT.SetBatch(True)
-from MCsampleListv2 import *
-from DataSampleListv2 import *
+from MCsampleList import *
+from DataSampleList import *
 from utils import *
 import os
 import datetime
@@ -25,9 +25,11 @@ counter = True
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/systematics/CMS_eff_b/'
+saveDirectory = 'plots/systematics/CMS_ZewkWeight/'
 #saveDirectory = 'plots/CR_2016/METcorrected_pt/'
-date = '03_04_2022'
+#saveDirectory = 'plots/topness_studies/'
+#saveDirectory = 'plots/EEl1prefire_studies/'
+date = '03_14_2022'
 year = 2016
 useUL = False
 useCondor = False
@@ -226,7 +228,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL1m2bSR'
 #cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
-#cut = 'AH0l2bSR'
+cut = 'AH0l2bSR'
 
 #cut = 'AH0l0f2bSR'
 #cut = 'AH0l1f2bSR'
@@ -235,7 +237,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL1l1fSR'
 #cut = 'SL1l2bSR'
 
-cut = 'SL1l0fT1SR'
+#cut = 'SL1l0fT1SR'
 #cut = 'SL1l0fT2SR'
 #cut = 'SL1l0fT3SR'
 #cut = 'SL1l1fT1SR'
@@ -369,11 +371,11 @@ if partialUnblind:
 print('Creating histograms..')
 
 #Set histogram options
-nbins = 9
+nbins = 15
 xmin = 250
-xmax = 610
+xmax = 550
 auto_y = True
-doLogPlot = False
+doLogPlot = True
 drawData = False
 mediatorType = 'scalar'
 mchi = 1
@@ -389,7 +391,7 @@ doSysSecondHalf = False
 drawOverflow = True
 drawUnderflow = False
 plotSys = True
-plotSysVar = 'CMS_eff_b'
+plotSysVar = 'CMS_ZewkWeight'
 plotSysSignal = False
 
 #If using Condor, use command line option instead
@@ -430,6 +432,7 @@ histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; DeepAK8 top tag discriminant value; Events'
 #histoLabel = '; leading electron #eta; Events'
 #histoLabel = '; number of central jets; Events'
+#histoLabel = '; modified topness; Events (normalized)'
 
 if useCondor:
     if (cut== 'AH2lZR') or (cut == 'AH2eZR') or (cut == 'AH2mZR'):
@@ -494,6 +497,7 @@ print '    doSysSecondHalf = ', str(doSysSecondHalf)
 print '    drawOverflow = ', str(drawOverflow)
 print '    drawUnderflow = ', str(drawUnderflow)
 print '    plotSys = ', str(plotSys)
+print '    plotSysVar = ', plotSysVar
 print '    plotSysSignal = ', str(plotSysSignal)
 
 #Remove stats box from histograms
@@ -514,7 +518,7 @@ else:
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
 if doSysFirstHalf or plotSys:
-    sys = ['CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF','CMS_HF_V','CMS_eff_b', 'CMS_scale_pu', 'CMS_eff_met_trigger', 'CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e', 'pdf_accept_2l','pdf_accept_1l','pdf_accept_0l','CMS_eff_e', 'CMS_eff_m','CMS_eff_e_old', 'CMS_eff_m_old','CMS_HF_Z','CMS_HF_W','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_ZewkWeight','QCDscale_ren', 'QCDscale_fac', 'QCDscale_ren_TT', 'QCDscale_fac_TT', 'QCDscale_ren_VV', 'QCDscale_fac_VV', 'QCDscale_ren_O', 'QCDscale_fac_O','preFire']
+    sys = ['CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF','CMS_HF_V','CMS_eff_b', 'CMS_scale_pu', 'CMS_eff_met_trigger', 'CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e', 'pdf_accept_2l','pdf_accept_1l','pdf_accept_0l','CMS_eff_lep','CMS_eff_e', 'CMS_eff_m','CMS_eff_e_old', 'CMS_eff_m_old','CMS_HF_Z','CMS_HF_W','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_ZewkWeight','QCDscale_ren', 'QCDscale_fac', 'QCDscale_ren_TT', 'QCDscale_fac_TT', 'QCDscale_ren_VV', 'QCDscale_fac_VV', 'QCDscale_ren_O', 'QCDscale_fac_O','preFire']
 else:
     sys = []
 jesUnc = ['','AbsoluteMPFBias', 'AbsoluteScale', 'AbsoluteStat', 'FlavorQCD', 'Fragmentation', 'PileUpDataMC', 'PileUpPtBB', 'PileUpPtEC1', 'PileUpPtEC2', 'PileUpPtHF', 'PileUpPtRef', 'RelativeFSR', 'RelativeJEREC1', 'RelativeJEREC2', 'RelativeJERHF', 'RelativePtBB', 'RelativePtEC1', 'RelativePtEC2', 'RelativePtHF', 'RelativeBal', 'RelativeSample', 'RelativeStatEC', 'RelativeStatFSR', 'RelativeStatHF', 'SinglePionECAL', 'SinglePionHCAL', 'TimePtEta']
@@ -652,11 +656,11 @@ def addSys(histName, eventTree, var, cut, sysName, addHist=True):
         cutDown = cut.replace('qcdZTo2NuWeight','qcdZWeightFacDown')
 
     elif sysName == 'CMS_WewkWeight':
-        cutUp = cut.replace('ewkWWeight', '')
+        cutUp = cut.replace('ewkWWeight', '1')
         cutDown = cut
 
     elif sysName == 'CMS_ZewkWeight':
-        cutUp = cut.replace('ewkZWeight', '')
+        cutUp = cut.replace('ewkZWeight', '1')
         cutDown = cut
 
     elif sysName == 'CMS_pdf':
@@ -677,17 +681,17 @@ def addSys(histName, eventTree, var, cut, sysName, addHist=True):
     elif sysName == 'CMS_HF_V':
         if ('WPlusJets' in histName) or ('ZTo2L' in histName) or ('ZTo2Nu' in histName):
             cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
-            cutDown = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+            cutDown = cut + '*(nbjets >= 1 ? 0.8 : 1.)'
 
     elif sysName == 'CMS_HF_W':
         if ('WPlusJets' in histName):
             cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
-            cutDown = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+            cutDown = cut + '*(nbjets >= 1 ? 0.8 : 1.)'
 
     elif sysName == 'CMS_HF_Z':
         if ('ZTo2L' in histName) or ('ZTo2Nu' in histName):
             cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
-            cutDown = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
+            cutDown = cut + '*(nbjets >= 1 ? 0.8 : 1.)'
 
     elif sysName == 'CMS_eff_b':
         cutUp = cut.replace('bjetWeight','bjetWeightUp')
@@ -706,21 +710,25 @@ def addSys(histName, eventTree, var, cut, sysName, addHist=True):
     elif sysName == 'CMS_trig_e':
         cutUp = cut.replace('electronTriggerWeight','electronTriggerWeightUp')
         cutDown = cut.replace('electronTriggerWeight','electronTriggerWeightDown')
-        if ('e' in cut) or ('1l' in cut) or ('2l' in cut):
-            cutUp = cutUp + '*1.020'
-            cutDown = cutDown + '*0.980'
+        # if ('e' in cut) or ('1l' in cut) or ('2l' in cut):
+        #     cutUp = cutUp + '*1.020'
+        #     cutDown = cutDown + '*0.980'
 
     elif sysName == 'CMS_trig_m':
         cutUp = cut.replace('muonTriggerWeight','muonTriggerWeightUp')
         cutDown = cut.replace('muonTriggerWeight','muonTriggerWeightDown')
-        if ('m' in cut) or ('1l' in cut) or ('2l' in cut):
-            cutUp = cutUp + '*1.002'
-            cutDown = cutDown + '*0.998'
+        # if ('m' in cut) or ('1l' in cut) or ('2l' in cut):
+        #     cutUp = cutUp + '*1.002'
+        #     cutDown = cutDown + '*0.998'
 
     elif sysName == 'CMS_eff_met_trigger':
         if ('e' not in cut) and ('m' not in cut) and ('1l' not in cut) and ('2l' not in cut):
             cutUp = cut + '*1.02'
             cutDown = cut + '*0.98'
+
+    elif sysName == 'CMS_eff_lep':
+        cutUp = cut.replace('leptonWeight','leptonWeightUp')
+        cutDown = cut.replace('leptonWeight','leptonWeightDown')
 
     elif sysName == 'CMS_eff_e_old':
         cutUp = cut.replace('leptonWeight','leptonWeightUp')
@@ -804,22 +812,22 @@ def addSys(histName, eventTree, var, cut, sysName, addHist=True):
                     cutUp = cut + '*qcdFacWeightUp'
                     cutDown = cut + '*qcdFacWeightDown'
 
-    elif sys == 'pdf_accept_2l':
+    elif sysName == 'pdf_accept_2l':
         if ('2e' in cut) or ('2m' in cut) or ('2l' in cut):
             cutUp = cut + '*1.060'
             cutDown = cut + '*0.940'
     
-    elif sys == 'pdf_accept_1l':
+    elif sysName == 'pdf_accept_1l':
         if ('1e' in cut) or ('1m' in cut) or ('1l' in cut):
             cutUp = cut + '*1.030'
             cutDown = cut + '*0.970'
 
-    elif sys == 'pdf_accept_0l':
+    elif sysName == 'pdf_accept_0l':
         if ('e' not in cut) and ('m' not in cut) and ('1l' not in cut) and ('2l' not in cut):
             cutUp = cut + '*1.060'
             cutDown = cut + '*0.940'
 
-    elif sys == 'preFire':
+    elif sysName == 'preFire':
         cutUp = cut.replace('EE_L1_prefire_Weight','EE_L1_prefire_WeightUp')
         cutDown = cut.replace('EE_L1_prefire_Weight','EE_L1_prefire_WeightDown')
 
@@ -938,7 +946,7 @@ for process in MCSamples:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
             if (process in signal) and useCentralSamples and ('ttbar' in process):
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_09072021', 'countEvents_03182021'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_01182022', 'countEvents_03182021'),'')
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
                 MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -1657,9 +1665,9 @@ if savePlots:
         if plotSysSignal:
             c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_ttDM_scalar_Mchi'+str(mchi)+'_Mphi'+str(mphi)+'.png')
         else:
-            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
+            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_fixed.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
-            #c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_09072022.png')
+            #c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
 
 print 'Plotting end time:', datetime.datetime.now()
