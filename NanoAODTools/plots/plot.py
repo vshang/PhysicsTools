@@ -25,14 +25,14 @@ counter = True
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/systematics/CMS_ZewkWeight/'
+saveDirectory = 'plots/systematics/CMS_HF_W/'
 #saveDirectory = 'plots/CR_2016/METcorrected_pt/'
 #saveDirectory = 'plots/topness_studies/'
 #saveDirectory = 'plots/EEl1prefire_studies/'
-date = '03_14_2022'
-year = 2016
+date = '03_22_2022'
+year = 2018
 useUL = False
-useCondor = False
+useCondor = True
 applyHEMfix = True
 partialUnblind = False
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -125,8 +125,8 @@ cuts['SL1m1fSR'] = cuts['SL1m'] + ' && ' + 'nbjets == 1 && nfjets >= 1' + ' && M
 cuts['SL1m2bSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 140' + ' && M_T2W >= 180' + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140' #+ ' && nfjets == 0' #+ ' && ((nfjets == 0) || (nfjets >= 1 && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]))'
 
 cuts['AH0l0fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets == 0 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['AH0l1fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets >= 1 && minDeltaPhi12 >= 0.8 && M_Tb >= 140' #+ ' && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
-cuts['AH0l2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && jet1p_TH_T <= 0.5' #+ ' && nfjets == 0' #+ ' && ((nfjets == 0) || (nfjets >= 1 && Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]))'
+cuts['AH0l1fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets >= 1 && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && noB2Bleadingfjet' 
+cuts['AH0l2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && jet1p_TH_T <= 0.5 && noB2Bleadingfjet'
 
 cuts['AH0l0f2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && jet1p_TH_T <= 0.5' + ' && nfjets == 0' 
 cuts['AH0l1f2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && jet1p_TH_T <= 0.5' + ' && nfjets >= 1'# && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
@@ -189,10 +189,10 @@ cuts['AH1eWR'] = 'njets >= 3 && nbjets == 0 && nTightElectrons == 1 && nVetoElec
 cuts['AH1mWR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && M_T <= 140 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' 
 cuts['AH2eZR'] = 'njets >= 3 && nbjets == 0 && nTightElectrons == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' 
 cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' 
-cuts['AH0lQR'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 <= 0.8 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')'  
+cuts['AH0lQR'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 <= 0.8 && noB2Bleadingfjet && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')'  
 
 cuts['AH0l0fQR'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 <= 0.8 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && nfjets == 0'
-cuts['AH0l1fQR'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 <= 0.8 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && nfjets >= 1'# && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
+cuts['AH0l1fQR'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 <= 0.8 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && nfjets >= 1'
 
 #Apply primary vertex selection cuts
 for cut in controlRegion_cuts:
@@ -228,7 +228,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL1m2bSR'
 #cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
-cut = 'AH0l2bSR'
+#cut = 'AH0l2bSR'
 
 #cut = 'AH0l0f2bSR'
 #cut = 'AH0l1f2bSR'
@@ -375,23 +375,23 @@ nbins = 15
 xmin = 250
 xmax = 550
 auto_y = True
-doLogPlot = True
+doLogPlot = False
 drawData = False
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
 normalizePlots = False
 useCentralSamples = True
-doBinned = False
-savePlots = True
+doBinned = True
+savePlots = False
 combineEleMu = True
 doSys = False
 doSysFirstHalf = False
 doSysSecondHalf = False
 drawOverflow = True
 drawUnderflow = False
-plotSys = True
-plotSysVar = 'CMS_ZewkWeight'
+plotSys = False
+plotSysVar = 'CMS_HF_W'
 plotSysSignal = False
 
 #If using Condor, use command line option instead
@@ -507,15 +507,15 @@ gStyle.SetOptStat(0)
 #Define signal and background histograms
 if doBinned:
     if year == 2016:
-        signal = ['ttbar scalar', 'ttbar pseudoscalar', 'tbar scalar']
+        signal = ['ttbar scalar']#, 'ttbar pseudoscalar', 'tbar scalar']
     else:
-        signal = ['ttbar scalar', 'ttbar pseudoscalar']
+        signal = ['ttbar scalar']#, 'ttbar pseudoscalar']
 else:
     if year == 2016:
         signal = ['ttbar ' + mediatorType,'tbar ' + mediatorType]
     else:
         signal = ['ttbar ' + mediatorType,'ttbar pseudoscalar']
-back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
+back = []#'QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
 if doSysFirstHalf or plotSys:
     sys = ['CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF','CMS_HF_V','CMS_eff_b', 'CMS_scale_pu', 'CMS_eff_met_trigger', 'CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e', 'pdf_accept_2l','pdf_accept_1l','pdf_accept_0l','CMS_eff_lep','CMS_eff_e', 'CMS_eff_m','CMS_eff_e_old', 'CMS_eff_m_old','CMS_HF_Z','CMS_HF_W','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_ZewkWeight','QCDscale_ren', 'QCDscale_fac', 'QCDscale_ren_TT', 'QCDscale_fac_TT', 'QCDscale_ren_VV', 'QCDscale_fac_VV', 'QCDscale_ren_O', 'QCDscale_fac_O','preFire']
@@ -883,7 +883,8 @@ def addSysPlot(process, eventTree, var, cut):
     #print '          histDown nEntries = ', syshists[process + '_sysDown'].GetEntries()
     #print '          histDown integral = ', syshists[process + '_sysDown'].Integral(1,nbins+1)
 
-    if process == 'QCD' and counter:
+    if process == 'WPlusJets' and counter:
+    #if 'ZTo2' in process and counter:
         print 'DEBUG OUTPUT HERE: '
         print 'cut = ', cut
         print 'cutUp = ', cutUpPlot
@@ -926,7 +927,7 @@ for dataset in dataSamples:
     if dataset in datasetNames:
         nevents = 0
         for filepath in dataSamples[dataset]['filepaths']:
-            #print '    ----Loading', filepath
+            print '    ----Loading', filepath
             dataSamples[dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             dataSamples[dataset][filepath+'_Events'] = dataSamples[dataset][filepath+'_TFile'].Get('Events')
             dataset_nevents = dataSamples[dataset][filepath+'_Events'].GetEntries()
@@ -941,12 +942,12 @@ print('Loading MC sample root files and event trees...')
 for process in MCSamples:
     for dataset in MCSamples[process]:
         nevents = 0
-        #print '    ----Loading', dataset
+        print '    ----Loading', dataset
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
-            if (process in signal) and useCentralSamples and ('ttbar' in process):
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_01182022', 'countEvents_03182021'),'')
+            if False: #(process in signal) and useCentralSamples and ('ttbar' in process):
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_03092022', 'countEvents_03182021'),'')
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
                 MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -1034,7 +1035,7 @@ for process in MCSamples:
         elif process == 'ZTo2Nu':
             weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
             print 'Applied ZTo2Nu qcd/ewk Weights correctly'
-        if (process in signal) and useCentralSamples and ('ttbar' in process):
+        if False: #(process in signal) and useCentralSamples and ('ttbar' in process):
             Mchi = MCSamples[process][dataset]['mchi']
             Mphi = MCSamples[process][dataset]['mphi']
             MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -1113,45 +1114,45 @@ for name in back:
             syshists['bkgSum_sys' + suffix] += syshists[name + '_sys' + suffix]
 
 #Print signal and background yields and FOM
-print '-----------------------------'
-print 'Total data background nEvents = ', hists['data'].GetEntries()
-print 'Total data background integral = ', hists['data'].Integral(1,nbins+1)
-print '-----------------------------'
-print 'Total MC background nEvents = ', hists['bkgSum'].GetEntries()
-print 'Total MC background integral = ', hists['bkgSum'].Integral(1,nbins+1)
-print '-----------------------------'
-print 'Total tt+DM signal nEvents = ', hists['ttbar ' + mediatorType].GetEntries()/scaleFactor
-print 'Total tt+DM signal integral = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
-print '-----------------------------'
-if year == 2016:
-    print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()/scaleFactor
-    print 'Total t+DM signal integral = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
-print '-----------------------------'
-print 'FOM for tt+DM signal = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
-if year == 2016:
-    print 'FOM for t+DM signal = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
-print '-----------------------------'
-print 'Data bin errors:'
-for i in range(nbins+1):
-    bin_error = hists['data'].GetBinError(i)
-    print '    bin ' + str(i) + ': ' + str(bin_error)
-print '-----------------------------'
-print 'MC background bin errors:'
-for i in range(nbins+1):
-    bin_error = hists['bkgSum'].GetBinError(i)
-    print '    bin ' + str(i) + ': ' + str(bin_error)
-print '-----------------------------'
-print 'tt+DM bin errors:'
-for i in range(nbins+1):
-    bin_error = hists['ttbar ' + mediatorType].GetBinError(i)
-    print '    bin ' + str(i) + ': ' + str(bin_error)
-print '-----------------------------'
-if year == 2016:
-    print 't+DM bin errors:'
-    for i in range(nbins+1):
-        bin_error = hists['tbar ' + mediatorType].GetBinError(i)
-        print '    bin ' + str(i) + ': ' + str(bin_error)
-print '-----------------------------'
+# print '-----------------------------'
+# print 'Total data background nEvents = ', hists['data'].GetEntries()
+# print 'Total data background integral = ', hists['data'].Integral(1,nbins+1)
+# print '-----------------------------'
+# print 'Total MC background nEvents = ', hists['bkgSum'].GetEntries()
+# print 'Total MC background integral = ', hists['bkgSum'].Integral(1,nbins+1)
+# print '-----------------------------'
+# print 'Total tt+DM signal nEvents = ', hists['ttbar ' + mediatorType].GetEntries()/scaleFactor
+# print 'Total tt+DM signal integral = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
+# print '-----------------------------'
+# if year == 2016:
+#     print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()/scaleFactor
+#     print 'Total t+DM signal integral = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
+# print '-----------------------------'
+# print 'FOM for tt+DM signal = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
+# if year == 2016:
+#     print 'FOM for t+DM signal = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
+# print '-----------------------------'
+# print 'Data bin errors:'
+# for i in range(nbins+1):
+#     bin_error = hists['data'].GetBinError(i)
+#     print '    bin ' + str(i) + ': ' + str(bin_error)
+# print '-----------------------------'
+# print 'MC background bin errors:'
+# for i in range(nbins+1):
+#     bin_error = hists['bkgSum'].GetBinError(i)
+#     print '    bin ' + str(i) + ': ' + str(bin_error)
+# print '-----------------------------'
+# print 'tt+DM bin errors:'
+# for i in range(nbins+1):
+#     bin_error = hists['ttbar ' + mediatorType].GetBinError(i)
+#     print '    bin ' + str(i) + ': ' + str(bin_error)
+# print '-----------------------------'
+# if year == 2016:
+#     print 't+DM bin errors:'
+#     for i in range(nbins+1):
+#         bin_error = hists['tbar ' + mediatorType].GetBinError(i)
+#         print '    bin ' + str(i) + ': ' + str(bin_error)
+# print '-----------------------------'
 for name in hists:
     print name + ' hist info:'
     print '    nEvents = ', hists[name].GetEntries()
@@ -1207,54 +1208,54 @@ if doBinned:
             binnedRootFile = TFile(cut+'bin_'+str(leftbin)+'_'+str(rightbin)+'.root', 'RECREATE')
         if doSysFirstHalf:
             #First fill in bkgSum binned histogram
-            binContent = hists['bkgSum'].GetBinContent(i)
-            binError = hists['bkgSum'].GetBinError(i)
-            binnedHist = TH1F('BkgSum', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-            binnedHist.SetBinContent(1, binContent)
-            binnedHist.SetBinError(1, binError)
-            binnedHist.Write()
-            print '    bkgSum bin content: ' + str(binContent) + ', bkgSum bin error: ' + str(binError)
-            #Then fill in individual background binned histograms
-            for name in back:
-                binContent = hists[name].GetBinContent(i)
-                binError = hists[name].GetBinError(i)
-                if name == 'ZTo2L':
-                    binnedHist = TH1F('DYJetsToLL', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                elif name == 'ZTo2Nu':
-                    binnedHist = TH1F('DYJetsToNuNu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                elif name == 'QCD':
-                    binnedHist = TH1F('QCD', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                elif name == 'singleTop':
-                    binnedHist = TH1F('ST', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                elif name == 'VV':
-                    binnedHist = TH1F('VV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                elif name == 'WPlusJets':
-                    binnedHist = TH1F('WJetsToLNu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                elif name == 'TTToSemiLepton':
-                    binnedHist = TH1F('TTToSemiLepton', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                elif name == 'TTTo2L2Nu':
-                    binnedHist = TH1F('TTTo2L2Nu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                elif name == 'TTV':
-                    binnedHist = TH1F('TTV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                binnedHist.SetBinContent(1, binContent)
-                binnedHist.SetBinError(1, binError)
-                binnedHist.Write()
-                print '    ' + name + ' bin content: ' + str(binContent) + ', ' + name + ' bin error: ' + str(binError)
-                binContent = hists['TTbarSL'].GetBinContent(i)
-                binError = hists['TTbarSL'].GetBinError(i)
-                binnedHist = TH1F('TTbarSL', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                binnedHist.SetBinContent(1, binContent)
-                binnedHist.SetBinError(1, binError)
-                binnedHist.Write()
-                print '    TTbarSL bin content: ' + str(binContent) + ', TTbarSL bin error: ' + str(binError)
-            #Then fill in data binned histogram
-            binContent = hists['data'].GetBinContent(i)
-            binError = hists['data'].GetBinError(i)
-            binnedHist = TH1F('data_obs', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-            binnedHist.SetBinContent(1, binContent)
-            binnedHist.SetBinError(1, binError)
-            binnedHist.Write()
-            print '    data_obs bin content: ' + str(binContent) + ', data_obs bin error: ' + str(binError)
+            # binContent = hists['bkgSum'].GetBinContent(i)
+            # binError = hists['bkgSum'].GetBinError(i)
+            # binnedHist = TH1F('BkgSum', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            # binnedHist.SetBinContent(1, binContent)
+            # binnedHist.SetBinError(1, binError)
+            # binnedHist.Write()
+            # print '    bkgSum bin content: ' + str(binContent) + ', bkgSum bin error: ' + str(binError)
+            # #Then fill in individual background binned histograms
+            # for name in back:
+            #     binContent = hists[name].GetBinContent(i)
+            #     binError = hists[name].GetBinError(i)
+            #     if name == 'ZTo2L':
+            #         binnedHist = TH1F('DYJetsToLL', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            #     elif name == 'ZTo2Nu':
+            #         binnedHist = TH1F('DYJetsToNuNu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            #     elif name == 'QCD':
+            #         binnedHist = TH1F('QCD', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            #     elif name == 'singleTop':
+            #         binnedHist = TH1F('ST', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            #     elif name == 'VV':
+            #         binnedHist = TH1F('VV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            #     elif name == 'WPlusJets':
+            #         binnedHist = TH1F('WJetsToLNu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            #     elif name == 'TTToSemiLepton':
+            #         binnedHist = TH1F('TTToSemiLepton', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            #     elif name == 'TTTo2L2Nu':
+            #         binnedHist = TH1F('TTTo2L2Nu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            #     elif name == 'TTV':
+            #         binnedHist = TH1F('TTV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            #     binnedHist.SetBinContent(1, binContent)
+            #     binnedHist.SetBinError(1, binError)
+            #     binnedHist.Write()
+            #     print '    ' + name + ' bin content: ' + str(binContent) + ', ' + name + ' bin error: ' + str(binError)
+            #     binContent = hists['TTbarSL'].GetBinContent(i)
+            #     binError = hists['TTbarSL'].GetBinError(i)
+            #     binnedHist = TH1F('TTbarSL', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            #     binnedHist.SetBinContent(1, binContent)
+            #     binnedHist.SetBinError(1, binError)
+            #     binnedHist.Write()
+            #     print '    TTbarSL bin content: ' + str(binContent) + ', TTbarSL bin error: ' + str(binError)
+            # #Then fill in data binned histogram
+            # binContent = hists['data'].GetBinContent(i)
+            # binError = hists['data'].GetBinError(i)
+            # binnedHist = TH1F('data_obs', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            # binnedHist.SetBinContent(1, binContent)
+            # binnedHist.SetBinError(1, binError)
+            # binnedHist.Write()
+            # print '    data_obs bin content: ' + str(binContent) + ', data_obs bin error: ' + str(binError)
             #Finally fill in signal MC binned histograms
             for process in signal:
                 if 'ttbar' in process:
@@ -1266,21 +1267,21 @@ if doBinned:
                         binnedHist.SetBinError(1, binError)
                         binnedHist.Write()
                         print '    ' + dataset + ' bin content: ' + str(binContent) + ', ' + dataset + ' bin error: ' + str(binError)
-            if year == 2016:
-                binContent = hists['tbar scalar'].GetBinContent(i)
-                binError = hists['tbar scalar'].GetBinError(i)
-                binnedHist = TH1F('tDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                binnedHist.SetBinContent(1, binContent)
-                binnedHist.SetBinError(1, binError)
-                binnedHist.Write()
-                print '    tDM_MChi1_MPhi100_scalar bin content: ' + str(binContent) + ', tDM_MChi1_MPhi100_scalar bin error: ' + str(binError)
-                binContent = hists['tttDM_MChi1_MPhi100_scalar'].GetBinContent(i)
-                binError = hists['tttDM_MChi1_MPhi100_scalar'].GetBinError(i)
-                binnedHist = TH1F('tttDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                binnedHist.SetBinContent(1, binContent)
-                binnedHist.SetBinError(1, binError)
-                binnedHist.Write()
-                print '    tttDM_MChi1_MPhi100_scalar bin content: ' + str(binContent) + ', tttDM_MChi1_MPhi100_scalar bin error: ' + str(binError)
+            # if year == 2016:
+            #     binContent = hists['tbar scalar'].GetBinContent(i)
+            #     binError = hists['tbar scalar'].GetBinError(i)
+            #     binnedHist = TH1F('tDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            #     binnedHist.SetBinContent(1, binContent)
+            #     binnedHist.SetBinError(1, binError)
+            #     binnedHist.Write()
+            #     print '    tDM_MChi1_MPhi100_scalar bin content: ' + str(binContent) + ', tDM_MChi1_MPhi100_scalar bin error: ' + str(binError)
+            #     binContent = hists['tttDM_MChi1_MPhi100_scalar'].GetBinContent(i)
+            #     binError = hists['tttDM_MChi1_MPhi100_scalar'].GetBinError(i)
+            #     binnedHist = TH1F('tttDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+            #     binnedHist.SetBinContent(1, binContent)
+            #     binnedHist.SetBinError(1, binError)
+            #     binnedHist.Write()
+            #     print '    tttDM_MChi1_MPhi100_scalar bin content: ' + str(binContent) + ', tttDM_MChi1_MPhi100_scalar bin error: ' + str(binError)
         #Add systematics
         if doSys:
             directories = {}
@@ -1289,49 +1290,49 @@ if doBinned:
                     directories[sysName+suffix] = binnedRootFile.mkdir(sysName+suffix)
                     directories[sysName+suffix].cd()
                     #First fill in bkgSum binned histogram systematics
-                    print '    ---------'
-                    print '    ' + sysName + suffix + ':'
-                    print '    ---------'
-                    binContent = syshists['bkgSum_' + sysName + suffix].GetBinContent(i)
-                    binError = syshists['bkgSum_' + sysName + suffix].GetBinError(i)
-                    binnedHist = TH1F('BkgSum', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                    binnedHist.SetBinContent(1, binContent)
-                    binnedHist.SetBinError(1, binError)
-                    binnedHist.Write()
-                    print '    bkgSum_' + sysName + suffix + ' bin content: ' + str(binContent) + ', bkgSum_' + sysName + suffix + ' bin error: ' + str(binError)
-                    #Then fill in individual background binned histogram systematics
-                    for name in back:
-                        binContent = syshists[name + '_' + sysName + suffix].GetBinContent(i)
-                        binError = syshists[name + '_' + sysName + suffix].GetBinError(i)
-                        if name == 'ZTo2L':
-                            binnedHist = TH1F('DYJetsToLL', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                        elif name == 'ZTo2Nu':
-                            binnedHist = TH1F('DYJetsToNuNu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                        elif name == 'QCD':
-                            binnedHist = TH1F('QCD', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                        elif name == 'singleTop':
-                            binnedHist = TH1F('ST', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                        elif name == 'VV':
-                            binnedHist = TH1F('VV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                        elif name == 'WPlusJets':
-                            binnedHist = TH1F('WJetsToLNu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                        elif name == 'TTToSemiLepton':
-                            binnedHist = TH1F('TTToSemiLepton', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                        elif name == 'TTTo2L2Nu':
-                            binnedHist = TH1F('TTTo2L2Nu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                        elif name == 'TTV':
-                            binnedHist = TH1F('TTV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                        binnedHist.SetBinContent(1, binContent)
-                        binnedHist.SetBinError(1, binError)
-                        binnedHist.Write()
-                        print '    ' + name + '_' + sysName + suffix + ' bin content: ' + str(binContent) + ', ' + name + '_' + sysName + suffix + ' bin error: ' + str(binError)
-                    binContent = syshists['TTbarSL_' + sysName + suffix].GetBinContent(i)
-                    binError = syshists['TTbarSL_' + sysName + suffix].GetBinError(i)
-                    binnedHist = TH1F('TTbarSL', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                    binnedHist.SetBinContent(1, binContent)
-                    binnedHist.SetBinError(1, binError)
-                    binnedHist.Write()
-                    print '    TTbarSL_' + sysName + suffix + ' bin content: ' + str(binContent) + ', TTbarSL_' + sysName + suffix + ' bin error: ' + str(binError)
+                    # print '    ---------'
+                    # print '    ' + sysName + suffix + ':'
+                    # print '    ---------'
+                    # binContent = syshists['bkgSum_' + sysName + suffix].GetBinContent(i)
+                    # binError = syshists['bkgSum_' + sysName + suffix].GetBinError(i)
+                    # binnedHist = TH1F('BkgSum', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    # binnedHist.SetBinContent(1, binContent)
+                    # binnedHist.SetBinError(1, binError)
+                    # binnedHist.Write()
+                    # print '    bkgSum_' + sysName + suffix + ' bin content: ' + str(binContent) + ', bkgSum_' + sysName + suffix + ' bin error: ' + str(binError)
+                    # #Then fill in individual background binned histogram systematics
+                    # for name in back:
+                    #     binContent = syshists[name + '_' + sysName + suffix].GetBinContent(i)
+                    #     binError = syshists[name + '_' + sysName + suffix].GetBinError(i)
+                    #     if name == 'ZTo2L':
+                    #         binnedHist = TH1F('DYJetsToLL', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    #     elif name == 'ZTo2Nu':
+                    #         binnedHist = TH1F('DYJetsToNuNu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    #     elif name == 'QCD':
+                    #         binnedHist = TH1F('QCD', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    #     elif name == 'singleTop':
+                    #         binnedHist = TH1F('ST', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    #     elif name == 'VV':
+                    #         binnedHist = TH1F('VV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    #     elif name == 'WPlusJets':
+                    #         binnedHist = TH1F('WJetsToLNu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    #     elif name == 'TTToSemiLepton':
+                    #         binnedHist = TH1F('TTToSemiLepton', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    #     elif name == 'TTTo2L2Nu':
+                    #         binnedHist = TH1F('TTTo2L2Nu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    #     elif name == 'TTV':
+                    #         binnedHist = TH1F('TTV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    #     binnedHist.SetBinContent(1, binContent)
+                    #     binnedHist.SetBinError(1, binError)
+                    #     binnedHist.Write()
+                    #     print '    ' + name + '_' + sysName + suffix + ' bin content: ' + str(binContent) + ', ' + name + '_' + sysName + suffix + ' bin error: ' + str(binError)
+                    # binContent = syshists['TTbarSL_' + sysName + suffix].GetBinContent(i)
+                    # binError = syshists['TTbarSL_' + sysName + suffix].GetBinError(i)
+                    # binnedHist = TH1F('TTbarSL', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    # binnedHist.SetBinContent(1, binContent)
+                    # binnedHist.SetBinError(1, binError)
+                    # binnedHist.Write()
+                    # print '    TTbarSL_' + sysName + suffix + ' bin content: ' + str(binContent) + ', TTbarSL_' + sysName + suffix + ' bin error: ' + str(binError)
                     #Finally fill in signal MC binned histogram systematics
                     for process in signal:
                         if 'ttbar' in process:
@@ -1343,21 +1344,21 @@ if doBinned:
                                 binnedHist.SetBinError(1, binError)
                                 binnedHist.Write()
                                 print '    ' + dataset + '_' + sysName + suffix + ' bin content: ' + str(binContent) + ', ' + dataset + '_' + sysName + suffix + ' bin error: ' + str(binError)
-                    if year == 2016:
-                        binContent = syshists['tbar scalar_' + sysName + suffix].GetBinContent(i)
-                        binError = syshists['tbar scalar_' + sysName + suffix].GetBinError(i)
-                        binnedHist = TH1F('tDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                        binnedHist.SetBinContent(1, binContent)
-                        binnedHist.SetBinError(1, binError)
-                        binnedHist.Write()
-                        print '    tDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin content: ' + str(binContent) + ', tDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin error: ' + str(binError)
-                        binContent = syshists['tttDM_MChi1_MPhi100_scalar_' + sysName + suffix].GetBinContent(i)
-                        binError = syshists['tttDM_MChi1_MPhi100_scalar_' + sysName + suffix].GetBinError(i)
-                        binnedHist = TH1F('tttDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
-                        binnedHist.SetBinContent(1, binContent)
-                        binnedHist.SetBinError(1, binError)
-                        binnedHist.Write()
-                        print '    tttDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin content: ' + str(binContent) + ', tttDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin error: ' + str(binError)
+                    # if year == 2016:
+                    #     binContent = syshists['tbar scalar_' + sysName + suffix].GetBinContent(i)
+                    #     binError = syshists['tbar scalar_' + sysName + suffix].GetBinError(i)
+                    #     binnedHist = TH1F('tDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    #     binnedHist.SetBinContent(1, binContent)
+                    #     binnedHist.SetBinError(1, binError)
+                    #     binnedHist.Write()
+                    #     print '    tDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin content: ' + str(binContent) + ', tDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin error: ' + str(binError)
+                    #     binContent = syshists['tttDM_MChi1_MPhi100_scalar_' + sysName + suffix].GetBinContent(i)
+                    #     binError = syshists['tttDM_MChi1_MPhi100_scalar_' + sysName + suffix].GetBinError(i)
+                    #     binnedHist = TH1F('tttDM_MChi1_MPhi100_scalar', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                    #     binnedHist.SetBinContent(1, binContent)
+                    #     binnedHist.SetBinError(1, binError)
+                    #     binnedHist.Write()
+                    #     print '    tttDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin content: ' + str(binContent) + ', tttDM_MChi1_MPhi100_scalar_' + sysName + suffix + ' bin error: ' + str(binError)
     print('Finished creating binned histogram root files...')
 
 #Normalize plots to area 1 if normalizePlots == True
@@ -1665,7 +1666,7 @@ if savePlots:
         if plotSysSignal:
             c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_ttDM_scalar_Mchi'+str(mchi)+'_Mphi'+str(mphi)+'.png')
         else:
-            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_fixed.png')
+            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
             #c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')

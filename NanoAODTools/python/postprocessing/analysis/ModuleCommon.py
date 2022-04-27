@@ -1944,14 +1944,9 @@ countEvents = lambda : CountEvents()
 #     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
 #     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
 #     #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
-#     #inputFiles=["samples/2016/tDM_tChan_Mchi1Mphi100_scalar_full.root","samples/2016/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"samples/2016/ttbarDM_Mchi1Mphi100_scalar_full1.root","samples/2016/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
-#     #inputFiles=["samples/2016/ttbarDM_Mchi1Mphi10_scalar_full.root"]
+#     #inputFiles=["/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tChan_Mchi1Mphi100_scalar_full.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full1.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
 #     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-#     #inputFiles=["testSamples/nanoAODv7/ttbarDM_Run2016_v7.root"]
-#     #inputFiles=["testSamples/nanoAODv7/ttbarPlusJets_Run2016_v7.root"]
-#     #inputFiles=["testSamples/nanoAODv7/SingleElectron_2016C_v7.root"]
-#     inputFiles=["testSamples/nanoAODv7/QCDHT1500to2000_Run2016_v7.root"]
-#     #inputFiles=["testSamples/nanoAODv8/MET_UL2018C_v8.root"]
+#     inputFiles=[]
 #     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 #     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
 #     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
@@ -1960,8 +1955,8 @@ countEvents = lambda : CountEvents()
 
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon_2016MC_fixedv2",noOut=False,outputbranchsel=outputbranches)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_2016MC_ModuleCommonSkim_01182022",noOut=False,outputbranchsel=outputbranches)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon_2016MC_fixedv2",noOut=False,outputbranchsel=outputbranches)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016SignalMC_Skim()],postfix="_2016MC_ModuleCommonSkim_03092022",noOut=False,outputbranchsel=outputbranches)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
 #     p.run()
