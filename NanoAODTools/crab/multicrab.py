@@ -62,9 +62,7 @@ if __name__ == '__main__':
   config.JobType.pluginName       = 'Analysis'
   config.JobType.psetName         = 'PSet.py'
   config.JobType.scriptExe        = 'crab_script.sh'
-  config.JobType.inputFiles      =  ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropSR_out.txt','../python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'] + Mt2Com_files
-  #config.JobType.inputFiles      =  ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropSR_out.txt','../python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt'] + Mt2Com_files
-  #config.JobType.inputFiles      =  ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropSR_out.txt','../python/postprocessing/data/json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt'] + Mt2Com_files
+  config.JobType.inputFiles      =  ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropSR_out.txt','../python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt','../python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt','../python/postprocessing/data/json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt'] + Mt2Com_files
   #config.JobType.inputFiles       = ['crab_script.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropBTag_out.txt']
    #hadd nano will not be needed once nano tools are in cmssw
   #config.JobType.outputFiles = ['hist.root'] #Enable for making BTag histograms using getBTagHist.py

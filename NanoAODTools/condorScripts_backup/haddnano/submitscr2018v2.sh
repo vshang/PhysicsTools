@@ -5,7 +5,7 @@
 # Create the name of the rundir
 while :
 do
-    RUNDIR="ModuleCommonSkim_01182022_2018"
+    RUNDIR="ModuleCommonSkim_03092022_2018"
     if [ ! -d "${RUNDIR}" ]; then 
 	echo "using ${RUNDIR}"
 	break
@@ -18,13 +18,14 @@ mkdir "${RUNDIR}"
 # create the submit description file
 SUBMIT="${RUNDIR}/submit"
 cat > "${SUBMIT}" << EOF
-executable = ./runhaddnano2018.sh
-output = ${RUNDIR}/runhaddnano2018.stdoutD
-error = ${RUNDIR}/runhaddnano2018.stderr
-log = ${RUNDIR}/runhaddnano2018.condor_log
+executable = ./runhaddnano2018v2.sh
+output = ${RUNDIR}/runhaddnano2018v2.stdoutD
+error = ${RUNDIR}/runhaddnano2018v2.stderr
+log = ${RUNDIR}/runhaddnano2018v2.condor_log
+requirements = HAS_CMS_HDF
 requestdisk = 200G
 requestmemory = 32G
-transfer_input_files = /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/scripts/haddnano.py,/nfs_scratch/vshang/condor/haddnano/filelist.txt,/nfs_scratch/vshang/condor/haddnano/filterList.py
+transfer_input_files = /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/scripts/haddnano.py
 use_x509userproxy = True
 queue
 EOF
