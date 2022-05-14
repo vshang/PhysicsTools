@@ -13,8 +13,8 @@ for cat in ${catSL[@]}; do
     for bin in ${binsSL[@]}; do
 	echo $cat $bin
 	outputRootFile="${cat}bin_${bin}.root"
-	rootFile1="/hdfs/store/user/vshang/binnedHists/ModuleCommonSkim_03092022/2017/combined_elemuon_channels/default/${cat}bin_${bin}.root"
-	rootFile2="/hdfs/store/user/vshang/binnedHists/ModuleCommonSkim_03092022/2017/combined_elemuon_channels/test/${cat}bin_${bin}.root"
+	rootFile1="/hdfs/store/user/vshang/binnedHists/ModuleCommonSkim_03092022/2018/combined_elemuon_channels/default/${cat}bin_${bin}.root"
+	rootFile2="/hdfs/store/user/vshang/binnedHists/ModuleCommonSkim_03092022/2018/combined_elemuon_channels/test/${cat}bin_${bin}.root"
 	hadd ${outputRootFile} ${rootFile1} ${rootFile2}
     done
 done
@@ -23,8 +23,8 @@ for cat in ${catAH[@]}; do
     for bin in ${binsAH[@]}; do
 	echo $cat $bin
 	outputRootFile="${cat}bin_${bin}.root"
-	rootFile1="/hdfs/store/user/vshang/binnedHists/ModuleCommonSkim_03092022/2017/combined_elemuon_channels/default/${cat}bin_${bin}.root"
-	rootFile2="/hdfs/store/user/vshang/binnedHists/ModuleCommonSkim_03092022/2017/combined_elemuon_channels/test/${cat}bin_${bin}.root"
+	rootFile1="/hdfs/store/user/vshang/binnedHists/ModuleCommonSkim_03092022/2018/combined_elemuon_channels/default/${cat}bin_${bin}.root"
+	rootFile2="/hdfs/store/user/vshang/binnedHists/ModuleCommonSkim_03092022/2018/combined_elemuon_channels/test/${cat}bin_${bin}.root"
 	hadd ${outputRootFile} ${rootFile1} ${rootFile2}
     done
 done
