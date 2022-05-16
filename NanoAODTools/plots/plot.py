@@ -1,6 +1,6 @@
 from ROOT import *
 gROOT.SetBatch(True)
-from MCsampleListv2 import *
+from MCsampleList import *
 from DataSampleList import *
 from utils import *
 import os
@@ -32,7 +32,7 @@ saveDirectory = 'plots/systematics/CMS_HF_W/'
 date = '05_16_2022'
 year = 2016
 useUL = False
-useCondor = False
+useCondor = True
 applyHEMfix = True
 partialUnblind = False
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
@@ -506,10 +506,10 @@ else:
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
 if doSysFirstHalf or plotSys:
-    sys = ['CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_eff_b', 'CMS_scale_pu', 'CMS_eff_met_trigger', 'CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e', 'CMS_eff_lep','CMS_eff_e', 'CMS_eff_m','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_ZewkWeight','QCDscale_ren', 'QCDscale_fac', 'QCDscale_ren_TT', 'QCDscale_fac_TT', 'QCDscale_ren_VV', 'QCDscale_fac_VV', 'preFire']
+    sys = ['CMS_res_j','CMS_pdf','CMS_eff_b','CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDscale_ren_TT','QCDscale_fac_TT','QCDscale_ren_VV','QCDscale_fac_VV','preFire']
 else:
     sys = []
-jesUnc = ['','AbsoluteMPFBias', 'AbsoluteScale', 'AbsoluteStat', 'FlavorQCD', 'Fragmentation', 'PileUpDataMC', 'PileUpPtBB', 'PileUpPtEC1', 'PileUpPtEC2', 'PileUpPtHF', 'PileUpPtRef', 'RelativeFSR', 'RelativeJEREC1', 'RelativeJEREC2', 'RelativeJERHF', 'RelativePtBB', 'RelativePtEC1', 'RelativePtEC2', 'RelativePtHF', 'RelativeBal', 'RelativeSample', 'RelativeStatEC', 'RelativeStatFSR', 'RelativeStatHF', 'SinglePionECAL', 'SinglePionHCAL', 'TimePtEta']
+jesUnc = ['','AbsoluteMPFBias','AbsoluteScale','AbsoluteStat','FlavorQCD','Fragmentation','PileUpDataMC','PileUpPtBB','PileUpPtEC1','PileUpPtEC2','PileUpPtHF','PileUpPtRef','RelativeFSR','RelativeJEREC1','RelativeJEREC2','RelativeJERHF','RelativePtBB','RelativePtEC1','RelativePtEC2','RelativePtHF','RelativeBal','RelativeSample','RelativeStatEC','RelativeStatFSR','RelativeStatHF','SinglePionECAL','SinglePionHCAL','TimePtEta']
 if doSysSecondHalf or plotSys:
     for unc in jesUnc:
         sys.append('CMS_scale'+unc+'_j')
@@ -1042,7 +1042,8 @@ for process in MCSamples:
                         hists[dataset.replace('tChan','tttDM').replace('tWChan','tttDM')] += hist
                     if (process == 'ttbar scalar') or (process == 'ttbar pseudoscalar'):
                         hists[dataset] += hist
-                        hists[dataset.replace('ttDM','tttDM')] += hist
+                        if 'MPhi125_scalar' not in dataset:
+                            hists[dataset.replace('ttDM','tttDM')] += hist
             elif process == 'ttbarPlusJets':
                 hists[dataset] += hist
                 if doBinned:
@@ -1067,7 +1068,8 @@ for process in MCSamples:
                                 addSys(dataset.replace('tChan','tttDM').replace('tWChan','tttDM'), MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
                             if (process == 'ttbar scalar') or (process == 'ttbar pseudoscalar'):
                                 addSys(dataset, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
-                                addSys(dataset.replace('tChan','tttDM').replace('tWChan','tttDM'), MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                                if 'MPhi125_scalar' not in dataset:
+                                    addSys(dataset.replace('tChan','tttDM').replace('tWChan','tttDM'), MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
                     elif process == 'ttbarPlusJets':
                         addSys(dataset, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
                         if doBinned:
