@@ -1069,7 +1069,7 @@ for process in MCSamples:
                             if (process == 'ttbar scalar') or (process == 'ttbar pseudoscalar'):
                                 addSys(dataset, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
                                 if 'MPhi125_scalar' not in dataset:
-                                    addSys(dataset.replace('tChan','tttDM').replace('tWChan','tttDM'), MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
+                                    addSys(dataset.replace('ttDM','tttDM'), MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
                     elif process == 'ttbarPlusJets':
                         addSys(dataset, MCSamples[process][dataset][filepath+'_Events'], var, weight+'*('+cuts[cut]+')', sysName)
                         if doBinned:
@@ -1261,7 +1261,7 @@ if doBinned:
                     for signalType in ['tDM','tttDM']:
                         binContent = hists[signalType+'_'+massCombination+'_'+mediator].GetBinContent(i)
                         binError = hists[signalType+'_'+massCombination+'_'+mediator].GetBinError(i)
-                        binnedHist = TH1F(datasetsignalType+'_'+massCombination+'_'+mediator, '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        binnedHist = TH1F(signalType+'_'+massCombination+'_'+mediator, '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
                         binnedHist.SetBinContent(1, binContent)
                         binnedHist.SetBinError(1, binError)
                         binnedHist.Write()
@@ -1333,7 +1333,7 @@ if doBinned:
                             for signalType in ['tDM','tttDM']:
                                 binContent = syshists[signalType+'_'+massCombination+'_'+mediator + '_' + sysName + suffix].GetBinContent(i)
                                 binError = syshists[signalType+'_'+massCombination+'_'+mediator + '_' + sysName + suffix].GetBinError(i)
-                                binnedHist = TH1F(datasetsignalType+'_'+massCombination+'_'+mediator, '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                                binnedHist = TH1F(signalType+'_'+massCombination+'_'+mediator, '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
                                 binnedHist.SetBinContent(1, binContent)
                                 binnedHist.SetBinError(1, binError)
                                 binnedHist.Write()

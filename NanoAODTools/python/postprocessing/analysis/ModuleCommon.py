@@ -17,8 +17,8 @@ from PhysicsTools.NanoAODTools.postprocessing.modules.jme.jetmetHelperRun2 impor
 print 'Python version = ', sys.version
 
 #Set runLocal to false if running jobs through CRAB
-runLocal = False
-#runLocal = True
+#runLocal = False
+runLocal = True
 
 #Set jesSys to "All" for split JES systematics and "Total" for combined JES systematics
 jesSys = "All"
@@ -281,10 +281,14 @@ class CommonAnalysis(Module):
             self.out.branch("qcdWWeightRenDown", "F")
             self.out.branch("qcdWWeightFacUp", "F")
             self.out.branch("qcdWWeightFacDown", "F")
-            self.out.branch("qcdZWeightRenUp", "F")
-            self.out.branch("qcdZWeightRenDown", "F")
-            self.out.branch("qcdZWeightFacUp", "F")
-            self.out.branch("qcdZWeightFacDown", "F")
+            self.out.branch("qcdZTo2NuWeightRenUp", "F")
+            self.out.branch("qcdZTo2NuWeightRenDown", "F")
+            self.out.branch("qcdZTo2NuWeightFacUp", "F")
+            self.out.branch("qcdZTo2NuWeightFacDown", "F")
+            self.out.branch("qcdZTo2LWeightRenUp", "F")
+            self.out.branch("qcdZTo2LWeightRenDown", "F")
+            self.out.branch("qcdZTo2LWeightFacUp", "F")
+            self.out.branch("qcdZTo2LWeightFacDown", "F")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -1609,7 +1613,9 @@ to next event)"""
 
             #Calculate EWK and QCD k factors if a Gen V particles exists (Z or W)
             ewkWWeight = ewkZWeight = qcdWWeight = qcdZTo2NuWeight = qcdZTo2LWeight = 1
-            qcdWWeightRenUp = qcdWWeightRenDown = qcdWWeightFacUp = qcdWWeightFacDown = qcdZWeightRenUp = qcdZWeightRenDown = qcdZWeightFacUp = qcdZWeightFacDown = 1
+            qcdWWeightRenUp = qcdWWeightRenDown = qcdWWeightFacUp = qcdWWeightFacDown = 1
+            qcdZTo2NuWeightRenUp = qcdZTo2NuWeightRenDown = qcdZTo2NuWeightFacUp = qcdZTo2NuWeightFacDown = 1
+            qcdZTo2LWeightRenUp = qcdZTo2LWeightRenDown = qcdZTo2LWeightFacUp = qcdZTo2LWeightFacDown = 1
             genParticles = Collection(event, "GenPart")
             GenV = filter(lambda gen : (gen.pdgId == 23 or abs(gen.pdgId) == 24) and gen.status == 22, genParticles)
             if len(GenV) > 0:
@@ -1623,10 +1629,14 @@ to next event)"""
                 qcdWWeightRenDown *= self.kFactorTool.getRenDownW(GenV_pt)
                 qcdWWeightFacUp *= self.kFactorTool.getFacUpW(GenV_pt)
                 qcdWWeightFacDown *= self.kFactorTool.getFacDownW(GenV_pt)
-                qcdZWeightRenUp *= self.kFactorTool.getRenUpZ(GenV_pt)
-                qcdZWeightRenDown *= self.kFactorTool.getRenDownZ(GenV_pt)
-                qcdZWeightFacUp *= self.kFactorTool.getFacUpZ(GenV_pt)
-                qcdZWeightFacDown *= self.kFactorTool.getFacDownZ(GenV_pt)
+                qcdZTo2NuWeightRenUp *= self.kFactorTool.getRenUpZTo2Nu(GenV_pt)
+                qcdZTo2NuWeightRenDown *= self.kFactorTool.getRenDownZTo2Nu(GenV_pt)
+                qcdZTo2NuWeightFacUp *= self.kFactorTool.getFacUpZTo2Nu(GenV_pt)
+                qcdZTo2NuWeightFacDown *= self.kFactorTool.getFacDownZTo2Nu(GenV_pt)
+                qcdZTo2LWeightRenUp *= self.kFactorTool.getRenUpZTo2L(GenV_pt)
+                qcdZTo2LWeightRenDown *= self.kFactorTool.getRenDownZTo2L(GenV_pt)
+                qcdZTo2LWeightFacUp *= self.kFactorTool.getFacUpZTo2L(GenV_pt)
+                qcdZTo2LWeightFacDown *= self.kFactorTool.getFacDownZTo2L(GenV_pt)
 
         #Emulate HLT_Ele32_WPTight_Gsf trigger for 2017 Run B (https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIISummary#Emulation_of_HLT_Ele32_WPTight_G)
         passEle32WPTightGsf2017 = False
@@ -1830,10 +1840,14 @@ to next event)"""
                 self.out.fillBranch("qcdWWeightRenDown", qcdWWeightRenDown)
                 self.out.fillBranch("qcdWWeightFacUp", qcdWWeightFacUp)
                 self.out.fillBranch("qcdWWeightFacDown", qcdWWeightFacDown)
-                self.out.fillBranch("qcdZWeightRenUp", qcdZWeightRenUp)
-                self.out.fillBranch("qcdZWeightRenDown", qcdZWeightRenDown)
-                self.out.fillBranch("qcdZWeightFacUp", qcdZWeightFacUp)
-                self.out.fillBranch("qcdZWeightFacDown", qcdZWeightFacDown)
+                self.out.fillBranch("qcdZTo2NuWeightRenUp", qcdZTo2NuWeightRenUp)
+                self.out.fillBranch("qcdZTo2NuWeightRenDown", qcdZTo2NuWeightRenDown)
+                self.out.fillBranch("qcdZTo2NuWeightFacUp", qcdZTo2NuWeightFacUp)
+                self.out.fillBranch("qcdZTo2NuWeightFacDown", qcdZTo2NuWeightFacDown)
+                self.out.fillBranch("qcdZTo2LWeightRenUp", qcdZTo2LWeightRenUp)
+                self.out.fillBranch("qcdZTo2LWeightRenDown", qcdZTo2LWeightRenDown)
+                self.out.fillBranch("qcdZTo2LWeightFacUp", qcdZTo2LWeightFacUp)
+                self.out.fillBranch("qcdZTo2LWeightFacDown", qcdZTo2LWeightFacDown)
             return True
         else:
             return False
@@ -1937,28 +1951,28 @@ countEvents = lambda : CountEvents()
 
 # #########################################################################################################################################
 
-# if runLocal:
-#     #Select PostProcessor options here
-#     selection=None
-#     #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-#     #outputDir = "testSamples/"
-#     outputDir = "."
-#     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-#     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-#     #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
-#     #inputFiles=["/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tChan_Mchi1Mphi100_scalar_full.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full1.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
-#     #inputFiles=["testSamples/SingleElectron_2016H.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-#     inputFiles=["/hdfs/store/user/vshang/signalMC/tDM_2018/DMPseudo_top_tChan_Mchi1_Mphi450_TuneCP5_13TeV-madgraph-mcatnlo-pythia8/tree_all.root"]
-#     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
-#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
-#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
-#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt"
-#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+if runLocal:
+    #Select PostProcessor options here
+    selection=None
+    #outputDir = "outDir2016AnalysisSR/ttbarDM/"
+    #outputDir = "testSamples/"
+    outputDir = "."
+    #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+    outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+    #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
+    #inputFiles=["/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tChan_Mchi1Mphi100_scalar_full.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full1.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
+    #inputFiles=["/hdfs/store/user/vshang/testSamples/nanoAODv7/SingleElectron_2016H_v7.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
+    inputFiles=["ttbarPlusJets_Run2018_v7.root"]
+    #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
+    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt"
+    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon_2016MC_fixedv2",noOut=False,outputbranchsel=outputbranches)
-#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC_Skim()],postfix="_pseudo2018_tChan_Mchi1_Mphi450",noOut=False,outputbranchsel=outputbranches)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
-#     p.run()
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018MC_Skim()],postfix="_ModuleCommon05182022",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC_Skim()],postfix="_pseudo2018_tChan_Mchi1_Mphi450",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
+    p.run()

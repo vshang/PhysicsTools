@@ -74,25 +74,121 @@ class KFactorTool:
             return sf
 
     def getRenUpW(self, pt):
-        return get2016RenUpW(pt)
+        if self.year == 2016:
+            return get2016RenUpW(pt)
+        else:
+            sf = 1.053*math.exp(-3.163e-3*pt)+0.746
+            ratio = get2016RenUpW(pt)/get2016QCDW(pt)
+            return sf*ratio
 
     def getRenDownW(self, pt):
-        return get2016RenDownW(pt)
+        if self.year == 2016:
+            return get2016RenDownW(pt)
+        else:
+            sf = 1.053*math.exp(-3.163e-3*pt)+0.746
+            ratio = get2016RenDownW(pt)/get2016QCDW(pt)
+            return sf*ratio
 
     def getFacUpW(self, pt):
-        return get2016FacUpW(pt)
+        if self.year == 2016:
+            return get2016FacUpW(pt)
+        else:
+            sf = 1.053*math.exp(-3.163e-3*pt)+0.746
+            ratio = get2016FacUpW(pt)/get2016QCDW(pt)
+            return sf*ratio
 
     def getFacDownW(self, pt):
-        return get2016FacDownW(pt)
+        if self.year == 2016:
+            return get2016FacDownW(pt)
+        else:
+            sf = 1.053*math.exp(-3.163e-3*pt)+0.746
+            ratio = get2016FacDownW(pt)/get2016QCDW(pt)
+            return sf*ratio
 
-    def getRenUpZ(self, pt):
-        return get2016RenUpZ(pt)
+    def getRenUpZTo2Nu(self, pt):
+        if self.year == 2016:
+            return get2016RenUpZ(pt)
+        else:
+            bin = self.nlo_qcd_ZTo2Nu.GetXaxis().FindBin(pt)
+            if bin == 0: bin = 1
+            elif bin > self.nlo_qcd_ZTo2Nu.GetXaxis().GetNbins(): bin -= 1
+            sf = self.nlo_qcd_ZTo2Nu.GetBinContent(bin)
+            ratio = get2016RenUpZ(pt)/get2016QCDZ(pt)
+            return sf*ratio
 
-    def getRenDownZ(self, pt):
-        return get2016RenDownZ(pt)
+    def getRenDownZTo2Nu(self, pt):
+        if self.year == 2016:
+            return get2016RenDownZ(pt)
+        else:
+            bin = self.nlo_qcd_ZTo2Nu.GetXaxis().FindBin(pt)
+            if bin == 0: bin = 1
+            elif bin > self.nlo_qcd_ZTo2Nu.GetXaxis().GetNbins(): bin -= 1
+            sf = self.nlo_qcd_ZTo2Nu.GetBinContent(bin)
+            ratio = get2016RenDownZ(pt)/get2016QCDZ(pt)
+            return sf*ratio
 
-    def getFacUpZ(self, pt):
-        return get2016FacUpZ(pt)
+    def getFacUpZTo2Nu(self, pt):
+        if self.year == 2016:
+            return get2016FacUpZ(pt)
+        else:
+            bin = self.nlo_qcd_ZTo2Nu.GetXaxis().FindBin(pt)
+            if bin == 0: bin = 1
+            elif bin > self.nlo_qcd_ZTo2Nu.GetXaxis().GetNbins(): bin -= 1
+            sf = self.nlo_qcd_ZTo2Nu.GetBinContent(bin)
+            ratio = get2016FacUpZ(pt)/get2016QCDZ(pt)
+            return sf*ratio
 
-    def getFacDownZ(self, pt):
-        return get2016FacDownZ(pt)
+    def getFacDownZTo2Nu(self, pt):
+        if self.year == 2016:
+            return get2016FacDownZ(pt)
+        else:
+            bin = self.nlo_qcd_ZTo2Nu.GetXaxis().FindBin(pt)
+            if bin == 0: bin = 1
+            elif bin > self.nlo_qcd_ZTo2Nu.GetXaxis().GetNbins(): bin -= 1
+            sf = self.nlo_qcd_ZTo2Nu.GetBinContent(bin)
+            ratio = get2016FacDownZ(pt)/get2016QCDZ(pt)
+            return sf*ratio
+
+    def getRenUpZTo2L(self, pt):
+        if self.year == 2016:
+            return get2016RenUpZ(pt)
+        else:
+            bin = self.nlo_qcd_ZTo2L.GetXaxis().FindBin(pt)
+            if bin == 0: bin = 1
+            elif bin > self.nlo_qcd_ZTo2L.GetXaxis().GetNbins(): bin -= 1
+            sf = self.nlo_qcd_ZTo2L.GetBinContent(bin)
+            ratio = get2016RenUpZ(pt)/get2016QCDZ(pt)
+            return sf*ratio
+
+    def getRenDownZTo2L(self, pt):
+        if self.year == 2016:
+            return get2016RenDownZ(pt)
+        else:
+            bin = self.nlo_qcd_ZTo2L.GetXaxis().FindBin(pt)
+            if bin == 0: bin = 1
+            elif bin > self.nlo_qcd_ZTo2L.GetXaxis().GetNbins(): bin -= 1
+            sf = self.nlo_qcd_ZTo2L.GetBinContent(bin)
+            ratio = get2016RenDownZ(pt)/get2016QCDZ(pt)
+            return sf*ratio
+
+    def getFacUpZTo2L(self, pt):
+        if self.year == 2016:
+            return get2016FacUpZ(pt)
+        else:
+            bin = self.nlo_qcd_ZTo2L.GetXaxis().FindBin(pt)
+            if bin == 0: bin = 1
+            elif bin > self.nlo_qcd_ZTo2L.GetXaxis().GetNbins(): bin -= 1
+            sf = self.nlo_qcd_ZTo2L.GetBinContent(bin)
+            ratio = get2016FacUpZ(pt)/get2016QCDZ(pt)
+            return sf*ratio
+
+    def getFacDownZTo2L(self, pt):
+        if self.year == 2016:
+            return get2016FacDownZ(pt)
+        else:
+            bin = self.nlo_qcd_ZTo2L.GetXaxis().FindBin(pt)
+            if bin == 0: bin = 1
+            elif bin > self.nlo_qcd_ZTo2L.GetXaxis().GetNbins(): bin -= 1
+            sf = self.nlo_qcd_ZTo2L.GetBinContent(bin)
+            ratio = get2016FacDownZ(pt)/get2016QCDZ(pt)
+            return sf*ratio

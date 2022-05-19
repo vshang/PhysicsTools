@@ -7,8 +7,8 @@ import math
 import numpy as np
 
 gErrorIgnoreLevel = kError
-date = '06_16_2021'
-year = 2017
+date = '05_18_2022'
+year = 2016
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
     samples = samples2016
@@ -103,8 +103,11 @@ for HTbin in samples['WPlusJets']:
     for filepath in samples['WPlusJets'][HTbin]['filepaths']:
         samples['WPlusJets'][HTbin][filepath+'_TFile'] = TFile.Open(filepath,'')
         samples['WPlusJets'][HTbin][filepath+'_Events'] = samples['WPlusJets'][HTbin][filepath+'_TFile'].Get('Events')
-        skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_03182021', 'countEvents_03182021'),'')
-        nevents += skimFile.Get('Events').GetEntries()
+        runsTree = samples['WPlusJets'][HTbin][filepath+'_TFile'].Get('Runs')
+        nRuns = runsTree.GetEntries()
+        for i in range(nRuns):
+            runsTree.GetEntry(i)
+            nevents += runsTree.genEventCount
     samples['WPlusJets'][HTbin]['nevents'] = nevents
     print '    nevents in WPlusJets ', HTbin, ': ', nevents
 print("Got WPlusJets MC sample root files and event trees")
@@ -192,8 +195,8 @@ if saveRootFiles:
     rootFile = TFile('MET_Trigger_SFs_'+str(year)+'.root', 'RECREATE')
     ratioHist = TH1F('SF', histoLabel, nbins, xmin, xmax)
     for i in range(1,nbins+2):
-        binContent = hists['1eEffRatio'].GetBinContent(i)
-        binError = hists['1eEffRatio'].GetBinError(i)
+        binContent = hists['1mEffRatio'].GetBinContent(i)
+        binError = hists['1mEffRatio'].GetBinError(i)
         ratioHist.SetBinContent(i, binContent)
         ratioHist.SetBinError(i, binError)
     ratioHist.Write()

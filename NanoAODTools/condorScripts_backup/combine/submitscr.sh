@@ -1,33 +1,25 @@
 #!/bin/sh
-# submitscr.sh 
-# Script to create rundirs and corresponding submit files
+#Script to submit jobs to run combine code in Analysis.tar.gz
+massPoints=("50" "100" "150" "200" "250" "300" "350" "400" "450" "500")
+mediatorTypes=("scalar" "pseudo")
+channel = "ALL"
 
-# Create the name of the rundir
-while :
-do
-    RUNDIR="RunIIFull_scalar_50"
-    if [ ! -d "${RUNDIR}" ]; then 
-	echo "using ${RUNDIR}"
-	break
-    fi
+echo "Submitting combine jobs for $channel channel..."
+
+for med in ${mediatorTypes[@]}; do
+    for mass in ${massPoints[@]}; do
+	echo $med $mass
+	cd ${med}_${mass}
+	./submitscr_${channel}.sh
+	ls
+	cd ..
+    done
 done
 
-# actually create the directory
-mkdir "${RUNDIR}"
+echo "scalar 125"
+cd scalar_125
+./submitscr_{channel}.sh
+ls
+cd ..
 
-# create the submit description file
-SUBMIT="${RUNDIR}/submit"
-cat > "${SUBMIT}" << EOF
-executable = ./runcombine.sh
-output = ${RUNDIR}/runcombine.stdoutD
-error = ${RUNDIR}/runcombine.stderr
-log = ${RUNDIR}/runcombine.condor_log
-requestdisk = 20G
-requestmemory = 16G
-transfer_input_files = /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_8_0_26_patch1/src/HiggsAnalysis.tar.gz,/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_8_0_26_patch1/src/Analysis.tar.gz
-use_x509userproxy = True
-queue
-EOF
-
-# submit the job
-condor_submit "${SUBMIT}"
+echo "Finished submitting jobs for combine."
