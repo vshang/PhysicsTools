@@ -16,7 +16,7 @@ path = modulepath+"/btag/"
 
 class BTagWPs:
   """Contain b tagging working points."""
-  def __init__( self, tagger, year=2016, UL=False ):
+  def __init__( self, tagger, year=2016 ):
     assert( year in [2016,2017,2018] ), "You must choose a year from: 2016, 2017, or 2018."
     if year==2016:
       if 'deep' in tagger.lower():
@@ -28,11 +28,7 @@ class BTagWPs:
         self.medium   = 0.8484
         self.tight    = 0.9535
     elif year==2017:
-      if UL: #See https://twiki.cern.ch/twiki/bin/view/CMS/BtagRecommendation106XUL17#AK4_b_tagging for WPs
-        self.loose    = 0.1355
-        self.medium   = 0.4506
-        self.tight    = 0.7738
-      elif 'deep' in tagger.lower():
+      if 'deep' in tagger.lower():
         self.loose    = 0.1522 # for 94X
         self.medium   = 0.4941
         self.tight    = 0.8001
@@ -41,11 +37,7 @@ class BTagWPs:
         self.medium   = 0.8838
         self.tight    = 0.9693
     elif year==2018:
-      if UL: #See https://twiki.cern.ch/twiki/bin/view/CMS/BtagRecommendation106XUL18#AK4_b_tagging for WPs
-        self.loose    = 0.1208
-        self.medium   = 0.4168
-        self.tight    = 0.7665
-      elif 'deep' in tagger.lower():
+      if 'deep' in tagger.lower():
         self.loose    = 0.1241 # for 102X
         self.medium   = 0.4184
         self.tight    = 0.7527
@@ -57,47 +49,48 @@ class BTagWPs:
 
 class BTagWeightTool:
     
-    def __init__(self, tagger='CSVv2', wp='medium', sigma='central', channel='ttbar', year=2016, UL=False):
+    def __init__(self, tagger='DeepCSV', wp='medium', sigmabc='central', sigmalight='central', channel='ttbar', year=2016):
         """Load b tag weights from CSV file."""
         
         assert(year in [2016,2017,2018]), "You must choose a year from: 2016, 2017, or 2018."
         assert(tagger in ['CSVv2','DeepCSV']), "BTagWeightTool: You must choose a tagger from: CSVv2, DeepCSV!"
         assert(wp in ['loose','medium','tight']), "BTagWeightTool: You must choose a WP from: loose, medium, tight!"
-        assert(sigma in ['central','up','down']), "BTagWeightTool: You must choose a WP from: central, up, down!"
+        assert(sigmabc in ['central','up_correlated','down_correlated','up_uncorrelated','down_uncorrelated']), "BTagWeightTool: You must choose a WP for b/c jets from: central, up_correlated, down_correlated, up_uncorrelated, down_uncorrelated!"
+        assert(sigmalight in ['central','up_correlated','down_correlated','up_uncorrelated','down_uncorrelated']), "BTagWeightTool: You must choose a WP for light jets from: central, up_correlated, down_correlated, up_uncorrelated, down_uncorrelated!"
         #assert(channel in ['mutau','eletau','tautau','mumu']), "BTagWeightTool: You must choose a channel from: mutau, eletau, tautau, mumu!"
         
         # FILE
         if year==2016:
           if 'deep' in tagger.lower():
-            csvname = path+'DeepCSV_Moriond17_B_H.csv'
+            csvnamebc = path+'DeepCSV_2016LegacySF_V1_YearCorrelation-V1.csv'
+            csvnamelight = path+'DeepCSV_2016LegacySF_WP_V1.csv'
             effname = path+'DeepCSV_2016_Moriond17_eff.root'
           else:
-            csvname = path+'CSVv2_Moriond17_B_H.csv'
+            csvnamebc = path+'CSVv2_Moriond17_B_H.csv'
+            csvnamelight = path+'CSVv2_Moriond17_B_H.csv'
             effname = path+'CSVv2_2016_Moriond17_eff.root'
         elif year==2017:
-          if UL:
-            csvname = path+'DeepCSV_106XUL17SF_WPonly_V2p1.csv'
-            effname = path+'DeepCSV_2017_Fall17_eff.root'
-          elif 'deep' in tagger.lower():
-            csvname = path+'DeepCSV_94XSF_WP_V4_B_F.csv'
+          if 'deep' in tagger.lower():
+            csvnamebc = path+'DeepCSV_94XSF_V4_B_F_YearCorrelation-V1.csv'
+            csvnamelight = path+'DeepCSV_94XSF_WP_V4_B_F.csv'
             effname = path+'DeepCSV_2017_Fall17_eff.root'
           else:
-            csvname = path+'CSVv2_94XSF_V2_B_F.csv'
+            csvnamebc = path+'CSVv2_Moriond17_B_H.csv'
+            csvnamelight = path+'CSVv2_Moriond17_B_H.csv'
             effname = path+'CSVv2_2017_Fall17_eff.root'
         elif year==2018:
-          if UL:
-            csvname = path+'DeepCSV_106XUL18SF_WPonly_V1p1.csv'
-            effname = path+'DeepCSV_2018_Autumn18_eff.root'
-          elif 'deep' in tagger.lower():
-            csvname = path+'DeepCSV_102XSF_WP_V1.csv'
+          if 'deep' in tagger.lower():
+            csvnamebc = path+'DeepCSV_102XSF_V1_YearCorrelation-V1.csv'
+            csvnamelight = path+'DeepCSV_102XSF_WP_V1.csv'
             effname = path+'DeepCSV_2018_Autumn18_eff.root'
           else:
-            csvname = path+'CSVv2_94XSF_V2_B_F.csv'
+            csvnamebc = path+'CSVv2_94XSF_V2_B_F.csv'
+            csvnamelight = path+'CSVv2_94XSF_V2_B_F.csv'
             effname = path+'CSVv2_2018_Autumn18_eff.root'
         
         # TAGGING WP
         self.wpname = wp
-        self.wp     = getattr(BTagWPs(tagger,year, UL),wp)
+        self.wp     = getattr(BTagWPs(tagger,year),wp)
         if 'deep' in tagger.lower():
           tagged = lambda j: j.btagDeepB>self.wp
         else:
@@ -107,12 +100,16 @@ class BTagWeightTool:
         print "Loading BTagWeightTool for %s (%s WP)..."%(tagger,wp)
         op        = OP_LOOSE if wp=='loose' else OP_MEDIUM if wp=='medium' else OP_TIGHT if wp=='tight' else OP_RESHAPING
         type_udsg = 'incl'
-        type_bc   = 'comb' # 'mujets' for QCD; 'comb' for QCD+TT
-        calib     = BTagCalibration(tagger, csvname)
-        reader    = BTagCalibrationReader(op, sigma)
-        reader.load(calib, FLAV_B, type_bc)
-        reader.load(calib, FLAV_C, type_bc)
-        reader.load(calib, FLAV_UDSG, type_udsg)
+        type_bc   = 'mujets' # 'mujets' for QCD; 'comb' for QCD+TT
+        #Load reader for b/c jets
+        calibbc     = BTagCalibration(tagger, csvnamebc)
+        readerbc    = BTagCalibrationReader(op, sigmabc)
+        readerbc.load(calibbc, FLAV_B, type_bc)
+        readerbc.load(calibbc, FLAV_C, type_bc)
+        #Load reader for light jets
+        caliblight  = BTagCalibration(tagger, csvnamelight)
+        readerlight = BTagCalibrationReader(op, sigmalight)
+        readerlight.load(caliblight, FLAV_UDSG, type_udsg)
         
         # EFFICIENCIES
         effmaps    = { } # b tag efficiencies in MC to compute b tagging weight for an event
@@ -142,8 +139,10 @@ class BTagWeightTool:
                   "efficiency histogram with corrections/btag/getBTagEfficiencies.py after running all MC samples with BTagWeightTool.",title="BTagWeightTool")
         
         self.tagged  = tagged
-        self.calib   = calib
-        self.reader  = reader
+        self.calibbc   = calibbc
+        self.readerbc  = readerbc
+        self.caliblight = caliblight
+        self.readerlight = readerlight
         self.effmaps = effmaps
 
     def getWeight(self,jetCollection):
@@ -158,7 +157,10 @@ class BTagWeightTool:
         eta = jet.eta
         flavor = jet.hadronFlavour
         FLAV = flavorToFLAV(flavor)
-        SF   = self.reader.eval(FLAV,abs(eta),pt)
+        if FLAV == FLAV_UDSG:
+          SF   = self.readerlight.eval(FLAV,abs(eta),pt)
+        else:
+          SF   = self.readerbc.eval(FLAV,abs(eta),pt)
         tagged = self.tagged(jet)
         if tagged:
           weight = SF
