@@ -17,8 +17,8 @@ from PhysicsTools.NanoAODTools.postprocessing.modules.jme.jetmetHelperRun2 impor
 print 'Python version = ', sys.version
 
 #Set runLocal to false if running jobs through CRAB
-#runLocal = False
-runLocal = True
+runLocal = False
+#runLocal = True
 
 #Set jesSys to "All" for split JES systematics and "Total" for combined JES systematics
 jesSys = "All"
@@ -72,9 +72,15 @@ class CommonAnalysis(Module):
             self.eleSFs = ElectronSFs(self.year)
             self.muSFs = MuonSFs(self.year)
             self.METSFs = METSFs(self.year)
-            self.btagTool = BTagWeightTool(tagger=self.btag,wp='medium',channel='ttbar',year=self.year, UL=self.UL)
-            self.btagToolUp = BTagWeightTool(tagger=self.btag,wp='medium',sigma='up',channel='ttbar',year=self.year, UL=self.UL)
-            self.btagToolDown = BTagWeightTool(tagger=self.btag,wp='medium',sigma='down',channel='ttbar',year=self.year, UL=self.UL)
+            self.btagTool = BTagWeightTool(tagger=self.btag,wp='medium',channel='ttbar',year=self.year)
+            self.btagToolbcUpCorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='up_correlated',channel='ttbar',year=self.year)
+            self.btagToolbcDownCorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='down_correlated',channel='ttbar',year=self.year)
+            self.btagToolbcUpUncorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='up_uncorrelated',channel='ttbar',year=self.year)
+            self.btagToolbcDownUncorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='down_uncorrelated',channel='ttbar',year=self.year)
+            self.btagToollightUpCorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmalight='up_correlated',channel='ttbar',year=self.year)
+            self.btagToollightDownCorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmalight='down_correlated',channel='ttbar',year=self.year)
+            self.btagToollightUpUncorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmalight='up_uncorrelated',channel='ttbar',year=self.year)
+            self.btagToollightDownUncorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmalight='down_uncorrelated',channel='ttbar',year=self.year)
             self.puTool = PileupWeightTool(year=self.year, UL=self.UL)
             self.puToolUp = PileupWeightTool(year=self.year,sigma='up', UL=self.UL)
             self.puToolDown = PileupWeightTool(year=self.year,sigma='down', UL=self.UL)
@@ -263,8 +269,14 @@ class CommonAnalysis(Module):
 
             self.out.branch("bjetWeight", "F")
             #Systematics - b-tagging weights
-            self.out.branch("bjetWeightUp","F")
-            self.out.branch("bjetWeightDown","F")
+            self.out.branch("bjetWeightbcUpCorrelated","F")
+            self.out.branch("bjetWeightbcDownCorrelated","F")
+            self.out.branch("bjetWeightbcUpUncorrelated","F")
+            self.out.branch("bjetWeightbcDownUncorrelated","F")
+            self.out.branch("bjetWeightlightUpCorrelated","F")
+            self.out.branch("bjetWeightlightDownCorrelated","F")
+            self.out.branch("bjetWeightlightUpUncorrelated","F")
+            self.out.branch("bjetWeightlightDownUncorrelated","F")
 
             self.out.branch("puWeight", "F")
             #Systematics - Pile-up
@@ -289,6 +301,12 @@ class CommonAnalysis(Module):
             self.out.branch("qcdZTo2LWeightRenDown", "F")
             self.out.branch("qcdZTo2LWeightFacUp", "F")
             self.out.branch("qcdZTo2LWeightFacDown", "F")
+
+            #Systematics - parton shower weights
+            self.out.branch("PSWeightISRUp", "F")
+            self.out.branch("PSWeightISRDown", "F")
+            self.out.branch("PSWeightFSRUp", "F")
+            self.out.branch("PSWeightFSRDown", "F")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -1027,7 +1045,7 @@ to next event)"""
         noB2Bleadingfjet = True
         if njets > 0 and nfjets > 0:
             fjetMinDeltaPhi = min(abs(forwardJets[0].phi-METcorrected_phi),2*math.pi-abs(forwardJets[0].phi-METcorrected_phi))
-            if (forwardJets[0].pt > centralJets[0].pt) and (fjetMinDeltaPhi > 2.8):
+            if (forwardJets[0].pt_nom > centralJets[0].pt_nom) and (fjetMinDeltaPhi > 2.8):
                 noB2Bleadingfjet = False
 
         #Systematics - JES, JER (jets)
@@ -1279,47 +1297,47 @@ to next event)"""
             for sys in jesUnc:
                 if jesBranches["njetsScale"+sys+"Up"] > 0:
                     for jetScaleUp in jesBranches["centralJetsScale"+sys+"Up"]:
-                        jesBranches["H_TScale"+sys+"Up"] += jetScaleUp.pt_nom
+                        jesBranches["H_TScale"+sys+"Up"] += getJESjetpt(jetScaleUp, sys+"Up")
                         if self.btag == 'CSVv2':
                             jetScaleUp_btag = jetScaleUp.btagCSVV2
                         elif self.btag == 'DeepCSV':
                             jetScaleUp_btag = jetScaleUp.btagDeepB
                         if jetScaleUp_btag < btag_WP:
                             jesBranches["ljetVectorScale"+sys+"Up"].push_back(jetScaleUp.p4()*(getJESjetpt(jetScaleUp, sys+"Up")/jetScaleUp.pt_nom))
-                    jesBranches["jet1p_TH_TScale"+sys+"Up"] = jesBranches["centralJetsScale"+sys+"Up"][0].pt_nom/jesBranches["H_TScale"+sys+"Up"]
+                    jesBranches["jet1p_TH_TScale"+sys+"Up"] = getJESjetpt(jesBranches["centralJetsScale"+sys+"Up"][0], sys+"Up")/jesBranches["H_TScale"+sys+"Up"]
 
                 if jesBranches["njetsScale"+sys+"Down"] > 0:
                     for jetScaleDown in jesBranches["centralJetsScale"+sys+"Down"]:
-                        jesBranches["H_TScale"+sys+"Down"] += jetScaleDown.pt_nom
+                        jesBranches["H_TScale"+sys+"Down"] += getJESjetpt(jetScaleDown, sys+"Down")
                         if self.btag == 'CSVv2':
                             jetScaleDown_btag = jetScaleDown.btagCSVV2
                         elif self.btag == 'DeepCSV':
                             jetScaleDown_btag = jetScaleDown.btagDeepB
                         if jetScaleDown_btag < btag_WP:
                             jesBranches["ljetVectorScale"+sys+"Down"].push_back(jetScaleDown.p4()*(getJESjetpt(jetScaleDown, sys+"Down")/jetScaleDown.pt_nom))
-                    jesBranches["jet1p_TH_TScale"+sys+"Down"] = jesBranches["centralJetsScale"+sys+"Down"][0].pt_nom/jesBranches["H_TScale"+sys+"Down"]
+                    jesBranches["jet1p_TH_TScale"+sys+"Down"] = getJESjetpt(jesBranches["centralJetsScale"+sys+"Down"][0], sys+"Down")/jesBranches["H_TScale"+sys+"Down"]
 
             if njetsResUp > 0:
                 for jetResUp in centralJetsResUp:
-                    H_TResUp += jetResUp.pt_nom
+                    H_TResUp += jetResUp.pt_jerUp
                     if self.btag == 'CSVv2':
                         jetResUp_btag = jetResUp.btagCSVV2
                     elif self.btag == 'DeepCSV':
                         jetResUp_btag = jetResUp.btagDeepB
                     if jetResUp_btag < btag_WP:
                         ljetVectorResUp.push_back(jetResUp.p4()*(jetResUp.pt_jerUp/jetResUp.pt_nom))
-                jet1p_TH_TResUp = centralJetsResUp[0].pt_nom/H_TResUp
+                jet1p_TH_TResUp = centralJetsResUp[0].pt_jerUp/H_TResUp
 
             if njetsResDown > 0:
                 for jetResDown in centralJetsResDown:
-                    H_TResDown += jetResDown.pt_nom
+                    H_TResDown += jetResDown.pt_jerDown
                     if self.btag == 'CSVv2':
                         jetResDown_btag = jetResDown.btagCSVV2
                     elif self.btag == 'DeepCSV':
                         jetResDown_btag = jetResDown.btagDeepB
                     if jetResDown_btag < btag_WP:
                         ljetVectorResDown.push_back(jetResDown.p4()*(jetResDown.pt_jerDown/jetResDown.pt_nom))
-                jet1p_TH_TResDown = centralJetsResDown[0].pt_nom/H_TResDown
+                jet1p_TH_TResDown = centralJetsResDown[0].pt_jerDown/H_TResDown
 
         #Calculate M_T^b
         M_Tb = -9 #If there are no bjets, set value to -9 to indicate M_Tb cannot be calculated
@@ -1338,12 +1356,12 @@ to next event)"""
                     bjet1_btag = bjet1.btagCSVV2
                 elif self.btag == 'DeepCSV':
                     bjet_btag = bjet.btagDeepB
-                    bjet1_btag = bjet.btagDeepB
+                    bjet1_btag = bjet1.btagDeepB
                 if bjet_btag > bjet1_btag:
                     bjet1 = bjet
 
             deltaPhiMTb = bjet1.phi - METcorrected_phi
-            M_Tb = math.sqrt(2 * METcorrected_pt * bjet1.pt * (1 - math.cos(deltaPhiMTb)))
+            M_Tb = math.sqrt(2 * METcorrected_pt * bjet1.pt_nom * (1 - math.cos(deltaPhiMTb)))
 
         #Systematics - JES, JER
         if self.isMC:
@@ -1362,7 +1380,7 @@ to next event)"""
                             bjetScaleUp1 = bjetScaleUp
 
                     jesBranches["deltaPhiMTbScale"+sys+"Up"] = bjetScaleUp1.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]
-                    jesBranches["M_TbScale"+sys+"Up"] = math.sqrt(2 * jesBranches["METcorrected_ptScale"+sys+"Up"] * bjetScaleUp1.pt_nom * (1 - math.cos(jesBranches["deltaPhiMTbScale"+sys+"Up"])))
+                    jesBranches["M_TbScale"+sys+"Up"] = math.sqrt(2 * jesBranches["METcorrected_ptScale"+sys+"Up"] * getJESjetpt(bjetScaleUp1, sys+"Up") * (1 - math.cos(jesBranches["deltaPhiMTbScale"+sys+"Up"])))
 
                 if jesBranches["nbjetsScale"+sys+"Down"] > 0:
                     bjetScaleDown1 = jesBranches["bJetsScale"+sys+"Down"][0]
@@ -1378,7 +1396,7 @@ to next event)"""
                             bjetScaleDown1 = bjetScaleDown
 
                     jesBranches["deltaPhiMTbScale"+sys+"Down"] = bjetScaleDown1.phi - jesBranches["METcorrected_phiScale"+sys+"Down"]
-                    jesBranches["M_TbScale"+sys+"Down"] = math.sqrt(2 * jesBranches["METcorrected_ptScale"+sys+"Down"] * bjetScaleDown1.pt_nom * (1 - math.cos(jesBranches["deltaPhiMTbScale"+sys+"Down"])))
+                    jesBranches["M_TbScale"+sys+"Down"] = math.sqrt(2 * jesBranches["METcorrected_ptScale"+sys+"Down"] * getJESjetpt(bjetScaleDown1, sys+"Down") * (1 - math.cos(jesBranches["deltaPhiMTbScale"+sys+"Down"])))
 
             if nbjetsResUp > 0:
                 bjetResUp1 = bJetsResUp[0]
@@ -1394,7 +1412,7 @@ to next event)"""
                         bjetResUp1 = bjetResUp
 
                 deltaPhiMTbResUp = bjetResUp1.phi - METcorrected_phiResUp
-                M_TbResUp = math.sqrt(2 * METcorrected_ptResUp * bjetResUp1.pt_nom * (1 - math.cos(deltaPhiMTbResUp)))
+                M_TbResUp = math.sqrt(2 * METcorrected_ptResUp * bjetResUp1.pt_jerUp * (1 - math.cos(deltaPhiMTbResUp)))
 
             if nbjetsResDown > 0:
                 bjetResDown1 = bJetsResDown[0]
@@ -1410,7 +1428,7 @@ to next event)"""
                         bjetResDown1 = bjetResDown
             
                 deltaPhiMTbResDown = bjetResDown1.phi - METcorrected_phiResDown
-                M_TbResDown = math.sqrt(2 * METcorrected_ptResDown * bjetResDown1.pt_nom * (1 - math.cos(deltaPhiMTbResDown)))
+                M_TbResDown = math.sqrt(2 * METcorrected_ptResDown * bjetResDown1.pt_jerDown * (1 - math.cos(deltaPhiMTbResDown)))
 
         #Calculate M_T, M_T2^W, M_T2^ll, and topness variables using PFMET
         M_T = M_T2W = M_T2ll  = -9 #If there are not enough tight leptons, set value to -9 to indicate variable cannot be calculated
@@ -1555,7 +1573,7 @@ to next event)"""
                     pdfWeightUp = 1 + pdfRMS
                     pdfWeightDown = 1 - pdfRMS
                 else:
-                    pdfWeightUp = pdfWeightDown = -9
+                    pdfWeightUp = pdfWeightDown = 1
 
                 #Get QCD renormalization and factorization scale weight systematics (see [1] for more info)
                 #[1] https://hypernews.cern.ch/HyperNews/CMS/get/physTools/3663.html?inline=-1
@@ -1565,7 +1583,7 @@ to next event)"""
                     qcdFacWeightUp = event.LHEScaleWeight[5]
                     qcdFacWeightDown = event.LHEScaleWeight[3]
                 else:
-                    qcdRenWeightUp = qcdRenWeightDown = qcdFacWeightUp = qcdFacWeightDown = -9 
+                    qcdRenWeightUp = qcdRenWeightDown = qcdFacWeightUp = qcdFacWeightDown = 1
 
             #Calculate lepton scale factor and trigger weights
             leptonWeight = leptonWeightUp = leptonWeightDown = 1
@@ -1603,8 +1621,14 @@ to next event)"""
 
             #Calculate b-jet scale factor weight
             bjetWeight = self.btagTool.getWeight(centralJets)
-            bjetWeightUp = self.btagToolUp.getWeight(centralJets)
-            bjetWeightDown = self.btagToolDown.getWeight(centralJets)
+            bjetWeightbcUpCorrelated = self.btagToolbcUpCorrelated.getWeight(centralJets)
+            bjetWeightbcDownCorrelated = self.btagToolbcDownCorrelated.getWeight(centralJets)
+            bjetWeightbcUpUncorrelated = self.btagToolbcUpUncorrelated.getWeight(centralJets)
+            bjetWeightbcDownUncorrelated = self.btagToolbcDownUncorrelated.getWeight(centralJets)
+            bjetWeightlightUpCorrelated = self.btagToollightUpCorrelated.getWeight(centralJets)
+            bjetWeightlightDownCorrelated = self.btagToollightDownCorrelated.getWeight(centralJets)
+            bjetWeightlightUpUncorrelated = self.btagToollightUpUncorrelated.getWeight(centralJets)
+            bjetWeightlightDownUncorrelated = self.btagToollightDownUncorrelated.getWeight(centralJets)
 
             #Calculate PU weight
             puWeight = self.puTool.getWeight(event.Pileup_nTrueInt)
@@ -1637,6 +1661,14 @@ to next event)"""
                 qcdZTo2LWeightRenDown *= self.kFactorTool.getRenDownZTo2L(GenV_pt)
                 qcdZTo2LWeightFacUp *= self.kFactorTool.getFacUpZTo2L(GenV_pt)
                 qcdZTo2LWeightFacDown *= self.kFactorTool.getFacDownZTo2L(GenV_pt)
+
+            #Calculate parton shower weights
+            PSWeightISRUp = PSWeightISRDown = PSWeightFSRUp = PSWeightFSRDown = 1
+            if event.nPSWeight == 4:
+                PSWeightISRUp = event.PSWeight[2]
+                PSWeightISRDown = event.PSWeight[0]
+                PSWeightFSRUp = event.PSWeight[3]
+                PSWeightFSRDown = event.PSWeight[1]
 
         #Emulate HLT_Ele32_WPTight_Gsf trigger for 2017 Run B (https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIISummary#Emulation_of_HLT_Ele32_WPTight_G)
         passEle32WPTightGsf2017 = False
@@ -1821,9 +1853,15 @@ to next event)"""
                 self.out.fillBranch("EE_L1_prefire_WeightDown", EE_L1_prefire_WeightDown)
 
                 self.out.fillBranch("bjetWeight", bjetWeight)
-                #Systematics - b-tag weights
-                self.out.fillBranch("bjetWeightUp",bjetWeightUp)
-                self.out.fillBranch("bjetWeightDown",bjetWeightDown)
+                #Systematics - b-tagging weights
+                self.out.fillBranch("bjetWeightbcUpCorrelated",bjetWeightbcUpCorrelated)
+                self.out.fillBranch("bjetWeightbcDownCorrelated",bjetWeightbcDownCorrelated)
+                self.out.fillBranch("bjetWeightbcUpUncorrelated",bjetWeightbcUpUncorrelated)
+                self.out.fillBranch("bjetWeightbcDownUncorrelated",bjetWeightbcDownUncorrelated)
+                self.out.fillBranch("bjetWeightlightUpCorrelated",bjetWeightlightUpCorrelated)
+                self.out.fillBranch("bjetWeightlightDownCorrelated",bjetWeightlightDownCorrelated)
+                self.out.fillBranch("bjetWeightlightUpUncorrelated",bjetWeightlightUpUncorrelated)
+                self.out.fillBranch("bjetWeightlightDownUncorrelated",bjetWeightlightDownUncorrelated)
 
                 self.out.fillBranch("puWeight", puWeight)
                 #Systematics - Pile-up
@@ -1848,6 +1886,12 @@ to next event)"""
                 self.out.fillBranch("qcdZTo2LWeightRenDown", qcdZTo2LWeightRenDown)
                 self.out.fillBranch("qcdZTo2LWeightFacUp", qcdZTo2LWeightFacUp)
                 self.out.fillBranch("qcdZTo2LWeightFacDown", qcdZTo2LWeightFacDown)
+
+                #Systematics - parton shower weights
+                self.out.fillBranch("PSWeightISRUp", PSWeightISRUp)
+                self.out.fillBranch("PSWeightISRDown", PSWeightISRDown)
+                self.out.fillBranch("PSWeightFSRUp", PSWeightFSRUp)
+                self.out.fillBranch("PSWeightFSRDown", PSWeightFSRDown)
             return True
         else:
             return False
@@ -1951,28 +1995,28 @@ countEvents = lambda : CountEvents()
 
 # #########################################################################################################################################
 
-if runLocal:
-    #Select PostProcessor options here
-    selection=None
-    #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-    #outputDir = "testSamples/"
-    outputDir = "."
-    #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-    outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-    #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
-    #inputFiles=["/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tChan_Mchi1Mphi100_scalar_full.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full1.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
-    #inputFiles=["/hdfs/store/user/vshang/testSamples/nanoAODv7/SingleElectron_2016H_v7.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-    inputFiles=["ttbarPlusJets_Run2016_v7.root"]
-    #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+# if runLocal:
+#     #Select PostProcessor options here
+#     selection=None
+#     #outputDir = "outDir2016AnalysisSR/ttbarDM/"
+#     #outputDir = "testSamples/"
+#     outputDir = "."
+#     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+#     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+#     #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
+#     #inputFiles=["/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tChan_Mchi1Mphi100_scalar_full.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full1.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
+#     #inputFiles=["/hdfs/store/user/vshang/testSamples/nanoAODv7/SingleElectron_2016H_v7.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
+#     inputFiles=["ttbarPlusJets_Run2017_v7.root"]
+#     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon05182022",noOut=False,outputbranchsel=outputbranches)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC_Skim()],postfix="_pseudo2018_tChan_Mchi1_Mphi450",noOut=False,outputbranchsel=outputbranches)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
-    p.run()
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2017MC(),analyze2017MC_Skim()],postfix="_ModuleCommon06062022v5",noOut=False,outputbranchsel=outputbranches)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC_Skim()],postfix="_pseudo2018_tChan_Mchi1_Mphi450",noOut=False,outputbranchsel=outputbranches)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
+#     p.run()
