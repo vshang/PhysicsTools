@@ -14,27 +14,42 @@ parser = optparse.OptionParser(usage)
 parser.add_option('-c', '--cutName', action='store', type='string', default='', dest='cutName')
 parser.add_option('-f', '--sysFirstHalf', action='store_true', default=False, dest='sysFirstHalf')
 parser.add_option('-s', '--sysSecondHalf', action='store_true', default=False, dest='sysSecondHalf')
+parser.add_option('-y', '--year', action='store', type='int', default=0, dest='optionYear')
+parser.add_option('-p', '--plot', action='store_true', default=False, dest='optionPlot')
 (options, args) = parser.parse_args()
 
 condor_cut = options.cutName
 condor_sysFirstHalf = options.sysFirstHalf
 condor_sysSecondHalf = options.sysSecondHalf
+condor_year = options.optionYear
+condor_plot = options.optionPlot
 
 global counter
 counter = True
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/systematics/CMS_HF_W/'
-#saveDirectory = 'plots/CR_2016/METcorrected_pt/'
+saveDirectory = 'plots/systematics/debug_JES_JER/'
+#saveDirectory = 'plots/CR_2018/METcorrected_pt/'
 #saveDirectory = 'plots/topness_studies/'
 #saveDirectory = 'plots/EEl1prefire_studies/'
-date = '05_16_2022'
+date = '06_21_2022'
 year = 2016
 useUL = False
 useCondor = True
 applyHEMfix = True
 partialUnblind = False
+
+#If cut and year options are specified, use those instead
+if condor_year != 0:
+    year = condor_year
+    saveDirectory = saveDirectory.replace('2016',str(year)).replace('2017',str(year)).replace('2018',str(year))
+if condor_cut != '':
+    if 'SR' in condor_cut:
+        saveDirectory = saveDirectory.replace('CR','SR')
+    else:
+        saveDirectory = saveDirectory.replace('SR','CR')
+
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
 if year == 2016:
     dataSamples = data2016
@@ -317,19 +332,19 @@ var = 'METcorrected_pt'
 #var = 'modified_topness'
 #var = 'full_topness'
 
-#If using Condor, use command line option instead
-if useCondor:
+#If cut option is not empty, use that instead
+if condor_cut != '':
     cut = condor_cut
     if (cut == 'AH2lZR') or (cut == 'AH2eZR') or (cut == 'AH2mZR'):
         var = 'recoilPtMiss'
 
 #Set lumi (fb^-1) and overall signal sample scale factor here
 if year == 2016:
-    lumi = 35.92
+    lumi = 36.33
 elif year == 2017:
     lumi = 41.53
 elif year == 2018:
-    lumi = 59.83
+    lumi = 59.74
     #lumi = 21.08 #Before HEM 15/16 Issue
     #lumi = 38.75 #After HEM 15/16 Issue
     # lumi = 14.03 #Run A
@@ -363,9 +378,9 @@ if partialUnblind:
 print('Creating histograms..')
 
 #Set histogram options
-nbins = 7
+nbins = 15
 xmin = 250
-xmax = 530
+xmax = 550
 auto_y = True
 doLogPlot = False
 drawData = True
@@ -383,7 +398,7 @@ doSysSecondHalf = False
 drawOverflow = True
 drawUnderflow = False
 plotSys = False
-plotSysVar = 'CMS_HF_W'
+plotSysVar = 'CMS_res_j'
 plotSysSignal = False
 TH1.SetDefaultSumw2()
 
@@ -409,6 +424,20 @@ if not auto_y:
     ymin = 60
     ymax = 20000
 
+#If plot and cut option enabled, use those instead
+if (condor_cut != '') and condor_plot:
+    savePlots = True
+    if 'SL' in condor_cut:
+        nbins = 7
+        xmin = 250
+        xmax = 530
+        doLogPlot = False
+    elif 'AH' in condor_cut:
+        nbins = 15
+        xmin = 250
+        xmax = 550
+        doLogPlot = True
+
 histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; Hadronic recoil (GeV); Events'
 #histoLabel = '; #phi^{miss}; Events'
@@ -427,9 +456,8 @@ histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; number of central jets; Events'
 #histoLabel = '; modified topness; Events (normalized)'
 
-if useCondor:
-    if (cut== 'AH2lZR') or (cut == 'AH2eZR') or (cut == 'AH2mZR'):
-        histoLabel = '; Hadronic recoil (GeV); Events'
+if (condor_cut== 'AH2lZR') or (condor_cut == 'AH2eZR') or (condor_cut == 'AH2mZR'):
+    histoLabel = '; Hadronic recoil (GeV); Events'
 
 #histoLabel = cut + ' M_{T} distribution; M_{T} (GeV); Events'
 #histoLabel = cut + ' M_{T2}^{W} distribution; M_{T2}^{W} (GeV); Events'
@@ -498,7 +526,7 @@ gStyle.SetOptStat(0)
 
 
 #Define signal and background histograms
-signalMassPoints = ['MChi1_MPhi50', 'MChi1_MPhi100', 'MChi1_MPhi150', 'MChi1_MPhi200', 'MChi1_MPhi250', 'MChi1_MPhi300', 'MChi1_MPhi350', 'MChi1_MPhi400', 'MChi1_MPhi450', 'MChi1_MPhi500']
+signalMassPoints = ['MChi1_MPhi10', 'MChi1_MPhi50', 'MChi1_MPhi100', 'MChi1_MPhi150', 'MChi1_MPhi200', 'MChi1_MPhi250', 'MChi1_MPhi300', 'MChi1_MPhi350', 'MChi1_MPhi400', 'MChi1_MPhi450', 'MChi1_MPhi500']
 if doBinned:
     signal = ['ttbar scalar', 'ttbar pseudoscalar', 'tbar scalar', 'tbar pseudoscalar']
 else:
@@ -506,7 +534,7 @@ else:
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
 if doSysFirstHalf or plotSys:
-    sys = ['CMS_res_j','CMS_pdf','CMS_eff_b','CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDscale_ren_TT','QCDscale_fac_TT','QCDscale_ren_VV','QCDscale_fac_VV','preFire']
+    sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDscale_ren_TT','QCDscale_fac_TT','QCDscale_ren_VV','QCDscale_fac_VV','preFire','CMS_PSisr','CMS_PSfsr']
 else:
     sys = []
 jesUnc = ['','AbsoluteMPFBias','AbsoluteScale','AbsoluteStat','FlavorQCD','Fragmentation','PileUpDataMC','PileUpPtBB','PileUpPtEC1','PileUpPtEC2','PileUpPtHF','PileUpPtRef','RelativeFSR','RelativeJEREC1','RelativeJEREC2','RelativeJERHF','RelativePtBB','RelativePtEC1','RelativePtEC2','RelativePtHF','RelativeBal','RelativeSample','RelativeStatEC','RelativeStatFSR','RelativeStatHF','SinglePionECAL','SinglePionHCAL','TimePtEta']
@@ -544,13 +572,13 @@ if plotSys:
 ########################################################
 
 #Helper function to fill histograms for systematics
-def addSys(histName, eventTree, var, cut, sysName, addHist=True):
+def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
     # print '        Adding systematic histograms for ' + histName + '_' + sysName + '...'
     if addHist:
         histUp = TH1F('histUp', histoLabel, nbins, xmin, xmax)
         histDown = TH1F('histDown', histoLabel, nbins, xmin, xmax)
     varUp = varDown = var
-    cutUp = cutDown = cut
+    weightedcutUp = weightedcutDown = weightedcut
 
     #Systematics
     for unc in jesUnc:
@@ -562,35 +590,35 @@ def addSys(histName, eventTree, var, cut, sysName, addHist=True):
                 varUp = var.replace('recoilPtMiss','recoilPtMissScale'+unc+'Up')
                 varDown = var.replace('recoilPtMiss','recoilPtMissScale'+unc+'Down')
         
-            cutUp = cut.replace('METcorrected_pt ','METcorrected_ptScale'+unc+'Up ')
-            cutUp = cutUp.replace('njets ','njetsScale'+unc+'Up ')
-            cutUp = cutUp.replace('nfjets ','nfjetsScale'+unc+'Up ')
-            cutUp = cutUp.replace('nbjets ','nbjetsScale'+unc+'Up ')
-            cutUp = cutUp.replace('minDeltaPhi ','minDeltaPhiScale'+unc+'Up ')
-            cutUp = cutUp.replace('minDeltaPhi12 ','minDeltaPhi12Scale'+unc+'Up ')
-            cutUp = cutUp.replace('M_Tb ','M_TbScale'+unc+'Up ')
-            cutUp = cutUp.replace('M_T ','M_TScale'+unc+'Up ')
-            cutUp = cutUp.replace('M_T2W ','M_T2WScale'+unc+'Up ')
-            cutUp = cutUp.replace('M_T2ll ','M_T2llScale'+unc+'Up ')
-            cutUp = cutUp.replace('jet1p_TH_T ','jet1p_TH_TScale'+unc+'Up ')
-            cutUp = cutUp.replace('modified_topness ','modified_topnessScale'+unc+'Up ')
-            cutUp = cutUp.replace('full_topness ','full_topnessScale'+unc+'Up ')
+            weightedcutUp = weightedcut.replace('METcorrected_pt ','METcorrected_ptScale'+unc+'Up ')
+            weightedcutUp = weightedcutUp.replace('njets ','njetsScale'+unc+'Up ')
+            weightedcutUp = weightedcutUp.replace('nfjets ','nfjetsScale'+unc+'Up ')
+            weightedcutUp = weightedcutUp.replace('nbjets ','nbjetsScale'+unc+'Up ')
+            weightedcutUp = weightedcutUp.replace('minDeltaPhi ','minDeltaPhiScale'+unc+'Up ')
+            weightedcutUp = weightedcutUp.replace('minDeltaPhi12 ','minDeltaPhi12Scale'+unc+'Up ')
+            weightedcutUp = weightedcutUp.replace('M_Tb ','M_TbScale'+unc+'Up ')
+            weightedcutUp = weightedcutUp.replace('M_T ','M_TScale'+unc+'Up ')
+            weightedcutUp = weightedcutUp.replace('M_T2W ','M_T2WScale'+unc+'Up ')
+            weightedcutUp = weightedcutUp.replace('M_T2ll ','M_T2llScale'+unc+'Up ')
+            weightedcutUp = weightedcutUp.replace('jet1p_TH_T ','jet1p_TH_TScale'+unc+'Up ')
+            weightedcutUp = weightedcutUp.replace('modified_topness ','modified_topnessScale'+unc+'Up ')
+            weightedcutUp = weightedcutUp.replace('full_topness ','full_topnessScale'+unc+'Up ')
 
-            cutDown = cut.replace('METcorrected_pt ','METcorrected_ptScale'+unc+'Down ')
-            cutDown = cutDown.replace('njets ','njetsScale'+unc+'Down ')
-            cutDown = cutDown.replace('nfjets ','nfjetsScale'+unc+'Down ')
-            cutDown = cutDown.replace('nbjets ','nbjetsScale'+unc+'Down ')
-            cutDown = cutDown.replace('minDeltaPhi ','minDeltaPhiScale'+unc+'Down ')
-            cutDown = cutDown.replace('minDeltaPhi12 ','minDeltaPhi12Scale'+unc+'Down ')
-            cutDown = cutDown.replace('M_Tb ','M_TbScale'+unc+'Down ')
-            cutDown = cutDown.replace('M_T ','M_TScale'+unc+'Down ')
-            cutDown = cutDown.replace('M_T2W ','M_T2WScale'+unc+'Down ')
-            cutDown = cutDown.replace('M_T2ll ','M_T2llScale'+unc+'Down ')
-            cutDown = cutDown.replace('jet1p_TH_T ','jet1p_TH_TScale'+unc+'Down ')
-            cutDown = cutDown.replace('modified_topness ','modified_topnessScale'+unc+'Down ')
-            cutDown = cutDown.replace('full_topness ','full_topnessScale'+unc+'Down ')
+            weightedcutDown = weightedcut.replace('METcorrected_pt ','METcorrected_ptScale'+unc+'Down ')
+            weightedcutDown = weightedcutDown.replace('njets ','njetsScale'+unc+'Down ')
+            weightedcutDown = weightedcutDown.replace('nfjets ','nfjetsScale'+unc+'Down ')
+            weightedcutDown = weightedcutDown.replace('nbjets ','nbjetsScale'+unc+'Down ')
+            weightedcutDown = weightedcutDown.replace('minDeltaPhi ','minDeltaPhiScale'+unc+'Down ')
+            weightedcutDown = weightedcutDown.replace('minDeltaPhi12 ','minDeltaPhi12Scale'+unc+'Down ')
+            weightedcutDown = weightedcutDown.replace('M_Tb ','M_TbScale'+unc+'Down ')
+            weightedcutDown = weightedcutDown.replace('M_T ','M_TScale'+unc+'Down ')
+            weightedcutDown = weightedcutDown.replace('M_T2W ','M_T2WScale'+unc+'Down ')
+            weightedcutDown = weightedcutDown.replace('M_T2ll ','M_T2llScale'+unc+'Down ')
+            weightedcutDown = weightedcutDown.replace('jet1p_TH_T ','jet1p_TH_TScale'+unc+'Down ')
+            weightedcutDown = weightedcutDown.replace('modified_topness ','modified_topnessScale'+unc+'Down ')
+            weightedcutDown = weightedcutDown.replace('full_topness ','full_topnessScale'+unc+'Down ')
 
-    if sysName == 'CMS_res_j':
+    if 'CMS_res_j' in sysName:
         if var == 'METcorrected_pt':
             varUp = var.replace('METcorrected_pt','METcorrected_ptResUp')
             varDown = var.replace('METcorrected_pt','METcorrected_ptResDown')
@@ -598,233 +626,253 @@ def addSys(histName, eventTree, var, cut, sysName, addHist=True):
             varUp = var.replace('recoilPtMiss','recoilPtMissResUp')
             varDown = var.replace('recoilPtMiss','recoilPtMissResDown')
         
-        cutUp = cut.replace('METcorrected_pt ','METcorrected_ptResUp ')
-        cutUp = cutUp.replace('njets ','njetsResUp ')
-        cutUp = cutUp.replace('nfjets ','nfjetsResUp ')
-        cutUp = cutUp.replace('nbjets ','nbjetsResUp ')
-        cutUp = cutUp.replace('minDeltaPhi ','minDeltaPhiResUp ')
-        cutUp = cutUp.replace('minDeltaPhi12 ','minDeltaPhi12ResUp ')
-        cutUp = cutUp.replace('M_Tb ','M_TbResUp ')
-        cutUp = cutUp.replace('M_T ','M_TResUp ')
-        cutUp = cutUp.replace('M_T2W ','M_T2WResUp ')
-        cutUp = cutUp.replace('M_T2ll ','M_T2llResUp ')
-        cutUp = cutUp.replace('jet1p_TH_T ','jet1p_TH_TResUp ')
-        cutUp = cutUp.replace('modified_topness ','modified_topnessResUp ')
-        cutUp = cutUp.replace('full_topness ','full_topnessResUp ')
+        weightedcutUp = weightedcut.replace('METcorrected_pt ','METcorrected_ptResUp ')
+        weightedcutUp = weightedcutUp.replace('njets ','njetsResUp ')
+        weightedcutUp = weightedcutUp.replace('nfjets ','nfjetsResUp ')
+        weightedcutUp = weightedcutUp.replace('nbjets ','nbjetsResUp ')
+        weightedcutUp = weightedcutUp.replace('minDeltaPhi ','minDeltaPhiResUp ')
+        weightedcutUp = weightedcutUp.replace('minDeltaPhi12 ','minDeltaPhi12ResUp ')
+        weightedcutUp = weightedcutUp.replace('M_Tb ','M_TbResUp ')
+        weightedcutUp = weightedcutUp.replace('M_T ','M_TResUp ')
+        weightedcutUp = weightedcutUp.replace('M_T2W ','M_T2WResUp ')
+        weightedcutUp = weightedcutUp.replace('M_T2ll ','M_T2llResUp ')
+        weightedcutUp = weightedcutUp.replace('jet1p_TH_T ','jet1p_TH_TResUp ')
+        weightedcutUp = weightedcutUp.replace('modified_topness ','modified_topnessResUp ')
+        weightedcutUp = weightedcutUp.replace('full_topness ','full_topnessResUp ')
 
-        cutDown = cut.replace('METcorrected_pt ','METcorrected_ptResDown ')
-        cutDown = cutDown.replace('njets ','njetsResDown ')
-        cutDown = cutDown.replace('nfjets ','nfjetsResDown ')
-        cutDown = cutDown.replace('nbjets ','nbjetsResDown ')
-        cutDown = cutDown.replace('minDeltaPhi ','minDeltaPhiResDown ')
-        cutDown = cutDown.replace('minDeltaPhi12 ','minDeltaPhi12ResDown ')
-        cutDown = cutDown.replace('M_Tb ','M_TbResDown ')
-        cutDown = cutDown.replace('M_T ','M_TResDown ')
-        cutDown = cutDown.replace('M_T2W ','M_T2WResDown ')
-        cutDown = cutDown.replace('M_T2ll ','M_T2llResDown ')
-        cutDown = cutDown.replace('jet1p_TH_T ','jet1p_TH_TResDown ')
-        cutDown = cutDown.replace('modified_topness ','modified_topnessResDown ')
-        cutDown = cutDown.replace('full_topness ','full_topnessResDown ')
+        weightedcutDown = weightedcut.replace('METcorrected_pt ','METcorrected_ptResDown ')
+        weightedcutDown = weightedcutDown.replace('njets ','njetsResDown ')
+        weightedcutDown = weightedcutDown.replace('nfjets ','nfjetsResDown ')
+        weightedcutDown = weightedcutDown.replace('nbjets ','nbjetsResDown ')
+        weightedcutDown = weightedcutDown.replace('minDeltaPhi ','minDeltaPhiResDown ')
+        weightedcutDown = weightedcutDown.replace('minDeltaPhi12 ','minDeltaPhi12ResDown ')
+        weightedcutDown = weightedcutDown.replace('M_Tb ','M_TbResDown ')
+        weightedcutDown = weightedcutDown.replace('M_T ','M_TResDown ')
+        weightedcutDown = weightedcutDown.replace('M_T2W ','M_T2WResDown ')
+        weightedcutDown = weightedcutDown.replace('M_T2ll ','M_T2llResDown ')
+        weightedcutDown = weightedcutDown.replace('jet1p_TH_T ','jet1p_TH_TResDown ')
+        weightedcutDown = weightedcutDown.replace('modified_topness ','modified_topnessResDown ')
+        weightedcutDown = weightedcutDown.replace('full_topness ','full_topnessResDown ')
 
     elif sysName == 'CMS_WqcdWeightRen':
-        cutUp = cut.replace('qcdWWeight','qcdWWeightRenUp')
-        cutDown = cut.replace('qcdWWeight','qcdWWeightRenDown')
+        weightedcutUp = weightedcut.replace('qcdWWeight','qcdWWeightRenUp')
+        weightedcutDown = weightedcut.replace('qcdWWeight','qcdWWeightRenDown')
 
     elif sysName == 'CMS_WqcdWeightFac':
-        cutUp = cut.replace('qcdWWeight','qcdWWeightFacUp')
-        cutDown = cut.replace('qcdWWeight','qcdWWeightFacDown')
+        weightedcutUp = weightedcut.replace('qcdWWeight','qcdWWeightFacUp')
+        weightedcutDown = weightedcut.replace('qcdWWeight','qcdWWeightFacDown')
 
     elif sysName == 'CMS_ZqcdWeightRen':
-        cutUp = cut.replace('qcdZTo2LWeight','qcdZWeightRenUp')
-        cutUp = cutUp.replace('qcdZTo2NuWeight','qcdZWeightRenUp')
-        cutDown = cut.replace('qcdZTo2LWeight','qcdZWeightRenDown')
-        cutDown = cutDown.replace('qcdZTo2NuWeight','qcdZWeightRenDown')
+        weightedcutUp = weightedcut.replace('qcdZTo2LWeight','qcdZTo2LWeightRenUp')
+        weightedcutUp = weightedcutUp.replace('qcdZTo2NuWeight','qcdZTo2NuWeightRenUp')
+        weightedcutDown = weightedcut.replace('qcdZTo2LWeight','qcdZTo2LWeightRenDown')
+        weightedcutDown = weightedcutDown.replace('qcdZTo2NuWeight','qcdZTo2NuWeightRenDown')
 
     elif sysName == 'CMS_ZqcdWeightFac':
-        cutUp = cut.replace('qcdZTo2LWeight','qcdZWeightFacUp')
-        cutUp = cut.replace('qcdZTo2NuWeight','qcdZWeightFacUp')
-        cutDown = cut.replace('qcdZTo2LWeight','qcdZWeightFacDown')
-        cutDown = cut.replace('qcdZTo2NuWeight','qcdZWeightFacDown')
+        weightedcutUp = weightedcut.replace('qcdZTo2LWeight','qcdZTo2LWeightFacUp')
+        weightedcutUp = weightedcut.replace('qcdZTo2NuWeight','qcdZTo2NuWeightFacUp')
+        weightedcutDown = weightedcut.replace('qcdZTo2LWeight','qcdZTo2LWeightFacDown')
+        weightedcutDown = weightedcut.replace('qcdZTo2NuWeight','qcdZTo2NuWeightFacDown')
 
     elif sysName == 'CMS_WewkWeight':
-        cutUp = cut.replace('ewkWWeight', '1')
-        cutDown = cut
+        weightedcutUp = weightedcut.replace('ewkWWeight', '1')
+        weightedcutDown = weightedcut
 
     elif sysName == 'CMS_ZewkWeight':
-        cutUp = cut.replace('ewkZWeight', '1')
-        cutDown = cut
+        weightedcutUp = weightedcut.replace('ewkZWeight', '1')
+        weightedcutDown = weightedcut
 
     elif sysName == 'CMS_pdf':
         if year == 2016:
             if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName): 
-                cutUp = cut + '*pdfWeightUp'
-                cutDown = cut + '*pdfWeightDown'
+                weightedcutUp = weightedcut + '*pdfWeightUp'
+                weightedcutDown = weightedcut + '*pdfWeightDown'
         elif (year == 2017) or (year == 2018):
             if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName)  and ('QCD' not in histName): 
-                cutUp = cut + '*pdfWeightUp'
-                cutDown = cut + '*pdfWeightDown'
+                weightedcutUp = weightedcut + '*pdfWeightUp'
+                weightedcutDown = weightedcut + '*pdfWeightDown'
 
     elif sysName == 'CMS_HF':
         if ('WPlusJets' in histName) or ('ZTo2L' in histName) or ('ZTo2Nu' in histName):
-            cutUp = cut + '*1.20'
-            cutDown = cut + '*0.8'
+            weightedcutUp = weightedcut + '*1.20'
+            weightedcutDown = weightedcut + '*0.8'
 
     elif sysName == 'CMS_HF_V':
         if ('WPlusJets' in histName) or ('ZTo2L' in histName) or ('ZTo2Nu' in histName):
-            cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
-            cutDown = cut + '*(nbjets >= 1 ? 0.8 : 1.)'
+            weightedcutUp = weightedcut + '*(nbjets >= 1 ? 1.2 : 1.)'
+            weightedcutDown = weightedcut + '*(nbjets >= 1 ? 0.8 : 1.)'
 
     elif sysName == 'CMS_HF_W':
         if ('WPlusJets' in histName):
-            cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
-            cutDown = cut + '*(nbjets >= 1 ? 0.8 : 1.)'
+            weightedcutUp = weightedcut + '*(nbjets >= 1 ? 1.2 : 1.)'
+            weightedcutDown = weightedcut + '*(nbjets >= 1 ? 0.8 : 1.)'
 
     elif sysName == 'CMS_HF_Z':
         if ('ZTo2L' in histName) or ('ZTo2Nu' in histName):
-            cutUp = cut + '*(nbjets >= 1 ? 1.2 : 1.)'
-            cutDown = cut + '*(nbjets >= 1 ? 0.8 : 1.)'
+            weightedcutUp = weightedcut + '*(nbjets >= 1 ? 1.2 : 1.)'
+            weightedcutDown = weightedcut + '*(nbjets >= 1 ? 0.8 : 1.)'
 
-    elif sysName == 'CMS_eff_b':
-        cutUp = cut.replace('bjetWeight','bjetWeightUp')
-        cutDown = cut.replace('bjetWeight','bjetWeightDown')
+    elif sysName == 'CMS_eff_b_corr':
+        weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightbcUpCorrelated')
+        weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightbcDownCorrelated')
+    
+    elif sysName == 'CMS_eff_b_light_corr':
+        weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightlightUpCorrelated')
+        weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightlightDownCorrelated')
+
+    elif sysName == 'CMS_eff_b_'+str(year):
+        weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightbcUpUncorrelated')
+        weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightbcDownUncorrelated')
+
+    elif sysName == 'CMS_eff_b_light_'+str(year):
+        weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightlightUpUncorrelated')
+        weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightlightDownUncorrelated')
 
     elif sysName == 'CMS_scale_pu':
-        cutUp = cut.replace('puWeight','puWeightUp')
-        cutDown = cut.replace('puWeight','puWeightDown')
+        weightedcutUp = weightedcut.replace('puWeight','puWeightUp')
+        weightedcutDown = weightedcut.replace('puWeight','puWeightDown')
 
     elif sysName == 'CMS_eff_lep_trigger':
-        cutUp = cut.replace('electronTriggerWeight','electronTriggerWeightUp')
-        cutUp = cutUp.replace('muonTriggerWeight','muonTriggerWeightUp')
-        cutDown = cut.replace('electronTriggerWeight','electronTriggerWeightDown')
-        cutDown = cutDown.replace('muonTriggerWeight','muonTriggerWeightDown')
+        weightedcutUp = weightedcut.replace('electronTriggerWeight','electronTriggerWeightUp')
+        weightedcutUp = weightedcutUp.replace('muonTriggerWeight','muonTriggerWeightUp')
+        weightedcutDown = weightedcut.replace('electronTriggerWeight','electronTriggerWeightDown')
+        weightedcutDown = weightedcutDown.replace('muonTriggerWeight','muonTriggerWeightDown')
 
     elif sysName == 'CMS_trig_e':
-        cutUp = cut.replace('electronTriggerWeight','electronTriggerWeightUp')
-        cutDown = cut.replace('electronTriggerWeight','electronTriggerWeightDown')
+        weightedcutUp = weightedcut.replace('electronTriggerWeight','electronTriggerWeightUp')
+        weightedcutDown = weightedcut.replace('electronTriggerWeight','electronTriggerWeightDown')
         # if ('e' in cut) or ('1l' in cut) or ('2l' in cut):
-        #     cutUp = cutUp + '*1.020'
-        #     cutDown = cutDown + '*0.980'
+        #     weightedcutUp = weightedcutUp + '*1.020'
+        #     weightedcutDown = weightedcutDown + '*0.980'
 
     elif sysName == 'CMS_trig_m':
-        cutUp = cut.replace('muonTriggerWeight','muonTriggerWeightUp')
-        cutDown = cut.replace('muonTriggerWeight','muonTriggerWeightDown')
+        weightedcutUp = weightedcut.replace('muonTriggerWeight','muonTriggerWeightUp')
+        weightedcutDown = weightedcut.replace('muonTriggerWeight','muonTriggerWeightDown')
         # if ('m' in cut) or ('1l' in cut) or ('2l' in cut):
-        #     cutUp = cutUp + '*1.002'
-        #     cutDown = cutDown + '*0.998'
+        #     weightedcutUp = weightedcutUp + '*1.002'
+        #     weightedcutDown = weightedcutDown + '*0.998'
 
     elif sysName == 'CMS_eff_met_trigger':
         if ('e' not in cut) and ('m' not in cut) and ('1l' not in cut) and ('2l' not in cut):
-            cutUp = cut + '*1.02'
-            cutDown = cut + '*0.98'
+            weightedcutUp = weightedcut + '*1.02'
+            weightedcutDown = weightedcut + '*0.98'
 
     elif sysName == 'CMS_eff_lep':
-        cutUp = cut.replace('leptonWeight','leptonWeightUp')
-        cutDown = cut.replace('leptonWeight','leptonWeightDown')
+        weightedcutUp = weightedcut.replace('leptonWeight','leptonWeightUp')
+        weightedcutDown = weightedcut.replace('leptonWeight','leptonWeightDown')
 
     elif sysName == 'CMS_eff_e_old':
-        cutUp = cut.replace('leptonWeight','leptonWeightUp')
-        cutDown = cut.replace('leptonWeight','leptonWeightDown')
+        weightedcutUp = weightedcut.replace('leptonWeight','leptonWeightUp')
+        weightedcutDown = weightedcut.replace('leptonWeight','leptonWeightDown')
         
     elif sysName == 'CMS_eff_m_old':
-        cutUp = cut.replace('leptonWeight','leptonWeightUp')
-        cutDown = cut.replace('leptonWeight','leptonWeightDown')
+        weightedcutUp = weightedcut.replace('leptonWeight','leptonWeightUp')
+        weightedcutDown = weightedcut.replace('leptonWeight','leptonWeightDown')
 
     elif sysName == 'CMS_eff_e':
-        cutUp = cut.replace('leptonWeight','leptonWeightUp')
-        cutDown = cut.replace('leptonWeight','leptonWeightDown')
-        if ('e' in cut) or ('1l' in cut) or ('2l' in cut):
-            cutUp = cutUp + '*1.010'
-            cutDown = cutDown + '*0.990'
+        weightedcutUp = weightedcut.replace('leptonWeight','leptonWeightUp')
+        weightedcutDown = weightedcut.replace('leptonWeight','leptonWeightDown')
+        # if ('e' in cut) or ('1l' in cut) or ('2l' in cut):
+        #     weightedcutUp = weightedcutUp + '*1.010'
+        #     weightedcutDown = weightedcutDown + '*0.990'
 
     elif sysName == 'CMS_eff_m':
-        cutUp = cut.replace('leptonWeight','leptonWeightUp')
-        cutDown = cut.replace('leptonWeight','leptonWeightDown')
-        if ('m' in cut) or ('1l' in cut) or ('2l' in cut):
-            cutUp = cutUp + '*1.014'
-            cutDown = cutDown + '*0.986'
+        weightedcutUp = weightedcut.replace('leptonWeight','leptonWeightUp')
+        weightedcutDown = weightedcut.replace('leptonWeight','leptonWeightDown')
+        # if ('m' in cut) or ('1l' in cut) or ('2l' in cut):
+        #     weightedcutUp = weightedcutUp + '*1.014'
+        #     weightedcutDown = weightedcutDown + '*0.986'
     
     elif ('QCDscale' in sysName) and ('ren' in sysName):
         if year == 2016:
             if ('TT' in sysName) and ('TT' in histName):
-                cutUp = cut + '*qcdRenWeightUp'
-                cutDown = cut + '*qcdRenWeightDown'
+                weightedcutUp = weightedcut + '*qcdRenWeightUp'
+                weightedcutDown = weightedcut + '*qcdRenWeightDown'
             elif ('VV' in sysName) and ('VV' in histName):
-                cutUp = cut + '*qcdRenWeightUp'
-                cutDown = cut + '*qcdRenWeightDown'
+                weightedcutUp = weightedcut + '*qcdRenWeightUp'
+                weightedcutDown = weightedcut + '*qcdRenWeightDown'
             elif ('O' in sysName) and (('QCD' in histName) or ('singleTop' in histName)):
-                cutUp = cut + '*qcdRenWeightUp'
-                cutDown = cut + '*qcdRenWeightDown'
+                weightedcutUp = weightedcut + '*qcdRenWeightUp'
+                weightedcutDown = weightedcut + '*qcdRenWeightDown'
             elif sysName == 'QCDscale_ren':
                 if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
-                    cutUp = cut + '*qcdRenWeightUp'
-                    cutDown = cut + '*qcdRenWeightDown'
+                    weightedcutUp = weightedcut + '*qcdRenWeightUp'
+                    weightedcutDown = weightedcut + '*qcdRenWeightDown'
         elif (year == 2017) or (year == 2018):
             if ('TT' in sysName) and ('TT' in histName):
-                cutUp = cut + '*qcdRenWeightUp'
-                cutDown = cut + '*qcdRenWeightDown'
+                weightedcutUp = weightedcut + '*qcdRenWeightUp'
+                weightedcutDown = weightedcut + '*qcdRenWeightDown'
             elif ('VV' in sysName) and ('VV' in histName):
-                cutUp = cut + '*qcdRenWeightUp'
-                cutDown = cut + '*qcdRenWeightDown'
+                weightedcutUp = weightedcut + '*qcdRenWeightUp'
+                weightedcutDown = weightedcut + '*qcdRenWeightDown'
             elif ('O' in sysName) and ('singleTop' in histName):
-                cutUp = cut + '*qcdRenWeightUp'
-                cutDown = cut + '*qcdRenWeightDown'
+                weightedcutUp = weightedcut + '*qcdRenWeightUp'
+                weightedcutDown = weightedcut + '*qcdRenWeightDown'
             elif sysName == 'QCDscale_ren':
                 if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName) and ('QCD' not in histName):
-                    cutUp = cut + '*qcdRenWeightUp'
-                    cutDown = cut + '*qcdRenWeightDown'
+                    weightedcutUp = weightedcut + '*qcdRenWeightUp'
+                    weightedcutDown = weightedcut + '*qcdRenWeightDown'
 
     elif ('QCDscale' in sysName) and ('fac' in sysName):
         if year == 2016:
             if ('TT' in sysName) and ('TT' in histName):
-                cutUp = cut + '*qcdFacWeightUp'
-                cutDown = cut + '*qcdFacWeightDown'
+                weightedcutUp = weightedcut + '*qcdFacWeightUp'
+                weightedcutDown = weightedcut + '*qcdFacWeightDown'
             elif ('VV' in sysName) and ('VV' in histName):
-                cutUp = cut + '*qcdFacWeightUp'
-                cutDown = cut + '*qcdFacWeightDown'
+                weightedcutUp = weightedcut + '*qcdFacWeightUp'
+                weightedcutDown = weightedcut + '*qcdFacWeightDown'
             elif ('O' in sysName) and (('QCD' in histName) or ('singleTop' in histName)):
-                cutUp = cut + '*qcdFacWeightUp'
-                cutDown = cut + '*qcdFacWeightDown'
+                weightedcutUp = weightedcut + '*qcdFacWeightUp'
+                weightedcutDown = weightedcut + '*qcdFacWeightDown'
             elif sysName == 'QCDscale_fac':
                 if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
-                    cutUp = cut + '*qcdFacWeightUp'
-                    cutDown = cut + '*qcdFacWeightDown'
+                    weightedcutUp = weightedcut + '*qcdFacWeightUp'
+                    weightedcutDown = weightedcut + '*qcdFacWeightDown'
         elif (year == 2017) or (year == 2018):
             if ('TT' in sysName) and ('TT' in histName):
-                cutUp = cut + '*qcdFacWeightUp'
-                cutDown = cut + '*qcdFacWeightDown'
+                weightedcutUp = weightedcut + '*qcdFacWeightUp'
+                weightedcutDown = weightedcut + '*qcdFacWeightDown'
             elif ('VV' in sysName) and ('VV' in histName):
-                cutUp = cut + '*qcdFacWeightUp'
-                cutDown = cut + '*qcdFacWeightDown'
+                weightedcutUp = weightedcut + '*qcdFacWeightUp'
+                weightedcutDown = weightedcut + '*qcdFacWeightDown'
             elif ('O' in sysName) and ('singleTop' in histName):
-                cutUp = cut + '*qcdFacWeightUp'
-                cutDown = cut + '*qcdFacWeightDown'
+                weightedcutUp = weightedcut + '*qcdFacWeightUp'
+                weightedcutDown = weightedcut + '*qcdFacWeightDown'
             elif sysName == 'QCDscale_fac':
                 if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName) and ('QCD' not in histName):
-                    cutUp = cut + '*qcdFacWeightUp'
-                    cutDown = cut + '*qcdFacWeightDown'
+                    weightedcutUp = weightedcut + '*qcdFacWeightUp'
+                    weightedcutDown = weightedcut + '*qcdFacWeightDown'
 
     elif sysName == 'pdf_accept_2l':
         if ('2e' in cut) or ('2m' in cut) or ('2l' in cut):
-            cutUp = cut + '*1.060'
-            cutDown = cut + '*0.940'
+            weightedcutUp = weightedcut + '*1.060'
+            weightedcutDown = weightedcut + '*0.940'
     
     elif sysName == 'pdf_accept_1l':
         if ('1e' in cut) or ('1m' in cut) or ('1l' in cut):
-            cutUp = cut + '*1.030'
-            cutDown = cut + '*0.970'
+            weightedcutUp = weightedcut + '*1.030'
+            weightedcutDown = weightedcut + '*0.970'
 
     elif sysName == 'pdf_accept_0l':
         if ('e' not in cut) and ('m' not in cut) and ('1l' not in cut) and ('2l' not in cut):
-            cutUp = cut + '*1.060'
-            cutDown = cut + '*0.940'
+            weightedcutUp = weightedcut + '*1.060'
+            weightedcutDown = weightedcut + '*0.940'
 
     elif sysName == 'preFire':
-        cutUp = cut.replace('EE_L1_prefire_Weight','EE_L1_prefire_WeightUp')
-        cutDown = cut.replace('EE_L1_prefire_Weight','EE_L1_prefire_WeightDown')
+        weightedcutUp = weightedcut.replace('EE_L1_prefire_Weight','EE_L1_prefire_WeightUp')
+        weightedcutDown = weightedcut.replace('EE_L1_prefire_Weight','EE_L1_prefire_WeightDown')
+
+    elif sysName == 'CMS_PSisr':
+        weightedcutUp = weightedcutUp + '*PSWeightISRUp'
+        weightedcutDown = weightedcutDown + '*PSWeightISRDown'
+
+    elif sysName == 'CMS_PSfsr':
+        weightedcutUp = weightedcutUp + '*PSWeightFSRUp'
+        weightedcutDown = weightedcutDown + '*PSWeightFSRDown'
 
     if addHist:
-        eventTree.Draw(varUp+'>>histUp',cutUp)
-        eventTree.Draw(varDown+'>>histDown',cutDown)
+        eventTree.Draw(varUp+'>>histUp',weightedcutUp)
+        eventTree.Draw(varDown+'>>histDown',weightedcutDown)
         # print '        ' + name + '_' + sysName + 'Up hist entries = ', histUp.GetEntries()
         # print '        ' + name + '_' + sysName + 'Up hist integral = ', histUp.Integral(1,nbins+1)
         # print '        ' + name + '_' + sysName + 'Down hist entries = ', histUp.GetEntries()
@@ -833,35 +881,35 @@ def addSys(histName, eventTree, var, cut, sysName, addHist=True):
         syshists[histName + '_' + sysName + 'Down'] += histDown
         # print '        Finished adding systematic histograms for ' + histName + '_' + sysName
     else:
-        return [cutUp, cutDown]
+        return [weightedcutUp, weightedcutDown]
 
 #Helper function to add systematic up/down variation histograms for background
-def addSysPlot(process, eventTree, var, cut):
+def addSysPlot(process, eventTree, var, weightedcut):
     histSysUp = TH1F('histSysUp', histoLabel, nbins, xmin, xmax)
     histSysDown = TH1F('histSysDown', histoLabel, nbins, xmin, xmax)
-    cutUpPlot = cutDownPlot = cut
+    weightedcutUpPlot = weightedcutDownPlot = weightedcut
     varSysUp = varSysDown = var
 
     #Substitute systematic up/down variations into cut
-    cutUp_temp = addSys(process, eventTree, var, cut, plotSysVar, addHist=False)[0]
-    cutDown_temp = addSys(process, eventTree, var, cut, plotSysVar, addHist=False)[1]
-    cutUpPlot = cutUp_temp
-    cutDownPlot = cutDown_temp
+    weightedcutUp_temp = addSys(process, eventTree, var, weightedcut, plotSysVar, addHist=False)[0]
+    weightedcutDown_temp = addSys(process, eventTree, var, weightedcut, plotSysVar, addHist=False)[1]
+    weightedcutUpPlot = weightedcutUp_temp
+    weightedcutDownPlot = weightedcutDown_temp
 
     #Check to see if var needs to be modified for up/down variation
     if 'CMS_scale' in plotSysVar and plotSysVar != 'CMS_scale_pu':
         unc = plotSysVar.replace('CMS_scale','').replace('_j','')
         varSysUp = var+'Scale'+unc+'Up'
         varSysDown = var+'Scale'+unc+'Down'
-    if plotSysVar == 'CMS_res_j':
+    if plotSysVar == 'CMS_res_j_'+str(year):
         varSysUp = var+'ResUp'
         varSysDown = var+'ResDown'
     #print '          varSysUp = ', varSysUp
     #print '          varSysDown = ', varSyDown
 
     #Add to histograms for background
-    eventTree.Draw(varSysUp+'>>histSysUp',cutUpPlot)
-    eventTree.Draw(varSysDown+'>>histSysDown',cutDownPlot)
+    eventTree.Draw(varSysUp+'>>histSysUp',weightedcutUpPlot)
+    eventTree.Draw(varSysDown+'>>histSysDown',weightedcutDownPlot)
     #print '          histUpTemp nEntries = ', syshists[process + '_sysUp'].GetEntries()
     #print '          histUpTemp integral = ', syshists[process + '_sysUp'].Integral(1,nbins+1)
     #print '          histDownTemp nEntries = ', syshists[process + '_sysDown'].GetEntries()
@@ -877,9 +925,9 @@ def addSysPlot(process, eventTree, var, cut):
     if process == 'WPlusJets' and counter:
     #if 'ZTo2' in process and counter:
         print 'DEBUG OUTPUT HERE: '
-        print 'cut = ', cut
-        print 'cutUp = ', cutUpPlot
-        print 'cutDown = ', cutDownPlot
+        print 'weightedcut = ', weightedcut
+        print 'weightedcutUp = ', weightedcutUpPlot
+        print 'weightedcutDown = ', weightedcutDownPlot
         print 'var = ', var
         print 'varUp = ', varSysUp
         print 'varDown = ', varSysDown
@@ -897,7 +945,11 @@ if drawData:
         if ('1l' in cut) or ('2l' in cut) or (cut == 'SL'):
             datasetNames.append('SingleMuon')
             datasetNames.append('SingleElectron')
-            print 'Selected both SingleMuon and SingleElectron dataset'
+            if (year == 2016) or (year == 2017):
+                datasetNames.append('SinglePhoton')
+                print 'Selected SingleMuon, SingleElectron, and SinglePhoton dataset'
+            else:
+                print 'Selected both SingleMuon and SingleElectron dataset'
         else:
             datasetNames.append('MET')
             print 'Selected MET dataset'
@@ -907,7 +959,11 @@ if drawData:
             print('Selected SingleMuon dataset')
         elif 'e' in cut:
             datasetNames.append('SingleElectron')
-            print('Selected SingleElectron dataset')
+            if (year == 2016) or (year == 2017):
+                datasetNames.append('SinglePhoton')
+                print('Selected both SingleElectron and SinglePhoton dataset')
+            else:
+                print('Selected SingleElectron dataset')
         else:
             datasetNames.append('MET')
             print('Selected MET dataset')
@@ -937,8 +993,8 @@ for process in MCSamples:
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
-            if (process in signal) and useCentralSamples and ('ttbar' in process) and ('MPhi125_scalar' not in dataset):
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_03092022', 'countEvents_03182021'),'')
+            if (process in signal) and useCentralSamples and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_06102022', 'countEvents_03182021'),'')
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
                 MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -984,11 +1040,33 @@ for dataset in dataSamples:
                         print '  Using cut = ', datacut
                 elif dataset == 'SingleElectron':
                     datacut = cuts[cut.replace('l','e')] + ' && Flag_eeBadScFilter'
+                    if year == 2016:
+                        datacut = datacut.replace('HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon175', 'HLT_Ele115_CaloIdVT_GsfTrkIdT')
+                    if year == 2017:
+                        datacut = datacut.replace('HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200', 'HLT_Ele115_CaloIdVT_GsfTrkIdT')
+                    print '  Using cut = ', datacut
+                elif dataset == 'SinglePhoton':
+                    datacut = cuts[cut.replace('l','e')] + ' && Flag_eeBadScFilter'
+                    if year == 2016:
+                        datacut = datacut.replace('((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))', '((!'+cuts['singleIsoEle']+') && (!HLT_Ele115_CaloIdVT_GsfTrkIdT) && HLT_Photon175)')
+                    if year == 2017:
+                        datacut = datacut.replace('((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))', '((!'+cuts['singleIsoEle']+') && (!HLT_Ele115_CaloIdVT_GsfTrkIdT) && HLT_Photon200)')
                     print '  Using cut = ', datacut
                 else:
                     datacut = cuts[cut] + ' && Flag_eeBadScFilter'
             else:
                 datacut = cuts[cut] + ' && Flag_eeBadScFilter'
+                if dataset == 'SingleElectron':
+                    if year == 2016:
+                        datacut = datacut.replace('HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon175', 'HLT_Ele115_CaloIdVT_GsfTrkIdT')
+                    if year == 2017:
+                        datacut = datacut.replace('HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon200', 'HLT_Ele115_CaloIdVT_GsfTrkIdT')
+                if dataset== 'SinglePhoton':
+                    if year == 2016:
+                        datacut = datacut.replace('((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))', '((!'+cuts['singleIsoEle']+') && (!HLT_Ele115_CaloIdVT_GsfTrkIdT) && HLT_Photon175)')
+                    if year == 2017:
+                        datacut = datacut.replace('((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))', '((!'+cuts['singleIsoEle']+') && (!HLT_Ele115_CaloIdVT_GsfTrkIdT) && HLT_Photon200)')
+                        
             if 'SingleElectron_Run2017B' in filepath: #HLT_Ele115_CaloIdVT_GsfTrkIdT trigger path not available in Run2017B (https://hypernews.cern.ch/HyperNews/CMS/get/b2g-selections/346.html?inline=-1)
                 datacut = datacut.replace('HLT_Ele115_CaloIdVT_GsfTrkIdT || ','')
                 print '   Using cut = ', datacut
@@ -1023,7 +1101,7 @@ for process in MCSamples:
         elif process == 'ZTo2Nu':
             weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
             print 'Applied ZTo2Nu qcd/ewk Weights correctly'
-        if (process in signal) and useCentralSamples and ('ttbar' in process) and ('MPhi125_scalar' not in dataset):
+        if (process in signal) and useCentralSamples and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
             Mchi = MCSamples[process][dataset]['mchi']
             Mphi = MCSamples[process][dataset]['mphi']
             MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -1144,8 +1222,12 @@ for i in range(nbins+1):
 print '-----------------------------'
 for name in hists:
     print name + ' hist info:'
-    print '    nEvents = ', hists[name].GetEntries()
-    print '    integral = ', hists[name].Integral(1,nbins+1)
+    if name in signal:
+        print '    nEvents = ', hists[name].GetEntries()/scaleFactor
+        print '    integral = ', hists[name].Integral(1,nbins+1)/scaleFactor
+    else:
+        print '    nEvents = ', hists[name].GetEntries()
+        print '    integral = ', hists[name].Integral(1,nbins+1)
     if plotSys and (name in back + ['bkgSum'] + signal):
         print name + ' histUp info:'
         print '    nEvents = ', syshists[name + '_sysUp'].GetEntries()
@@ -1404,7 +1486,7 @@ if savePlots:
         if partialUnblind:
             title.DrawLatexNDC(title_x, title_y, '#bf{7.2 fb^{-1} (13 TeV)}')
         else:
-            title.DrawLatexNDC(title_x, title_y, '#bf{35.9 fb^{-1} (13 TeV)}')
+            title.DrawLatexNDC(title_x, title_y, '#bf{36.3 fb^{-1} (13 TeV)}')
     elif year == 2017:
         if partialUnblind:
             title.DrawLatexNDC(title_x, title_y, '#bf{8.3 fb^{-1} (13 TeV)}')
@@ -1414,7 +1496,7 @@ if savePlots:
         if partialUnblind:
             title.DrawLatexNDC(title_x, title_y, '#bf{12.0 fb^{-1} (13 TeV)}')
         else:
-            title.DrawLatexNDC(title_x, title_y, '#bf{59.8 fb^{-1} (13 TeV)}')
+            title.DrawLatexNDC(title_x, title_y, '#bf{59.7 fb^{-1} (13 TeV)}')
             #title.DrawLatexNDC(title_x, title_y, '#bf{21.1 fb^{-1} (13 TeV)}') #preHEM
             #title.DrawLatexNDC(title_x, title_y, '#bf{38.8 fb^{-1} (13 TeV)}') #postHEM
             #title.DrawLatexNDC(title_x, title_y, '#bf{12.0 fb^{-1} (13 TeV)}') #1/5 partial unblind
@@ -1634,7 +1716,7 @@ if savePlots:
         if plotSysSignal:
             c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_ttDM_scalar_Mchi'+str(mchi)+'_Mphi'+str(mphi)+'.png')
         else:
-            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
+            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_fixed.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
             #c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')

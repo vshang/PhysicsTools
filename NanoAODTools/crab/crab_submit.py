@@ -96,32 +96,32 @@ if __name__ == '__main__':
  isData = True
  isSignal = False
  
- for run in runs2016:
-  submitWrapper('MET', '2016', isData, isSignal, run, getDatasetinputs('MET', '2016', run))
-  submitWrapper('SingleElectron', '2016', isData, isSignal, run, getDatasetinputs('SingleElectron', '2016', run))
-  submitWrapper('SingleMuon', '2016', isData, isSignal, run, getDatasetinputs('SingleMuon', '2016', run))
-  submitWrapper('SinglePhoton', '2016', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2016', run))
- for run in runs2017:
-  submitWrapper('MET', '2017', isData, isSignal, run, getDatasetinputs('MET', '2017', run))
-  submitWrapper('SingleElectron', '2017', isData, isSignal, run, getDatasetinputs('SingleElectron', '2017', run))
-  submitWrapper('SingleMuon', '2017', isData, isSignal, run, getDatasetinputs('SingleMuon', '2017', run))
-  submitWrapper('SinglePhoton', '2017', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2017', run))
- for run in runs2018:
-  submitWrapper('MET', '2018', isData, isSignal, run, getDatasetinputs('MET', '2018', run))
-  submitWrapper('SingleElectron', '2018', isData, isSignal, run, getDatasetinputs('SingleElectron', '2018', run))
-  submitWrapper('SingleMuon', '2018', isData, isSignal, run, getDatasetinputs('SingleMuon', '2018', run))
+ # for run in runs2016:
+ #  submitWrapper('MET', '2016', isData, isSignal, run, getDatasetinputs('MET', '2016', run))
+ #  submitWrapper('SingleElectron', '2016', isData, isSignal, run, getDatasetinputs('SingleElectron', '2016', run))
+ #  submitWrapper('SingleMuon', '2016', isData, isSignal, run, getDatasetinputs('SingleMuon', '2016', run))
+ #  submitWrapper('SinglePhoton', '2016', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2016', run))
+ # for run in runs2017:
+ #  submitWrapper('MET', '2017', isData, isSignal, run, getDatasetinputs('MET', '2017', run))
+ #  submitWrapper('SingleElectron', '2017', isData, isSignal, run, getDatasetinputs('SingleElectron', '2017', run))
+ #  submitWrapper('SingleMuon', '2017', isData, isSignal, run, getDatasetinputs('SingleMuon', '2017', run))
+ #  submitWrapper('SinglePhoton', '2017', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2017', run))
+ # for run in runs2018:
+ #  submitWrapper('MET', '2018', isData, isSignal, run, getDatasetinputs('MET', '2018', run))
+ #  submitWrapper('SingleElectron', '2018', isData, isSignal, run, getDatasetinputs('SingleElectron', '2018', run))
+ #  submitWrapper('SingleMuon', '2018', isData, isSignal, run, getDatasetinputs('SingleMuon', '2018', run))
  
  isData = False
  run = ''
  #datasetnames = ['WW','WZ','ZZ','TTV','QCD']
- #datasetnames = ['QCDPt']
- datasetnames = ['ttH','ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD']#,'WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
+ datasetnames = ['VH']
+ #datasetnames = ['ttH','VH','ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCDPt']#,'WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
  #years = ['UL2016']
- #years = ['2016','2017']
+ #years = ['2017','2018']
  years = ['2016','2017','2018']
  for year in years:
   for dataset in datasetnames:
-   if dataset == 'ttbarDM' or dataset == 'QCDPt' or dataset == 'ttH':
+   if dataset == 'ttbarDM' or dataset == 'QCDPt' or dataset == 'ttH' or dataset == 'VH':
     submitWrapper(dataset, year, isData, True, '', getDatasetinputs(dataset, year, run=''))
    else:
     submitWrapper(dataset, year, isData, isSignal, '', getDatasetinputs(dataset, year, run=''))
