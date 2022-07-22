@@ -246,9 +246,15 @@ class CommonAnalysis(Module):
                 self.out.branch("qcdFacWeightDown", "F")
 
             self.out.branch("leptonWeight", "F")
+            self.out.branch("electronWeight", "F")
+            self.out.branch("muonWeight", "F")
             #Systematics - lepton weights
             self.out.branch("leptonWeightUp", "F")
             self.out.branch("leptonWeightDown", "F")
+            self.out.branch("electronWeightUp", "F")
+            self.out.branch("electronWeightDown", "F")
+            self.out.branch("muonWeightUp", "F")
+            self.out.branch("muonWeightDown", "F")
 
             self.out.branch("electronTriggerWeight", "F")
             #Systematics - electron trigger weights
@@ -1587,6 +1593,8 @@ to next event)"""
 
             #Calculate lepton scale factor and trigger weights
             leptonWeight = leptonWeightUp = leptonWeightDown = 1
+            electronWeight = electronWeightUp = electronWeightDown = 1
+            muonWeight = muonWeightUp = muonWeightDown = 1
             electronTriggerWeight = electronTriggerWeightUp = electronTriggerWeightDown = 1
             muonTriggerWeight = muonTriggerWeightUp = muonTriggerWeightDown = 1
 
@@ -1594,6 +1602,10 @@ to next event)"""
                 leptonWeight *= self.eleSFs.getSF(tightElectron.pt, tightElectron.eta, 0)
                 leptonWeightUp *= self.eleSFs.getSF(tightElectron.pt, tightElectron.eta, 1)
                 leptonWeightDown *= self.eleSFs.getSF(tightElectron.pt, tightElectron.eta, -1)
+
+                electronWeight *= self.eleSFs.getSF(tightElectron.pt, tightElectron.eta, 0)
+                electronWeightUp *= self.eleSFs.getSF(tightElectron.pt, tightElectron.eta, 1)
+                electronWeightDown *= self.eleSFs.getSF(tightElectron.pt, tightElectron.eta, -1)
 
                 electronTriggerWeight *= self.eleSFs.getWeight(tightElectron.pt, tightElectron.eta, 0)
                 electronTriggerWeightUp *= self.eleSFs.getWeight(tightElectron.pt, tightElectron.eta, 1)
@@ -1603,6 +1615,10 @@ to next event)"""
                 leptonWeight *= self.muSFs.getSF(tightMuon.pt, tightMuon.eta, 0)
                 leptonWeightUp *= self.muSFs.getSF(tightMuon.pt, tightMuon.eta, 1)
                 leptonWeightDown *= self.muSFs.getSF(tightMuon.pt, tightMuon.eta, -1)
+
+                muonWeight *= self.muSFs.getSF(tightMuon.pt, tightMuon.eta, 0)
+                muonWeightUp *= self.muSFs.getSF(tightMuon.pt, tightMuon.eta, 1)
+                muonWeightDown *= self.muSFs.getSF(tightMuon.pt, tightMuon.eta, -1)
 
                 muonTriggerWeight *= self.muSFs.getWeight(tightMuon.pt, tightMuon.eta, event.run, 0)
                 muonTriggerWeightUp *= self.muSFs.getWeight(tightMuon.pt, tightMuon.eta, event.run, 1)
@@ -1831,9 +1847,15 @@ to next event)"""
                     self.out.fillBranch("qcdFacWeightDown", qcdFacWeightDown)
 
                 self.out.fillBranch("leptonWeight", leptonWeight)
+                self.out.fillBranch("electronWeight", electronWeight)
+                self.out.fillBranch("muonWeight", electronWeight)
                 #Systematics - lepton weights
                 self.out.fillBranch("leptonWeightUp", leptonWeightUp)
                 self.out.fillBranch("leptonWeightDown", leptonWeightDown)
+                self.out.fillBranch("electronWeightUp", electronWeightUp)
+                self.out.fillBranch("electronWeightDown", electronWeightDown)
+                self.out.fillBranch("muonWeightUp", muonWeightUp)
+                self.out.fillBranch("muonWeightDown", muonWeightDown)
 
                 self.out.fillBranch("electronTriggerWeight", electronTriggerWeight)
                 #Systematics - electron trigger weights

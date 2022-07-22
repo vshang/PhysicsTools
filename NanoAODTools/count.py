@@ -1,12 +1,13 @@
 from ROOT import *
 
-path = '/hdfs/store/user/vshang/signalMC/tDM_2016/DMPseudo_top_tWChan_Mchi1_Mphi50_TuneCP5_13TeV-madgraph-mcatnlo-pythia8/'
+path = '/hdfs/store/user/vshang/signalMC/ttDM_2016/ttbardm_10GeV_scalar_incl_2016_nanoaod/'
 
 sumevents = 0
-for i in range(250,500):
+for i in range(0,401):
     # if i == 4471:
     #     continue
-    f = TFile.Open(path+'NANOAOD_'+str(i)+'.root','')
+    #f = TFile.Open(path+'NANOAOD_'+str(i)+'.root','')
+    f = TFile.Open(path+'ttbarDM_nanoAOD_'+str(i)+'.root','')
     t = f.Get('Events')
     nevents = t.GetEntries()
     sumevents += nevents
