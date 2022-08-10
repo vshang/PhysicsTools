@@ -1,0 +1,531 @@
+plots/plot.py:938: SyntaxWarning: name 'counter' is used prior to global declaration
+  global counter
+Plotting start time: 2022-08-03 12:24:27.097159
+Cut name =  SL1b
+MC Selection Cuts =  ((nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets == 1 && METcorrected_pt >= 250 && Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && ((HLT_Ele27_WPTight_Gsf) || (HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon175)) && PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,2)+pow(PV_y,2)) < 2) || (nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets == 1 && METcorrected_pt >= 250 && Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && (HLT_IsoMu24 || HLT_IsoTkMu24) && PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,2)+pow(PV_y,2)) < 2)) && M_T >= 140
+Data Selection Cuts =  ((nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets == 1 && METcorrected_pt >= 250 && Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && ((HLT_Ele27_WPTight_Gsf) || (HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Photon175)) && PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,2)+pow(PV_y,2)) < 2) || (nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets == 1 && METcorrected_pt >= 250 && Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && (HLT_IsoMu24 || HLT_IsoTkMu24) && PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,2)+pow(PV_y,2)) < 2)) && M_T >= 140 && Flag_eeBadScFilter
+var =  M_T2W
+year =  2016
+lumi =  36.33
+saveDirectory =  plots/AN/modtopness/
+date =  08_03_2022
+applying HEM fix for 2018...
+Creating histograms..
+Histogram options: 
+    nbins =  10
+    xmin =  20
+    xmax =  420
+    auto_y =  True
+    doLogPlot =  False
+    drawData =  False
+    mediatorType =  scalar
+    mchi =  1
+    mphi =  100
+    normalizePlots =  False
+    useCentralSamples =  True
+    doBinned =  False
+    savePlots =  True
+    combineEleMu =  True
+    doSys =  False
+    doSysFirstHalf =  False
+    doSysSecondHalf =  False
+    drawOverflow =  True
+    drawUnderflow =  False
+    plotSys =  False
+    plotSysVar =  CMS_res_j
+    plotSysSignal =  False
+Loading data sample root files and event trees...
+Got data sample root files and event trees
+Loading MC sample root files and event trees...
+    ----Loading HT600To800
+    nevents in  ZTo2Nu   HT600To800 :  5693589
+    ----Loading HT1200To2500
+    nevents in  ZTo2Nu   HT1200To2500 :  513471
+    ----Loading HT100To200
+    nevents in  ZTo2Nu   HT100To200 :  24272858
+    ----Loading HT2500ToInf
+    nevents in  ZTo2Nu   HT2500ToInf :  405030
+    ----Loading HT800To1200
+    nevents in  ZTo2Nu   HT800To1200 :  2170137
+    ----Loading HT200To400
+    nevents in  ZTo2Nu   HT200To400 :  24761211
+    ----Loading HT400To600
+    nevents in  ZTo2Nu   HT400To600 :  9862869
+    ----Loading tWChan_MChi1_MPhi100_scalar
+    nevents in  tbar scalar   tWChan_MChi1_MPhi100_scalar :  250000
+    ----Loading tChan_MChi1_MPhi100_scalar
+    nevents in  tbar scalar   tChan_MChi1_MPhi100_scalar :  400000
+    ----Loading WWTo1L1Nu2Q
+    nevents in  WW   WWTo1L1Nu2Q :  5246469
+    ----Loading WWTo4Q
+    nevents in  WW   WWTo4Q :  30324343
+    ----Loading WWTo2L2Nu
+    nevents in  WW   WWTo2L2Nu :  1999000
+    ----Loading TTToSemiLepton
+    nevents in  ttbarPlusJets   TTToSemiLepton :  152669800
+    ----Loading TTTo2L2Nu
+    nevents in  ttbarPlusJets   TTTo2L2Nu :  79140880
+    ----Loading ttDM_MChi1_MPhi100_scalar
+    nevents in  ttbar scalar   ttDM_MChi1_MPhi100_scalar :  2625075
+    ----Loading ZZTo2Q2Nu
+    nevents in  ZZ   ZZTo2Q2Nu :  30493038
+    ----Loading ZZTo4L
+    nevents in  ZZ   Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+ZZTo4L :  103121112
+    ----Loading ZZTo2L2Q
+    nevents in  ZZ   ZZTo2L2Q :  15462693
+    ----Loading ZZTo2L2Nu
+    nevents in  ZZ   ZZTo2L2Nu :  52855410
+    ----Loading ZZTo4Q
+    nevents in  ZZ   ZZTo4Q :  30636849
+    ----Loading HT700To1000
+    nevents in  QCD   HT700To1000 :  37233786
+    ----Loading HT500To700
+    nevents in  QCD   HT500To700 :  62622029
+    ----Loading HT2000ToInf
+    nevents in  QCD   HT2000ToInf :  5804179
+    ----Loading HT1000To1500
+    nevents in  QCD   HT1000To1500 :  15210939
+    ----Loading HT1500To2000
+    nevents in  QCD   HT1500To2000 :  11839357
+    ----Loading HT100To200
+    nevents in  QCD   HT100To200 :  82293477
+    ----Loading HT300To500
+    nevents in  QCD   HT300To500 :  54552852
+    ----Loading HT200To300
+    nevents in  QCD   HT200To300 :  57580393
+    ----Loading WZTo2Q2Nu
+    nevents in  WZ   WZTo2Q2Nu :  17725159
+    ----Loading WZTo2L2Q
+    nevents in  WZ   WZTo2L2Q :  26445785
+    ----Loading WZTo3LNu
+    nevents in  WZ   WZTo3LNu :  19993200
+    ----Loading WZTo1L3Nu
+    nevents in  WZ   WZTo1L3Nu :  1703772
+    ----Loading WZTo1L1Nu2Q
+    nevents in  WZ   WZTo1L1Nu2Q :  24311445
+    ----Loading TTZToQQ
+    nevents in  TTV   TTZToQQ :  749400
+    ----Loading TTWJetsToLNu
+    nevents in  TTV   TTWJetsToLNu :  5280565
+    ----Loading TTWJetsToQQ
+    nevents in  TTV   TTWJetsToQQ :  833298
+    ----Loading TTZToLLNuNu
+    nevents in  TTV   TTZToLLNuNu :  13692628
+    ----Loading HT600To800
+    nevents in  ZTo2L   HT600To800 :  8292957
+    ----Loading HT1200To2500
+    nevents in  ZTo2L   HT1200To2500 :  596079
+    ----Loading HT100To200
+    nevents in  ZTo2L   HT100To200 :  11017086
+    ----Loading HT2500ToInf
+    nevents in  ZTo2L   HT2500ToInf :  399492
+    ----Loading HT800To1200
+    nevents in  ZTo2L   HT800To1200 :  2673066
+    ----Loading HT200To400
+    nevents in  ZTo2L   HT200To400 :  9609137
+    ----Loading HT400To600
+    nevents in  ZTo2L   HT400To600 :  9725661
+    ----Loading ST_s-channel
+    nevents in  singleTop   ST_s-channel :  1000000
+    ----Loading ST_t-channel_antitop
+    nevents in  singleTop   ST_t-channel_antitop :  38811017
+    ----Loading ST_tW_top
+    nevents in  singleTop   ST_tW_top :  6952830
+    ----Loading ST_t-channel_top
+    nevents in  singleTop   ST_t-channel_top :  58403420
+    ----Loading ST_tW_antitop
+    nevents in  singleTop   ST_tW_antitop :  6933094
+    ----Loading HT200To400
+    nevents in  WPlusJets   HT200To400 :  38984322
+    ----Loading HT70To100
+    nevents in  WPlusJets   HT70To100 :  10020533
+    ----Loading HT600To800
+    nevents in  WPlusJets   HT600To800 :  18687480
+    ----Loading HT1200To2500
+    nevents in  WPlusJets   HT1200To2500 :  6872441
+    ----Loading HT100To200
+    nevents in  WPlusJets   HT100To200 :  78043017
+    ----Loading HT400To600
+    nevents in  WPlusJets   HT400To600 :  7687800
+    ----Loading HT2500ToInf
+    nevents in  WPlusJets   HT2500ToInf :  2637821
+    ----Loading HT800To1200
+    nevents in  WPlusJets   HT800To1200 :  7830536
+Got MC sample root files and event trees
+Filling data histograms...
+Filling MC histograms...
+  Process =  ZTo2Nu
+      Dataset =  HT600To800  ||   nEvents =  5693589
+Applied ZTo2Nu qcd/ewk Weights correctly
+          hist nEntries =  17.0
+          hist integral =  0.283860097639
+      Dataset =  HT1200To2500  ||   nEvents =  513471
+Applied ZTo2Nu qcd/ewk Weights correctly
+          hist nEntries =  10.0
+          hist integral =  0.262315359898
+      Dataset =  HT100To200  ||   nEvents =  24272858
+Applied ZTo2Nu qcd/ewk Weights correctly
+          hist nEntries =  0.0
+          hist integral =  0.0
+      Dataset =  HT2500ToInf  ||   nEvents =  405030
+Applied ZTo2Nu qcd/ewk Weights correctly
+          hist nEntries =  3.0
+          hist integral =  0.0017028717557
+      Dataset =  HT800To1200  ||   nEvents =  2170137
+Applied ZTo2Nu qcd/ewk Weights correctly
+          hist nEntries =  16.0
+          hist integral =  0.3420593841
+      Dataset =  HT200To400  ||   nEvents =  24761211
+Applied ZTo2Nu qcd/ewk Weights correctly
+          hist nEntries =  3.0
+          hist integraTFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+l =  0.383106566966
+      Dataset =  HT400To600  ||   nEvents =  9862869
+Applied ZTo2Nu qcd/ewk Weights correctly
+          hist nEntries =  17.0
+          hist integral =  0.807672485709
+  Process =  tbar scalar
+      Dataset =  tWChan_MChi1_MPhi100_scalar  ||   nEvents =  250000
+          hist nEntries =  2889.0
+          hist integral =  21.7382974923
+      Dataset =  tChan_MChi1_MPhi100_scalar  ||   nEvents =  400000
+          hist nEntries =  1099.0
+          hist integral =  26.1115124375
+  Process =  WW
+      Dataset =  WWTo1L1Nu2Q  ||   nEvents =  5246469
+          hist nEntries =  31.0
+          hist integral =  9.65766710043
+      Dataset =  WWTo4Q  ||   nEvents =  30324343
+          hist nEntries =  0.0
+          hist integral =  0.0
+      Dataset =  WWTo2L2Nu  ||   nEvents =  1999000
+          hist nEntries =  105.0
+          hist integral =  22.2838188037
+  Process =  ttbarPlusJets
+      Dataset =  TTToSemiLepton  ||   nEvents =  152669800
+          hist nEntries =  693.0
+          hist integral =  51.917827338
+      Dataset =  TTTo2L2Nu  ||   nEvents =  79140880
+          hist nEntries =  43306.0
+          hist integral =  1606.34411621
+  Process =  ttbar scalar
+      Dataset =  ttDM_MChi1_MPhi100_scalar  ||   nEvents =  2625075
+          hist nEntries =  8636.0
+          hist integral =  81.2888031006
+  Process =  ZZ
+      Dataset =  ZZTo2Q2Nu  ||   nEvents =  30493038
+          hist nEntries =  16.0
+          hist integral =  0.0752543359995
+      Dataset =  ZZTo4L  ||   nEvents =  103121112
+          hist nEntries =  191.0
+          hist integral =  0.0779020346235
+      Dataset =  ZZTo2L2Q  ||   nEvents =  15462693
+          hist nEntries =  29.0
+          hist integral =  0.20055288868
+      Dataset =  ZZTo2L2Nu  ||   nEvents =  52855410
+          hist nEntries =  3625.0
+          hist integral =  1.33403909858
+      Dataset =  ZZTo4Q  ||   nEvents =  30636849
+          hist nEntries =  0.0
+          hist integral =  0.0
+  Process =  QCD
+      Dataset =  HT700To1000  ||   nEvents =  37233786
+          hist nEntries =  1.0
+          hist integral =  7.08456420898
+      Dataset =  HT500To700  ||   nEvents =  62622029
+          hist nEntries =  0.0
+          hist integral =  0.0
+      Dataset =  HT2000ToInf  ||   nEvents =  5804179
+          hist nEntries =  9.0
+          hist integral =  1.51323525608
+      Dataset =  HT1000To1500  ||   nEvents =  15210939
+          hist nEntries =  0.0
+          hist integral =  0.0
+      Dataset =  HT1500To2000  ||   nEvents =  11839357
+          hist nEntries =  4.0
+          hist integral =  1.46605065465
+      Dataset =  HT100To200  ||   nEvents =  82293477
+          hist nEntries =  0.0
+          hist integral =  0.0
+      Dataset =  HT300To500  ||   nEvents =  54552852
+          hist nEntries =  0.0
+          hist integral =  0.0
+      Dataset =  HT200To300  ||   nEvents =  57580393
+          hist nEntries =  0.0
+          hist integral =  0.0
+  Process =  WZ
+      Dataset =  WZTo2Q2Nu  ||   nEvents =  17725159
+          hist nEntries =  5.0
+          hist integral =  0.0693449182436
+      Dataset =  WZTo2L2Q  ||   nEvents =  26445785
+          hist nEntries =  35.0
+          hist integral =  0.233591164695
+      Dataset =  WZTo3LNu  ||   nEvents =  19993200
+          hist nEntries =  344.0
+          hist integral =  2.68253973778
+      Dataset =  WZTo1L3Nu  ||   nEvents =  1703772
+          hist nEntries =  410.0
+          hist integral =  25.5312062204
+      Dataset =  WZTo1L1Nu2Q  ||   nEvents =  24311445
+          hist nEntries =  415.0
+          hist integral =  6.30255987309
+  Process =  TTV
+      Dataset =  TTZToQQ  ||   nEvents =  749400
+          hist nEntries =  185.0
+          hist integral =  4.43515578564
+      Dataset =  TTWJetsToLNu  ||   nEvents =  5280565
+          hist nEntries =  10396.0
+          hist integral =  13.7469916046
+      Dataset =  TTWJetsToQQ  ||   nEvents =  833298
+          hist nEntries =  290.0
+          hist integral =  4.87882909365
+      Dataset =  TTZToLLNuNu  ||   nEvents =  13692628
+          hist nEntries =  60195.0
+    TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+      hist integral =  37.8897042274
+  Process =  ZTo2L
+      Dataset =  HT600To800  ||   nEvents =  8292957
+Applied ZTo2L qcd/ewk Weights correctly
+          hist nEntries =  103.0
+          hist integral =  0.654316756874
+      Dataset =  HT1200To2500  ||   nEvents =  596079
+Applied ZTo2L qcd/ewk Weights correctly
+          hist nEntries =  131.0
+          hist integral =  1.45804270729
+      Dataset =  HT100To200  ||   nEvents =  11017086
+Applied ZTo2L qcd/ewk Weights correctly
+          hist nEntries =  1.0
+          hist integral =  0.525004684925
+      Dataset =  HT2500ToInf  ||   nEvents =  399492
+Applied ZTo2L qcd/ewk Weights correctly
+          hist nEntries =  242.0
+          hist integral =  0.109584864229
+      Dataset =  HT800To1200  ||   nEvents =  2673066
+Applied ZTo2L qcd/ewk Weights correctly
+          hist nEntries =  127.0
+          hist integral =  1.17515600845
+      Dataset =  HT200To400  ||   nEvents =  9609137
+Applied ZTo2L qcd/ewk Weights correctly
+          hist nEntries =  1.0
+          hist integral =  0.0826714038849
+      Dataset =  HT400To600  ||   nEvents =  9725661
+Applied ZTo2L qcd/ewk Weights correctly
+          hist nEntries =  41.0
+          hist integral =  0.859022367746
+  Process =  singleTop
+      Dataset =  ST_s-channel  ||   nEvents =  1000000
+          hist nEntries =  3.0
+          hist integral =  0.38548246026
+      Dataset =  ST_t-channel_antitop  ||   nEvents =  38811017
+          hist nEntries =  20.0
+          hist integral =  1.38829772919
+      Dataset =  ST_tW_top  ||   nEvents =  6952830
+          hist nEntries =  577.0
+          hist integral =  102.973022103
+      Dataset =  ST_t-channel_top  ||   nEvents =  58403420
+          hist nEntries =  47.0
+          hist integral =  3.21165376157
+      Dataset =  ST_tW_antitop  ||   nEvents =  6933094
+          hist nEntries =  590.0
+          hist integral =  104.737333536
+  Process =  WPlusJets
+      Dataset =  HT200To400  ||   nEvents =  38984322
+Applied WPlusJets qcd/ewk Weights correctly
+          hist nEntries =  136.0
+          hist integral =  51.6626622081
+      Dataset =  HT70To100  ||   nEvents =  10020533
+Applied WPlusJets qcd/ewk Weights correctly
+          hist nEntries =  0.0
+          hist integral =  0.0
+      Dataset =  HT600To800  ||   nEvents =  18687480
+Applied WPlusJets qcd/ewk Weights correctly
+          hist nEntries =  882.0
+          hist integral =  20.4541947395
+      Dataset =  HT1200To2500  ||   nEvents =  6872441
+Applied WPlusJets qcd/ewk Weights correctly
+          hist nEntries =  2742.0
+          hist integral =  21.1889572162
+      Dataset =  HT100To200  ||   nEvents =  78043017
+Applied WPlusJets qcd/ewk Weights correctly
+          hist nEntries =  32.0
+          hist integral =  25.9494040236
+      Dataset =  HT400To600  ||   nEvents =  7687800
+Applied WPlusJets qcd/ewk Weights correctly
+          hist nEntries =  168.0
+          hist integral =  40.5996069908
+      Dataset =  HT2500ToInf  ||   nEvents =  2637821
+Applied WPlusJets qcd/ewk Weights correctly
+          hist nEntries =  2941.0
+          hist integral =  1.67838885862
+      Dataset =  HT800To1200  ||   nEvents =  7830536
+Applied WPlusJets qcd/ewk Weights correctly
+          hist nEntries =  926.0
+          hist integral =  23.6978619248
+-----------------------------
+Total data background nEvents =  0.0
+Total data background integral =  0.0
+-----------------------------
+Total MC background nEvents =  130061.0
+Total MC background integral =  2202.59631348
+-----------------------------
+Total tt+DM signal nEvents =  172.72
+Total tt+DM signal integral =  81.2888034058
+Total t+DM signal nEvents =  79.76
+Total t+DM signal integral =  47.8498106384
+-----------------------------
+FOM for tt+DM signal =  1.73206137353
+FOM for t+DM signal =  1.01955995494
+-----------------------------
+Data bin errors:
+    bin 0: 0.0
+    bin 1: 0.0
+    bin 2: 0.0
+    bin 3: 0.0
+    bin 4: 0.0
+    bin 5: 0.0
+    bin 6: 0.0
+    bin 7: 0.0
+    bin 8: 0.0
+    bin 9: 0.0
+    bin 10: 0.0
+-----------------------------
+MC background bin errors:
+    bin 0: 0.0
+   Info in <TCanvas::Print>: pdf file SL1b2016_M_T2W_08_03_2022.pdf has been created
+ bin 1: 0.0
+    bin 2: 1.03506519324
+    bin 3: 5.56834097988
+    bin 4: 6.33023654993
+    bin 5: 4.73972809775
+    bin 6: 4.07507966612
+    bin 7: 4.05165993802
+    bin 8: 3.64377385764
+    bin 9: 3.05153041668
+    bin 10: 2.18299253446
+-----------------------------
+tt+DM bin errors:
+    bin 0: 0.0
+    bin 1: 0.0
+    bin 2: 4.52408369243
+    bin 3: 17.577354787
+    bin 4: 21.2973448244
+    bin 5: 18.8964857362
+    bin 6: 16.028766892
+    bin 7: 13.504317965
+    bin 8: 11.2232596358
+    bin 9: 8.8381106921
+    bin 10: 7.32586400647
+-----------------------------
+t+DM bin errors:
+    bin 0: 0.0
+    bin 1: 0.0
+    bin 2: 3.17588430429
+    bin 3: 15.7802328334
+    bin 4: 19.0554371409
+    bin 5: 17.2557099759
+    bin 6: 15.1889044881
+    bin 7: 13.9176279935
+    bin 8: 12.1902964337
+    bin 9: 10.1007632404
+    bin 10: 8.43569611437
+-----------------------------
+ZTo2Nu hist info:
+    nEvents =  66.0
+    integral =  2.08071671426
+tbar scalar hist info:
+    nEvents =  79.76
+    integral =  47.8498106384
+TTTo2L2Nu hist info:
+    nEvents =  43306.0
+    integral =  1606.34411621
+singleTop hist info:
+    nEvents =  1237.0
+    integral =  212.69578588
+TTV hist info:
+    nEvents =  71066.0
+    integral =  60.9506806135
+bkgSum hist info:
+    nEvents =  130061.0
+    integral =  2202.59631348
+ttbar scalar hist info:
+    nEvents =  172.72
+    integral =  81.2888034058
+VV hist info:
+    nEvents =  5206.0
+    integral =  68.4484758824
+QCD hist info:
+    nEvents =  14.0
+    integral =  10.0638499707
+ZTo2L hist info:
+    nEvents =  646.0
+    integral =  4.86379891634
+data hist info:
+    nEvents =  0.0
+    integral =  0.0
+WPlusJets hist info:
+    nEvents =  7827.0
+    integral =  185.231079832
+TTToSemiLepton hist info:
+    nEvents =  693.0
+    integral =  51.917827338
+Finished filling histograms
+Creating stacked MC background histogram...
+Finished stacking MC background histograms.
+Drawing histograms...
+Finished drawing histograms
+Plotting end time: 2022-08-03 12:27:40.034979

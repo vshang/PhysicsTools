@@ -6,7 +6,7 @@ import re
 from utils import *
 
 gStyle.SetOptStat(0)
-f=TFile.Open('ttbarPlusJets_Run2017_v7_ModuleCommon06062022v4.root','')
+f=TFile.Open('ttbarPlusJets_Run2016_v7_ModuleCommon07252022v4.root','')
 t=f.Get('Events')
 
 #Define selection cuts and filters here
@@ -102,7 +102,7 @@ cut = cuts[cutName]
 
 #Select systematic variable to plot
 sys = 'CMS_res_j'
-var = 'M_Tb'
+var = 'METcorrected_pt'
 varUp = var + 'ResUp'
 varDown = var + 'ResDown'
 cut_Up = addSys(sys, cut)[0]
@@ -111,14 +111,15 @@ print 'cut = ', cut
 print 'cut_Up = ', cut_Up
 print 'cut_Down = ', cut_Down
 
-nbins = 20
-xmin = 0
-xmax = 1000
+nbins = 15
+xmin = 250
+xmax = 550
 
+ratioLabel = ': p_{T}^{miss} (GeV); Events'
 #ratioLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; Events'
 #ratioLabel = '; M_{T}^{b} (GeV); Events'
 #ratioLabel = '; jet_{1} p_{T}/H_{T}; Events'
-ratioLabel = '; bjet_{1} #phi; Events'
+#ratioLabel = '; bjet_{1} #phi; Events'
 
 hist=TH1F('hist',ratioLabel,nbins,xmin,xmax)
 histUp=TH1F('histUp',ratioLabel,nbins,xmin,xmax)
@@ -191,4 +192,4 @@ h_err.SetFillColor(1)
 h_ratioUp.SetLineColor(kRed)
 h_ratioDown.SetLineColor(kBlue)
 
-c1.SaveAs(cutName + '_2016_' + var + '_' + sys + '_fixed.png')
+c1.SaveAs(cutName + '_2016_' + var + '_' + sys + 'v4.png')

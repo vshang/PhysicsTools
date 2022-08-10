@@ -534,7 +534,7 @@ else:
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
 if doSysFirstHalf or plotSys:
-    sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDscale_ren_TT','QCDscale_fac_TT','QCDscale_ren_VV','QCDscale_fac_VV','preFire','CMS_PSisr','CMS_PSfsr','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_WewkWeight','CMS_ZewkWeight']
+    sys = ['CMS_res_j_'+str(year),'CMS_pdf_'+str(year),'CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDscale_ren_TT','QCDscale_fac_TT','QCDscale_ren_VV','QCDscale_fac_VV','preFire','CMS_PSisr','CMS_PSfsr','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_WewkWeight','CMS_ZewkWeight']
 else:
     sys = []
 jesUnc = ['','AbsoluteMPFBias','AbsoluteScale','AbsoluteStat','FlavorQCD','Fragmentation','PileUpDataMC','PileUpPtBB','PileUpPtEC1','PileUpPtEC2','PileUpPtHF','PileUpPtRef','RelativeFSR','RelativeJEREC1','RelativeJEREC2','RelativeJERHF','RelativePtBB','RelativePtEC1','RelativePtEC2','RelativePtHF','RelativeBal','RelativeSample','RelativeStatEC','RelativeStatFSR','RelativeStatHF','SinglePionECAL','SinglePionHCAL','TimePtEta']
@@ -682,7 +682,7 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
         weightedcutUp = weightedcut.replace('ewkZWeight', '1')
         weightedcutDown = weightedcut
 
-    elif sysName == 'CMS_pdf':
+    elif sysName == 'CMS_pdf_'+str(year):
         if year == 2016:
             if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName): 
                 weightedcutUp = weightedcut + '*pdfWeightUp'

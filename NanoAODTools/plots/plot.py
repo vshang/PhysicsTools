@@ -29,11 +29,11 @@ counter = True
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-#saveDirectory = 'plots/systematics/splitJES/CMS_scaleTimePtEta_j/'
-saveDirectory = 'plots/CR_2018/METcorrected_pt/'
-#saveDirectory = 'plots/topness_studies/'
+saveDirectory = 'plots/systematics/CMS_res_j/'
+#saveDirectory = 'plots/CR_2016/METcorrected_pt/'
+#saveDirectory = 'plots/AN/modtopness/'
 #saveDirectory = 'plots/EEl1prefire_studies/'
-date = '07_18_2022'
+date = '08_10_2022'
 year = 2016
 useUL = False
 useCondor = False
@@ -69,7 +69,7 @@ elif year == 2018:
         dataSamples = data2018
         MCSamples = samples2018
 #Make sure save directory is available if not using Condor
-if False:#not useCondor:
+if not useCondor:
     try:
         if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
         #if not os.path.exists( saveDirectory ) : os.makedirs( saveDirectory )
@@ -123,8 +123,8 @@ preselect_cuts = ['SL1e', 'SL1m', 'AH']
 cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' + ' && ' + cuts['PV']
 cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' + ' && ' + cuts['PV']
 cuts['SL'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + '))' 
-cuts['SL1b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets == 1')
-cuts['SL2b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets >= 2')
+cuts['SL1b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets == 1') 
+cuts['SL2b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets >= 2') 
 cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
 cuts['AH1b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1')
 cuts['AH2b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2')
@@ -227,7 +227,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL'
 #cut = 'SL1b'
 #cut = 'SL2b'
-cut = 'AH'
+#cut = 'AH'
 #cut = 'AH1b'
 #cut = 'AH2b'
 
@@ -358,9 +358,9 @@ elif year == 2018:
 if partialUnblind:
     lumi = lumi/5.0
 if 'SR' in cut:
-    scaleFactor = 1
+    scaleFactor = 50
 else:
-    scaleFactor = 1
+    scaleFactor = 50
 
 ##Create histograms
 ##-----------------------------------------------------------------------------------------------
@@ -390,7 +390,7 @@ doLogPlot = True
 drawData = False
 mediatorType = 'scalar'
 mchi = 1
-mphi = 10
+mphi = 100
 normalizePlots = False
 useCentralSamples = True
 doBinned = False
@@ -399,8 +399,8 @@ combineEleMu = True
 doSys = False
 doSysFirstHalf = False
 doSysSecondHalf = False
-drawOverflow = True
-drawUnderflow = False
+drawOverflow = False
+drawUnderflow = True
 plotSys = True
 plotSysVar = 'CMS_res_j'
 plotSysSignal = False
@@ -442,13 +442,13 @@ if (condor_cut != '') and condor_plot:
         xmax = 550
         doLogPlot = True
 
-#histoLabel = '; p_{T}^{miss} (GeV); Events'
+histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; Hadronic recoil (GeV); Events'
 #histoLabel = '; #phi^{miss}; Events'
 #histoLabel = '; M_{T} (GeV); Events'
 #histoLabel = '; M_{T2}^{W} (GeV); Events'
 #histoLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
-histoLabel = '; M_{T}^{b} (GeV); Events'
+#histoLabel = '; M_{T}^{b} (GeV); Events'
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = '; forward jet_{1} #eta; Events'
 #histoLabel = '; central jet_{1} p_{T}; Events'
@@ -457,8 +457,8 @@ histoLabel = '; M_{T}^{b} (GeV); Events'
 #histoLabel = '; forward jet_{1} charged Electromagnetic Energy Fraction; Events'
 #histoLabel = '; DeepAK8 top tag discriminant value; Events'
 #histoLabel = '; leading electron #eta; Events'
-#histoLabel = '; number of central jets; Events'
-#histoLabel = '; modified topness; Events (normalized)'
+#histoLabel = '; number of b-tagged jets; Events'
+#histoLabel = '; modified topness; Events'
 
 if (condor_cut== 'AH2lZR') or (condor_cut == 'AH2eZR') or (condor_cut == 'AH2mZR'):
     histoLabel = '; Hadronic recoil (GeV); Events'
@@ -905,7 +905,7 @@ def addSysPlot(process, eventTree, var, weightedcut):
         unc = plotSysVar.replace('CMS_scale','').replace('_j','')
         varSysUp = var+'Scale'+unc+'Up'
         varSysDown = var+'Scale'+unc+'Down'
-    if plotSysVar == 'CMS_res_j_'+str(year):
+    if 'CMS_res_j' in plotSysVar:
         varSysUp = var+'ResUp'
         varSysDown = var+'ResDown'
     #print '          varSysUp = ', varSysUp
@@ -1720,9 +1720,9 @@ if savePlots:
         if plotSysSignal:
             c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_ttDM_scalar_Mchi'+str(mchi)+'_Mphi'+str(mphi)+'.png')
         else:
-            #c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
+            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
-            c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_scalar10.png')
+            #c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_withUnderflow_fixed.png')
 
 print 'Plotting end time:', datetime.datetime.now()
