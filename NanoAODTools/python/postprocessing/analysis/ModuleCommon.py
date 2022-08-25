@@ -17,8 +17,8 @@ from PhysicsTools.NanoAODTools.postprocessing.modules.jme.jetmetHelperRun2 impor
 print 'Python version = ', sys.version
 
 #Set runLocal to false if running jobs through CRAB
-runLocal = False
-#runLocal = True
+#runLocal = False
+runLocal = True
 
 #Set jesSys to "All" for split JES systematics and "Total" for combined JES systematics
 jesSys = "All"
@@ -57,6 +57,16 @@ if jesSys == "All":
     jesUnc = ["","AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeBal", "RelativeSample", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "SinglePionECAL", "SinglePionHCAL", "TimePtEta"]
 else:
     jesUnc = [""]
+
+#Helper function to identify type of PDF dataset based on doc string number
+def pdfType(docString):
+    return 'MC'
+    # if any(string in docString for string in ['91400', '306000']):
+    #     return 'Hessian'
+    # elif any(string in docString for string in ['260001', '262000', '262001', '292001', '292201']):
+    #     return 'MC'
+    # else:
+    #     return ''
 
 class CommonAnalysis(Module):
     def __init__(self, signalRegion, year=2016, isData=False, isSignal=False, btag='DeepCSV', UL=False):
@@ -238,6 +248,8 @@ class CommonAnalysis(Module):
                 #Systematics - PDF
                 self.out.branch("pdfWeightUp", "F")
                 self.out.branch("pdfWeightDown", "F")
+                self.out.branch("pdfIsMC", "I")
+                self.out.branch("pdfIsHessian", "I")
 
                 #Systematics - QCD Renormalization and Factorization scales
                 self.out.branch("qcdRenWeightUp", "F")
@@ -1571,15 +1583,42 @@ to next event)"""
 
             if not self.isSignal:
                 #Calculate PDF up/down systematics
-                if event.nLHEPdfWeight > 0:
-                    pdfWeights = [event.LHEPdfWeight[i] for i in range(event.nLHEPdfWeight)]
-                    pdfMean = sum(pdfWeights)/event.nLHEPdfWeight
-                    pdfSquareSum = sum(i*i for i in pdfWeights)
-                    pdfRMS = math.sqrt(pdfSquareSum/event.nLHEPdfWeight - pdfMean*pdfMean)
+                pdfIsMC = pdfIsHessian = False
+                #Check doc string for LHEPdfWeight branch to determine if PDF set type is MC Replica or Hessian
+                pdfDocString = event._tree.GetBranch("LHEPdfWeight").GetTitle()
+                if (pdfDocString is None) or (event.nLHEPdfWeight == 0) or (len(pdfDocString) == 0):
+                    pdfWeightUp = pdfWeightDown = 1
+                else:
+                    #If PDF set has alpha_s unc, need to offset sum in quadrature of weights by 2
+                    n_offset = 0
+                    if (event.nLHEPdfWeight % 10) > 1:
+                        n_offset = 2
+                    pdfWeights = [event.LHEPdfWeight[i] for i in range(event.nLHEPdfWeight - n_offset)]
+                    if event.nLHEPdfWeight - n_offset > 0:
+                        pdfMean = sum(pdfWeights)/(event.nLHEPdfWeight - n_offset)
+                    else:
+                        pdfMean = 1
+                    pdfSquareSum = sum((i-pdfMean)**2 for i in pdfWeights)
+                    #Formula for adding MC replica weights in quadrature: https://arxiv.org/pdf/1101.0536.pdf
+                    if pdfType(pdfDocString) == 'MC':
+                        pdfIsMC = True
+                        if event.nLHEPdfWeight - 1 - n_offset > 0:
+                            pdfRMS = math.sqrt(pdfSquareSum/(event.nLHEPdfWeight - 1 - n_offset))
+                        else:
+                            pdfRMS = 0
+                    #Formula for adding Hessian weights in quadrature: https://arxiv.org/pdf/2203.05506.pdf
+                    elif pdfType(pdfDocString) == 'Hessian':
+                        pdfIsHessian = True
+                        pdfRMS = math.sqrt(pdfSquareSum)
+                    #Else invalid PDF doc string
+                    else:
+                        pdfRMS = 0
+                    #Add alpha_s unc in quadrature if it exists (n_offset != 0)
+                    if (n_offset == 2) and (pdfType(pdfDocString) != '') :
+                        alpha_s = (event.LHEPdfWeight[event.nLHEPdfWeight-1] - event.LHEPdfWeight[event.nLHEPdfWeight-2])/2.0
+                        pdfRMS = math.sqrt(pdfRMS*pdfRMS + alpha_s*alpha_s)
                     pdfWeightUp = 1 + pdfRMS
                     pdfWeightDown = 1 - pdfRMS
-                else:
-                    pdfWeightUp = pdfWeightDown = 1
 
                 #Get QCD renormalization and factorization scale weight systematics (see [1] for more info)
                 #[1] https://hypernews.cern.ch/HyperNews/CMS/get/physTools/3663.html?inline=-1
@@ -1839,6 +1878,8 @@ to next event)"""
                     #Systematics - PDF
                     self.out.fillBranch("pdfWeightUp", pdfWeightUp)
                     self.out.fillBranch("pdfWeightDown", pdfWeightDown)
+                    self.out.fillBranch("pdfIsMC", pdfIsMC)
+                    self.out.fillBranch("pdfIsHessian", pdfIsHessian)
 
                     #Systematics - QCD Renormalization and Factorization scales
                     self.out.fillBranch("qcdRenWeightUp", qcdRenWeightUp)
@@ -2017,28 +2058,28 @@ countEvents = lambda : CountEvents()
 
 # #########################################################################################################################################
 
-# if runLocal:
-#     #Select PostProcessor options here
-#     selection=None
-#     #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-#     #outputDir = "testSamples/"
-#     outputDir = "."
-#     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-#     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-#     #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
-#     #inputFiles=["/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tChan_Mchi1Mphi100_scalar_full.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full1.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
-#     #inputFiles=["/hdfs/store/user/vshang/testSamples/nanoAODv7/SingleElectron_2016H_v7.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-#     inputFiles=["ttbarPlusJets_Run2016_v7.root"]
-#     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt"
-#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
-#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
-#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt"
-#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+if runLocal:
+    #Select PostProcessor options here
+    selection=None
+    #outputDir = "outDir2016AnalysisSR/ttbarDM/"
+    #outputDir = "testSamples/"
+    outputDir = "."
+    #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+    outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+    #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
+    #inputFiles=["/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tChan_Mchi1Mphi100_scalar_full.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full1.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
+    #inputFiles=["/hdfs/store/user/vshang/testSamples/nanoAODv7/SingleElectron_2016H_v7.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
+    inputFiles=["ttbarPlusJets_Run2016_v7.root"]
+    #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt"
+    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
+    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt"
+    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon07252022",noOut=False,outputbranchsel=outputbranches)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC_Skim()],postfix="_pseudo2018_tChan_Mchi1_Mphi450",noOut=False,outputbranchsel=outputbranches)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
-#     p.run()
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon08192022old",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC_Skim()],postfix="_pseudo2018_tChan_Mchi1_Mphi450",noOut=False,outputbranchsel=outputbranches)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
+    p.run()

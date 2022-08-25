@@ -5,15 +5,23 @@ import datetime
 import re
 from utils import *
 
+#Select year and cut to plot for systematic variation
+year = 2018
+cutName = 'AH'
+
 gStyle.SetOptStat(0)
-f=TFile.Open('ttbarPlusJets_Run2016_v7_ModuleCommon07252022v4.root','')
+f=TFile.Open('ttbarPlusJets_Run'+str(year)+'_v7_ModuleCommon08192022old.root','')
 t=f.Get('Events')
 
 #Define selection cuts and filters here
 cuts = {}
 
-cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter'
-cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight'
+if year == 2016:
+    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter'
+    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight'
+elif (year == 2017) or (year == 2018):
+    cuts['passMETfilters'] = 'Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2'# && Flag_eeBadScFilter'
+    cuts['MET'] = 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60'
 
 cuts['PV'] = 'PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,2)+pow(PV_y,2)) < 2'
 
@@ -91,20 +99,20 @@ def addSys(sysName, cut):
         cutDown = cutDown.replace('modified_topness ','modified_topnessResDown ')
         cutDown = cutDown.replace('full_topness ','full_topnessResDown ')
 
+    if sysName == 'CMS_pdf':
+        cutUp = '(' + cutUp + ')' + '*pdfWeightUp'
+        cutDown = '(' + cutDown + ')' + '*pdfWeightDown'
+
     return [cutUp, cutDown]
 
 #cuts['AH'] = cuts['AH'].replace('minDeltaPhi > 0.4 && ','')
 
-#Select selection cut and variable to be plotted here by uncommenting
-
-cutName = 'AH'
-cut = cuts[cutName]
-
 #Select systematic variable to plot
-sys = 'CMS_res_j'
+cut = cuts[cutName]
+sys = 'CMS_pdf'
 var = 'METcorrected_pt'
-varUp = var + 'ResUp'
-varDown = var + 'ResDown'
+varUp = var #+ 'ResUp'
+varDown = var #+ 'ResDown'
 cut_Up = addSys(sys, cut)[0]
 cut_Down = addSys(sys, cut)[1]
 print 'cut = ', cut
@@ -115,15 +123,17 @@ nbins = 15
 xmin = 250
 xmax = 550
 
-ratioLabel = ': p_{T}^{miss} (GeV); Events'
+histLabel = '; ; Events'
+
+ratioLabel = '; p_{T}^{miss} (GeV); Events'
 #ratioLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}) distribution; Events'
 #ratioLabel = '; M_{T}^{b} (GeV); Events'
 #ratioLabel = '; jet_{1} p_{T}/H_{T}; Events'
 #ratioLabel = '; bjet_{1} #phi; Events'
 
-hist=TH1F('hist',ratioLabel,nbins,xmin,xmax)
-histUp=TH1F('histUp',ratioLabel,nbins,xmin,xmax)
-histDown=TH1F('histDown',ratioLabel,nbins,xmin,xmax)
+hist=TH1F('hist',histLabel,nbins,xmin,xmax)
+histUp=TH1F('histUp',histLabel,nbins,xmin,xmax)
+histDown=TH1F('histDown',histLabel,nbins,xmin,xmax)
 t.Draw(var+'>>hist', cut)
 t.Draw(varUp+'>>histUp', cut_Up)
 t.Draw(varDown+'>>histDown', cut_Down)
@@ -163,8 +173,8 @@ histUp.SetLineColor(kRed)
 histDown.SetLineColor(kBlue)
 
 legend=TLegend(0.4,0.65,0.85,0.85)
-legend.AddEntry(histUp,varUp,'l')
-legend.AddEntry(histDown,varDown,'l')
+legend.AddEntry(histUp,sys+'Up','l')
+legend.AddEntry(histDown,sys+'Down','l')
 legend.Draw('same')
 legend.SetBorderSize(0)
 legend.SetFillStyle(0)
@@ -192,4 +202,4 @@ h_err.SetFillColor(1)
 h_ratioUp.SetLineColor(kRed)
 h_ratioDown.SetLineColor(kBlue)
 
-c1.SaveAs(cutName + '_2016_' + var + '_' + sys + 'v4.png')
+c1.SaveAs(cutName + '_'+str(year)+'_' + var + '_' + sys + '_old.png')
