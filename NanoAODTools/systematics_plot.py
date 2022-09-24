@@ -6,11 +6,11 @@ import re
 from utils import *
 
 #Select year and cut to plot for systematic variation
-year = 2018
+year = 2016
 cutName = 'AH'
 
 gStyle.SetOptStat(0)
-f=TFile.Open('ttbarPlusJets_Run'+str(year)+'_v7_ModuleCommon08192022old.root','')
+f=TFile.Open('ttbarPlusJets_Run'+str(year)+'_v7_ModuleCommon09242022.root','')
 t=f.Get('Events')
 
 #Define selection cuts and filters here
@@ -99,6 +99,26 @@ def addSys(sysName, cut):
         cutDown = cutDown.replace('modified_topness ','modified_topnessResDown ')
         cutDown = cutDown.replace('full_topness ','full_topnessResDown ')
 
+    if sysName == 'CMS_UncMET':
+        
+        cutUp = cut.replace('METcorrected_pt ','METcorrected_ptUnclustUp ')
+        cutUp = cutUp.replace('M_Tb ','M_TbUnclustUp ')
+        cutUp = cutUp.replace('M_T ','M_TUnclustUp ')
+        cutUp = cutUp.replace('M_T2W ','M_T2WUnclustUp ')
+        cutUp = cutUp.replace('M_T2ll ','M_T2llUnclustUp ')
+        cutUp = cutUp.replace('modified_topness ','modified_topnessUnclustUp ')
+        cutUp = cutUp.replace('full_topness ','full_topnessUnclustUp ')
+        cutUp = cutUp.replace('recoilPtMiss ', 'recoilPtMissUnclustUp ')
+
+        cutDown = cut.replace('METcorrected_pt ','METcorrected_ptUnclustDown ')
+        cutDown = cutDown.replace('M_Tb ','M_TbUnclustDown ')
+        cutDown = cutDown.replace('M_T ','M_TUnclustDown ')
+        cutDown = cutDown.replace('M_T2W ','M_T2WUnclustDown ')
+        cutDown = cutDown.replace('M_T2ll ','M_T2llUnclustDown ')
+        cutDown = cutDown.replace('modified_topness ','modified_topnessUnclustDown ')
+        cutDown = cutDown.replace('full_topness ','full_topnessUnclustDown ')
+        cutDown = cutDown.replace('recoilPtMiss ','recoildPtMissUnclustDown ')
+
     if sysName == 'CMS_pdf':
         cutUp = '(' + cutUp + ')' + '*pdfWeightUp'
         cutDown = '(' + cutDown + ')' + '*pdfWeightDown'
@@ -109,10 +129,10 @@ def addSys(sysName, cut):
 
 #Select systematic variable to plot
 cut = cuts[cutName]
-sys = 'CMS_pdf'
-var = 'METcorrected_pt'
-varUp = var #+ 'ResUp'
-varDown = var #+ 'ResDown'
+sys = 'CMS_UncMET'
+var = 'recoilPtMiss'
+varUp = var + 'UnclustUp'
+varDown = var + 'UnclustDown'
 cut_Up = addSys(sys, cut)[0]
 cut_Down = addSys(sys, cut)[1]
 print 'cut = ', cut
@@ -202,4 +222,4 @@ h_err.SetFillColor(1)
 h_ratioUp.SetLineColor(kRed)
 h_ratioDown.SetLineColor(kBlue)
 
-c1.SaveAs(cutName + '_'+str(year)+'_' + var + '_' + sys + '_old.png')
+c1.SaveAs(cutName + '_'+str(year)+'_' + var + '_' + sys + '.png')

@@ -29,11 +29,11 @@ counter = True
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/systematics/CMS_res_j/'
-#saveDirectory = 'plots/CR_2016/METcorrected_pt/'
+#saveDirectory = 'plots/systematics/CMS_res_j/'
+saveDirectory = 'plots/CR_2016/METcorrected_pt/'
 #saveDirectory = 'plots/AN/modtopness/'
 #saveDirectory = 'plots/EEl1prefire_studies/'
-date = '08_10_2022'
+date = '08_30_2022'
 year = 2016
 useUL = False
 useCondor = False
@@ -69,7 +69,7 @@ elif year == 2018:
         dataSamples = data2018
         MCSamples = samples2018
 #Make sure save directory is available if not using Condor
-if not useCondor:
+if False:#not useCondor:
     try:
         if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
         #if not os.path.exists( saveDirectory ) : os.makedirs( saveDirectory )
@@ -227,7 +227,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL'
 #cut = 'SL1b'
 #cut = 'SL2b'
-#cut = 'AH'
+cut = 'AH'
 #cut = 'AH1b'
 #cut = 'AH2b'
 
@@ -287,7 +287,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'AH0l0fQR'
 #cut = 'AH0l1fQR'
 
-#cuts['AH'] = cuts['AH'].replace('&& minDeltaPhi > 0.4 ','')
+cuts['AH'] = cuts['AH'].replace('&& minDeltaPhi > 0.4 ','')
 #cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets == 0'
 #cuts[cut] = cuts[cut].replace(' && M_T2ll <= 80', '')
 #cuts[cut] = cuts[cut].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 160')
@@ -301,12 +301,12 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 # cuts['AH0l1fSR'] = cuts['AH0l1fSR'] + ' && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 # cuts['AH0l2bSR'] = cuts['AH0l2bSR'] + ' && nfjets >= 1'# && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 
-var = 'METcorrected_pt'
+#var = 'METcorrected_pt'
 #var = 'recoilPtMiss'
 #var = 'METcorrected_phi'
 #var = 'M_T'
 #var = 'M_T2W'
-#var = 'minDeltaPhi12'
+var = 'minDeltaPhi'
 #var = 'M_Tb'
 #var = 'jet1p_TH_T'
 #var = 'njets'
@@ -382,12 +382,12 @@ if partialUnblind:
 print('Creating histograms..')
 
 #Set histogram options
-nbins = 15
-xmin = 250
-xmax = 550
+nbins = 16
+xmin = 0
+xmax = 3.2
 auto_y = True
-doLogPlot = True
-drawData = False
+doLogPlot = False
+drawData = True
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
@@ -401,7 +401,7 @@ doSysFirstHalf = False
 doSysSecondHalf = False
 drawOverflow = False
 drawUnderflow = True
-plotSys = True
+plotSys = False
 plotSysVar = 'CMS_res_j'
 plotSysSignal = False
 TH1.SetDefaultSumw2()
@@ -442,12 +442,12 @@ if (condor_cut != '') and condor_plot:
         xmax = 550
         doLogPlot = True
 
-histoLabel = '; p_{T}^{miss} (GeV); Events'
+#histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; Hadronic recoil (GeV); Events'
 #histoLabel = '; #phi^{miss}; Events'
 #histoLabel = '; M_{T} (GeV); Events'
 #histoLabel = '; M_{T2}^{W} (GeV); Events'
-#histoLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
+histoLabel = '; min#Delta#phi(jet_{all},p_{T}^{miss}); Events'
 #histoLabel = '; M_{T}^{b} (GeV); Events'
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = '; forward jet_{1} #eta; Events'
@@ -1720,9 +1720,9 @@ if savePlots:
         if plotSysSignal:
             c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_ttDM_scalar_Mchi'+str(mchi)+'_Mphi'+str(mphi)+'.png')
         else:
-            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
+            #c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
-            #c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_withUnderflow_fixed.png')
+            c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_old.png')
 
 print 'Plotting end time:', datetime.datetime.now()

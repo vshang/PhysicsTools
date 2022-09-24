@@ -17,8 +17,8 @@ from PhysicsTools.NanoAODTools.postprocessing.modules.jme.jetmetHelperRun2 impor
 print 'Python version = ', sys.version
 
 #Set runLocal to false if running jobs through CRAB
-#runLocal = False
-runLocal = True
+runLocal = False
+#runLocal = True
 
 #Set jesSys to "All" for split JES systematics and "Total" for combined JES systematics
 jesSys = "All"
@@ -60,13 +60,12 @@ else:
 
 #Helper function to identify type of PDF dataset based on doc string number
 def pdfType(docString):
-    return 'MC'
-    # if any(string in docString for string in ['91400', '306000']):
-    #     return 'Hessian'
-    # elif any(string in docString for string in ['260001', '262000', '262001', '292001', '292201']):
-    #     return 'MC'
-    # else:
-    #     return ''
+    if any(string in docString for string in ['91400', '306000']):
+        return 'Hessian'
+    elif any(string in docString for string in ['260001', '262000', '262001', '292001', '292201']):
+        return 'MC'
+    else:
+        return ''
 
 class CommonAnalysis(Module):
     def __init__(self, signalRegion, year=2016, isData=False, isSignal=False, btag='DeepCSV', UL=False):
@@ -201,7 +200,6 @@ class CommonAnalysis(Module):
 
             self.out.branch("njetsResUp", "I")
             self.out.branch("njetsResDown", "I")
-
             
             self.out.branch("nfjetsResUp", "I")
             self.out.branch("nfjetsResDown", "I")
@@ -243,6 +241,31 @@ class CommonAnalysis(Module):
 
             self.out.branch("full_topnessResUp", "F")
             self.out.branch("full_topnessResDown", "F")
+            
+            #Systematics - Unclustered MET
+            self.out.branch("METcorrected_ptUnclustUp", "F")
+            self.out.branch("METcorrected_ptUnclustDown", "F")
+            
+            self.out.branch("M_TbUnclustUp", "F")
+            self.out.branch("M_TbUnclustDown", "F")
+            
+            self.out.branch("M_TUnclustUp", "F")
+            self.out.branch("M_TUnclustDown", "F")
+            
+            self.out.branch("M_T2WUnclustUp", "F")
+            self.out.branch("M_T2WUnclustDown", "F")
+            
+            self.out.branch("M_T2llUnclustUp", "F")
+            self.out.branch("M_T2llUnclustDown", "F")
+            
+            self.out.branch("recoilPtMissUnclustUp", "F")
+            self.out.branch("recoilPtMissUnclustDown", "F")
+            
+            self.out.branch("modified_topnessUnclustUp", "F")
+            self.out.branch("modified_topnessUnclustDown", "F")
+
+            self.out.branch("full_topnessUnclustUp", "F")
+            self.out.branch("full_topnessUnclustDown", "F")
 
             if not self.isSignal:
                 #Systematics - PDF
@@ -1162,6 +1185,18 @@ to next event)"""
             METcorrected_ptResDown = METcorrected_pt_phiResDown[0]
             METcorrected_phiResDown = METcorrected_pt_phiResDown[1]
 
+        #Systematics - Unclustered MET
+        if self.isMC:
+            METcorrected_ptX = METcorrected_pt*math.cos(METcorrected_phi)
+            METcorrected_ptY = METcorrected_pt*math.sin(METcorrected_phi)
+
+            METcorrected_ptUnclustXUp = METcorrected_ptX + event.MET_MetUnclustEnUpDeltaX
+            METcorrected_ptUnclustYUp = METcorrected_ptY + event.MET_MetUnclustEnUpDeltaY
+            METcorrected_ptUnclustUp = math.sqrt(pow(METcorrected_ptUnclustXUp, 2) + pow(METcorrected_ptUnclustYUp, 2))
+
+            METcorrected_ptUnclustXDown = METcorrected_ptX - event.MET_MetUnclustEnUpDeltaX
+            METcorrected_ptUnclustYDown = METcorrected_ptY - event.MET_MetUnclustEnUpDeltaY
+            METcorrected_ptUnclustDown = math.sqrt(pow(METcorrected_ptUnclustXDown, 2) + pow(METcorrected_ptUnclustYDown, 2))
 
         #Systematics - JES, JER (recoilPtMiss)
         if self.isMC:
@@ -1175,6 +1210,14 @@ to next event)"""
                     jesBranches["recoilPtMissScale"+sys+"Down"] = math.sqrt(pow(jesBranches["METcorrected_ptScale"+sys+"Down"]*math.cos(jesBranches["METcorrected_phiScale"+sys+"Down"]) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(jesBranches["METcorrected_ptScale"+sys+"Down"]*math.sin(jesBranches["METcorrected_phiScale"+sys+"Down"]) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
                 recoilPtMissResUp = math.sqrt(pow(METcorrected_ptResUp*math.cos(METcorrected_phiResUp) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_ptResUp*math.sin(METcorrected_phiResUp) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
                 recoilPtMissResDown = math.sqrt(pow(METcorrected_ptResDown*math.cos(METcorrected_phiResDown) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_ptResDown*math.sin(METcorrected_phiResDown) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
+
+        #Systematics - Unclustered MET (recoilPtMiss)
+        if self.isMC:
+            recoilPtMissUnclustUp = recoilPtMissUnclustDown = 0
+            #Only calculate recoilPtMiss when two tight leptons exist (2e, 2m, or 1e1m)
+            if (nTightElectrons >= 2 and nLooseMuons == 0) or (nVetoElectrons == 0 and nTightMuons >= 2):
+                recoilPtMissUnclustUp = math.sqrt(pow(METcorrected_ptUnclustUp*math.cos(METcorrected_phi) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_ptUnclustUp*math.sin(METcorrected_phi) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
+                recoilPtMissUnclustDown = math.sqrt(pow(METcorrected_ptUnclustDown*math.cos(METcorrected_phi) + lepton1.p4().Px() + lepton2.p4().Px(), 2) + pow(METcorrected_ptUnclustDown*math.sin(METcorrected_phi) + lepton1.p4().Py() + lepton2.p4().Py(), 2))
 
 
 
@@ -1359,11 +1402,12 @@ to next event)"""
 
         #Calculate M_T^b
         M_Tb = -9 #If there are no bjets, set value to -9 to indicate M_Tb cannot be calculated
-        #Systematics - JES, JER
+        #Systematics - JES, JER, Unclustered MET
         if self.isMC:
             for sys in jesUnc:
                 jesBranches["M_TbScale"+sys+"Up"] = jesBranches["M_TbScale"+sys+"Down"] = -9
             M_TbResUp = M_TbResDown = -9
+            M_TbUnclustUp = M_TbUnclustDown = -9
         
         if nbjets > 0:
             bjet1 = bJets[0]
@@ -1380,6 +1424,10 @@ to next event)"""
 
             deltaPhiMTb = bjet1.phi - METcorrected_phi
             M_Tb = math.sqrt(2 * METcorrected_pt * bjet1.pt_nom * (1 - math.cos(deltaPhiMTb)))
+            #Systematics - Unclustered MET
+            if self.isMC:
+                M_TbUnclustUp = math.sqrt(2 * METcorrected_ptUnclustUp * bjet1.pt_nom * (1 - math.cos(deltaPhiMTb)))
+                M_TbUnclustDown = math.sqrt(2 * METcorrected_ptUnclustDown * bjet1.pt_nom * (1 - math.cos(deltaPhiMTb)))
 
         #Systematics - JES, JER
         if self.isMC:
@@ -1452,7 +1500,7 @@ to next event)"""
         M_T = M_T2W = M_T2ll  = -9 #If there are not enough tight leptons, set value to -9 to indicate variable cannot be calculated
         modified_topness = full_topness = -999
         full_topness = -999
-        #Systematics - JES, JER
+        #Systematics - JES, JER, Unclustered MET
         if self.isMC:
             for sys in jesUnc:
                 jesBranches["M_TScale"+sys+"Up"] = jesBranches["M_TScale"+sys+"Down"] = -9
@@ -1460,11 +1508,18 @@ to next event)"""
                 jesBranches["M_T2llScale"+sys+"Up"] = jesBranches["M_T2llScale"+sys+"Down"] = -9
                 jesBranches["modified_topnessScale"+sys+"Up"] = jesBranches["modified_topnessScale"+sys+"Down"] = -999
                 jesBranches["full_topnessScale"+sys+"Up"] = jesBranches["full_topnessScale"+sys+"Down"] = -999
+
             M_TResUp = M_TResDown = -9
             M_T2WResUp = M_T2WResDown = -9
             M_T2llResUp = M_T2llResDown = -9
             modified_topnessResUp = modified_topnessResDown = -999
             full_topnessResUp = full_topnessResDown = -999
+
+            M_TUnclustUp = M_TUnclustDown = -9
+            M_T2WUnclustUp = M_T2WUnclustDown = -9
+            M_T2llUnclustUp = M_T2llUnclustDown = -9
+            modified_topnessUnclustUp = modified_topnessUnclustDown = -999
+            full_topnessUnclustUp = full_topnessUnclustDown = -999
 
         if nTightElectrons > 0 or nTightMuons > 0: #Default to using electron if both tight electron and muon exist
             if nTightElectrons > 0:
@@ -1475,7 +1530,7 @@ to next event)"""
             #Calculate M_T
             deltaPhiMT = lepton.phi - METcorrected_phi
             M_T = math.sqrt(2 * METcorrected_pt * lepton.pt * (1 - math.cos(deltaPhiMT)))
-            #Systematics - JES, JER
+            #Systematics - JES, JER, Unclustered MET
             if self.isMC:
                 for sys in jesUnc:
                     jesBranches["deltaPhiMTScale"+sys+"Up"] = lepton.phi - jesBranches["METcorrected_phiScale"+sys+"Up"]
@@ -1487,37 +1542,52 @@ to next event)"""
                 deltaPhiMTResDown = lepton.phi - METcorrected_phiResDown
                 M_TResDown = math.sqrt(2 * METcorrected_ptResDown * lepton.pt * (1 - math.cos(deltaPhiMTResDown)))
 
+                M_TUnclustUp = math.sqrt(2 * METcorrected_ptUnclustUp * lepton.pt * (1 - math.cos(deltaPhiMT)))
+                M_TUnclustDown = math.sqrt(2 * METcorrected_ptUnclustDown * lepton.pt * (1 - math.cos(deltaPhiMT)))
+
             #Calculate M_T2^W 
             leptonTLorentz = lepton.p4()
             metTVector2 = ROOT.TVector2(METcorrected_pt * math.cos(METcorrected_phi), METcorrected_pt * math.sin(METcorrected_phi))
             M_T2W = Mt2Com_bisect.calculateMT2w(ljetVector, bjetVector, leptonTLorentz, metTVector2, "MT2w")
-            #Systematics - JES, JER
+            #Systematics - JES, JER, Unclustered MET
             if self.isMC:
                 for sys in jesUnc:
                     jesBranches["metTVector2Scale"+sys+"Up"] = ROOT.TVector2(jesBranches["METcorrected_ptScale"+sys+"Up"] * math.cos(jesBranches["METcorrected_phiScale"+sys+"Up"]), jesBranches["METcorrected_ptScale"+sys+"Up"] * math.sin(jesBranches["METcorrected_phiScale"+sys+"Up"]))
                     jesBranches["M_T2WScale"+sys+"Up"] = Mt2Com_bisect.calculateMT2w(jesBranches["ljetVectorScale"+sys+"Up"], jesBranches["bjetVectorScale"+sys+"Up"], leptonTLorentz, jesBranches["metTVector2Scale"+sys+"Up"], "MT2w")
                     jesBranches["metTVector2Scale"+sys+"Down"] = ROOT.TVector2(jesBranches["METcorrected_ptScale"+sys+"Down"] * math.cos(jesBranches["METcorrected_phiScale"+sys+"Down"]), jesBranches["METcorrected_ptScale"+sys+"Down"] * math.sin(jesBranches["METcorrected_phiScale"+sys+"Down"]))
                     jesBranches["M_T2WScale"+sys+"Down"] = Mt2Com_bisect.calculateMT2w(jesBranches["ljetVectorScale"+sys+"Down"], jesBranches["bjetVectorScale"+sys+"Down"], leptonTLorentz, jesBranches["metTVector2Scale"+sys+"Down"], "MT2w")
+
                 metTVector2ResUp = ROOT.TVector2(METcorrected_ptResUp * math.cos(METcorrected_phiResUp), METcorrected_ptResUp * math.sin(METcorrected_phiResUp))
                 M_T2WResUp = Mt2Com_bisect.calculateMT2w(ljetVectorResUp, bjetVectorResUp, leptonTLorentz, metTVector2ResUp, "MT2w")
                 metTVector2ResDown = ROOT.TVector2(METcorrected_ptResDown * math.cos(METcorrected_phiResDown), METcorrected_ptResDown * math.sin(METcorrected_phiResDown))
                 M_T2WResDown = Mt2Com_bisect.calculateMT2w(ljetVectorResDown, bjetVectorResDown, leptonTLorentz, metTVector2ResDown, "MT2w")
 
+                metTVector2UnclustUp = ROOT.TVector2(METcorrected_ptUnclustUp * math.cos(METcorrected_phi), METcorrected_ptUnclustUp * math.sin(METcorrected_phi))
+                M_T2WUnclustUp = Mt2Com_bisect.calculateMT2w(ljetVector, bjetVector, leptonTLorentz, metTVector2UnclustUp, "MT2w")
+                metTVector2UnclustDown = ROOT.TVector2(METcorrected_ptUnclustDown * math.cos(METcorrected_phi), METcorrected_ptUnclustDown * math.sin(METcorrected_phi))
+                M_T2WUnclustDown = Mt2Com_bisect.calculateMT2w(ljetVector, bjetVector, leptonTLorentz, metTVector2UnclustDown, "MT2w")
+
             #Only calculate topness variables when a single tight lepton exists (1e or 1m)
             if (nTightElectrons + nTightMuons) == 1:
                 modified_topness = ROOT.CalcTopness_(1, METcorrected_pt, METcorrected_phi, leptonTLorentz, bjetVector, ljetVector)
                 full_topness = ROOT.CalcTopness_(2, METcorrected_pt, METcorrected_phi, leptonTLorentz, bjetVector, ljetVector)
-                #Systematics - JES, JER
+                #Systematics - JES, JER, Unclustered MET
                 if self.isMC:
                     for sys in jesUnc:
                         jesBranches["modified_topnessScale"+sys+"Up"] = ROOT.CalcTopness_(1, jesBranches["METcorrected_ptScale"+sys+"Up"], jesBranches["METcorrected_phiScale"+sys+"Up"], leptonTLorentz, jesBranches["bjetVectorScale"+sys+"Up"], jesBranches["ljetVectorScale"+sys+"Up"])
                         jesBranches["full_topnessScale"+sys+"Up"] = ROOT.CalcTopness_(2, jesBranches["METcorrected_ptScale"+sys+"Up"], jesBranches["METcorrected_phiScale"+sys+"Up"], leptonTLorentz, jesBranches["bjetVectorScale"+sys+"Up"], jesBranches["ljetVectorScale"+sys+"Up"])
                         jesBranches["modified_topnessScale"+sys+"Down"] = ROOT.CalcTopness_(1, jesBranches["METcorrected_ptScale"+sys+"Down"], jesBranches["METcorrected_phiScale"+sys+"Down"], leptonTLorentz, jesBranches["bjetVectorScale"+sys+"Down"], jesBranches["ljetVectorScale"+sys+"Down"])
                         jesBranches["full_topnessScale"+sys+"Down"] = ROOT.CalcTopness_(2, jesBranches["METcorrected_ptScale"+sys+"Down"], jesBranches["METcorrected_phiScale"+sys+"Down"], leptonTLorentz, jesBranches["bjetVectorScale"+sys+"Down"], jesBranches["ljetVectorScale"+sys+"Down"])
+
                     modified_topnessResUp = ROOT.CalcTopness_(1, METcorrected_ptResUp, METcorrected_phiResUp, leptonTLorentz, bjetVectorResUp, ljetVectorResUp)
                     full_topnessResUp = ROOT.CalcTopness_(2, METcorrected_ptResUp, METcorrected_phiResUp, leptonTLorentz, bjetVectorResUp, ljetVectorResUp)
                     modified_topnessResDown = ROOT.CalcTopness_(1, METcorrected_ptResDown, METcorrected_phiResDown, leptonTLorentz, bjetVectorResDown, ljetVectorResDown)
                     full_topnessResDown = ROOT.CalcTopness_(2, METcorrected_ptResDown, METcorrected_phiResDown, leptonTLorentz, bjetVectorResDown, ljetVectorResDown)
+
+                    modified_topnessUnclustUp = ROOT.CalcTopness_(1, METcorrected_ptUnclustUp, METcorrected_phi, leptonTLorentz, bjetVector, ljetVector)
+                    full_topnessUnclustUp = ROOT.CalcTopness_(2, METcorrected_ptUnclustUp, METcorrected_phi, leptonTLorentz, bjetVector, ljetVector)
+                    modified_topnessUnclustDown = ROOT.CalcTopness_(1, METcorrected_ptUnclustDown, METcorrected_phi, leptonTLorentz, bjetVector, ljetVector)
+                    full_topnessUnclustDown = ROOT.CalcTopness_(2, METcorrected_ptUnclustDown, METcorrected_phi, leptonTLorentz, bjetVector, ljetVector)
                 
             
         if nTightElectrons + nTightMuons == 2:
@@ -1551,7 +1621,7 @@ to next event)"""
 
             M_T2ll = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,pxMiss,pyMiss,chiA,chiB,desiredPrecisionOnM_T2ll)
 
-            #Systematics - JES, JER
+            #Systematics - JES, JER, Unclustered MET
             if self.isMC:
                 for sys in jesUnc:
                     jesBranches["pxMissScale"+sys+"Up"] = jesBranches["METcorrected_ptScale"+sys+"Up"]*math.cos(jesBranches["METcorrected_phiScale"+sys+"Up"])
@@ -1569,6 +1639,9 @@ to next event)"""
                 
                 M_T2llResUp = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,pxMissResUp,pyMissResUp,chiA,chiB,desiredPrecisionOnM_T2ll)
                 M_T2llResDown = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,pxMissResDown,pyMissResDown,chiA,chiB,desiredPrecisionOnM_T2ll)
+
+                M_T2llUnclustUp = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,METcorrected_ptUnclustXUp,METcorrected_ptUnclustYUp,chiA,chiB,desiredPrecisionOnM_T2ll)
+                M_T2llUnclustDown = asymm_mt2_lester_bisect.get_mT2(mVisA,pxA,pyA,mVisB,pxB,pyB,METcorrected_ptUnclustXDown,METcorrected_ptUnclustYDown,chiA,chiB,desiredPrecisionOnM_T2ll)
         
         #Tau candidates are counted
         tauCandidates = Collection(event, "Tau")
@@ -1874,6 +1947,31 @@ to next event)"""
                 self.out.fillBranch("full_topnessResUp", full_topnessResUp)
                 self.out.fillBranch("full_topnessResDown", full_topnessResDown)
 
+                #Systematics - Unclustered MET
+                self.out.fillBranch("METcorrected_ptUnclustUp", METcorrected_ptUnclustUp)
+                self.out.fillBranch("METcorrected_ptUnclustDown", METcorrected_ptUnclustDown)
+                
+                self.out.fillBranch("M_TbUnclustUp", M_TbUnclustUp)
+                self.out.fillBranch("M_TbUnclustDown", M_TbUnclustDown)
+                
+                self.out.fillBranch("M_TUnclustUp", M_TUnclustUp)
+                self.out.fillBranch("M_TUnclustDown", M_TUnclustDown)
+                
+                self.out.fillBranch("M_T2WUnclustUp", M_T2WUnclustUp)
+                self.out.fillBranch("M_T2WUnclustDown", M_T2WUnclustDown)
+                
+                self.out.fillBranch("M_T2llUnclustUp", M_T2llUnclustUp)
+                self.out.fillBranch("M_T2llUnclustDown", M_T2llUnclustDown)
+                
+                self.out.fillBranch("recoilPtMissUnclustUp", recoilPtMissUnclustUp)
+                self.out.fillBranch("recoilPtMissUnclustDown", recoilPtMissUnclustDown)
+
+                self.out.fillBranch("modified_topnessUnclustUp", modified_topnessUnclustUp)
+                self.out.fillBranch("modified_topnessUnclustDown", modified_topnessUnclustDown)
+                
+                self.out.fillBranch("full_topnessUnclustUp", full_topnessUnclustUp)
+                self.out.fillBranch("full_topnessUnclustDown", full_topnessUnclustDown)
+
                 if not self.isSignal:
                     #Systematics - PDF
                     self.out.fillBranch("pdfWeightUp", pdfWeightUp)
@@ -2058,28 +2156,28 @@ countEvents = lambda : CountEvents()
 
 # #########################################################################################################################################
 
-if runLocal:
-    #Select PostProcessor options here
-    selection=None
-    #outputDir = "outDir2016AnalysisSR/ttbarDM/"
-    #outputDir = "testSamples/"
-    outputDir = "."
-    #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-    outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-    #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
-    #inputFiles=["/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tChan_Mchi1Mphi100_scalar_full.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full1.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
-    #inputFiles=["/hdfs/store/user/vshang/testSamples/nanoAODv7/SingleElectron_2016H_v7.root"]#,"SingleMuon_2016B_ver1.root","SingleMuon_2016B_ver2.root","SingleMuon_2016E.root"]
-    inputFiles=["ttbarPlusJets_Run2016_v7.root"]
-    #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt"
-    #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+# if runLocal:
+#     #Select PostProcessor options here
+#     selection=None
+#     #outputDir = "outDir2016AnalysisSR/ttbarDM/"
+#     #outputDir = "testSamples/"
+#     outputDir = "."
+#     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
+#     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+#     #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
+#     #inputFiles=["/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tChan_Mchi1Mphi100_scalar_full.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full1.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
+#     inputFiles=["SingleElectron_2018C_v7.root"]
+#     #inputFiles=["ttbarPlusJets_Run2018_v7.root"]
+#     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt"
+#     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon08192022old",noOut=False,outputbranchsel=outputbranches)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC_Skim()],postfix="_pseudo2018_tChan_Mchi1_Mphi450",noOut=False,outputbranchsel=outputbranches)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon_2016Data_Skim",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-    #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
-    p.run()
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018MC_Skim()],postfix="_ModuleCommon09242022",noOut=False,outputbranchsel=outputbranches)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC_Skim()],postfix="_pseudo2018_tChan_Mchi1_Mphi450",noOut=False,outputbranchsel=outputbranches)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018DataC(),analyze2018Data_Skim()],postfix="_ModuleCommon09242022",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_2016MC_countEvents_03182021",noOut=False,outputbranchsel=outputbranches)
+#     p.run()
