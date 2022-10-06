@@ -29,11 +29,11 @@ counter = True
 
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
-saveDirectory = 'plots/systematics/debug_JES_JER/'
-#saveDirectory = 'plots/CR_2018/METcorrected_pt/'
-#saveDirectory = 'plots/topness_studies/'
+#saveDirectory = 'plots/systematics/CMS_res_j/'
+saveDirectory = 'plots/SR_2016/METcorrected_pt/'
+#saveDirectory = 'plots/AN/modtopness/'
 #saveDirectory = 'plots/EEl1prefire_studies/'
-date = '06_21_2022'
+date = '09_30_2022'
 year = 2016
 useUL = False
 useCondor = True
@@ -70,8 +70,12 @@ elif year == 2018:
         MCSamples = samples2018
 #Make sure save directory is available if not using Condor
 if not useCondor:
-    if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
-    #if not os.path.exists( saveDirectory ) : os.makedirs( saveDirectory )
+    try:
+        if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
+        #if not os.path.exists( saveDirectory ) : os.makedirs( saveDirectory )
+    except OSError, e:
+        if e.errno != 17:
+            print("Error:", e)
 
 print 'Plotting start time:', datetime.datetime.now()
 
@@ -119,8 +123,8 @@ preselect_cuts = ['SL1e', 'SL1m', 'AH']
 cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' + ' && ' + cuts['PV']
 cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' + ' && ' + cuts['PV']
 cuts['SL'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + '))' 
-cuts['SL1b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets == 1')
-cuts['SL2b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets >= 2')
+cuts['SL1b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets == 1') 
+cuts['SL2b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets >= 2') 
 cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
 cuts['AH1b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1')
 cuts['AH2b'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2')
@@ -302,7 +306,7 @@ var = 'METcorrected_pt'
 #var = 'METcorrected_phi'
 #var = 'M_T'
 #var = 'M_T2W'
-#var = 'minDeltaPhi12'
+#var = 'minDeltaPhi'
 #var = 'M_Tb'
 #var = 'jet1p_TH_T'
 #var = 'njets'
@@ -354,9 +358,9 @@ elif year == 2018:
 if partialUnblind:
     lumi = lumi/5.0
 if 'SR' in cut:
-    scaleFactor = 1
+    scaleFactor = 50
 else:
-    scaleFactor = 1
+    scaleFactor = 50
 
 ##Create histograms
 ##-----------------------------------------------------------------------------------------------
@@ -411,9 +415,9 @@ if useCondor:
         xmin = 250
         xmax = 530
     elif 'AH' in condor_cut:
-        nbins = 15
+        nbins = 25
         xmin = 250
-        xmax = 550
+        xmax = 750
 if doSysFirstHalf or doSysSecondHalf:
     doSys = True
 if doBinned:
@@ -433,9 +437,9 @@ if (condor_cut != '') and condor_plot:
         xmax = 530
         doLogPlot = False
     elif 'AH' in condor_cut:
-        nbins = 15
+        nbins = 25
         xmin = 250
-        xmax = 550
+        xmax = 750
         doLogPlot = True
 
 histoLabel = '; p_{T}^{miss} (GeV); Events'
@@ -443,7 +447,7 @@ histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; #phi^{miss}; Events'
 #histoLabel = '; M_{T} (GeV); Events'
 #histoLabel = '; M_{T2}^{W} (GeV); Events'
-#histoLabel = '; min#Delta#phi(jet_{1,2},p_{T}^{miss}); Events'
+#histoLabel = '; min#Delta#phi(jet_{all},p_{T}^{miss}); Events'
 #histoLabel = '; M_{T}^{b} (GeV); Events'
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = '; forward jet_{1} #eta; Events'
@@ -453,8 +457,8 @@ histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; forward jet_{1} charged Electromagnetic Energy Fraction; Events'
 #histoLabel = '; DeepAK8 top tag discriminant value; Events'
 #histoLabel = '; leading electron #eta; Events'
-#histoLabel = '; number of central jets; Events'
-#histoLabel = '; modified topness; Events (normalized)'
+#histoLabel = '; number of b-tagged jets; Events'
+#histoLabel = '; modified topness; Events'
 
 if (condor_cut== 'AH2lZR') or (condor_cut == 'AH2eZR') or (condor_cut == 'AH2mZR'):
     histoLabel = '; Hadronic recoil (GeV); Events'
@@ -534,7 +538,7 @@ else:
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
 if doSysFirstHalf or plotSys:
-    sys = ['CMS_res_j_'+str(year),'CMS_pdf_'+str(year),'CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDscale_ren_TT','QCDscale_fac_TT','QCDscale_ren_VV','QCDscale_fac_VV','preFire','CMS_PSisr','CMS_PSfsr','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_WewkWeight','CMS_ZewkWeight']
+    sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDscale_ren_TT','QCDscale_fac_TT','QCDscale_ren_VV','QCDscale_fac_VV','preFire','CMS_PSisr','CMS_PSfsr']
 else:
     sys = []
 jesUnc = ['','AbsoluteMPFBias','AbsoluteScale','AbsoluteStat','FlavorQCD','Fragmentation','PileUpDataMC','PileUpPtBB','PileUpPtEC1','PileUpPtEC2','PileUpPtHF','PileUpPtRef','RelativeFSR','RelativeJEREC1','RelativeJEREC2','RelativeJERHF','RelativePtBB','RelativePtEC1','RelativePtEC2','RelativePtHF','RelativeBal','RelativeSample','RelativeStatEC','RelativeStatFSR','RelativeStatHF','SinglePionECAL','SinglePionHCAL','TimePtEta']
@@ -682,7 +686,7 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
         weightedcutUp = weightedcut.replace('ewkZWeight', '1')
         weightedcutDown = weightedcut
 
-    elif sysName == 'CMS_pdf_'+str(year):
+    elif sysName == 'CMS_pdf':
         if year == 2016:
             if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName): 
                 weightedcutUp = weightedcut + '*pdfWeightUp'
@@ -901,7 +905,7 @@ def addSysPlot(process, eventTree, var, weightedcut):
         unc = plotSysVar.replace('CMS_scale','').replace('_j','')
         varSysUp = var+'Scale'+unc+'Up'
         varSysDown = var+'Scale'+unc+'Down'
-    if plotSysVar == 'CMS_res_j_'+str(year):
+    if 'CMS_res_j' in plotSysVar:
         varSysUp = var+'ResUp'
         varSysDown = var+'ResDown'
     #print '          varSysUp = ', varSysUp
@@ -1200,23 +1204,45 @@ print '-----------------------------'
 print 'FOM for tt+DM signal = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
 print 'FOM for t+DM signal = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
 print '-----------------------------'
+
+print 'Data bin content:'
+for i in range(nbins+2):
+    bin_content = hists['data'].GetBinContent(i)
+    print '    bin ' + str(i) + ': ' + str(bin_content)
+print '-----------------------------'
+print 'MC background bin content:'
+for i in range(nbins+2):
+    bin_content = hists['bkgSum'].GetBinContent(i)
+    print '    bin ' + str(i) + ': ' + str(bin_content)
+print '-----------------------------'
+print 'tt+DM bin content:'
+for i in range(nbins+2):
+    bin_content = hists['ttbar ' + mediatorType].GetBinContent(i)
+    print '    bin ' + str(i) + ': ' + str(bin_content)
+print '-----------------------------'
+print 't+DM bin content:'
+for i in range(nbins+2):
+    bin_content = hists['tbar ' + mediatorType].GetBinContent(i)
+    print '    bin ' + str(i) + ': ' + str(bin_content)
+print '-----------------------------'
+
 print 'Data bin errors:'
-for i in range(nbins+1):
+for i in range(nbins+2):
     bin_error = hists['data'].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
 print 'MC background bin errors:'
-for i in range(nbins+1):
+for i in range(nbins+2):
     bin_error = hists['bkgSum'].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
 print 'tt+DM bin errors:'
-for i in range(nbins+1):
+for i in range(nbins+2):
     bin_error = hists['ttbar ' + mediatorType].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
 print 't+DM bin errors:'
-for i in range(nbins+1):
+for i in range(nbins+2):
     bin_error = hists['tbar ' + mediatorType].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
@@ -1716,9 +1742,9 @@ if savePlots:
         if plotSysSignal:
             c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_ttDM_scalar_Mchi'+str(mchi)+'_Mphi'+str(mphi)+'.png')
         else:
-            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_fixed.png')
+            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_250to850.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
-            #c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
+            #c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_old.png')
 
 print 'Plotting end time:', datetime.datetime.now()

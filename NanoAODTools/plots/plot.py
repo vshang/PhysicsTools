@@ -30,10 +30,10 @@ counter = True
 gErrorIgnoreLevel = kError
 #Set save directory and date for file names
 #saveDirectory = 'plots/systematics/CMS_res_j/'
-saveDirectory = 'plots/CR_2016/METcorrected_pt/'
+saveDirectory = 'plots/SR_2016/METcorrected_pt/'
 #saveDirectory = 'plots/AN/modtopness/'
 #saveDirectory = 'plots/EEl1prefire_studies/'
-date = '08_30_2022'
+date = '09_30_2022'
 year = 2016
 useUL = False
 useCondor = False
@@ -69,7 +69,7 @@ elif year == 2018:
         dataSamples = data2018
         MCSamples = samples2018
 #Make sure save directory is available if not using Condor
-if False:#not useCondor:
+if not useCondor:
     try:
         if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
         #if not os.path.exists( saveDirectory ) : os.makedirs( saveDirectory )
@@ -227,7 +227,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL'
 #cut = 'SL1b'
 #cut = 'SL2b'
-cut = 'AH'
+#cut = 'AH'
 #cut = 'AH1b'
 #cut = 'AH2b'
 
@@ -287,7 +287,7 @@ cut = 'AH'
 #cut = 'AH0l0fQR'
 #cut = 'AH0l1fQR'
 
-cuts['AH'] = cuts['AH'].replace('&& minDeltaPhi > 0.4 ','')
+#cuts['AH'] = cuts['AH'].replace('&& minDeltaPhi > 0.4 ','')
 #cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets == 0'
 #cuts[cut] = cuts[cut].replace(' && M_T2ll <= 80', '')
 #cuts[cut] = cuts[cut].replace('METcorrected_pt >= 250', 'METcorrected_pt >= 160')
@@ -301,12 +301,12 @@ cuts['AH'] = cuts['AH'].replace('&& minDeltaPhi > 0.4 ','')
 # cuts['AH0l1fSR'] = cuts['AH0l1fSR'] + ' && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 # cuts['AH0l2bSR'] = cuts['AH0l2bSR'] + ' && nfjets >= 1'# && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 
-#var = 'METcorrected_pt'
+var = 'METcorrected_pt'
 #var = 'recoilPtMiss'
 #var = 'METcorrected_phi'
 #var = 'M_T'
 #var = 'M_T2W'
-var = 'minDeltaPhi'
+#var = 'minDeltaPhi'
 #var = 'M_Tb'
 #var = 'jet1p_TH_T'
 #var = 'njets'
@@ -382,12 +382,12 @@ if partialUnblind:
 print('Creating histograms..')
 
 #Set histogram options
-nbins = 16
-xmin = 0
-xmax = 3.2
+nbins = 15
+xmin = 250
+xmax = 550
 auto_y = True
-doLogPlot = False
-drawData = True
+doLogPlot = True
+drawData = False
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
@@ -399,8 +399,8 @@ combineEleMu = True
 doSys = False
 doSysFirstHalf = False
 doSysSecondHalf = False
-drawOverflow = False
-drawUnderflow = True
+drawOverflow = True
+drawUnderflow = False
 plotSys = False
 plotSysVar = 'CMS_res_j'
 plotSysSignal = False
@@ -437,17 +437,17 @@ if (condor_cut != '') and condor_plot:
         xmax = 530
         doLogPlot = False
     elif 'AH' in condor_cut:
-        nbins = 15
+        nbins = 30
         xmin = 250
-        xmax = 550
+        xmax = 850
         doLogPlot = True
 
-#histoLabel = '; p_{T}^{miss} (GeV); Events'
+histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; Hadronic recoil (GeV); Events'
 #histoLabel = '; #phi^{miss}; Events'
 #histoLabel = '; M_{T} (GeV); Events'
 #histoLabel = '; M_{T2}^{W} (GeV); Events'
-histoLabel = '; min#Delta#phi(jet_{all},p_{T}^{miss}); Events'
+#histoLabel = '; min#Delta#phi(jet_{all},p_{T}^{miss}); Events'
 #histoLabel = '; M_{T}^{b} (GeV); Events'
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = '; forward jet_{1} #eta; Events'
@@ -1204,23 +1204,45 @@ print '-----------------------------'
 print 'FOM for tt+DM signal = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
 print 'FOM for t+DM signal = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
 print '-----------------------------'
+
+print 'Data bin content:'
+for i in range(nbins+2):
+    bin_content = hists['data'].GetBinContent(i)
+    print '    bin ' + str(i) + ': ' + str(bin_content)
+print '-----------------------------'
+print 'MC background bin content:'
+for i in range(nbins+2):
+    bin_content = hists['bkgSum'].GetBinContent(i)
+    print '    bin ' + str(i) + ': ' + str(bin_content)
+print '-----------------------------'
+print 'tt+DM bin content:'
+for i in range(nbins+2):
+    bin_content = hists['ttbar ' + mediatorType].GetBinContent(i)
+    print '    bin ' + str(i) + ': ' + str(bin_content)
+print '-----------------------------'
+print 't+DM bin content:'
+for i in range(nbins+2):
+    bin_content = hists['tbar ' + mediatorType].GetBinContent(i)
+    print '    bin ' + str(i) + ': ' + str(bin_content)
+print '-----------------------------'
+
 print 'Data bin errors:'
-for i in range(nbins+1):
+for i in range(nbins+2):
     bin_error = hists['data'].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
 print 'MC background bin errors:'
-for i in range(nbins+1):
+for i in range(nbins+2):
     bin_error = hists['bkgSum'].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
 print 'tt+DM bin errors:'
-for i in range(nbins+1):
+for i in range(nbins+2):
     bin_error = hists['ttbar ' + mediatorType].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
 print 't+DM bin errors:'
-for i in range(nbins+1):
+for i in range(nbins+2):
     bin_error = hists['tbar ' + mediatorType].GetBinError(i)
     print '    bin ' + str(i) + ': ' + str(bin_error)
 print '-----------------------------'
@@ -1720,9 +1742,9 @@ if savePlots:
         if plotSysSignal:
             c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_ttDM_scalar_Mchi'+str(mchi)+'_Mphi'+str(mphi)+'.png')
         else:
-            #c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
+            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_250to850.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
-            c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_old.png')
+            #c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_old.png')
 
 print 'Plotting end time:', datetime.datetime.now()
