@@ -1,7 +1,7 @@
 from ROOT import *
 gROOT.SetBatch(True)
-from MCsampleListv2 import *
-from DataSampleListv2 import *
+from MCsampleList import *
+from DataSampleList import *
 from utils import *
 import os
 import datetime
@@ -27,20 +27,18 @@ condor_plot = options.optionPlot
 global counter
 counter = True
 
-#Set date, year, and other global settings
 gErrorIgnoreLevel = kError
-date = '10_07_2022'
+#Set save directory and date for file names
+#saveDirectory = 'plots/systematics/CMS_res_j/'
+saveDirectory = 'plots/SR_2016/METcorrected_pt/'
+#saveDirectory = 'plots/AN/modtopness/'
+#saveDirectory = 'plots/EEl1prefire_studies/'
+date = '09_30_2022'
 year = 2016
 useUL = False
 useCondor = False
 applyHEMfix = True
 partialUnblind = False
-
-#Set save directory
-saveDirectory = 'plots/systematics/CMS_UncMET_'+str(year)+'/'
-#saveDirectory = 'plots/SR_2016/METcorrected_pt/'
-#saveDirectory = 'plots/AN/modtopness/'
-#saveDirectory = 'plots/EEl1prefire_studies/'
 
 #If cut and year options are specified, use those instead
 if condor_year != 0:
@@ -71,7 +69,7 @@ elif year == 2018:
         dataSamples = data2018
         MCSamples = samples2018
 #Make sure save directory is available if not using Condor
-if not useCondor:
+if False:#not useCondor:
     try:
         if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
         #if not os.path.exists( saveDirectory ) : os.makedirs( saveDirectory )
@@ -360,7 +358,7 @@ elif year == 2018:
 if partialUnblind:
     lumi = lumi/5.0
 if 'SR' in cut:
-    scaleFactor = 50
+    scaleFactor = 1
 else:
     scaleFactor = 1
 
@@ -388,23 +386,23 @@ nbins = 15
 xmin = 250
 xmax = 550
 auto_y = True
-doLogPlot = True
-drawData = False
+doLogPlot = False
+drawData = True
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
 normalizePlots = False
 useCentralSamples = True
-doBinned = False
-savePlots = True
-combineEleMu = True
+doBinned = True
+savePlots = False
+combineEleMu = False
 doSys = False
 doSysFirstHalf = False
 doSysSecondHalf = False
 drawOverflow = True
 drawUnderflow = False
-plotSys = True
-plotSysVar = 'CMS_UncMET_'+str(year)
+plotSys = False
+plotSysVar = 'CMS_res_j'
 plotSysSignal = False
 TH1.SetDefaultSumw2()
 
@@ -540,7 +538,7 @@ else:
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
 if doSysFirstHalf or plotSys:
-    sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDscale_ren_TT','QCDscale_fac_TT','QCDscale_ren_VV','QCDscale_fac_VV','preFire','CMS_PSisr','CMS_PSfsr','CMS_UncMET_'+str(year)]
+    sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDscale_ren_TT','QCDscale_fac_TT','QCDscale_ren_VV','QCDscale_fac_VV','preFire','CMS_PSisr','CMS_PSfsr']
 else:
     sys = []
 jesUnc = ['','AbsoluteMPFBias','AbsoluteScale','AbsoluteStat','FlavorQCD','Fragmentation','PileUpDataMC','PileUpPtBB','PileUpPtEC1','PileUpPtEC2','PileUpPtHF','PileUpPtRef','RelativeFSR','RelativeJEREC1','RelativeJEREC2','RelativeJERHF','RelativePtBB','RelativePtEC1','RelativePtEC2','RelativePtHF','RelativeBal','RelativeSample','RelativeStatEC','RelativeStatFSR','RelativeStatHF','SinglePionECAL','SinglePionHCAL','TimePtEta']
@@ -597,7 +595,6 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
                 varDown = var.replace('recoilPtMiss','recoilPtMissScale'+unc+'Down')
         
             weightedcutUp = weightedcut.replace('METcorrected_pt ','METcorrected_ptScale'+unc+'Up ')
-            weightedcutUp = weightedcutUp.replace('recoilPtMiss ','recoilPtMissScale'+unc+'Up ')
             weightedcutUp = weightedcutUp.replace('njets ','njetsScale'+unc+'Up ')
             weightedcutUp = weightedcutUp.replace('nfjets ','nfjetsScale'+unc+'Up ')
             weightedcutUp = weightedcutUp.replace('nbjets ','nbjetsScale'+unc+'Up ')
@@ -612,7 +609,6 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
             weightedcutUp = weightedcutUp.replace('full_topness ','full_topnessScale'+unc+'Up ')
 
             weightedcutDown = weightedcut.replace('METcorrected_pt ','METcorrected_ptScale'+unc+'Down ')
-            weightedcutDown = weightedcutDown.replace('recoilPtMiss ','recoilPtMissScale'+unc+'Down ')
             weightedcutDown = weightedcutDown.replace('njets ','njetsScale'+unc+'Down ')
             weightedcutDown = weightedcutDown.replace('nfjets ','nfjetsScale'+unc+'Down ')
             weightedcutDown = weightedcutDown.replace('nbjets ','nbjetsScale'+unc+'Down ')
@@ -635,7 +631,6 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
             varDown = var.replace('recoilPtMiss','recoilPtMissResDown')
         
         weightedcutUp = weightedcut.replace('METcorrected_pt ','METcorrected_ptResUp ')
-        weightedcutUp = weightedcutUp.replace('recoilPtMiss ','recoilPtMissResUp ')
         weightedcutUp = weightedcutUp.replace('njets ','njetsResUp ')
         weightedcutUp = weightedcutUp.replace('nfjets ','nfjetsResUp ')
         weightedcutUp = weightedcutUp.replace('nbjets ','nbjetsResUp ')
@@ -650,7 +645,6 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
         weightedcutUp = weightedcutUp.replace('full_topness ','full_topnessResUp ')
 
         weightedcutDown = weightedcut.replace('METcorrected_pt ','METcorrected_ptResDown ')
-        weightedcutDown = weightedcutDown.replace('recoilPtMiss ','recoilPtMissResDown ')
         weightedcutDown = weightedcutDown.replace('njets ','njetsResDown ')
         weightedcutDown = weightedcutDown.replace('nfjets ','nfjetsResDown ')
         weightedcutDown = weightedcutDown.replace('nbjets ','nbjetsResDown ')
@@ -663,32 +657,6 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
         weightedcutDown = weightedcutDown.replace('jet1p_TH_T ','jet1p_TH_TResDown ')
         weightedcutDown = weightedcutDown.replace('modified_topness ','modified_topnessResDown ')
         weightedcutDown = weightedcutDown.replace('full_topness ','full_topnessResDown ')
-
-    elif 'CMS_UncMET' in sysName:
-        if var == 'METcorrected_pt':
-            varUp = var.replace('METcorrected_pt','METcorrected_ptUnclustUp')
-            varDown = var.replace('METcorrected_pt','METcorrected_ptUnclustDown')
-        elif var == 'recoilPtMiss':
-            varUp = var.replace('recoilPtMiss','recoilPtMissUnclustUp')
-            varDown = var.replace('recoilPtMiss','recoilPtMissUnclustDown')
-
-        weightedcutUp = weightedcut.replace('METcorrected_pt ','METcorrected_ptUnclustUp ')
-        weightedcutUp = weightedcutUp.replace('recoilPtMiss ','recoilPtMissUnclustUp ')
-        weightedcutUp = weightedcutUp.replace('M_Tb ','M_TbUnclustUp ')
-        weightedcutUp = weightedcutUp.replace('M_T ','M_TUnclustUp ')
-        weightedcutUp = weightedcutUp.replace('M_T2W ','M_T2WUnclustUp ')
-        weightedcutUp = weightedcutUp.replace('M_T2ll ','M_T2llUnclustUp ')
-        weightedcutUp = weightedcutUp.replace('modified_topness ','modified_topnessUnclustUp ')
-        weightedcutUp = weightedcutUp.replace('full_topness ','full_topnessUnclustUp ')
-
-        weightedcutDown = weightedcut.replace('METcorrected_pt ','METcorrected_ptUnclustDown ')
-        weightedcutDown = weightedcutDown.replace('recoilPtMiss ','recoilPtMissUnclustDown ')
-        weightedcutDown = weightedcutDown.replace('M_Tb ','M_TbUnclustDown ')
-        weightedcutDown = weightedcutDown.replace('M_T ','M_TUnclustDown ')
-        weightedcutDown = weightedcutDown.replace('M_T2W ','M_T2WUnclustDown ')
-        weightedcutDown = weightedcutDown.replace('M_T2ll ','M_T2llUnclustDown ')
-        weightedcutDown = weightedcutDown.replace('modified_topness ','modified_topnessUnclustDown ')
-        weightedcutDown = weightedcutDown.replace('full_topness ','full_topnessUnclustDown ')
 
     elif sysName == 'CMS_WqcdWeightRen':
         weightedcutUp = weightedcut.replace('qcdWWeight','qcdWWeightRenUp')
@@ -879,6 +847,20 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
                     weightedcutUp = weightedcut + '*qcdFacWeightUp'
                     weightedcutDown = weightedcut + '*qcdFacWeightDown'
 
+    elif sysName == 'QCDscale_TT':
+        if 'TT' in histName:
+            weightedcutUp1 = weightedcut + '*qcdRenWeightUp'
+            weightedcutDown1 = weightedcut + '*qcdRenWeightDown'
+            weightedcutUp2 = weightedcut + '*qcdFacWeightUp'
+            weightedcutDown2 = weightedcut + '*qcdFacWeightDown'
+
+    elif sysName == 'QCDscale_VV':
+        if 'VV' in histName:
+            weightedcutUp1 = weightedcut + '*qcdRenWeightUp'
+            weightedcutDown1 = weightedcut + '*qcdRenWeightDown'
+            weightedcutUp2 = weightedcut + '*qcdFacWeightUp'
+            weightedcutDown2 = weightedcut + '*qcdFacWeightDown'
+
     elif sysName == 'pdf_accept_2l':
         if ('2e' in cut) or ('2m' in cut) or ('2l' in cut):
             weightedcutUp = weightedcut + '*1.060'
@@ -907,17 +889,46 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
         weightedcutDown = weightedcutDown + '*PSWeightFSRDown'
 
     if addHist:
-        eventTree.Draw(varUp+'>>histUp',weightedcutUp)
-        eventTree.Draw(varDown+'>>histDown',weightedcutDown)
-        # print '        ' + name + '_' + sysName + 'Up hist entries = ', histUp.GetEntries()
-        # print '        ' + name + '_' + sysName + 'Up hist integral = ', histUp.Integral(1,nbins+1)
-        # print '        ' + name + '_' + sysName + 'Down hist entries = ', histUp.GetEntries()
-        # print '        ' + name + '_' + sysName + 'Down hist integral = ', histDown.Integral(1,nbins+1)
-        syshists[histName + '_' + sysName + 'Up'] += histUp
-        syshists[histName + '_' + sysName + 'Down'] += histDown
-        # print '        Finished adding systematic histograms for ' + histName + '_' + sysName
+        #Take envelope of QCD ren/fac systematics for TT and VV
+        if (sysName == 'QCDscale_TT') or (sysName == 'QCDscale_VV'):
+            histUp1 = TH1F('histUp1', histoLabel, nbins, xmin, xmax)
+            histDown1 = TH1F('histDown1', histoLabel, nbins, xmin, xmax)
+            histUp2 = TH1F('histUp2', histoLabel, nbins, xmin, xmax)
+            histDown2 = TH1F('histDown2', histoLabel, nbins, xmin, xmax)
+            eventTree.Draw(varUp+'>>histUp1',weightedcutUp1)
+            eventTree.Draw(varDown+'>>histDown1',weightedcutDown1)
+            eventTree.Draw(varUp+'>>histUp2',weightedcutUp2)
+            eventTree.Draw(varDown+'>>histDown2',weightedcutDown2)
+
+            for i in range(nbins+2):
+                binContentUp = max(histUp1.GetBinContent(i),histUp2.GetBinContent(i))
+                binContentDown = min(histDown1.GetBinContent(i),histDown2.GetBinContent(i))
+                binErrorUp = max(histUp1.GetBinError(i),histUp2.GetBinError(i))
+                binErrorDown = min(histDown1.GetBinError(i),histDown2.GetBinError(i))
+
+                histUp.SetBinContent(i, binContentUp)
+                histDown.SetBinContent(i, binContentDown)
+                histUp.SetBinError(i, binErrorUp)
+                histDown.SetBinError(i, binErrorDown)
+
+            syshists[histName + '_' + sysName + 'Up'] += histUp
+            syshists[histName + '_' + sysName + 'Down'] += histDown
+
+        else:
+            eventTree.Draw(varUp+'>>histUp',weightedcutUp)
+            eventTree.Draw(varDown+'>>histDown',weightedcutDown)
+            # print '        ' + name + '_' + sysName + 'Up hist entries = ', histUp.GetEntries()
+            # print '        ' + name + '_' + sysName + 'Up hist integral = ', histUp.Integral(1,nbins+1)
+            # print '        ' + name + '_' + sysName + 'Down hist entries = ', histUp.GetEntries()
+            # print '        ' + name + '_' + sysName + 'Down hist integral = ', histDown.Integral(1,nbins+1)
+            syshists[histName + '_' + sysName + 'Up'] += histUp
+            syshists[histName + '_' + sysName + 'Down'] += histDown
+            # print '        Finished adding systematic histograms for ' + histName + '_' + sysName
     else:
-        return [weightedcutUp, weightedcutDown]
+        if (sysName == 'QCDscale_TT') or (sysName == 'QCDscale_VV'):
+            return [weightedcutUp1, weightcutDown1, weightedcutUp2, weightedcutDown2]
+        else:
+            return [weightedcutUp, weightedcutDown]
 
 #Helper function to add systematic up/down variation histograms for background
 def addSysPlot(process, eventTree, var, weightedcut):
@@ -927,10 +938,21 @@ def addSysPlot(process, eventTree, var, weightedcut):
     varSysUp = varSysDown = var
 
     #Substitute systematic up/down variations into cut
-    weightedcutUp_temp = addSys(process, eventTree, var, weightedcut, plotSysVar, addHist=False)[0]
-    weightedcutDown_temp = addSys(process, eventTree, var, weightedcut, plotSysVar, addHist=False)[1]
-    weightedcutUpPlot = weightedcutUp_temp
-    weightedcutDownPlot = weightedcutDown_temp
+    if (plotSysVar = 'QCDscale_TT') or (plotSysVar = 'QCDscale_VV'):
+        weightedcutUp1_temp = addSys(process, eventTree, var, weightedcut, plotSysVar, addHist=False)[0]
+        weightedcutDown1_temp = addSys(process, eventTree, var, weightedcut, plotSysVar, addHist=False)[1]
+        weightedcutUp1Plot = weightedcutUp1_temp
+        weightedcutDown1Plot = weightedcutDown1_temp
+
+        weightedcutUp2_temp = addSys(process, eventTree, var, weightedcut, plotSysVar, addHist=False)[2]
+        weightedcutDown2_temp = addSys(process, eventTree, var, weightedcut, plotSysVar, addHist=False)[3]
+        weightedcutUp2Plot = weightedcutUp2_temp
+        weightedcutDown2Plot = weightedcutDown2_temp
+    else:
+        weightedcutUp_temp = addSys(process, eventTree, var, weightedcut, plotSysVar, addHist=False)[0]
+        weightedcutDown_temp = addSys(process, eventTree, var, weightedcut, plotSysVar, addHist=False)[1]
+        weightedcutUpPlot = weightedcutUp_temp
+        weightedcutDownPlot = weightedcutDown_temp
 
     #Check to see if var needs to be modified for up/down variation
     if 'CMS_scale' in plotSysVar and plotSysVar != 'CMS_scale_pu':
@@ -940,26 +962,49 @@ def addSysPlot(process, eventTree, var, weightedcut):
     if 'CMS_res_j' in plotSysVar:
         varSysUp = var+'ResUp'
         varSysDown = var+'ResDown'
-    if 'CMS_UncMET' in plotSysVar:
-        varSysUp = var+'UnclustUp'
-        varSysDown = var+'UnclustDown'
     #print '          varSysUp = ', varSysUp
     #print '          varSysDown = ', varSyDown
 
     #Add to histograms for background
-    eventTree.Draw(varSysUp+'>>histSysUp',weightedcutUpPlot)
-    eventTree.Draw(varSysDown+'>>histSysDown',weightedcutDownPlot)
-    #print '          histUpTemp nEntries = ', syshists[process + '_sysUp'].GetEntries()
-    #print '          histUpTemp integral = ', syshists[process + '_sysUp'].Integral(1,nbins+1)
-    #print '          histDownTemp nEntries = ', syshists[process + '_sysDown'].GetEntries()
-    #print '          histDownTemp integral = ', syshists[process + '_sysDown'].Integral(1,nbins+1)
+    if (plotSysVar = 'QCDscale_TT') or (plotSysVar = 'QCDscale_VV'):
+        histSysUp1 = TH1F('histSysUp1', histoLabel, nbins, xmin, xmax)
+        histSysDown1 = TH1F('histSysDown1', histoLabel, nbins, xmin, xmax)
+        histSysUp2 = TH1F('histSysUp2', histoLabel, nbins, xmin, xmax)
+        histSysDown2 = TH1F('histSysDown2', histoLabel, nbins, xmin, xmax)
 
-    syshists[process + '_sysUp'] += histSysUp
-    syshists[process + '_sysDown'] += histSysDown
-    #print '          histUp nEntries = ', syshists[process + '_sysUp'].GetEntries()
-    #print '          histUp integral = ', syshists[process + '_sysUp'].Integral(1,nbins+1)
-    #print '          histDown nEntries = ', syshists[process + '_sysDown'].GetEntries()
-    #print '          histDown integral = ', syshists[process + '_sysDown'].Integral(1,nbins+1)
+        eventTree.Draw(varSysUp+'>>histSysUp1',weightedcutUp1Plot)
+        eventTree.Draw(varSysDown+'>>histSysDown1',weightedcutDown1Plot)
+        eventTree.Draw(varSysUp+'>>histSysUp2',weightedcutUp2Plot)
+        eventTree.Draw(varSysDown+'>>histSysDown2',weightedcutDown2Plot)
+
+        for i in range(nbins+2):
+            binContentUp = max(histSysUp1.GetBinContent(i),histSysUp2.GetBinContent(i))
+            binContentDown = min(histSysDown1.GetBinContent(i),histSysDown2.GetBinContent(i))
+            binErrorUp = max(histSysUp1.GetBinError(i),histSysUp2.GetBinError(i))
+            binErrorDown = min(histSysDown1.GetBinError(i),histSysDown2.GetBinError(i))
+
+            histSysUp.SetBinContent(i, binContentUp)
+            histSysDown.SetBinContent(i, binContentDown)
+            histSysUp.SetBinError(i, binErrorUp)
+            histSysDown.SetBinError(i, binErrorDown)
+
+        syshists[process + '_sysUp'] += histSysUp
+        syshists[process + '_sysDown'] += histSysDown
+
+    else:
+        eventTree.Draw(varSysUp+'>>histSysUp',weightedcutUpPlot)
+        eventTree.Draw(varSysDown+'>>histSysDown',weightedcutDownPlot)
+        #print '          histUpTemp nEntries = ', syshists[process + '_sysUp'].GetEntries()
+        #print '          histUpTemp integral = ', syshists[process + '_sysUp'].Integral(1,nbins+1)
+        #print '          histDownTemp nEntries = ', syshists[process + '_sysDown'].GetEntries()
+        #print '          histDownTemp integral = ', syshists[process + '_sysDown'].Integral(1,nbins+1)
+
+        syshists[process + '_sysUp'] += histSysUp
+        syshists[process + '_sysDown'] += histSysDown
+        #print '          histUp nEntries = ', syshists[process + '_sysUp'].GetEntries()
+        #print '          histUp integral = ', syshists[process + '_sysUp'].Integral(1,nbins+1)
+        #print '          histDown nEntries = ', syshists[process + '_sysDown'].GetEntries()
+        #print '          histDown integral = ', syshists[process + '_sysDown'].Integral(1,nbins+1)
 
     if process == 'WPlusJets' and counter:
     #if 'ZTo2' in process and counter:
@@ -1033,7 +1078,7 @@ for process in MCSamples:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
             if (process in signal) and useCentralSamples and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_09242022', 'countEvents_03182021'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_06102022', 'countEvents_03182021'),'')
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
                 MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -1064,7 +1109,7 @@ print('Got MC sample root files and event trees')
 print('Filling data histograms...')
 #Loop through each root file for each dataset
 for dataset in dataSamples:
-    if (dataset in datasetNames) and drawData:
+    if dataset in datasetNames:
         print '  Dataset = ', dataset, ' ||   nEvents = ', dataSamples[dataset]['nevents']
         for filepath in dataSamples[dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
@@ -1149,7 +1194,6 @@ for process in MCSamples:
         for filepath in MCSamples[process][dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
             MCSamples[process][dataset][filepath+'_Events'].Draw(var+'>>hist',weight+'*('+cuts[cut]+')')
-            print '          hist weight = ', weight
             print '          hist nEntries = ', hist.GetEntries()
             print '          hist integral = ', hist.Integral(1,nbins+1)
             if process in signal:
@@ -1339,7 +1383,7 @@ if doBinned:
             binnedRootFile = TFile(cut+'bin_'+str(leftbin)+'_'+str(rightbin)+'v2.root', 'RECREATE')
         else:
             binnedRootFile = TFile(cut+'bin_'+str(leftbin)+'_'+str(rightbin)+'.root', 'RECREATE')
-        if True:#doSysFirstHalf:
+        if doSysFirstHalf:
             #First fill in bkgSum binned histogram
             binContent = hists['bkgSum'].GetBinContent(i)
             binError = hists['bkgSum'].GetBinError(i)
