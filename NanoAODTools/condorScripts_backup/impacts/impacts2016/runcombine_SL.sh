@@ -3,6 +3,7 @@
 
 set -x
 source /cvmfs/cms.cern.ch/cmsset_default.sh
+export SCRAM_ARCH=slc7_amd64_gcc700
 scram project CMSSW CMSSW_8_0_26_patch1
 tar -zxvf Analysis_test.tar.gz
 tar -C CMSSW_8_0_26_patch1/src -zxvf HiggsAnalysis.tar.gz

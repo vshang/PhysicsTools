@@ -13,12 +13,12 @@ years=("2018")
 for year in ${years[@]}; do
     for cat in ${catAH[@]}; do
     	echo $cat$year
-	nohup python plots/plot.py -c ${cat} -y ${year} -p > ${cat}${year}_CMS_UncMET_${year}.out &
+	nohup python plots/plotv2.py -c ${cat} -y ${year} -p > ${cat}${year}_CMS_eff_b_corr.out &
     	#nohup python plots/plot.py -c ${cat} -y ${year} -p > ${cat}${year}_ttDM_MChi1_MPhi100_scalar.out &
     done
     for cat in ${catSL[@]}; do
 	echo $cat$year
-	nohup python plots/plot.py -c ${cat} -y ${year} -p > ${cat}${year}_CMS_UncMET_${year}.out &
+	nohup python plots/plotv2.py -c ${cat} -y ${year} -p > ${cat}${year}_CMS_eff_b_corr.out &
 	#nohup python plots/plot.py -c ${cat} -y ${year} -p > ${cat}${year}_ttDM_MChi1_MPhi100_scalar.out &
     done
 done

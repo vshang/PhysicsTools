@@ -11,6 +11,6 @@ rm */*.png
 rm */*~
 echo "DONE removing text files."
 echo "Removing submit directories..."
-rm -rf */201*
-rm -rf */RunII*
+rm -rf */scalar*
+rm -rf */pseudo*
 echo "DONE removing submit directories."

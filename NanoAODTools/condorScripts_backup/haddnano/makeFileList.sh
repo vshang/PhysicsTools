@@ -1,6 +1,6 @@
 #!/bin/sh
 rm -f filelist.txt
-for FILE in  /hdfs/store/user/vshang/*/*/ModuleCommonSkim_06102022/*/0000/*.root; do
+for FILE in  /hdfs/store/user/vshang/*/*/ModuleCommonSkim_09242022/*/0000/*.root; do
 
   # if no file matched the wildcards, do not output anything
   if ! [ -e "$FILE" ]; then continue; fi

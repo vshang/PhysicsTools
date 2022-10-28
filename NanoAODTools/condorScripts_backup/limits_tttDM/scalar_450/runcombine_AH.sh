@@ -3,6 +3,7 @@
 
 set -x
 source /cvmfs/cms.cern.ch/cmsset_default.sh
+export SCRAM_ARCH=slc7_amd64_gcc700
 scram project CMSSW CMSSW_8_0_26_patch1
 tar -zxvf Analysis_tttDM.tar.gz
 tar -C CMSSW_8_0_26_patch1/src -zxvf HiggsAnalysis.tar.gz
@@ -13,4 +14,4 @@ cd ../../condor_Analysis
 chmod +x submit*.txt
 ./submit_AH_scalar450.txt
 mv *.root ../
-mv limitOutput_ModuleCommonSkim_06102022_*/*.txt ../
+mv limitOutput_ModuleCommonSkim_*/*.txt ../

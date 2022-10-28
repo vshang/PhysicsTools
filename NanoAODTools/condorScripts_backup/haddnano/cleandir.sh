@@ -7,4 +7,6 @@ rm -rf */tChan*
 rm -rf */tWChan*
 rm -rf */ttDM*
 rm -rf */ttH*
+rm *~
+rm */*~
 echo "DONE removing submit directories."

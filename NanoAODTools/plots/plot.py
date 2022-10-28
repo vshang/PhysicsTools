@@ -29,7 +29,7 @@ counter = True
 
 #Set date, year, and other global settings
 gErrorIgnoreLevel = kError
-date = '10_07_2022'
+date = '10_17_2022'
 year = 2016
 useUL = False
 useCondor = False
@@ -37,7 +37,7 @@ applyHEMfix = True
 partialUnblind = False
 
 #Set save directory
-saveDirectory = 'plots/systematics/CMS_UncMET_'+str(year)+'/'
+saveDirectory = 'plots/systematics/CMS_eff_b_corr/'
 #saveDirectory = 'plots/SR_2016/METcorrected_pt/'
 #saveDirectory = 'plots/AN/modtopness/'
 #saveDirectory = 'plots/EEl1prefire_studies/'
@@ -360,7 +360,7 @@ elif year == 2018:
 if partialUnblind:
     lumi = lumi/5.0
 if 'SR' in cut:
-    scaleFactor = 50
+    scaleFactor = 1
 else:
     scaleFactor = 1
 
@@ -389,7 +389,7 @@ xmin = 250
 xmax = 550
 auto_y = True
 doLogPlot = True
-drawData = False
+drawData = True
 mediatorType = 'scalar'
 mchi = 1
 mphi = 100
@@ -404,7 +404,7 @@ doSysSecondHalf = False
 drawOverflow = True
 drawUnderflow = False
 plotSys = True
-plotSysVar = 'CMS_UncMET_'+str(year)
+plotSysVar = 'CMS_eff_b_corr'
 plotSysSignal = False
 TH1.SetDefaultSumw2()
 
@@ -540,7 +540,7 @@ else:
 back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
 if doSysFirstHalf or plotSys:
-    sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDscale_ren_TT','QCDscale_fac_TT','QCDscale_ren_VV','QCDscale_fac_VV','preFire','CMS_PSisr','CMS_PSfsr','CMS_UncMET_'+str(year)]
+    sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDScale_ren_TT','QCDScale_fac_TT','QCDScale_ren_VV','QCDScale_fac_VV','preFire','CMS_PSisr','CMS_PSfsr','CMS_UncMET_'+str(year)]
 else:
     sys = []
 jesUnc = ['','AbsoluteMPFBias','AbsoluteScale','AbsoluteStat','FlavorQCD','Fragmentation','PileUpDataMC','PileUpPtBB','PileUpPtEC1','PileUpPtEC2','PileUpPtHF','PileUpPtRef','RelativeFSR','RelativeJEREC1','RelativeJEREC2','RelativeJERHF','RelativePtBB','RelativePtEC1','RelativePtEC2','RelativePtHF','RelativeBal','RelativeSample','RelativeStatEC','RelativeStatFSR','RelativeStatHF','SinglePionECAL','SinglePionHCAL','TimePtEta']
@@ -819,7 +819,7 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
         #     weightedcutUp = weightedcutUp + '*1.014'
         #     weightedcutDown = weightedcutDown + '*0.986'
     
-    elif ('QCDscale' in sysName) and ('ren' in sysName):
+    elif ('QCDScale' in sysName) and ('ren' in sysName):
         if year == 2016:
             if ('TT' in sysName) and ('TT' in histName):
                 weightedcutUp = weightedcut + '*qcdRenWeightUp'
@@ -830,7 +830,7 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
             elif ('O' in sysName) and (('QCD' in histName) or ('singleTop' in histName)):
                 weightedcutUp = weightedcut + '*qcdRenWeightUp'
                 weightedcutDown = weightedcut + '*qcdRenWeightDown'
-            elif sysName == 'QCDscale_ren':
+            elif sysName == 'QCDScale_ren':
                 if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
                     weightedcutUp = weightedcut + '*qcdRenWeightUp'
                     weightedcutDown = weightedcut + '*qcdRenWeightDown'
@@ -844,12 +844,12 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
             elif ('O' in sysName) and ('singleTop' in histName):
                 weightedcutUp = weightedcut + '*qcdRenWeightUp'
                 weightedcutDown = weightedcut + '*qcdRenWeightDown'
-            elif sysName == 'QCDscale_ren':
+            elif sysName == 'QCDScale_ren':
                 if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName) and ('QCD' not in histName):
                     weightedcutUp = weightedcut + '*qcdRenWeightUp'
                     weightedcutDown = weightedcut + '*qcdRenWeightDown'
 
-    elif ('QCDscale' in sysName) and ('fac' in sysName):
+    elif ('QCDScale' in sysName) and ('fac' in sysName):
         if year == 2016:
             if ('TT' in sysName) and ('TT' in histName):
                 weightedcutUp = weightedcut + '*qcdFacWeightUp'
@@ -860,7 +860,7 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
             elif ('O' in sysName) and (('QCD' in histName) or ('singleTop' in histName)):
                 weightedcutUp = weightedcut + '*qcdFacWeightUp'
                 weightedcutDown = weightedcut + '*qcdFacWeightDown'
-            elif sysName == 'QCDscale_fac':
+            elif sysName == 'QCDScale_fac':
                 if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName):
                     weightedcutUp = weightedcut + '*qcdFacWeightUp'
                     weightedcutDown = weightedcut + '*qcdFacWeightDown'
@@ -874,7 +874,7 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
             elif ('O' in sysName) and ('singleTop' in histName):
                 weightedcutUp = weightedcut + '*qcdFacWeightUp'
                 weightedcutDown = weightedcut + '*qcdFacWeightDown'
-            elif sysName == 'QCDscale_fac':
+            elif sysName == 'QCDScale_fac':
                 if (histName not in signal) and ('tDM' not in histName) and ('Chan' not in histName) and ('QCD' not in histName):
                     weightedcutUp = weightedcut + '*qcdFacWeightUp'
                     weightedcutDown = weightedcut + '*qcdFacWeightDown'
@@ -1339,7 +1339,7 @@ if doBinned:
             binnedRootFile = TFile(cut+'bin_'+str(leftbin)+'_'+str(rightbin)+'v2.root', 'RECREATE')
         else:
             binnedRootFile = TFile(cut+'bin_'+str(leftbin)+'_'+str(rightbin)+'.root', 'RECREATE')
-        if True:#doSysFirstHalf:
+        if doSysFirstHalf:
             #First fill in bkgSum binned histogram
             binContent = hists['bkgSum'].GetBinContent(i)
             binError = hists['bkgSum'].GetBinError(i)
@@ -1778,9 +1778,9 @@ if savePlots:
         if plotSysSignal:
             c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_ttDM_scalar_Mchi'+str(mchi)+'_Mphi'+str(mphi)+'.png')
         else:
-            #c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_250to850.png')
+            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_250to850.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
-            c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
+            #c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
 
 print 'Plotting end time:', datetime.datetime.now()

@@ -9,3 +9,7 @@ echo "Removing submit directories..."
 rm -rf */*v1
 rm -rf */*v2
 echo "DONE removing submit directories."
+echo "Removing backup files..."
+rm *~
+rm */*~
+echo "DONE removing backup files."
