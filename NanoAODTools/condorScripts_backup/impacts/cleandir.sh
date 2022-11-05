@@ -5,7 +5,9 @@ echo "Removing rootfiles..."
 rm */*.root
 echo "DONE removing rootfiles."
 echo "Removing other files (text, pdf, png)..."
-rm *.out
-rm *.err
-rm *.log
+rm */*.out
+rm */*.err
+rm */*.log
+rm *~
+rm */*~
 echo "DONE removing other files."
