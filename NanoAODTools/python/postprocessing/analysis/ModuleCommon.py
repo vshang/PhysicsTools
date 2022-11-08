@@ -1987,7 +1987,7 @@ to next event)"""
 
                 self.out.fillBranch("leptonWeight", leptonWeight)
                 self.out.fillBranch("electronWeight", electronWeight)
-                self.out.fillBranch("muonWeight", electronWeight)
+                self.out.fillBranch("muonWeight", muonWeight)
                 #Systematics - lepton weights
                 self.out.fillBranch("leptonWeightUp", leptonWeightUp)
                 self.out.fillBranch("leptonWeightDown", leptonWeightDown)
