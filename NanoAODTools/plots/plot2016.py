@@ -29,7 +29,7 @@ counter = True
 
 #Set date, year, and other global settings
 gErrorIgnoreLevel = kError
-date = '10_07_2022'
+date = '12_24_2022'
 year = 2016
 useUL = False
 useCondor = True
@@ -37,8 +37,8 @@ applyHEMfix = True
 partialUnblind = False
 
 #Set save directory
-saveDirectory = 'plots/systematics/CMS_UncMET_'+str(year)+'/'
-#saveDirectory = 'plots/SR_2016/METcorrected_pt/'
+#saveDirectory = 'plots/systematics/CMS_eff_e/'
+saveDirectory = 'plots/SR_2016/METcorrected_pt/'
 #saveDirectory = 'plots/AN/modtopness/'
 #saveDirectory = 'plots/EEl1prefire_studies/'
 
@@ -122,8 +122,8 @@ cuts['PV'] = 'PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,
 
 #Pre-selection cut definitions
 preselect_cuts = ['SL1e', 'SL1m', 'AH']
-cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' + ' && ' + cuts['PV']
-cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' + ' && ' + cuts['PV']
+cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 180 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' + ' && ' + cuts['PV']
+cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 180 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' + ' && ' + cuts['PV']
 cuts['SL'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + '))' 
 cuts['SL1b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets == 1') 
 cuts['SL2b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets >= 2') 
@@ -360,7 +360,7 @@ elif year == 2018:
 if partialUnblind:
     lumi = lumi/5.0
 if 'SR' in cut:
-    scaleFactor = 50
+    scaleFactor = 1
 else:
     scaleFactor = 1
 
@@ -397,14 +397,14 @@ normalizePlots = False
 useCentralSamples = True
 doBinned = True
 savePlots = False
-combineEleMu = False
+combineEleMu = True
 doSys = False
 doSysFirstHalf = False
 doSysSecondHalf = False
 drawOverflow = True
 drawUnderflow = False
 plotSys = False
-plotSysVar = 'CMS_UncMET_'+str(year)
+plotSysVar = 'CMS_eff_e'
 plotSysSignal = False
 TH1.SetDefaultSumw2()
 
@@ -436,7 +436,7 @@ if (condor_cut != '') and condor_plot:
     if 'SL' in condor_cut:
         nbins = 7
         xmin = 250
-        xmax = 530
+        xmax = 430
         doLogPlot = False
     elif 'AH' in condor_cut:
         nbins = 15
@@ -806,15 +806,15 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
         weightedcutDown = weightedcut.replace('leptonWeight','leptonWeightDown')
 
     elif sysName == 'CMS_eff_e':
-        weightedcutUp = weightedcut.replace('leptonWeight','leptonWeightUp')
-        weightedcutDown = weightedcut.replace('leptonWeight','leptonWeightDown')
+        weightedcutUp = weightedcut.replace('leptonWeight','electronWeightUp*muonWeight')
+        weightedcutDown = weightedcut.replace('leptonWeight','electronWeightDown*muonWeight')
         # if ('e' in cut) or ('1l' in cut) or ('2l' in cut):
         #     weightedcutUp = weightedcutUp + '*1.010'
         #     weightedcutDown = weightedcutDown + '*0.990'
 
     elif sysName == 'CMS_eff_m':
-        weightedcutUp = weightedcut.replace('leptonWeight','leptonWeightUp')
-        weightedcutDown = weightedcut.replace('leptonWeight','leptonWeightDown')
+        weightedcutUp = weightedcut.replace('leptonWeight','electronWeight*muonWeightUp')
+        weightedcutDown = weightedcut.replace('leptonWeight','electronWeight*muonWeightDown')
         # if ('m' in cut) or ('1l' in cut) or ('2l' in cut):
         #     weightedcutUp = weightedcutUp + '*1.014'
         #     weightedcutDown = weightedcutDown + '*0.986'
@@ -1033,7 +1033,7 @@ for process in MCSamples:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
             if (process in signal) and useCentralSamples and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_09242022', 'countEvents_03182021'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_11102022', 'countEvents_03182021'),'')
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
                 MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -1131,21 +1131,26 @@ for process in MCSamples:
         if datasetNames == ['MET']:
             weight = weight + '*METTriggerWeight'
         #Apply appropriate NLO k-factors
-        if process == 'WPlusJets':
-            weight = weight + '*qcdWWeight*ewkWWeight'
-            print 'Applied WPlusJets qcd/ewk Weights correctly'
-        elif process == 'ZTo2L':
-            weight = weight + '*qcdZTo2LWeight*ewkZWeight'
-            print 'Applied ZTo2L qcd/ewk Weights correctly'
-        elif process == 'ZTo2Nu':
-            weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
-            print 'Applied ZTo2Nu qcd/ewk Weights correctly'
+        # if process == 'WPlusJets':
+        #     weight = weight + '*qcdWWeight*ewkWWeight'
+        #     print 'Applied WPlusJets qcd/ewk Weights correctly'
+        # elif process == 'ZTo2L':
+        #     weight = weight + '*qcdZTo2LWeight*ewkZWeight'
+        #     print 'Applied ZTo2L qcd/ewk Weights correctly'
+        # elif process == 'ZTo2Nu':
+        #     weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
+        #     print 'Applied ZTo2Nu qcd/ewk Weights correctly'
         if (process in signal) and useCentralSamples and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
             Mchi = MCSamples[process][dataset]['mchi']
             Mphi = MCSamples[process][dataset]['mphi']
             MediatorType = MCSamples[process][dataset]['mediatorType']
             signalType = 'TTbarDMJets'
             weight = weight + '*GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8'
+        #Exclude single QCD events in 2016 and 2017 with large weights
+        if (process == 'QCD') and (dataset == 'HT300To500') and (year == 2016):
+            weight = weight + '*(event!=159953384)'
+        if (process == 'QCD') and (dataset == 'Pt120to170') and (year == 2017):
+            weight = weight + '*(event!=3468768)'
         for filepath in MCSamples[process][dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
             MCSamples[process][dataset][filepath+'_Events'].Draw(var+'>>hist',weight+'*('+cuts[cut]+')')
@@ -1237,8 +1242,8 @@ print 'Total tt+DM signal integral = ', hists['ttbar ' + mediatorType].Integral(
 print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()/scaleFactor
 print 'Total t+DM signal integral = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
 print '-----------------------------'
-print 'FOM for tt+DM signal = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
-print 'FOM for t+DM signal = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
+print 'FOM for tt+DM signal = ', (hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor)/((hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor)+math.sqrt(hists['bkgSum'].Integral(1,nbins+1)))
+print 'FOM for t+DM signal = ', (hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor)/((hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor)+math.sqrt(hists['bkgSum'].Integral(1,nbins+1)))
 print '-----------------------------'
 
 print 'Data bin content:'
@@ -1778,9 +1783,9 @@ if savePlots:
         if plotSysSignal:
             c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_ttDM_scalar_Mchi'+str(mchi)+'_Mphi'+str(mphi)+'.png')
         else:
-            #c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_250to850.png')
+            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
-            c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
+            #c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
 
 print 'Plotting end time:', datetime.datetime.now()

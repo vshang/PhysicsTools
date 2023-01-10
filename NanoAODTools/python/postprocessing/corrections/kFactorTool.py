@@ -54,14 +54,15 @@ class KFactorTool:
             return sf
 
     def getQCDZTo2Nu(self, pt):
-        if self.year == 2016:
-            return get2016QCDZ(pt)
-        else:
-            bin = self.nlo_qcd_ZTo2Nu.GetXaxis().FindBin(pt)
-            if bin == 0: bin = 1
-            elif bin > self.nlo_qcd_ZTo2Nu.GetXaxis().GetNbins(): bin -= 1
-            sf = self.nlo_qcd_ZTo2Nu.GetBinContent(bin)
-            return sf
+        return get2016QCDZ(pt)
+        # if self.year == 2016:
+        #     return get2016QCDZ(pt)
+        # else:
+        #     bin = self.nlo_qcd_ZTo2Nu.GetXaxis().FindBin(pt)
+        #     if bin == 0: bin = 1
+        #     elif bin > self.nlo_qcd_ZTo2Nu.GetXaxis().GetNbins(): bin -= 1
+        #     sf = self.nlo_qcd_ZTo2Nu.GetBinContent(bin)
+        #     return sf
 
     def getQCDZTo2L(self, pt):
         if self.year == 2016:

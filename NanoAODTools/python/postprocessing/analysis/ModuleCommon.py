@@ -152,6 +152,9 @@ class CommonAnalysis(Module):
         self.out.branch("noB2Bleadingfjet", "I")
 
         if self.isMC:
+            #Gen weight sign (+/-)
+            self.out.branch("genWeightSign", "I")
+
             #Systematics - JES, JER
             for sys in jesUnc:
                 self.out.branch("njetsScale"+sys+"Up", "I")
@@ -1089,6 +1092,11 @@ to next event)"""
             if (forwardJets[0].pt_nom > centralJets[0].pt_nom) and (fjetMinDeltaPhi > 2.8):
                 noB2Bleadingfjet = False
 
+        #Gen weight sign (+/-)
+        genWeightSign = 1
+        if self.isMC and event.genWeight < 0:
+            genWeightSign = -1
+
         #Systematics - JES, JER (jets)
         if self.isMC:
             if self.year == 2016:
@@ -1857,6 +1865,9 @@ to next event)"""
             self.out.fillBranch("noB2Bleadingfjet", noB2Bleadingfjet)
             
             if self.isMC:
+                #Gen weight sign (+/-)
+                self.out.fillBranch("genWeightSign", genWeightSign)
+                
                 #Systematics - JES, JER
                 for sys in jesUnc:
                     self.out.fillBranch("njetsScale"+sys+"Up", jesBranches["njetsScale"+sys+"Up"])

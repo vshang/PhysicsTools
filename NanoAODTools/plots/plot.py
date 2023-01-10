@@ -29,7 +29,7 @@ counter = True
 
 #Set date, year, and other global settings
 gErrorIgnoreLevel = kError
-date = '10_17_2022'
+date = '12_15_2022'
 year = 2016
 useUL = False
 useCondor = False
@@ -37,8 +37,8 @@ applyHEMfix = True
 partialUnblind = False
 
 #Set save directory
-saveDirectory = 'plots/systematics/CMS_eff_b_corr/'
-#saveDirectory = 'plots/SR_2016/METcorrected_pt/'
+#saveDirectory = 'plots/systematics/CMS_trig_m/'
+saveDirectory = 'plots/SR_2016/METcorrected_pt/'
 #saveDirectory = 'plots/AN/modtopness/'
 #saveDirectory = 'plots/EEl1prefire_studies/'
 
@@ -71,7 +71,7 @@ elif year == 2018:
         dataSamples = data2018
         MCSamples = samples2018
 #Make sure save directory is available if not using Condor
-if not useCondor:
+if False:#not useCondor:
     try:
         if not os.path.exists( saveDirectory + date + '/' ) : os.makedirs( saveDirectory + date + '/' )
         #if not os.path.exists( saveDirectory ) : os.makedirs( saveDirectory )
@@ -122,8 +122,8 @@ cuts['PV'] = 'PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,
 
 #Pre-selection cut definitions
 preselect_cuts = ['SL1e', 'SL1m', 'AH']
-cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' + ' && ' + cuts['PV']
-cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' + ' && ' + cuts['PV']
+cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 180 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' + ' && ' + cuts['PV']
+cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 180 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' + ' && ' + cuts['PV']
 cuts['SL'] = '((' + cuts['SL1e'] + ') || (' + cuts['SL1m'] + '))' 
 cuts['SL1b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets == 1') 
 cuts['SL2b'] = cuts['SL'].replace('nbjets >= 1', 'nbjets >= 2') 
@@ -158,23 +158,23 @@ cuts['SL1l2bSR'] = '(' + cuts['SL1e2bSR'] + ') || (' + cuts['SL1m2bSR'] + ')'
 
 #modified topness categories
 cuts['SL1e0fT1SR'] = cuts['SL1e0fSR'] + ' && modified_topness <= 0'
-cuts['SL1e0fT2SR'] = cuts['SL1e0fSR'] + ' && modified_topness > 0 && modified_topness <= 10'
+cuts['SL1e0fT2SR'] = cuts['SL1e0fSR'] + ' && modified_topness > 0'# && modified_topness <= 10'
 cuts['SL1e0fT3SR'] = cuts['SL1e0fSR'] + ' && modified_topness > 10'
 cuts['SL1e1fT1SR'] = cuts['SL1e1fSR'] + ' && modified_topness <= 0'
-cuts['SL1e1fT2SR'] = cuts['SL1e1fSR'] + ' && modified_topness > 0 && modified_topness <= 10'
+cuts['SL1e1fT2SR'] = cuts['SL1e1fSR'] + ' && modified_topness > 0'# && modified_topness <= 10'
 cuts['SL1e1fT3SR'] = cuts['SL1e1fSR'] + ' && modified_topness > 10'
 cuts['SL1e2bT1SR'] = cuts['SL1e2bSR'] + ' && modified_topness <= 0'
-cuts['SL1e2bT2SR'] = cuts['SL1e2bSR'] + ' && modified_topness > 0 && modified_topness <= 10'
+cuts['SL1e2bT2SR'] = cuts['SL1e2bSR'] + ' && modified_topness > 0'# && modified_topness <= 10'
 cuts['SL1e2bT3SR'] = cuts['SL1e2bSR'] + ' && modified_topness > 10'
 
 cuts['SL1m0fT1SR'] = cuts['SL1m0fSR'] + ' && modified_topness <= 0'
-cuts['SL1m0fT2SR'] = cuts['SL1m0fSR'] + ' && modified_topness > 0 && modified_topness <= 10'
+cuts['SL1m0fT2SR'] = cuts['SL1m0fSR'] + ' && modified_topness > 0'# && modified_topness <= 10'
 cuts['SL1m0fT3SR'] = cuts['SL1m0fSR'] + ' && modified_topness > 10'
 cuts['SL1m1fT1SR'] = cuts['SL1m1fSR'] + ' && modified_topness <= 0'
-cuts['SL1m1fT2SR'] = cuts['SL1m1fSR'] + ' && modified_topness > 0 && modified_topness <= 10'
+cuts['SL1m1fT2SR'] = cuts['SL1m1fSR'] + ' && modified_topness > 0'# && modified_topness <= 10'
 cuts['SL1m1fT3SR'] = cuts['SL1m1fSR'] + ' && modified_topness > 10'
 cuts['SL1m2bT1SR'] = cuts['SL1m2bSR'] + ' && modified_topness <= 0'
-cuts['SL1m2bT2SR'] = cuts['SL1m2bSR'] + ' && modified_topness > 0 && modified_topness <= 10'
+cuts['SL1m2bT2SR'] = cuts['SL1m2bSR'] + ' && modified_topness > 0'# && modified_topness <= 10'
 cuts['SL1m2bT3SR'] = cuts['SL1m2bSR'] + ' && modified_topness > 10'
 
 cuts['SL1l0fT1SR'] = '(' + cuts['SL1e0fT1SR'] + ') || (' + cuts['SL1m0fT1SR'] + ')'
@@ -239,7 +239,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL1m0fSR'
 #cut = 'SL1m1fSR'
 #cut = 'SL1m2bSR'
-cut = 'AH0l0fSR'
+#cut = 'AH0l0fSR'
 #cut = 'AH0l1fSR'
 #cut = 'AH0l2bSR'
 
@@ -388,7 +388,7 @@ nbins = 15
 xmin = 250
 xmax = 550
 auto_y = True
-doLogPlot = True
+doLogPlot = False
 drawData = True
 mediatorType = 'scalar'
 mchi = 1
@@ -403,8 +403,8 @@ doSysFirstHalf = False
 doSysSecondHalf = False
 drawOverflow = True
 drawUnderflow = False
-plotSys = True
-plotSysVar = 'CMS_eff_b_corr'
+plotSys = False
+plotSysVar = 'CMS_trig_m'
 plotSysSignal = False
 TH1.SetDefaultSumw2()
 
@@ -413,9 +413,9 @@ if useCondor:
     doSysFirstHalf = condor_sysFirstHalf
     doSysSecondHalf = condor_sysSecondHalf
     if 'SL' in condor_cut:
-        nbins = 7
+        nbins = 5
         xmin = 250
-        xmax = 530
+        xmax = 400
     elif 'AH' in condor_cut:
         nbins = 15
         xmin = 250
@@ -434,9 +434,9 @@ if not auto_y:
 if (condor_cut != '') and condor_plot:
     savePlots = True
     if 'SL' in condor_cut:
-        nbins = 7
+        nbins = 5
         xmin = 250
-        xmax = 530
+        xmax = 400
         doLogPlot = False
     elif 'AH' in condor_cut:
         nbins = 15
@@ -806,15 +806,15 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
         weightedcutDown = weightedcut.replace('leptonWeight','leptonWeightDown')
 
     elif sysName == 'CMS_eff_e':
-        weightedcutUp = weightedcut.replace('leptonWeight','leptonWeightUp')
-        weightedcutDown = weightedcut.replace('leptonWeight','leptonWeightDown')
+        weightedcutUp = weightedcut.replace('leptonWeight','electronWeightUp*muonWeight')
+        weightedcutDown = weightedcut.replace('leptonWeight','electronWeightDown*muonWeight')
         # if ('e' in cut) or ('1l' in cut) or ('2l' in cut):
         #     weightedcutUp = weightedcutUp + '*1.010'
         #     weightedcutDown = weightedcutDown + '*0.990'
 
     elif sysName == 'CMS_eff_m':
-        weightedcutUp = weightedcut.replace('leptonWeight','leptonWeightUp')
-        weightedcutDown = weightedcut.replace('leptonWeight','leptonWeightDown')
+        weightedcutUp = weightedcut.replace('leptonWeight','electronWeight*muonWeightUp')
+        weightedcutDown = weightedcut.replace('leptonWeight','electronWeight*muonWeightDown')
         # if ('m' in cut) or ('1l' in cut) or ('2l' in cut):
         #     weightedcutUp = weightedcutUp + '*1.014'
         #     weightedcutDown = weightedcutDown + '*0.986'
@@ -1033,7 +1033,7 @@ for process in MCSamples:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
             if (process in signal) and useCentralSamples and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_09242022', 'countEvents_03182021'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_11102022', 'countEvents_03182021'),'')
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
                 MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -1132,20 +1132,31 @@ for process in MCSamples:
             weight = weight + '*METTriggerWeight'
         #Apply appropriate NLO k-factors
         if process == 'WPlusJets':
-            weight = weight + '*qcdWWeight*ewkWWeight'
-            print 'Applied WPlusJets qcd/ewk Weights correctly'
+            #weight = weight + '*qcdWWeight*ewkWWeight'
+            #print 'Applied WPlusJets qcd/ewk Weights correctly'
+            weight = weight + '*ewkWWeight'
+            print 'Applied WPlusJets ewk Weights correctly'
         elif process == 'ZTo2L':
-            weight = weight + '*qcdZTo2LWeight*ewkZWeight'
-            print 'Applied ZTo2L qcd/ewk Weights correctly'
+            # weight = weight + '*qcdZTo2LWeight*ewkZWeight'
+            # print 'Applied ZTo2L qcd/ewk Weights correctly'
+            weight = weight + '*ewkZWeight'
+            print 'Applied ZTo2L ewk Weights correctly'
         elif process == 'ZTo2Nu':
-            weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
-            print 'Applied ZTo2Nu qcd/ewk Weights correctly'
+            # weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
+            # print 'Applied ZTo2Nu qcd/ewk Weights correctly'
+            weight = weight + '*ewkZWeight'
+            print 'Applied ZTo2Nu ewk Weights correctly'
         if (process in signal) and useCentralSamples and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
             Mchi = MCSamples[process][dataset]['mchi']
             Mphi = MCSamples[process][dataset]['mphi']
             MediatorType = MCSamples[process][dataset]['mediatorType']
             signalType = 'TTbarDMJets'
             weight = weight + '*GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8'
+        #Exclude single QCD events in 2016 and 2017 with large weights
+        if (process == 'QCD') and (dataset == 'HT300To500') and (year == 2016):
+            weight = weight + '*(event!=159953384)'
+        if (process == 'QCD') and (dataset == 'Pt120to170') and (year == 2017):
+            weight = weight + '*(event!=3468768)'
         for filepath in MCSamples[process][dataset]['filepaths']:
             hist = TH1F('hist', histoLabel, nbins, xmin, xmax)
             MCSamples[process][dataset][filepath+'_Events'].Draw(var+'>>hist',weight+'*('+cuts[cut]+')')
@@ -1237,8 +1248,8 @@ print 'Total tt+DM signal integral = ', hists['ttbar ' + mediatorType].Integral(
 print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()/scaleFactor
 print 'Total t+DM signal integral = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
 print '-----------------------------'
-print 'FOM for tt+DM signal = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
-print 'FOM for t+DM signal = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/(math.sqrt(hists['bkgSum'].Integral(1,nbins+1))*scaleFactor)
+print 'FOM for tt+DM signal = ', (hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor)/((hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor)+math.sqrt(hists['bkgSum'].Integral(1,nbins+1)))
+print 'FOM for t+DM signal = ', (hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor)/((hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor)+math.sqrt(hists['bkgSum'].Integral(1,nbins+1)))
 print '-----------------------------'
 
 print 'Data bin content:'
@@ -1778,9 +1789,9 @@ if savePlots:
         if plotSysSignal:
             c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_ttDM_scalar_Mchi'+str(mchi)+'_Mphi'+str(mphi)+'.png')
         else:
-            c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_250to850.png')
+            #c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_blinded.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
-            #c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
+            c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_NLOVjets.png')
 
 print 'Plotting end time:', datetime.datetime.now()

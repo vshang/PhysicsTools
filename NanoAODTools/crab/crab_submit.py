@@ -2,7 +2,7 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'ModuleCommonSkim_10052022' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'ModuleCommonSkim_12242022' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'getBTagHist_12222021'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
@@ -113,12 +113,12 @@ if __name__ == '__main__':
  
  isData = False
  run = ''
- datasetnames = ['ttH', 'VH']
- #datasetnames = ['ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV']
- #datasetnames = ['ttH','VH','ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV']#,'QCDPt']#,'WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
+ #datasetnames = ['WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
+ datasetnames = ['QCDPt','ttH','VH']
+ #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV']#,'QCDPt', 'ttH', 'VH']#,'WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
  #years = ['UL2016']
- #years = ['2018']
- years = ['2016','2017','2018']
+ years = ['2017','2018']
+ #years = ['2016','2017','2018']
  for year in years:
   for dataset in datasetnames:
    if dataset == 'ttbarDM' or dataset == 'QCDPt': # or dataset == 'ttH' or dataset == 'VH':
