@@ -1,0 +1,42 @@
+#Script to check and compare genEventCounts between default samples (ModuleCommonSkim) and samples used for normalization (countEvents)
+from ROOT import *
+from plots.MCsampleListv2 import *
+
+#Set year 
+year = 2016
+
+if year == 2016:
+    MCSamples = samples2016
+elif year == 2017:
+    MCSamples = samples2017
+elif year == 2018:
+    MCSamples = samples2018
+
+#Get MC background root files and event trees
+signal = ['ttbar scalar', 'ttbar pseudoscalar', 'tbar scalar', 'tbar pseudoscalar']
+print('Loading MC sample root files and event trees...')
+for process in MCSamples:
+    print 'Loading process: ', process
+    for dataset in MCSamples[process]:
+        nevents_ModuleCommonSkimNeg = 0
+        nevents_countEvents = 0
+        print '    ----Loading', dataset
+        for filepath in MCSamples[process][dataset]['filepaths']:
+            MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
+            MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
+            if (process in signal) and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242022', 'countEvents_12242022'),'')
+                Mchi = MCSamples[process][dataset]['mchi']
+                Mphi = MCSamples[process][dataset]['mphi']
+                MediatorType = MCSamples[process][dataset]['mediatorType']
+                signalType = 'TTbarDMJets'
+                nevents_countEvents += skimFile.Get('Events').GetEntries('GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8&&(genWeightSign<0)')
+            else:
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242022', 'countEvents_12242022'),'')
+                nevents_countEvents += skimFile.Get('Events').GetEntries('genWeightSign<0')
+            nevents_ModuleCommonSkimNeg += MCSamples[process][dataset][filepath+'_Events'].GetEntries('genWeightSign<0')
+        print '    nevents with negative genWeightSign in ', process, ' ', dataset, ': ', nevents_countEvents
+        print '    nevents with negative genWeightSign using ModuleCommonSkim in ', process, ' ', dataset, ': ', nevents_ModuleCommonSkimNeg
+        if nevents_countEvents > 0 or nevents_ModuleCommonSkimNeg > 0:
+            print '    WARNING: NEGATIVE GENWEIGHTSIGN SPOTTED'
+print('Got MC sample root files and event trees')

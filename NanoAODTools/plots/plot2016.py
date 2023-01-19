@@ -158,23 +158,23 @@ cuts['SL1l2bSR'] = '(' + cuts['SL1e2bSR'] + ') || (' + cuts['SL1m2bSR'] + ')'
 
 #modified topness categories
 cuts['SL1e0fT1SR'] = cuts['SL1e0fSR'] + ' && modified_topness <= 0'
-cuts['SL1e0fT2SR'] = cuts['SL1e0fSR'] + ' && modified_topness > 0 && modified_topness <= 10'
+cuts['SL1e0fT2SR'] = cuts['SL1e0fSR'] + ' && modified_topness > 0'# && modified_topness <= 10'
 cuts['SL1e0fT3SR'] = cuts['SL1e0fSR'] + ' && modified_topness > 10'
 cuts['SL1e1fT1SR'] = cuts['SL1e1fSR'] + ' && modified_topness <= 0'
-cuts['SL1e1fT2SR'] = cuts['SL1e1fSR'] + ' && modified_topness > 0 && modified_topness <= 10'
+cuts['SL1e1fT2SR'] = cuts['SL1e1fSR'] + ' && modified_topness > 0'# && modified_topness <= 10'
 cuts['SL1e1fT3SR'] = cuts['SL1e1fSR'] + ' && modified_topness > 10'
 cuts['SL1e2bT1SR'] = cuts['SL1e2bSR'] + ' && modified_topness <= 0'
-cuts['SL1e2bT2SR'] = cuts['SL1e2bSR'] + ' && modified_topness > 0 && modified_topness <= 10'
+cuts['SL1e2bT2SR'] = cuts['SL1e2bSR'] + ' && modified_topness > 0'# && modified_topness <= 10'
 cuts['SL1e2bT3SR'] = cuts['SL1e2bSR'] + ' && modified_topness > 10'
 
 cuts['SL1m0fT1SR'] = cuts['SL1m0fSR'] + ' && modified_topness <= 0'
-cuts['SL1m0fT2SR'] = cuts['SL1m0fSR'] + ' && modified_topness > 0 && modified_topness <= 10'
+cuts['SL1m0fT2SR'] = cuts['SL1m0fSR'] + ' && modified_topness > 0'# && modified_topness <= 10'
 cuts['SL1m0fT3SR'] = cuts['SL1m0fSR'] + ' && modified_topness > 10'
 cuts['SL1m1fT1SR'] = cuts['SL1m1fSR'] + ' && modified_topness <= 0'
-cuts['SL1m1fT2SR'] = cuts['SL1m1fSR'] + ' && modified_topness > 0 && modified_topness <= 10'
+cuts['SL1m1fT2SR'] = cuts['SL1m1fSR'] + ' && modified_topness > 0'# && modified_topness <= 10'
 cuts['SL1m1fT3SR'] = cuts['SL1m1fSR'] + ' && modified_topness > 10'
 cuts['SL1m2bT1SR'] = cuts['SL1m2bSR'] + ' && modified_topness <= 0'
-cuts['SL1m2bT2SR'] = cuts['SL1m2bSR'] + ' && modified_topness > 0 && modified_topness <= 10'
+cuts['SL1m2bT2SR'] = cuts['SL1m2bSR'] + ' && modified_topness > 0'# && modified_topness <= 10'
 cuts['SL1m2bT3SR'] = cuts['SL1m2bSR'] + ' && modified_topness > 10'
 
 cuts['SL1l0fT1SR'] = '(' + cuts['SL1e0fT1SR'] + ') || (' + cuts['SL1m0fT1SR'] + ')'
@@ -413,9 +413,9 @@ if useCondor:
     doSysFirstHalf = condor_sysFirstHalf
     doSysSecondHalf = condor_sysSecondHalf
     if 'SL' in condor_cut:
-        nbins = 7
+        nbins = 5
         xmin = 250
-        xmax = 530
+        xmax = 400
     elif 'AH' in condor_cut:
         nbins = 15
         xmin = 250
@@ -434,9 +434,9 @@ if not auto_y:
 if (condor_cut != '') and condor_plot:
     savePlots = True
     if 'SL' in condor_cut:
-        nbins = 7
+        nbins = 5
         xmin = 250
-        xmax = 430
+        xmax = 400
         doLogPlot = False
     elif 'AH' in condor_cut:
         nbins = 15
