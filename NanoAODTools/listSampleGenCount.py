@@ -3,7 +3,7 @@ from ROOT import *
 from plots.MCsampleListv2 import *
 
 #Set year 
-year = 2018
+year = 2017
 
 if year == 2016:
     MCSamples = samples2016
@@ -32,7 +32,7 @@ for process in MCSamples:
                 signalType = 'TTbarDMJets'
                 nevents_ModuleCommonSkim += skimFile.Get('Events').GetEntries('GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8')
                 nevents_countEvents += skimFile.Get('Events').GetEntries('GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8')
-            else:
+            elif process not in signal:
                 runsTree = MCSamples[process][dataset][filepath+'_TFile'].Get('Runs')
                 nRuns = runsTree.GetEntries()
                 for i in range(nRuns):
@@ -43,4 +43,6 @@ for process in MCSamples:
         print '    nevents_ModuleCommonSkim in ', process, ' ', dataset, ': ', nevents_ModuleCommonSkim
         print '    nevents_countEvents in ', process, ' ', dataset, ': ', nevents_countEvents
         print '    DIFFERENCE: ', nevents_countEvents - nevents_ModuleCommonSkim
+        if (nevents_countEvents - nevents_ModuleCommonSkim) != 0:
+            print '    ERROR: nevents in ModuleCommonSkim and countEvents do not match!'
 print('Got MC sample root files and event trees')

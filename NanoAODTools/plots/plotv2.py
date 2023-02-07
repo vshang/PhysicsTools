@@ -7,6 +7,7 @@ import os
 import datetime
 import re
 import math
+import json
 
 import optparse
 usage = 'usage: %prog [options]'
@@ -29,7 +30,7 @@ counter = True
 
 #Set date, year, and other global settings
 gErrorIgnoreLevel = kError
-date = '01_17_2023'
+date = '02_01_2023'
 year = 2016
 useUL = False
 useCondor = False
@@ -53,23 +54,11 @@ if condor_cut != '':
         saveDirectory = saveDirectory.replace('SR','CR')
 
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
-if year == 2016:
-    dataSamples = data2016
-    MCSamples = samples2016
-elif year == 2017:
-    if useUL:
-        dataSamples = dataUL2017
-        MCSamples = samplesUL2017
-    else:
-        dataSamples = data2017
-        MCSamples = samples2017
-elif year == 2018:
-    if useUL:
-        dataSamples = dataUL2018
-        MCSamples = samplesUL2018
-    else:
-        dataSamples = data2018
-        MCSamples = samples2018
+with open('plots/data'+str(year)+'.json') as json_data:
+    dataSamples = json.load(json_data)
+with open('plots/samples'+str(year)+'.json') as json_mc:
+    MCSamples = json.load(json_mc)
+
 #Make sure save directory is available if not using Condor
 if False:#not useCondor:
     try:
@@ -121,10 +110,15 @@ elif year == 2018:
 cuts['PV'] = 'PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,2)+pow(PV_y,2)) < 2'
 
 #Pre-selection cut definitions
-preselect_cuts = ['SL1e', 'SL1m', 'AH']
+preselect_cuts = ['SL1e', 'SL1m', 'AH', 'AH1', 'AH2', 'AH3', 'AH4']
 cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 180 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' + ' && ' + cuts['PV']
 cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 180 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' + ' && ' + cuts['PV']
 cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
+
+cuts['AH1'] = '(nVetoElectrons + nLooseMuons) == 0 && METcorrected_pt >= 250 && ntaus == 0 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
+cuts['AH2'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && METcorrected_pt >= 250 && ntaus == 0 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
+cuts['AH3'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
+cuts['AH4'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
 
 #Apply HEM fix to SR for 2018 if applyHEMfix == True
 if (year == 2018) and applyHEMfix:
@@ -305,6 +299,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'AH0l1fQR'
 
 #cuts['AH'] = cuts['AH'].replace('&& nbjets >= 1 ','') + ' && minDeltaPhi12 >= 0.8'
+#cuts['AH'] = cuts['AH'].replace('&& njets >= 3 ','')
 #cuts['AH'] = cuts['AH'] + ' && minDeltaPhi12 >= 0.8'
 #cuts['AH0lQR'] = cuts['AH0lQR'] + ' && nfjets == 0'
 #cuts[cut] = cuts[cut].replace(' && M_T2ll <= 80', '')
@@ -319,7 +314,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 # cuts['AH0l1fSR'] = cuts['AH0l1fSR'] + ' && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 # cuts['AH0l2bSR'] = cuts['AH0l2bSR'] + ' && nfjets >= 1'# && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 
-var = 'METcorrected_pt'
+#var = 'METcorrected_pt'
 #var = 'recoilPtMiss'
 #var = 'METcorrected_phi'
 #var = 'M_T'
@@ -334,7 +329,7 @@ var = 'METcorrected_pt'
 #var = 'Electron_pt[1]'
 #var = 'Muon_pt[1]'
 #var = 'Jet_pt'
-#var = 'Jet_phi[index_centralJets[2]]'
+var = 'Jet_pt[index_bJets[0]]'
 #var = 'Jet_pt[index_centralJets[0]]/Jet_pt[index_forwardJets[0]]'
 #var = 'Jet_chEmEF[index_forwardJets[0]]'
 #var = 'min(abs(Jet_phi[index_centralJets[2]]-METcorrected_phi),2*pi-abs(Jet_phi[index_centralJets[2]]-METcorrected_phi))'
@@ -453,12 +448,12 @@ if (condor_cut != '') and condor_plot:
         xmax = 400
         doLogPlot = False
     elif 'AH' in condor_cut:
-        nbins = 15
-        xmin = 250
-        xmax = 550
-        doLogPlot = True
+        nbins = 30
+        xmin = 0
+        xmax = 900
+        doLogPlot = False
 
-histoLabel = '; p_{T}^{miss} (GeV); Events'
+#histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; Hadronic recoil (GeV); Events'
 #histoLabel = '; #phi^{miss}; Events'
 #histoLabel = '; M_{T} (GeV); Events'
@@ -467,13 +462,13 @@ histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; M_{T}^{b} (GeV); Events'
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = '; central jet_{3} #phi; Events'
-#histoLabel = '; central jet_{1} p_{T}; Events'
+histoLabel = '; b-tagged jet_{1} p_{T}; Events'
 #histoLabel = '; central jet_{1} p_{T}/forward jet_{1} p_{T}; Events'
 #histoLabel = '; #Delta#phi(jet_{3},p_{T}^{miss}); Events'
 #histoLabel = '; forward jet_{1} charged Electromagnetic Energy Fraction; Events'
 #histoLabel = '; DeepAK8 top tag discriminant value; Events'
 #histoLabel = '; leading electron #eta; Events'
-#histoLabel = '; number of b-tagged jets; Events (normalized)'
+#histoLabel = '; number of forward jets; Events'
 #histoLabel = '; modified topness; Events'
 
 if (condor_cut== 'AH2lZR') or (condor_cut == 'AH2eZR') or (condor_cut == 'AH2mZR'): #Edit here
@@ -1024,16 +1019,11 @@ else:
 print('Loading data sample root files and event trees...')
 for dataset in dataSamples:
     if dataset in datasetNames:
-        nevents = 0
         for filepath in dataSamples[dataset]['filepaths']:
             print '    ----Loading', filepath
             dataSamples[dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             dataSamples[dataset][filepath+'_Events'] = dataSamples[dataset][filepath+'_TFile'].Get('Events')
-            dataset_nevents = dataSamples[dataset][filepath+'_Events'].GetEntries()
-            nevents += dataset_nevents
-            print '    nevents in filepath = ' + filepath + ': ' + str(dataset_nevents)
-        dataSamples[dataset]['nevents'] = nevents
-        print '    total nevents in ', dataset, ': ', nevents
+        print '    total nevents in ', dataset, ': ', dataSamples[dataset]['nevents']
 print('Got data sample root files and event trees')
 
 #Get MC background root files and event trees
@@ -1042,23 +1032,11 @@ print('Loading MC sample root files and event trees...')
 for process in MCSamples:
     print 'Loading process: ', process
     for dataset in MCSamples[process]:
-        nevents = 0
         print '    ----Loading', dataset
         for filepath in MCSamples[process][dataset]['filepaths']:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
-            skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242022', 'countEvents_12242022'),'')
-            #Add events with positive genWeightSign and subtract events with negative genWeightSign
-            if (process in signal) and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
-                Mchi = MCSamples[process][dataset]['mchi']
-                Mphi = MCSamples[process][dataset]['mphi']
-                MediatorType = MCSamples[process][dataset]['mediatorType']
-                signalType = 'TTbarDMJets'
-                nevents += skimFile.Get('Events').GetEntries('GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8&&(genWeight>0)') - skimFile.Get('Events').GetEntries('GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8&&(genWeight<0)')      
-            else:
-                nevents += skimFile.Get('Events').GetEntries('genWeight>0') - skimFile.Get('Events').GetEntries('genWeight<0')
-        MCSamples[process][dataset]['nevents'] = nevents
-        print '    nevents in ', process, ' ', dataset, ': ', nevents
+        print '    nevents in ', process, ' ', dataset, ': ', MCSamples[process][dataset]['nevents']
 print('Got MC sample root files and event trees')
 
 # #Uncomment this section for quickly testing plot settings
@@ -1143,21 +1121,21 @@ for process in MCSamples:
         if datasetNames == ['MET']:
             weight = weight + '*METTriggerWeight'
         #Apply appropriate NLO k-factors
-        # if process == 'WPlusJets':
-        #     # weight = weight + '*qcdWWeight*ewkWWeight'
-        #     # print 'Applied WPlusJets qcd/ewk Weights correctly'
-        #     weight = weight + '*ewkWWeight'
-        #     print 'Applied WPlusJets ewk Weights correctly'
-        # elif process == 'ZTo2L':
-        #     #weight = weight + '*qcdZTo2LWeight*ewkZWeight'
-        #     #print 'Applied ZTo2L qcd/ewk Weights correctly'
-        #     weight = weight + '*ewkZWeight'
-        #     print 'Applied ZTo2L ewk Weights correctly'
-        # elif process == 'ZTo2Nu':
-        #     #weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
-        #     #print 'Applied ZTo2Nu qcd/ewk Weights correctly'
-        #     weight = weight + '*ewkZWeight'
-        #     print 'Applied ZTo2Nu ewk Weights correctly'
+        if process == 'WPlusJets':
+            #weight = weight + '*qcdWWeight*ewkWWeight'
+            #print 'Applied WPlusJets qcd/ewk Weights correctly'
+            weight = weight + '*ewkWWeight'
+            print 'Applied WPlusJets ewk Weights correctly'
+        elif process == 'ZTo2L':
+            #weight = weight + '*qcdZTo2LWeight*ewkZWeight'
+            #print 'Applied ZTo2L qcd/ewk Weights correctly'
+            weight = weight + '*ewkZWeight'
+            print 'Applied ZTo2L ewk Weights correctly'
+        elif process == 'ZTo2Nu':
+            #weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
+            #print 'Applied ZTo2Nu qcd/ewk Weights correctly'
+            weight = weight + '*ewkZWeight'
+            print 'Applied ZTo2Nu ewk Weights correctly'
         if (process in signal) and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
             Mchi = MCSamples[process][dataset]['mchi']
             Mphi = MCSamples[process][dataset]['mphi']
@@ -1806,7 +1784,7 @@ if savePlots:
             #c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_blinded.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
-            c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_NLOnoKfactors.png')
+            c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_NLOwithGenWeightsAndEWKkfactors.png')
             #c.SaveAs(cut + nameYear + '_deltaPhiJet3MET_' + suffix + '.png')
 
 print 'Plotting end time:', datetime.datetime.now()
