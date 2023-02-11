@@ -12,9 +12,9 @@ signalTypes = ['tChan', 'tWChan']
 #signalTypes = ['tWChan']
 mediatorTypes = ['Scalar', 'Pseudo']
 #mediatorTypes = ['Scalar']
-#analysis = 'ModuleCommonSkim_12242022'
-analysis = 'countEvents_12242022'
-countNEntries = True
+analysis = 'ModuleCommonSkim_02092023'
+#analysis = 'countEvents_02092023'
+countNEntries = False
 input_files = '../python/postprocessing/analysis/mt2w_bisect_cc.so,../python/postprocessing/analysis/mt2w_bisect.cc,../python/postprocessing/analysis/mt2w_bisect.h,../python/postprocessing/analysis/mt2w_bisect_cc.d,../python/postprocessing/analysis/mt2w_bisect_cc_ACLiC_dict_rdict.pcm,../python/postprocessing/analysis/MT2Utility_cc.so,../python/postprocessing/analysis/MT2Utility.cc,../python/postprocessing/analysis/MT2Utility.h,../python/postprocessing/analysis/MT2Utility_cc.d,../python/postprocessing/analysis/MT2Utility_cc_ACLiC_dict_rdict.pcm,../python/postprocessing/analysis/mt2bl_bisect_cc.so,../python/postprocessing/analysis/mt2bl_bisect.cc,../python/postprocessing/analysis/mt2bl_bisect.h,../python/postprocessing/analysis/mt2bl_bisect_cc.d,../python/postprocessing/analysis/mt2bl_bisect_cc_ACLiC_dict_rdict.pcm,../python/postprocessing/analysis/Mt2Com_bisect_cc.so,../python/postprocessing/analysis/Mt2Com_bisect.cc,../python/postprocessing/analysis/Mt2Com_bisect.h,../python/postprocessing/analysis/Mt2Com_bisect_cc.d,../python/postprocessing/analysis/Mt2Com_bisect_cc_ACLiC_dict_rdict.pcm,../python/postprocessing/analysis/lester_mt2_bisect.h,../python/postprocessing/analysis/XYMETCorrection.h,../python/postprocessing/analysis/topness_cc.so,../python/postprocessing/analysis/topness.cc,../python/postprocessing/analysis/topness.h,../python/postprocessing/analysis/topness_cc.d,../python/postprocessing/analysis/topness_cc_ACLiC_dict_rdict.pcm,../python/postprocessing/analysis/JetUtil_cc.so,../python/postprocessing/analysis/JetUtil.cc,../python/postprocessing/analysis/JetUtil.h,../python/postprocessing/analysis/JetUtil_cc.d,../python/postprocessing/analysis/JetUtil_cc_ACLiC_dict_rdict.pcm,../python/postprocessing/analysis/keep_and_dropSR_out.txt,../python/postprocessing/analysis/keep_and_dropCount_out.txt'
 
 #Loop over each sample directory and submit separate farmout job

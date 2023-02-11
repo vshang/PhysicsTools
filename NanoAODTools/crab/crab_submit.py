@@ -2,14 +2,14 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- #task          = 'ModuleCommonSkim_12242022' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
- #task          = 'getBTagHist_12222021'
- task          = 'countEvents_12242022'
+ task          = 'ModuleCommonSkim_02092023' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ #task          = 'getBTagHist_02092023'
+ #task          = 'countEvents_02092023'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
  getBTagHist = False
- countNEntries = True
+ countNEntries = False
 
  #####
  ##   Helper function to set appropriate text file containing DAS file paths for input datasets
@@ -100,20 +100,20 @@ if __name__ == '__main__':
  isData = True
  isSignal = False
  
- # for run in runs2016:
- #  submitWrapper('MET', '2016', isData, isSignal, run, getDatasetinputs('MET', '2016', run))
- #  submitWrapper('SingleElectron', '2016', isData, isSignal, run, getDatasetinputs('SingleElectron', '2016', run))
- #  submitWrapper('SingleMuon', '2016', isData, isSignal, run, getDatasetinputs('SingleMuon', '2016', run))
- #  submitWrapper('SinglePhoton', '2016', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2016', run))
- # for run in runs2017:
- #  submitWrapper('MET', '2017', isData, isSignal, run, getDatasetinputs('MET', '2017', run))
- #  submitWrapper('SingleElectron', '2017', isData, isSignal, run, getDatasetinputs('SingleElectron', '2017', run))
- #  submitWrapper('SingleMuon', '2017', isData, isSignal, run, getDatasetinputs('SingleMuon', '2017', run))
- #  submitWrapper('SinglePhoton', '2017', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2017', run))
- # for run in runs2018:
- #  submitWrapper('MET', '2018', isData, isSignal, run, getDatasetinputs('MET', '2018', run))
- #  submitWrapper('SingleElectron', '2018', isData, isSignal, run, getDatasetinputs('SingleElectron', '2018', run))
- #  submitWrapper('SingleMuon', '2018', isData, isSignal, run, getDatasetinputs('SingleMuon', '2018', run))
+ for run in runs2016:
+  submitWrapper('MET', '2016', isData, isSignal, run, getDatasetinputs('MET', '2016', run))
+  submitWrapper('SingleElectron', '2016', isData, isSignal, run, getDatasetinputs('SingleElectron', '2016', run))
+  submitWrapper('SingleMuon', '2016', isData, isSignal, run, getDatasetinputs('SingleMuon', '2016', run))
+  submitWrapper('SinglePhoton', '2016', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2016', run))
+ for run in runs2017:
+  submitWrapper('MET', '2017', isData, isSignal, run, getDatasetinputs('MET', '2017', run))
+  submitWrapper('SingleElectron', '2017', isData, isSignal, run, getDatasetinputs('SingleElectron', '2017', run))
+  submitWrapper('SingleMuon', '2017', isData, isSignal, run, getDatasetinputs('SingleMuon', '2017', run))
+  submitWrapper('SinglePhoton', '2017', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2017', run))
+ for run in runs2018:
+  submitWrapper('MET', '2018', isData, isSignal, run, getDatasetinputs('MET', '2018', run))
+  submitWrapper('SingleElectron', '2018', isData, isSignal, run, getDatasetinputs('SingleElectron', '2018', run))
+  submitWrapper('SingleMuon', '2018', isData, isSignal, run, getDatasetinputs('SingleMuon', '2018', run))
  
  isData = False
  run = ''

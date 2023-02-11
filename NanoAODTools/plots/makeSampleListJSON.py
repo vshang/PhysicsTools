@@ -1,7 +1,7 @@
 #Script to write and save json files for MC and Data sample lists containing number of gen events (taking into account genWeightSign)
 from ROOT import *
-from MCsampleListv2 import *
-from DataSampleListv2 import *
+from MCsampleList import *
+from DataSampleList import *
 import json
 
 MCsampleList = [samples2016, samples2017, samples2018]
