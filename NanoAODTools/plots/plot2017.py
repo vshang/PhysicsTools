@@ -52,10 +52,16 @@ if condor_cut != '':
         saveDirectory = saveDirectory.replace('SR','CR')
 
 #Choose samples to use based on run year (stored in MCsampleList.py and DataSampleList.py)
-with open('plots/data'+str(year)+'.json') as json_data:
-    dataSamples = json.load(json_data)
-with open('plots/samples'+str(year)+'.json') as json_mc:
-    MCSamples = json.load(json_mc)
+if useCondor:
+    with open('data'+str(year)+'.json') as json_data:
+        dataSamples = json.load(json_data)
+    with open('samples'+str(year)+'.json') as json_mc:
+        MCSamples = json.load(json_mc)
+else:
+    with open('plots/data'+str(year)+'.json') as json_data:
+        dataSamples = json.load(json_data)
+    with open('plots/samples'+str(year)+'.json') as json_mc:
+        MCSamples = json.load(json_mc)
 
 #Make sure save directory is available if not using Condor
 if not useCondor:
