@@ -6,15 +6,15 @@ import os
 #Settings for which sample directories to run over
 Years = ['2016', '2017', '2018']
 #Years = ['2018']
-signalMassPoints = ['Mchi1_Mphi10', 'Mchi1_Mphi50', 'Mchi1_Mphi100', 'Mchi1_Mphi150', 'Mchi1_Mphi200', 'Mchi1_Mphi250', 'Mchi1_Mphi300', 'Mchi1_Mphi350', 'Mchi1_Mphi400', 'Mchi1_Mphi450', 'Mchi1_Mphi500']
-#signalMassPoints = ['Mchi1_Mphi50']
+#signalMassPoints = ['Mchi1_Mphi10', 'Mchi1_Mphi50', 'Mchi1_Mphi100', 'Mchi1_Mphi150', 'Mchi1_Mphi200', 'Mchi1_Mphi250', 'Mchi1_Mphi300', 'Mchi1_Mphi350', 'Mchi1_Mphi400', 'Mchi1_Mphi450', 'Mchi1_Mphi500']
+signalMassPoints = []
 signalTypes = ['tChan', 'tWChan']
 #signalTypes = ['tWChan']
 mediatorTypes = ['Scalar', 'Pseudo']
 #mediatorTypes = ['Scalar']
-analysis = 'ModuleCommonSkim_02092023'
-#analysis = 'countEvents_02092023'
-countNEntries = False
+#analysis = 'ModuleCommonSkim_02092023'
+analysis = 'countEvents_02092023'
+countNEntries = True
 input_files = '../python/postprocessing/analysis/mt2w_bisect_cc.so,../python/postprocessing/analysis/mt2w_bisect.cc,../python/postprocessing/analysis/mt2w_bisect.h,../python/postprocessing/analysis/mt2w_bisect_cc.d,../python/postprocessing/analysis/mt2w_bisect_cc_ACLiC_dict_rdict.pcm,../python/postprocessing/analysis/MT2Utility_cc.so,../python/postprocessing/analysis/MT2Utility.cc,../python/postprocessing/analysis/MT2Utility.h,../python/postprocessing/analysis/MT2Utility_cc.d,../python/postprocessing/analysis/MT2Utility_cc_ACLiC_dict_rdict.pcm,../python/postprocessing/analysis/mt2bl_bisect_cc.so,../python/postprocessing/analysis/mt2bl_bisect.cc,../python/postprocessing/analysis/mt2bl_bisect.h,../python/postprocessing/analysis/mt2bl_bisect_cc.d,../python/postprocessing/analysis/mt2bl_bisect_cc_ACLiC_dict_rdict.pcm,../python/postprocessing/analysis/Mt2Com_bisect_cc.so,../python/postprocessing/analysis/Mt2Com_bisect.cc,../python/postprocessing/analysis/Mt2Com_bisect.h,../python/postprocessing/analysis/Mt2Com_bisect_cc.d,../python/postprocessing/analysis/Mt2Com_bisect_cc_ACLiC_dict_rdict.pcm,../python/postprocessing/analysis/lester_mt2_bisect.h,../python/postprocessing/analysis/XYMETCorrection.h,../python/postprocessing/analysis/topness_cc.so,../python/postprocessing/analysis/topness.cc,../python/postprocessing/analysis/topness.h,../python/postprocessing/analysis/topness_cc.d,../python/postprocessing/analysis/topness_cc_ACLiC_dict_rdict.pcm,../python/postprocessing/analysis/JetUtil_cc.so,../python/postprocessing/analysis/JetUtil.cc,../python/postprocessing/analysis/JetUtil.h,../python/postprocessing/analysis/JetUtil_cc.d,../python/postprocessing/analysis/JetUtil_cc_ACLiC_dict_rdict.pcm,../python/postprocessing/analysis/keep_and_dropSR_out.txt,../python/postprocessing/analysis/keep_and_dropCount_out.txt'
 
 #Loop over each sample directory and submit separate farmout job

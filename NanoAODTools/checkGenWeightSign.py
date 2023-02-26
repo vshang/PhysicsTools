@@ -3,7 +3,7 @@ from ROOT import *
 from plots.MCsampleListv2 import *
 
 #Set year 
-year = 2016
+year = 2018
 
 if year == 2016:
     MCSamples = samples2016
@@ -25,18 +25,22 @@ for process in MCSamples:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
             if (process in signal) and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
-                # skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242022', 'countEvents_12242022'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_02092023', 'countEvents_02092023'),'')
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
                 MediatorType = MCSamples[process][dataset]['mediatorType']
                 signalType = 'TTbarDMJets'
                 nevents_countEvents += skimFile.Get('Events').GetEntries('GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8&&(genWeight<0)')
                 nevents_ModuleCommonSkimNeg += MCSamples[process][dataset][filepath+'_Events'].GetEntries('GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8&&(genWeightSign<0)')
-            elif process not in signal:
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242022', 'countEvents_12242022'),'')
+            #elif process not in signal:
+            elif process not in ['tbar scalar', 'tbar pseudoscalar']:
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_02092023', 'countEvents_02092023'),'')
                 nevents_countEvents += skimFile.Get('Events').GetEntries('genWeight<0')
                 nevents_ModuleCommonSkimNeg += MCSamples[process][dataset][filepath+'_Events'].GetEntries('genWeightSign<0')
-        print '    nevents with negative genWeigh in ', process, ' ', dataset, ': ', nevents_countEvents
+            else:
+                nevents_countEvents = -1
+                nevents_ModuleCommonSkimNeg += MCSamples[process][dataset][filepath+'_Events'].GetEntries('genWeightSign<0')
+        print '    nevents with negative genWeight using countEvents in ', process, ' ', dataset, ': ', nevents_countEvents
         print '    nevents with negative genWeightSign using ModuleCommonSkim in ', process, ' ', dataset, ': ', nevents_ModuleCommonSkimNeg
         if nevents_countEvents > 0 or nevents_ModuleCommonSkimNeg > 0:
             print '    WARNING: NEGATIVE GENWEIGHTSIGN SPOTTED'

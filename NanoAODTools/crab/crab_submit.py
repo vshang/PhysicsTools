@@ -2,14 +2,14 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'ModuleCommonSkim_02092023' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ #task          = 'ModuleCommonSkim_02092023' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'getBTagHist_02092023'
- #task          = 'countEvents_02092023'
+ task          = 'countEvents_02092023'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
  getBTagHist = False
- countNEntries = False
+ countNEntries = True
 
  #####
  ##   Helper function to set appropriate text file containing DAS file paths for input datasets
@@ -86,7 +86,7 @@ if __name__ == '__main__':
  #####
  from multiprocessing import Process
  def submitWrapper(analysis, year, isData, isSignal, run, datasetinputs):
-  for d in range(0,len(datasetinputs)):
+  for d in range(1,2):#range(0,len(datasetinputs)):
    p = Process(target=submit, args=(config, analysis, year, isData, isSignal, run, datasetinputs, d))
    p.start()
    p.join()
@@ -100,29 +100,29 @@ if __name__ == '__main__':
  isData = True
  isSignal = False
  
- for run in runs2016:
-  submitWrapper('MET', '2016', isData, isSignal, run, getDatasetinputs('MET', '2016', run))
-  submitWrapper('SingleElectron', '2016', isData, isSignal, run, getDatasetinputs('SingleElectron', '2016', run))
-  submitWrapper('SingleMuon', '2016', isData, isSignal, run, getDatasetinputs('SingleMuon', '2016', run))
-  submitWrapper('SinglePhoton', '2016', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2016', run))
- for run in runs2017:
-  submitWrapper('MET', '2017', isData, isSignal, run, getDatasetinputs('MET', '2017', run))
-  submitWrapper('SingleElectron', '2017', isData, isSignal, run, getDatasetinputs('SingleElectron', '2017', run))
-  submitWrapper('SingleMuon', '2017', isData, isSignal, run, getDatasetinputs('SingleMuon', '2017', run))
-  submitWrapper('SinglePhoton', '2017', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2017', run))
- for run in runs2018:
-  submitWrapper('MET', '2018', isData, isSignal, run, getDatasetinputs('MET', '2018', run))
-  submitWrapper('SingleElectron', '2018', isData, isSignal, run, getDatasetinputs('SingleElectron', '2018', run))
-  submitWrapper('SingleMuon', '2018', isData, isSignal, run, getDatasetinputs('SingleMuon', '2018', run))
+ # for run in runs2016:
+ #  submitWrapper('MET', '2016', isData, isSignal, run, getDatasetinputs('MET', '2016', run))
+ #  submitWrapper('SingleElectron', '2016', isData, isSignal, run, getDatasetinputs('SingleElectron', '2016', run))
+ #  submitWrapper('SingleMuon', '2016', isData, isSignal, run, getDatasetinputs('SingleMuon', '2016', run))
+ #  submitWrapper('SinglePhoton', '2016', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2016', run))
+ # for run in runs2017:
+ #  submitWrapper('MET', '2017', isData, isSignal, run, getDatasetinputs('MET', '2017', run))
+ #  submitWrapper('SingleElectron', '2017', isData, isSignal, run, getDatasetinputs('SingleElectron', '2017', run))
+ #  submitWrapper('SingleMuon', '2017', isData, isSignal, run, getDatasetinputs('SingleMuon', '2017', run))
+ #  submitWrapper('SinglePhoton', '2017', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2017', run))
+ # for run in runs2018:
+ #  submitWrapper('MET', '2018', isData, isSignal, run, getDatasetinputs('MET', '2018', run))
+ #  submitWrapper('SingleElectron', '2018', isData, isSignal, run, getDatasetinputs('SingleElectron', '2018', run))
+ #  submitWrapper('SingleMuon', '2018', isData, isSignal, run, getDatasetinputs('SingleMuon', '2018', run))
  
  isData = False
  run = ''
  #datasetnames = ['WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
- #datasetnames = ['QCDPt','ttH','VH']
- datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD','QCDPt', 'ttH', 'VH','WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
+ datasetnames = ['ttbarPlusJets']
+ #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD','QCDPt', 'ttH', 'VH','WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
  #years = ['UL2016']
- #years = ['2017','2018']
- years = ['2016','2017','2018']
+ years = ['2016']
+ #years = ['2016','2017','2018']
  for year in years:
   for dataset in datasetnames:
    if year == '2016' and ((dataset == 'QCDPt') or ('NLO' in dataset) or (dataset == 'ttH')):

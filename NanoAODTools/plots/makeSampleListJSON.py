@@ -1,7 +1,7 @@
 #Script to write and save json files for MC and Data sample lists containing number of gen events (taking into account genWeightSign)
 from ROOT import *
-from MCsampleList import *
-from DataSampleList import *
+from MCsampleListv2 import *
+from DataSampleListv2 import *
 import json
 
 MCsampleList = [samples2016, samples2017, samples2018]
@@ -22,7 +22,7 @@ for MCSamples in MCsampleList:
                 File = TFile.Open(filepath,'')
                 Events = File.Get('Events')
                 if (process in signal) and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
-                    skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242022','countEvents_12242022'),'')
+                    skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_02092023','countEvents_02092023'),'')
                     Mchi = MCSamples[process][dataset]['mchi']
                     Mphi = MCSamples[process][dataset]['mphi']
                     MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -35,12 +35,12 @@ for MCSamples in MCsampleList:
                         runsTree.GetEntry(i)
                         nevents += runsTree.genEventCount
                 else:
-                    skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242022', 'countEvents_12242022'),'')
+                    skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_02092023', 'countEvents_02092023'),'')
                     nevents += skimFile.Get('Events').GetEntries('genWeight>0') - skimFile.Get('Events').GetEntries('genWeight<0')
             MCSamples[process][dataset]['nevents'] = nevents
             print '    nevents in ', process, ' ', dataset, ': ', nevents
     print('Got MC sample root files and event trees for ' + str(year))
-    with open('samples'+str(year)+'.json','w') as f:
+    with open('samples'+str(year)+'v2.json','w') as f:
         json.dump(MCSamples, f)
     print('Wrote MC sample json file for ' + str(year))
     year += 1
@@ -60,7 +60,7 @@ for dataSamples in DataSampleList:
         dataSamples[dataset]['nevents'] = nevents
         print '    total nevents in ', dataset, ': ', nevents
     print('Got data sample root files and event trees')
-    with open('data'+str(year)+'.json','w') as f:
+    with open('data'+str(year)+'v2.json','w') as f:
         json.dump(dataSamples, f)
     print('Wrote Data sample json file for ' + str(year))
     year += 1

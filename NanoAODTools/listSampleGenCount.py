@@ -2,8 +2,8 @@
 from ROOT import *
 from plots.MCsampleListv2 import *
 
-#Set year 
-year = 2017
+#Set year
+year = 2016
 
 if year == 2016:
     MCSamples = samples2016
@@ -25,24 +25,31 @@ for process in MCSamples:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
             if (process in signal) and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242022', 'countEvents_12242022'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_02092023', 'countEvents_02092023'),'')
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
                 MediatorType = MCSamples[process][dataset]['mediatorType']
                 signalType = 'TTbarDMJets'
                 nevents_ModuleCommonSkim += skimFile.Get('Events').GetEntries('GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8')
                 nevents_countEvents += skimFile.Get('Events').GetEntries('GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8')
-            elif process not in signal:
+            elif process not in ['tbar scalar', 'tbar pseudoscalar']:
                 runsTree = MCSamples[process][dataset][filepath+'_TFile'].Get('Runs')
                 nRuns = runsTree.GetEntries()
                 for i in range(nRuns):
                     runsTree.GetEntry(i)
                     nevents_ModuleCommonSkim += runsTree.genEventCount
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_12242022', 'countEvents_12242022'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_02092023', 'countEvents_02092023'),'')
                 nevents_countEvents += skimFile.Get('Events').GetEntries()
+            else:
+                runsTree = MCSamples[process][dataset][filepath+'_TFile'].Get('Runs')
+                nRuns = runsTree.GetEntries()
+                for i in range(nRuns):
+                    runsTree.GetEntry(i)
+                    nevents_ModuleCommonSkim += runsTree.genEventCount
+                nevents_countEvents = -1
         print '    nevents_ModuleCommonSkim in ', process, ' ', dataset, ': ', nevents_ModuleCommonSkim
         print '    nevents_countEvents in ', process, ' ', dataset, ': ', nevents_countEvents
         print '    DIFFERENCE: ', nevents_countEvents - nevents_ModuleCommonSkim
-        if (nevents_countEvents - nevents_ModuleCommonSkim) != 0:
+        if ((nevents_countEvents - nevents_ModuleCommonSkim) != 0) and nevents_countEvents > -1:
             print '    ERROR: nevents in ModuleCommonSkim and countEvents do not match!'
 print('Got MC sample root files and event trees')
