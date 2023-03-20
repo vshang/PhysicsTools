@@ -6,6 +6,7 @@ import json
 
 MCsampleList = [samples2016, samples2017, samples2018]
 DataSampleList = [data2016, data2017, data2018]
+sampleDate = '12242022'
 
 #Get MC background root files and event trees
 signal = ['ttbar scalar', 'ttbar pseudoscalar', 'tbar scalar', 'tbar pseudoscalar']
@@ -22,7 +23,7 @@ for MCSamples in MCsampleList:
                 File = TFile.Open(filepath,'')
                 Events = File.Get('Events')
                 if (process in signal) and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
-                    skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_02092023','countEvents_02092023'),'')
+                    skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_'+sampleDate,'countEvents_'+sampleDate),'')
                     Mchi = MCSamples[process][dataset]['mchi']
                     Mphi = MCSamples[process][dataset]['mphi']
                     MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -35,7 +36,7 @@ for MCSamples in MCsampleList:
                         runsTree.GetEntry(i)
                         nevents += runsTree.genEventCount
                 else:
-                    skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_02092023', 'countEvents_02092023'),'')
+                    skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_'+sampleDate, 'countEvents_'+sampleDate),'')
                     nevents += skimFile.Get('Events').GetEntries('genWeight>0') - skimFile.Get('Events').GetEntries('genWeight<0')
             MCSamples[process][dataset]['nevents'] = nevents
             print '    nevents in ', process, ' ', dataset, ': ', nevents

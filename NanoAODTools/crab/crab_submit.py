@@ -2,14 +2,14 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- #task          = 'ModuleCommonSkim_02092023' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'ModuleCommonSkim_12242022' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'getBTagHist_02092023'
- task          = 'countEvents_02092023'
+ #task          = 'countEvents_02092023'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
  getBTagHist = False
- countNEntries = True
+ countNEntries = False
 
  #####
  ##   Helper function to set appropriate text file containing DAS file paths for input datasets
@@ -86,7 +86,7 @@ if __name__ == '__main__':
  #####
  from multiprocessing import Process
  def submitWrapper(analysis, year, isData, isSignal, run, datasetinputs):
-  for d in range(1,2):#range(0,len(datasetinputs)):
+  for d in range(0,len(datasetinputs)):
    p = Process(target=submit, args=(config, analysis, year, isData, isSignal, run, datasetinputs, d))
    p.start()
    p.join()
@@ -96,7 +96,7 @@ if __name__ == '__main__':
  #####
  runs2016 = ['B','C','D','E','F','G','H']
  runs2017 = ['B','C','D','E','F']
- runs2018 = ['A','B','C','D']
+ runs2018 = ['D']#['A','B','C','D']
  isData = True
  isSignal = False
  
@@ -110,9 +110,9 @@ if __name__ == '__main__':
  #  submitWrapper('SingleElectron', '2017', isData, isSignal, run, getDatasetinputs('SingleElectron', '2017', run))
  #  submitWrapper('SingleMuon', '2017', isData, isSignal, run, getDatasetinputs('SingleMuon', '2017', run))
  #  submitWrapper('SinglePhoton', '2017', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2017', run))
- # for run in runs2018:
+ for run in runs2018:
  #  submitWrapper('MET', '2018', isData, isSignal, run, getDatasetinputs('MET', '2018', run))
- #  submitWrapper('SingleElectron', '2018', isData, isSignal, run, getDatasetinputs('SingleElectron', '2018', run))
+  submitWrapper('SingleElectron', '2018', isData, isSignal, run, getDatasetinputs('SingleElectron', '2018', run))
  #  submitWrapper('SingleMuon', '2018', isData, isSignal, run, getDatasetinputs('SingleMuon', '2018', run))
  
  isData = False
@@ -123,14 +123,14 @@ if __name__ == '__main__':
  #years = ['UL2016']
  years = ['2016']
  #years = ['2016','2017','2018']
- for year in years:
-  for dataset in datasetnames:
-   if year == '2016' and ((dataset == 'QCDPt') or ('NLO' in dataset) or (dataset == 'ttH')):
-    continue
-   elif ((year == '2017') or (year == '2018')) and dataset == 'QCD':
-    continue
-   elif dataset == 'ttbarDM' or dataset == 'QCDPt': # or dataset == 'ttH' or dataset == 'VH':
-    submitWrapper(dataset, year, isData, True, '', getDatasetinputs(dataset, year, run=''))
-   else:
-    submitWrapper(dataset, year, isData, isSignal, '', getDatasetinputs(dataset, year, run=''))
+ # for year in years:
+ #  for dataset in datasetnames:
+ #   if year == '2016' and ((dataset == 'QCDPt') or ('NLO' in dataset) or (dataset == 'ttH')):
+ #    continue
+ #   elif ((year == '2017') or (year == '2018')) and dataset == 'QCD':
+ #    continue
+ #   elif dataset == 'ttbarDM' or dataset == 'QCDPt': # or dataset == 'ttH' or dataset == 'VH':
+ #    submitWrapper(dataset, year, isData, True, '', getDatasetinputs(dataset, year, run=''))
+ #   else:
+ #    submitWrapper(dataset, year, isData, isSignal, '', getDatasetinputs(dataset, year, run=''))
  

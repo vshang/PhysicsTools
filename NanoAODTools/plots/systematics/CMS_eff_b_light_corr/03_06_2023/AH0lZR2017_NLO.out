@@ -1,0 +1,935 @@
+plots/plot.py:895: SyntaxWarning: name 'counter' is used prior to global declaration
+  global counter
+Plotting start time: 2023-03-06 12:00:37.912869
+Cut name =  AH0lZR
+MC Selection Cuts =  (nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets == 0 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 >= 0.8 && Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2 && (HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60) && PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,2)+pow(PV_y,2)) < 2
+Data Selection Cuts =  (nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets == 0 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 >= 0.8 && Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2 && (HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60) && PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,2)+pow(PV_y,2)) < 2 && Flag_eeBadScFilter
+var =  METcorrected_pt
+year =  2017
+lumi =  41.53
+saveDirectory =  plots/systematics/CMS_eff_b_light_corr/
+date =  03_06_2023
+applying HEM fix for 2018...
+Creating histograms..
+Histogram options: 
+    nbins =  15
+    xmin =  250
+    xmax =  550
+    auto_y =  True
+    doLogPlot =  True
+    drawData =  False
+    mediatorType =  scalar
+    mchi =  1
+    mphi =  100
+    normalizePlots =  False
+    doBinned =  False
+    savePlots =  True
+    combineEleMu =  True
+    doSys =  False
+    doSysFirstHalf =  False
+    doSysSecondHalf =  False
+    drawOverflow =  True
+    drawUnderflow =  False
+    plotSys =  True
+    plotSysVar =  CMS_eff_b_light_corr
+    plotSysSignal =  False
+Adding background up/down variation histograms...
+    QCD_sysUp histogram made
+    QCD_sysDown histogram made
+    ZTo2L_sysUp histogram made
+    ZTo2L_sysDown histogram made
+    VV_sysUp histogram made
+    VV_sysDown histogram made
+    singleTop_sysUp histogram made
+    singleTop_sysDown histogram made
+    WPlusJets_sysUp histogram made
+    WPlusJets_sysDown histogram made
+    TTV_sysUp histogram made
+    TTV_sysDown histogram made
+    TTTo2L2Nu_sysUp histogram made
+    TTTo2L2Nu_sysDown histogram made
+    TTToSemiLepton_sysUp histogram made
+    TTToSemiLepton_sysDown histogram made
+    ZTo2Nu_sysUp histogram made
+    ZTo2Nu_sysDown histogram made
+    bkgSum_sysUp histogram made
+    bkgSum_sysDown histogram made
+    ttbar scalar_sysUp histogram made
+    ttbar scalar_sysDown histogram made
+    tbar scalar_sysUp histogram made
+    tbar scalar_sysDown histogram made
+Selected MET dataset
+Loading data sample root files and event trees...
+    ----Loading /hdfs/store/user/vshang/MET_Run2017B/MET/ModuleCommonSkim_12242022/tree_all.root
+    ----Loading /hdfs/store/user/vshang/MET_Run2017C/MET/ModuleCommonSkim_12242022/tree_all.root
+    ----Loading /hdfs/store/user/vshang/MET_Run2017D/MET/ModuleCommonSkim_12242022/tree_all.root
+    ----Loading /hdfs/store/user/vshang/MET_Run2017E/MET/ModuleCommonSkim_12242022/tree_all.root
+    ----Loading /hdfs/store/user/vshang/MET_Run2017F/MET/ModuleCommonSkim_12242022/tree_all.root
+    total nevents in  MET :  2088294
+Got data sample root files and event trees
+Loading MC sample root files and event trees...
+Loading process:  ZTo2Nu
+    ----Loading 2LHEZpT50-150
+    nevents in  ZTo2Nu   2LHEZpT50-150 :  4011
+    ----Loading 1LHEZpT250-400
+    nevents in  ZTo2Nu   1LHEZpT250-400 :  732053
+    ----Loading 2LHEZpT250-400
+    nevents in  ZTo2Nu   2LHEZpT250-400 :  9456786
+    ----Loading 1LHEZpT150-250
+    nevents in  ZTo2Nu   1LHEZpT150-250 :  242665
+    ----Loading 2LHEZpT400-inf
+    nevents in  ZTo2Nu   2LHEZpT400-inf :  5309720
+    ----Loading 1LHEZpT400-inf
+    nevents in  ZTo2Nu   1LHEZpT400-inf :  117033
+    ----Loading 1LHEZpT50-150
+    nevents in  ZTo2Nu   1LHEZpT50-150 :  430
+    ----Loading 2LHEZpT150-250
+    nevents in  ZTo2Nu   2LHEZpT150-250 :  4593742
+Loading process:  tbar scalar
+    ----Loading tChan_MChi1_MPhi100_scalar
+    nevents in  tbar scalar   tChan_MChi1_MPhi100_scalar :  275000
+    ----Loading tWChan_MChi1_MPhi100_scalar
+    nevents in  tbar scalar   tWChan_MChi1_MPhi100_scalar :  165000
+Loading process:  TTV
+    ----Loading TTZToQQ
+    nevents in  TTV   TTZToQQ :  103182
+    ----Loading TTWJetsToLNu
+    nevents in  TTV   TTWJetsToLNu :  310331
+    ----Loading TTWJetsToQQ
+    nevents in  TTV   TTWJetsToQQ :  11629
+    ----Loading TTZToLLNuNu
+    nevents in  TTV   TTZToLLNuNu :  791739
+Loading process:  WW
+    ----Loading WWTo1L1Nu2Q
+    nevents in  WW   WWTo1L1Nu2Q :  16582
+    ----Loading WWTo4Q
+    nevents in  WW   WWTo4Q :  141
+    ----Loading WWTo2L2Nu
+    nevents in  WW   WWTo2L2Nu :  10534
+Loading process:  ttbarPlusJets
+    ----Loading TTToSemiLepton
+    nevents in  ttbarPlusJets   TTToSemiLepton :  2871506
+    ----Loading TTTo2L2Nu
+    nevents in  ttbarPlusJets   TTTo2L2Nu :  122171
+Loading process:  ttbar scalar
+    ----Loading ttDM_MChi1_MPhi100_scalar
+    nevents in  ttbar scalar   ttDM_MChi1_MPhi100_scalar :  140567
+Loading process:  ZZ
+    ----Loading ZZTo2Q2Nu
+    nevents in  ZZ   ZZTo2Q2Nu :  538524
+    ----Loading ZZTo4L
+    nevents in  ZZ   ZZTo4L :  3086
+    ----Loading ZZTo2L2Q
+    nevents in  ZZ   ZZTo2L2Q :  63341
+    ----Loading ZZTo2L2Nu
+    nevents in  ZZ   ZZTo2L2Nu :  57736
+Loading process:  QCD
+    ----Loading Pt170to300
+    nevents in  QCD   Pt170to300 :  6662
+    ----Loading Pt15to30
+    nevents in  QCD   Pt15to30 :  137
+    ----Loading Pt800to1000
+    nevents in  QCD   Pt800to1000 :  1870605
+    ----Loading Pt600to800
+    nevents in  QCD   Pt600to800 :  1527368
+    ----Loading Pt120to170
+    nevents in  QCD   Pt120to170 :  1722
+    ----Loading Pt1000to1400
+    nevents in  QCD   Pt1000to1400 :  1542323
+    ----Loading Pt1400to1800
+    nevents in  QCD   Pt1400to1800 :  920971
+    ----Loading Pt50to80
+    nevents in  QCD   Pt50to80 :  1217
+    ----Loading Pt1800to2400
+    nevents in  QCD   Pt1800to2400 :  363351
+    ----Loading Pt3200toInf
+    nevents in  QCD   Pt3200toInf :  203035
+    ----Loading Pt2400to3200
+    nevents in  QCD   Pt2400to3200 :  357152
+    ----Loading Pt80to120
+    nevents in  QCD   Pt80to120 :  2623
+    ----Loading Pt30to50
+    nevents in  QCD   Pt30to50 :  561
+    ----Loading Pt470to600
+    nevents in  QCD   Pt470to600 :  287547
+    ----Loading Pt300to470
+    nevents in  QCD   Pt300to470 :  114378
+Loading process:  ZTo2L
+    ----Loading 2LHEZpT50-150
+    nevents in  ZTo2L   2LHEZpT50-150 :  4701
+    ----Loading 1LHEZpT250-400
+    nevents in  ZTo2L   1LHEZpT250-400 :  219292
+    ----Loading 2LHEZpT250-400
+    nevents in  ZTo2L   2LHEZpT250-400 :  5443499
+    ----Loading 1LHEZpT150-250
+    nevents in  ZTo2L   1LHEZpT150-250 :  36322
+    ----Loading 2LHEZpT400-inf
+    nevents in  ZTo2L   2LHEZpT400-inf :  2034763
+    ----Loading 1LHEZpT400-inf
+    nevents in  ZTo2L   1LHEZpT400-inf :  146156
+    ----Loading 1LHEZpT50-150
+    nevents in  ZTo2L   1LHEZpT50-150 :  508
+    ----Loading 2LHEZpT150-250
+    nevents in  ZTo2L   2LHEZpT150-250 :  267531
+Loading process:  singleTop
+    ----Loading ST_s-channel
+    nevents in  singleTop   ST_s-channel :  27562
+    ----Loading ST_t-channel_antitop
+    nevents in  singleTop   ST_t-channel_antitop :  3149
+    ----Loading ST_t-channel_top
+    nevents in  singleTop   ST_t-channel_top :  7140
+    ----Loading ST_tW_top
+    nevents in  singleTop   ST_tW_top :  55857
+    ----Loading ST_tW_antitop
+    nevents in  singleTop   ST_tW_antitop :  56920
+Loading process:  WZ
+    ----Loading WZTo2Q2Nu
+    nevents in  WZ   WZTo2Q2Nu :  451413
+    ----Loading WZTo3LNu
+    nevents in  WZ   WZTo3LNu :  29397
+    ----Loading WZTo1L1Nu2Q
+    nevents in  WZ   WZTo1L1Nu2Q :  100809
+    ----Loading WZTo1L3Nu
+    nevents in  WZ   WZTo1L3Nu :  49751
+    ----Loading WZTo2L2Q
+    nevents in  WZ   WZTo2L2Q :  85792
+Loading process:  WPlusJets
+    ----Loading 2LHEWpT150-250
+    nevents in  WPlusJets   2LHEWpT150-250 :  5191896
+    ----Loading 2LHEWpT400-inf
+    nevents in  WPlusJets   2LHEWpT400-inf :  6952623
+    ----Loading 1LHEWpTInfo in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+250-400
+    nevents in  WPlusJets   1LHEWpT250-400 :  2454728
+    ----Loading 2LHEWpT100-150
+    nevents in  WPlusJets   2LHEWpT100-150 :  31891
+    ----Loading 1LHEWpT100-150
+    nevents in  WPlusJets   1LHEWpT100-150 :  13187
+    ----Loading 2LHEWpT250-400
+    nevents in  WPlusJets   2LHEWpT250-400 :  6680197
+    ----Loading 1LHEWpT400-inf
+    nevents in  WPlusJets   1LHEWpT400-inf :  1480101
+    ----Loading 1LHEWpT150-250
+    nevents in  WPlusJets   1LHEWpT150-250 :  244869
+Got MC sample root files and event trees
+Filling data histograms...
+Filling MC histograms...
+  Process =  ZTo2Nu
+      Dataset =  2LHEZpT50-150  ||   nEvents =  4011
+Applied ZTo2Nu ewk Weights correctly
+          hist weight =  3378.51882324*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  523.0
+          hist integral =  492359.427189
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  1LHEZpT250-400  ||   nEvents =  732053
+Applied ZTo2Nu ewk Weights correctly
+          hist weight =  0.116355004351*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  46692.0
+          hist integral =  2689.92665476
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  2LHEZpT250-400  ||   nEvents =  9456786
+Applied ZTo2Nu ewk Weights correctly
+          hist weight =  0.0227219078448*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  6701128.0
+          hist integral =  54899.1307797
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  1LHEZpT150-250  ||   nEvents =  242665
+Applied ZTo2Nu ewk Weights correctly
+          hist weight =  3.08738878701*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  10897.0
+          hist integral =  14509.5365955
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  2LHEZpT400-inf  ||   nEvents =  5309720
+Applied ZTo2Nu ewk Weights correctly
+          hist weight =  0.0066263787921*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  4588117.0
+          hist integral =  11059.7237659
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  1LHEZpT400-inf  ||   nEvents =  117033
+Applied ZTo2Nu ewk Weights correctly
+          hist weight =  0.0798783505507*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  7542.0
+          hist integral =  311.000862747
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  1LHEZpT50-150  ||   nEvents =  430
+Applied ZTo2Nu ewk Weights correctly
+          hist weight =  57842.5976744*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  13.0
+          hist integral =  24348.6618347
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  2LHEZpT150-250  ||   nEvents =  4593742
+Applied ZTo2Nu ewk Weights correctly
+          hist weight =  0.267600574869*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  1613263.0
+          hist integral =  145462.34007
+          Adding up/down varations for TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+systematic given by plotSysVar to MC background histograms...
+  Process =  tbar scalar
+      Dataset =  tChan_MChi1_MPhi100_scalar  ||   nEvents =  275000
+          hist weight =  0.0430099781818*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  2693.0
+          hist integral =  126.941993952
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  tWChan_MChi1_MPhi100_scalar  ||   nEvents =  165000
+          hist weight =  0.0138282315152*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  4640.0
+          hist integral =  68.9273030758
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+  Process =  TTV
+      Dataset =  TTZToQQ  ||   nEvents =  103182
+          hist weight =  0.205432265318*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  6908.0
+          hist integral =  670.308438301
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  TTWJetsToLNu  ||   nEvents =  310331
+          hist weight =  0.0287589605937*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  13636.0
+          hist integral =  212.311424017
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  TTWJetsToQQ  ||   nEvents =  11629
+          hist weight =  1.54134904119*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  719.0
+          hist integral =  545.018293262
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  TTZToLLNuNu  ||   nEvents =  791739
+          hist weight =  0.0127568504267*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  109167.0
+          hist integral =  653.05421114
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+  Process =  WW
+      Dataset =  WWTo1L1Nu2Q  ||   nEvents =  16582
+          hist weight =  202.215185141*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  3725.0
+          hist integral =  312343.414185
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  WWTo4Q  ||   nEvents =  141
+          hist weight =  14058.3468085*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  2.0
+          hist integral =  17413.5878906
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  WWTo2L2Nu  ||   nEvents =  10534
+          hist weight =  43.6825897095*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  352.0
+          hist integral =  14829.4624367
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+  Process =  ttbarPlusJets
+      Dataset =  TTToSemiLepton  ||   nEvents =  2871506
+          hist weight =  5.2695190259*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  106075.0
+          hist integral =  595507.976685
+          Adding up/down varations for systematic given by plotSysVar to MC background histogrTFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+ams...
+      Dataset =  TTTo2L2Nu  ||   nEvents =  122171
+          hist weight =  29.679582716*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  1116.0
+          hist integral =  34820.9977303
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+  Process =  ttbar scalar
+      Dataset =  ttDM_MChi1_MPhi100_scalar  ||   nEvents =  140567
+          hist weight =  0.213510177353*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*GenModel__TTbarDMJets_Inclusive_scalar_LO_Mchi_1_Mphi_100_TuneCP5_13TeV_madgraph_mcatnlo_pythia8
+          hist nEntries =  7726.0
+          hist integral =  1887.94305801
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+  Process =  ZZ
+      Dataset =  ZZTo2Q2Nu  ||   nEvents =  538524
+          hist weight =  0.351967451776*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  332308.0
+          hist integral =  49842.5207825
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  ZZTo4L  ||   nEvents =  3086
+          hist weight =  17.8312540506*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  26.0
+          hist integral =  471.801003933
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  ZZTo2L2Q  ||   nEvents =  63341
+          hist weight =  2.41806476058*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  1941.0
+          hist integral =  1737.6847229
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  ZZTo2L2Nu  ||   nEvents =  57736
+          hist weight =  0.405977760842*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  2581.0
+          hist integral =  979.443335533
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+  Process =  QCD
+      Dataset =  Pt170to300  ||   nEvents =  6662
+          hist weight =  645204.893425*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  87.0
+          hist integral =  48283479.2673
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt15to30  ||   nEvents =  137
+          hist weight =  3.7771080292e+11*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  0.0
+          hist integral =  0.0
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt800to1000  ||   nEvents =  1870605
+          hist weight =  0.583452091703*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  13542.0
+          hist integral =  7901.19824219
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt600to800  ||   nEvents =  1527368
+          hist weight =  4.25532353696*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  17012.0
+          hist integral =  70612.338623
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt120toTFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+170  ||   nEvents =  1722
+          hist weight =  9822978.51336*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*(event!=3468768)
+          hist nEntries =  1.0
+          hist integral =  1318756.75
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt1000to1400  ||   nEvents =  1542323
+          hist weight =  0.201144053483*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  8438.0
+          hist integral =  1703.66562843
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt1400to1800  ||   nEvents =  920971
+          hist weight =  0.0292387621326*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  3521.0
+          hist integral =  104.189496458
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt50to80  ||   nEvents =  1217
+          hist weight =  536102136.401*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  1.0
+          hist integral =  2184377.5
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt1800to2400  ||   nEvents =  363351
+          hist weight =  0.00999300373468*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  1118.0
+          hist integral =  11.1024535373
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt3200toInf  ||   nEvents =  203035
+          hist weight =  2.77568941316e-05*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  528.0
+          hist integral =  0.0147949389939
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt2400to3200  ||   nEvents =  357152
+          hist weight =  0.000608847437506*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  859.0
+          hist integral =  0.557712434791
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt80to120  ||   nEvents =  2623
+          hist weight =  36985924.5139*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  5.0
+          hist integral =  153259648.0
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt30to50  ||   nEvents =  561
+          hist weight =  7913648841.35*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  1.0
+          hist integral =  16360694.0
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt470to600  ||   nEvents =  287547
+          hist weight =  79.7390096228*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  4931.0
+          hist integral =  376860.924805
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  Pt300to470  ||   nEvents =  114378
+          hist weight =  2479.93407823*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSiTFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+gn*METTriggerWeight
+          hist nEntries =  3137.0
+          hist integral =  7282142.73779
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+  Process =  ZTo2L
+      Dataset =  2LHEZpT50-150  ||   nEvents =  4701
+Applied ZTo2L ewk Weights correctly
+          hist weight =  1492.99510742*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  130.0
+          hist integral =  17982.2992303
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  1LHEZpT250-400  ||   nEvents =  219292
+Applied ZTo2L ewk Weights correctly
+          hist weight =  0.207752266385*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  601.0
+          hist integral =  59.2788348277
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  2LHEZpT250-400  ||   nEvents =  5443499
+Applied ZTo2L ewk Weights correctly
+          hist weight =  0.0209042382482*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  204030.0
+          hist integral =  1406.32682225
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  1LHEZpT150-250  ||   nEvents =  36322
+Applied ZTo2L ewk Weights correctly
+          hist weight =  10.8621496614*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  146.0
+          hist integral =  499.125575051
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  2LHEZpT400-inf  ||   nEvents =  2034763
+Applied ZTo2L ewk Weights correctly
+          hist weight =  0.00916827954902*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  62792.0
+          hist integral =  220.215356588
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  1LHEZpT400-inf  ||   nEvents =  146156
+Applied ZTo2L ewk Weights correctly
+          hist weight =  0.0342967172063*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  130.0
+          hist integral =  2.59152956121
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  1LHEZpT50-150  ||   nEvents =  508
+Applied ZTo2L ewk Weights correctly
+          hist weight =  25760.0452756*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  5.0
+          hist integral =  38381.0543785
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  2LHEZpT150-250  ||   nEvents =  267531
+Applied ZTo2L ewk Weights correctly
+          hist weight =  2.44183627318*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkZWeight
+          hist nEntries =  7985.0
+          hist integral =  5667.4473176
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+  Process =  singleTop
+      Dataset =  ST_s-channel  ||   nEvents =  27562
+          hist weight =  5.63537479138*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  920.0
+          hist integral =  3114.34255314
+          Adding up/down vTFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+arations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  ST_t-channel_antitop  ||   nEvents =  3149
+          hist weight =  895.618386789*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  76.0
+          hist integral =  76202.603672
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  ST_t-channel_top  ||   nEvents =  7140
+          hist weight =  659.012464986*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  151.0
+          hist integral =  105477.034302
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  ST_tW_top  ||   nEvents =  55857
+          hist weight =  25.9557853089*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  1820.0
+          hist integral =  49767.0202332
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  ST_tW_antitop  ||   nEvents =  56920
+          hist weight =  25.5148295854*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  2016.0
+          hist integral =  53214.3690186
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+  Process =  WZ
+      Dataset =  WZTo2Q2Nu  ||   nEvents =  451413
+          hist weight =  0.630936060769*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  302666.0
+          hist integral =  96606.1138306
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  WZTo3LNu  ||   nEvents =  29397
+          hist weight =  7.13710786815*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  1277.0
+          hist integral =  4817.99595451
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  WZTo1L1Nu2Q  ||   nEvents =  100809
+          hist weight =  4.80353738257*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  26766.0
+          hist integral =  58540.6700745
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  WZTo1L3Nu  ||   nEvents =  49751
+          hist weight =  2.78975819582*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  10609.0
+          hist integral =  13950.8956299
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  WZTo2L2Q  ||   nEvents =  85792
+          hist weight =  3.06469635863*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight
+          hist nEntries =  2879.0
+          hist integral =  3792.44306087
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+  Process =  WPlusJets
+      Dataset =  2LHEWpT150-250  ||   nEvents =  5191896
+Applied WPlusJets ewk Weights correctly
+          hist weight =  0.868611909792*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkWWeight
+          hist nEntries =  1190268.0
+          hist integral =  329025.236952
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms.TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+..
+DEBUG OUTPUT HERE: 
+weightedcut =  0.868611909792*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkWWeight*((nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets == 0 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 >= 0.8 && Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2 && (HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60) && PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,2)+pow(PV_y,2)) < 2)
+weightedcutUp =  0.868611909792*leptonWeight*bjetWeightlightUpCorrelated*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkWWeight*((nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets == 0 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 >= 0.8 && Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2 && (HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60) && PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,2)+pow(PV_y,2)) < 2)
+weightedcutDown =  0.868611909792*leptonWeight*bjetWeightlightDownCorrelated*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkWWeight*((nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets == 0 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 >= 0.8 && Flag_goodVertices && Flag_globalSuperTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_BadPFMuonFilter && Flag_ecalBadCalibFilterV2 && (HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60) && PV_npvsGood > 0 && PV_ndof > 4 && abs(PV_z) < 24 && sqrt(pow(PV_x,2)+pow(PV_y,2)) < 2)
+var =  METcorrected_pt
+varUp =  METcorrected_pt
+varDown =  METcorrected_pt
+      Dataset =  2LHEWpT400-inf  ||   nEvents =  6952623
+Applied WPlusJets ewk Weights correctly
+          hist weight =  0.0179198555711*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkWWeight
+          hist nEntries =  1520742.0
+          hist integral =  9426.88021851
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  1LHEWpT250-400  ||   nEvents =  2454728
+Applied WPlusJets ewk Weights correctly
+          hist weight =  0.136362073517*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkWWeight
+          hist nEntries =  38329.0
+          hist integral =  2519.9535929
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  2LHEWpT100-150  ||   nEvents =  31891
+Applied WPlusJets ewk Weights correctly
+          hist weight =  366.752184002*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkWWeight
+          hist nEntries =  3290.0
+          hist integral =  268113.197357
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  1LHEWpT100-150  ||   nEvents =  13187
+Applied WPlusJets ewk Weights correctly
+          hist weight =  894.594054751*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkWWeight
+          hist nEntries =  426.0
+          hist integral =  80956.3128147
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  2LHEWpT250-400  ||   nEvents =  6680197
+Applied WPlusJets ewk Weights correctly
+          histTFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+TFile::Append:0: RuntimeWarning: Replacing existing TH1: hist (Potential memory leak).
+ weight =  0.112090391945*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkWWeight
+          hist nEntries =  2088017.0
+          hist integral =  78790.8384719
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  1LHEWpT400-inf  ||   nEvents =  1480101
+Applied WPlusJets ewk Weights correctly
+          hist weight =  0.0249724174229*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkWWeight
+          hist nEntries =  8710.0
+          hist integral =  106.356525898
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+      Dataset =  1LHEWpT150-250  ||   nEvents =  244869
+Applied WPlusJets ewk Weights correctly
+          hist weight =  12.1620797243*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign*METTriggerWeight*ewkWWeight
+          hist nEntries =  6353.0
+          hist integral =  31676.3387327
+          Adding up/down varations for systematic given by plotSysVar to MC background histograms...
+-----------------------------
+Total data background nEvents =  0.0
+Total data background integral =  0.0
+-----------------------------
+Total MC background nEvents =  19081046.0
+Total MC background integral =  232252261.016
+-----------------------------
+Total tt+DM signal nEvents =  7726.0
+Total tt+DM signal integral =  1887.94305801
+Total t+DM signal nEvents =  7333.0
+Total t+DM signal integral =  195.869297743
+-----------------------------
+FOM for tt+DM signal =  0.110227034238
+FOM for t+DM signal =  0.0126893741255
+-----------------------------
+Data bin content:
+    bin 0: 0.0
+    bin 1: 0.0
+    bin 2: 0.0
+    bin 3: 0.0
+    bin 4: 0.0
+    bin 5: 0.0
+    bin 6: 0.0
+    bin 7: 0.0
+    bin 8: 0.0
+    bin 9: 0.0
+    bin 10: 0.0
+    bin 11: 0.0
+    bin 12: 0.0
+    bin 13: 0.0
+    bin 14: 0.0
+    bin 15: 0.0
+    bin 16: 0.0
+-----------------------------
+MC background bin content:
+    bin 0: 0.0
+    bin 1: 111069528.0
+    bin 2: 44828108.0
+    bin 3: 4153663.5
+    bin 4: 65340976.0
+    bin 5: 3759579.5
+    bin 6: 479176.34375
+    bin 7: 849969.625
+    bin 8: 652593.3125
+    bin 9: 829113.8125
+    bin 10: 77500.3125
+    bin 11: 59615.53125
+    bin 12: 34683.7617188
+    bin 13: 33425.2460938
+    bin 14: 13638.9023438
+    bin 15: 16004.7421875
+    bin 16: 54684.4257812
+-----------------------------
+tt+DM bin content:
+    bin 0: 0.0
+    bin 1: 404.057067871
+    bin 2: 326.037994385
+    bin 3: 231.216506958
+    bin 4: 187.939666748
+    bin 5: 155.264343262
+    bin 6: 107.928009033
+    bin 7: 97.0942153931
+    bin 8: 70.8479156494
+    bin 9: 59.9144859314
+    bin 10: 40.5794830322
+    bin 11: 33.5620613098
+    bin 12: 24.6919784546
+    bin 13: 22.7183418274
+    bin 14: 18.8514289856
+    bin 15: 18.4465141296
+    bin 16: 88.7930450439
+-----------------------------
+t+DM bin content:
+    bin 0: 0.0
+    bin 1: 34.5174827576
+    bin 2: 26.4533462524
+    bin 3: 22.0100688934
+    bin 4: 18.3671016693
+    bin 5: 14.4798488617
+    bin 6: 12.9375476837
+    bin 7: 10.499751091
+    bin 8: 8.12372207642
+    bin 9: 7.90510320663
+    bin 10: 5.88345718384
+    bin 11: 5.54299592972
+    bin 12: 4.66003322601
+    bin 13: 3.32448601723
+    bin 14: 3.07148313522
+    bin 15: 2.52498531342
+    bin 16: 15.5678844452
+-----------------------------
+Data bin errors:
+    bin 0: 0.0
+    bin 1: 0.0
+    bin 2: 0.0
+    bin 3: 0.0
+    bin 4: 0.0
+    bin 5: 0.0
+    bin 6: 0.0
+    bin 7: 0.0
+    bin 8: 0.0
+    bin 9: 0.0
+    bin 10: 0.0
+    bin 11: 0.0
+    bin 12: 0.0
+    bin 13: 0.0
+    bin 14: 0.0
+    bin 15: 0.0
+    bin 16: 0.0
+-----------------------------
+MC background bin errors:
+    bin 0: 0.0
+    bin 1: 54173432.8466
+    bin 2: 28353159.1109
+    bin 3: 1311404.25496
+    bin 4: 49237732.7877
+    bin 5: 2331664.41408
+    bin 6: 31959.754537
+    bin 7: 554922.314588
+    bin 8: 434059.142283
+    bin 9: 694346.91387
+    bin 10: 11117.6867497
+    bin 11: 8669.79613906
+    bin 12: 5601.66975094
+    bin 13: 6020.23373537
+    bin 14: 1357.68257625
+    bin 15: 3836.32296703
+    bin 16: 4230.55367526
+-----------------------------
+tt+DM bin errors:
+    bin 0: 0.0
+    bin 1: 10.7938972657
+    bin 2: 9.72804991484
+    bin 3: 8.14658457206
+    bin 4: 7.37739167762
+    bin 5: 6.71007442704
+    bin 6: 5.57091201625
+    bin 7: 5.37185445295
+    bin 8: 4.50770274067
+    bin 9: 4.21154285878
+    bin 10: 3.3894004532
+    bin 11: 3.1794387129
+    bin 12: 2.60905730361
+    bin 13: 2.5565116721
+    bin 14: 2.33124599677
+    bin 15: 2.28692701068
+    bin 16: 5.02982354683
+-----------------------------
+t+DM bin errors:
+    bin 0: 0.0
+    bin 1: 1.2228539226
+    bin 2: 1.052346119
+    bin 3: 0.973259485667
+    bin 4: 0.879309169469
+    bin 5: 0.774574776471
+    bin 6: 0.75320499754
+    bin 7: 0.652653104668
+    bin 8: 0.573079647913
+    bin 9: 0.566661012944
+    bin 10: 0.479482317868
+    bin 11: 0.482554368149
+    bin 12: 0.448974966853
+    bin 13: 0.351415417675
+    bin 14: 0.350462048228
+    bin 15: 0.314832115838
+    bin 16: 0.773130830378
+-----------------------------
+ZTo2Nu hist info:
+    nEvents =  12968175.0
+    integral =  745639.734009
+ZTo2Nu histUp info:
+    nEvents =  12968175.0
+    integral =  743357.716858
+ZTo2Nu histDown info:
+    nEvents =  12968175.0
+    integral =  747922.26062
+tbar scalar hist info:
+    nEvents =  7333.0
+    integral =  195.869297743
+tbar scalar histUp info:
+    nEvents =  7333.0
+    integral =  195.399092197
+tbar scalar histDown info:
+    nEvents =  7333.0
+    integral =  196.340364695
+TTTo2L2Nu hist info:
+    nEvents =  1116.0
+    integral =  34820.9977303
+TTTo2L2Nu histUp info:
+    nEvents =  1116.0
+    integral =  34720.4973373
+TTTo2L2Nu histDown info:
+    nEvents =  1116.0
+    integral =  34921.7329521
+singleTop hist info:
+    nEvents =  4983.0
+    integral =  287775.370453
+singleTop histUp info:
+    nEvents =  4983.0
+    integral =  287019.974792
+singleTop histDown info:
+    nEvents =  4983.0
+    integral =  288532.269409
+TTV hist info:
+    nEvents =  130430.0
+    integral =  2080.69234228
+TTV histUp info:
+    nEvents =  130430.0
+    integral =  2074.7809515
+TTV histDown info:
+    nEvents =  130430.0
+    integral =  2086.61844301
+bkgSum hist info:
+    nEvents =  19081046.0
+    integral =  232252261.016
+bkgSum histUp info:
+    nEvents =  19081046.0
+    integral =  231563669.992
+bkgSum histDown info:
+    nEvents =  19081046.0
+    integral =  232942534.655
+ttbar scalar hist info:
+    nEvents =  7726.0
+    integral =  1887.94305801
+ttbar scalar histUp info:
+    nEvents =  7726.0
+    integral =  1882.84265518
+ttbar scalar histDown info:
+    nEvents =  7726.0
+    integral =  1893.05558777
+VV hist info:
+    nEvents =  685132.0
+    integral =  575326.037598
+VV histUp info:
+    nEvents =  685132.0
+    integral =  573499.464355
+VV histDown info:
+    nEvents =  685132.0
+    integral =  577157.598145
+QCD hist info:
+    nEvents =  53181.0
+    integral =  229146288.404
+QCD histUp info:
+    nEvents =  53181.0
+    integral =  228466778.609
+QCD histDown info:
+    nEvents =  53181.0
+    integral =  229827444.639
+ZTo2L hist info:
+    nEvents =  275819.0
+    integral =  64218.3396742
+ZTo2L histUp info:
+    nEvents =  275819.0
+    integral =  64049.1170001
+ZTo2L histDown info:
+    nEvents =  275819.0
+    integral =  64387.8674388
+data hist info:
+    nEvents =  0.0
+    integral =  0.0
+WPlusJets hist info:
+    nEvents =  4856135.0
+    integral =  800615.18222
+WPlusJets histUp info:
+    nEvents =  4856135.0
+    integral =  798170.470306
+WPlusJets histDown info:
+    nEvents =  4856135.0
+    integral =  803058.567444
+TTToSemiLepton hist info:
+    nEvents =  106075.0
+    integral =  595507.976685
+TTToSemiLepton histUp info:
+    nEvents =  106075.0
+    integral =  593990.833984
+TTToSemiLepton histDown info:
+    nEvents =  106075.0
+    integral =  597028.444214
+Finished filling histograms
+Creating stacked MC background histogram...
+Finished stacking MC background histograms.
+Drawing histograms...
+Finished drawing histograms
+Drawing ratio plot...
+Finished drawing ratio plotInfo in <TCanvas::Print>: png file plots/systematics/CMS_eff_b_light_corr/03_06_2023/AH0lZR2017_METcorrected_pt_CMS_eff_b_light_corr_03_06_2023_NLO.png has been created
+
+Plotting end time: 2023-03-06 12:51:06.340247
