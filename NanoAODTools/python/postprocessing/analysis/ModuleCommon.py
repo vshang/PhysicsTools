@@ -332,6 +332,7 @@ class CommonAnalysis(Module):
             self.out.branch("qcdWWeight", "F")
             self.out.branch("qcdZTo2NuWeight", "F")
             self.out.branch("qcdZTo2LWeight", "F")
+            self.out.branch("GenV_pt", "F")
             #Systematics - QCD Scale Factors
             self.out.branch("qcdWWeightRenUp", "F")
             self.out.branch("qcdWWeightRenDown", "F")
@@ -1776,6 +1777,7 @@ to next event)"""
             qcdWWeightRenUp = qcdWWeightRenDown = qcdWWeightFacUp = qcdWWeightFacDown = 1
             qcdZTo2NuWeightRenUp = qcdZTo2NuWeightRenDown = qcdZTo2NuWeightFacUp = qcdZTo2NuWeightFacDown = 1
             qcdZTo2LWeightRenUp = qcdZTo2LWeightRenDown = qcdZTo2LWeightFacUp = qcdZTo2LWeightFacDown = 1
+            GenV_pt = -9
             genParticles = Collection(event, "GenPart")
             GenV = filter(lambda gen : (gen.pdgId == 23 or abs(gen.pdgId) == 24) and gen.status == 22, genParticles)
             if len(GenV) > 0:
@@ -2045,6 +2047,7 @@ to next event)"""
                 self.out.fillBranch("qcdWWeight", qcdWWeight)
                 self.out.fillBranch("qcdZTo2NuWeight", qcdZTo2NuWeight)
                 self.out.fillBranch("qcdZTo2LWeight", qcdZTo2LWeight)
+                self.out.fillBranch("GenV_pt", GenV_pt)
                 #Systematics - QCD Scale Factors
                 self.out.fillBranch("qcdWWeightRenUp", qcdWWeightRenUp)
                 self.out.fillBranch("qcdWWeightRenDown", qcdWWeightRenDown)
