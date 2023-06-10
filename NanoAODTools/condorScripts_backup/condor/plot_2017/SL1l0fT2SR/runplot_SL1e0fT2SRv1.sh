@@ -8,6 +8,4 @@ cd CMSSW_10_6_9
 eval `scram runtime -sh`
 cd ..
 python plot2017.py -c SL1e0fT2SR -f
-rm MCsampleList.py*
-rm DataSampleList.py*
 rm utils.py*

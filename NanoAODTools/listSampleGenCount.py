@@ -3,7 +3,7 @@ from ROOT import *
 from plots.MCsampleListv2 import *
 
 #Set year
-year = 2016
+year = 2018
 
 if year == 2016:
     MCSamples = samples2016
@@ -25,7 +25,7 @@ for process in MCSamples:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
             if (process in signal) and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_02092023', 'countEvents_02092023'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_05102023', 'countEvents_05102023').replace('ModuleCommonSkim_12242022', 'countEvents_12242022'),'')
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
                 MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -38,7 +38,7 @@ for process in MCSamples:
                 for i in range(nRuns):
                     runsTree.GetEntry(i)
                     nevents_ModuleCommonSkim += runsTree.genEventCount
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_02092023', 'countEvents_02092023'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_05102023', 'countEvents_05102023').replace('ModuleCommonSkim_12242022', 'countEvents_12242022'),'')
                 nevents_countEvents += skimFile.Get('Events').GetEntries()
             else:
                 runsTree = MCSamples[process][dataset][filepath+'_TFile'].Get('Runs')

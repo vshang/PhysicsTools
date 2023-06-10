@@ -5,7 +5,7 @@
 # Create the name of the rundir
 while :
 do
-    RUNDIR="tWChan_2016_countEvents_12242022"
+    RUNDIR="tWChan_2016_countEvents_02092023"
     if [ ! -d "${RUNDIR}" ]; then 
 	echo "using ${RUNDIR}"
 	break

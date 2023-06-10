@@ -2,14 +2,14 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'ModuleCommonSkim_12242022' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ #task          = 'ModuleCommonSkim_05102023' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'getBTagHist_02092023'
- #task          = 'countEvents_02092023'
+ task          = 'countEvents_05102023'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
  getBTagHist = False
- countNEntries = False
+ countNEntries = True
 
  #####
  ##   Helper function to set appropriate text file containing DAS file paths for input datasets
@@ -110,27 +110,27 @@ if __name__ == '__main__':
  #  submitWrapper('SingleElectron', '2017', isData, isSignal, run, getDatasetinputs('SingleElectron', '2017', run))
  #  submitWrapper('SingleMuon', '2017', isData, isSignal, run, getDatasetinputs('SingleMuon', '2017', run))
  #  submitWrapper('SinglePhoton', '2017', isData, isSignal, run, getDatasetinputs('SinglePhoton', '2017', run))
- for run in runs2018:
+ # for run in runs2018:
  #  submitWrapper('MET', '2018', isData, isSignal, run, getDatasetinputs('MET', '2018', run))
-  submitWrapper('SingleElectron', '2018', isData, isSignal, run, getDatasetinputs('SingleElectron', '2018', run))
+ #  submitWrapper('SingleElectron', '2018', isData, isSignal, run, getDatasetinputs('SingleElectron', '2018', run))
  #  submitWrapper('SingleMuon', '2018', isData, isSignal, run, getDatasetinputs('SingleMuon', '2018', run))
  
  isData = False
  run = ''
- #datasetnames = ['WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
- datasetnames = ['ttbarPlusJets']
- #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD','QCDPt', 'ttH', 'VH','WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
+ #datasetnames = ['Other']
+ datasetnames = ['ttbarPlusJets','Other']
+ #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD','QCDPt', 'ttH', 'VH']#,'WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
  #years = ['UL2016']
- years = ['2016']
- #years = ['2016','2017','2018']
- # for year in years:
- #  for dataset in datasetnames:
- #   if year == '2016' and ((dataset == 'QCDPt') or ('NLO' in dataset) or (dataset == 'ttH')):
- #    continue
- #   elif ((year == '2017') or (year == '2018')) and dataset == 'QCD':
- #    continue
- #   elif dataset == 'ttbarDM' or dataset == 'QCDPt': # or dataset == 'ttH' or dataset == 'VH':
- #    submitWrapper(dataset, year, isData, True, '', getDatasetinputs(dataset, year, run=''))
- #   else:
- #    submitWrapper(dataset, year, isData, isSignal, '', getDatasetinputs(dataset, year, run=''))
+ #years = ['2017']
+ years = ['2016','2017','2018']
+ for year in years:
+  for dataset in datasetnames:
+   if year == '2016' and ((dataset == 'QCDPt') or ('NLO' in dataset) or (dataset == 'ttH')):
+    continue
+   elif ((year == '2017') or (year == '2018')) and dataset == 'QCD':
+    continue
+   elif dataset == 'ttbarDM' or dataset == 'QCDPt': # or dataset == 'ttH' or dataset == 'VH':
+    submitWrapper(dataset, year, isData, True, '', getDatasetinputs(dataset, year, run=''))
+   else:
+    submitWrapper(dataset, year, isData, isSignal, '', getDatasetinputs(dataset, year, run=''))
  

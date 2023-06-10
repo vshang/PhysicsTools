@@ -25,7 +25,7 @@ for process in MCSamples:
             MCSamples[process][dataset][filepath+'_TFile'] = TFile.Open(filepath,'')
             MCSamples[process][dataset][filepath+'_Events'] = MCSamples[process][dataset][filepath+'_TFile'].Get('Events')
             if (process in signal) and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_02092023', 'countEvents_02092023'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_05102023', 'countEvents_05102023').replace('ModuleCommonSkim_12242022', 'countEvents_12242022'),'')
                 Mchi = MCSamples[process][dataset]['mchi']
                 Mphi = MCSamples[process][dataset]['mphi']
                 MediatorType = MCSamples[process][dataset]['mediatorType']
@@ -34,7 +34,7 @@ for process in MCSamples:
                 nevents_ModuleCommonSkimNeg += MCSamples[process][dataset][filepath+'_Events'].GetEntries('GenModel__'+signalType+'_Inclusive_'+MediatorType+'_LO_Mchi_'+str(Mchi)+'_Mphi_'+str(Mphi)+'_TuneCP5_13TeV_madgraph_mcatnlo_pythia8&&(genWeightSign<0)')
             #elif process not in signal:
             elif process not in ['tbar scalar', 'tbar pseudoscalar']:
-                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_02092023', 'countEvents_02092023'),'')
+                skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_05102023', 'countEvents_05102023').replace('ModuleCommonSkim_12242022', 'countEvents_12242022'),'')
                 nevents_countEvents += skimFile.Get('Events').GetEntries('genWeight<0')
                 nevents_ModuleCommonSkimNeg += MCSamples[process][dataset][filepath+'_Events'].GetEntries('genWeightSign<0')
             else:
