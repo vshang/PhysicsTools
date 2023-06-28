@@ -36,8 +36,8 @@ applyHEMfix = True
 partialUnblind = False
 
 #Set save directory
-saveDirectory = 'plots/systematics/CMS_eff_b_light_2018/'
-#saveDirectory = 'plots/SR_2016/METcorrected_pt/'
+#saveDirectory = 'plots/systematics/CMS_eff_b_light_2018/'
+saveDirectory = 'plots/SR_2016/METcorrected_pt/'
 #saveDirectory = 'plots/AN/modtopness/'
 #saveDirectory = 'plots/EEl1prefire_studies/'
 
@@ -118,6 +118,7 @@ preselect_cuts = ['SL1e', 'SL1m', 'AH', 'AH1', 'AH2', 'AH3', 'AH4']
 cuts['SL1e'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' + ' && ' + cuts['PV']
 cuts['SL1m'] = 'nTightMuons == 1 && nLooseMuons == 1 && nVetoElectrons == 0 && njets >= 2 && nbjets >= 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' + ' && ' + cuts['PV']
 cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
+#cuts['AH'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
 
 cuts['AH1'] = '(nVetoElectrons + nLooseMuons) == 0 && METcorrected_pt >= 250 && ntaus == 0 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
 cuts['AH1v2'] = '(nVetoElectrons + nLooseMuons) == 0 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
@@ -125,10 +126,6 @@ cuts['AH1v3'] = '(nVetoElectrons + nLooseMuons) == 0 && METcorrected_pt >= 250 &
 cuts['AH2'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && METcorrected_pt >= 250 && ntaus == 0 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
 cuts['AH3'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
 cuts['AH4'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi > 0.4 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' + ' && ' + cuts['PV']
-
-cuts['SL1ev1'] = 'nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 250 && ' + cuts['passMETfilters']  + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' 
-cuts['SL1mv1'] = 'nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' 
-cuts['SL1lv1'] =  '((' + cuts['SL1ev1'] + ') || (' + cuts['SL1mv1'] + '))'
 
 #Apply HEM fix to SR for 2018 if applyHEMfix == True
 if (year == 2018) and applyHEMfix:
@@ -182,7 +179,7 @@ cuts['SL1l2bT2SR'] = '(' + cuts['SL1e2bT2SR'] + ') || (' + cuts['SL1m2bT2SR'] + 
 
 
 #Control region definitions
-controlRegion_cuts = ['SL2eTR', 'SL2mTR', 'SL1e1mTR', 'SL1eWR', 'SL1mWR', 'AH1eTR', 'AH1mTR', 'AH1eWR', 'AH1mWR', 'AH2eZR', 'AH2mZR', 'AH0lQR', 'AH0lZR', 'AH2eZRv2', 'AH2mZRv2', 'AH2e1bZR', 'AH2m1bZR', 'AH2e2bZR', 'AH2m2bZR']
+controlRegion_cuts = ['SL2eTR', 'SL2mTR', 'SL1e1mTR', 'SL1eWR', 'SL1mWR', 'AH1eTR', 'AH1mTR', 'AH1eWR', 'AH1mWR', 'AH2eZR', 'AH2mZR', 'AH0lQR', 'AH0lZR', 'AH2e1bZR', 'AH2m1bZR', 'AH2e2bZR', 'AH2m2bZR', 'AH1l1bTR', 'AH1l2bTR']
 # cuts['SL2eTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && METcorrected_pt >= 250 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' 
 # cuts['SL2mTR'] = 'njets >= 2 && nbjets >= 1 && nVetoElectrons  == 0 && nTightMuons == 2 && nLooseMuons == 2 && METcorrected_pt >= 250 && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' 
 cuts['SL2eTR'] = 'njets >= 2 && nbjets >= 1 && nTightElectrons  == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && METcorrected_pt >= 250 && ((m_ll < 60) || (m_ll > 120)) && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' 
@@ -201,14 +198,19 @@ cuts['AH2mZR'] = 'njets >= 3 && nbjets == 0 && nVetoElectrons == 0 && nTightMuon
 # cuts['AH2mZR'] = 'njets >= 3 && nbjets >= 1 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
 cuts['AH0lQR'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets >= 1 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 <= 0.8 && noB2Bleadingfjet && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' 
 
+# cuts['AH1eTR'] = 'njets >= 3 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 250 && M_T <= 140 && minDeltaPhi12 >= 0.8 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' 
+# cuts['AH1mTR'] = 'njets >= 3 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && M_T <= 140 && minDeltaPhi12 >= 0.8 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' 
+# cuts['AH1eWR'] = 'njets >= 3 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 250 && M_T <= 140 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' 
+# cuts['AH1mWR'] = 'njets >= 3 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && M_T <= 140 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' 
+# cuts['AH2eZR'] = 'njets >= 3 && nTightElectrons == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' 
+# cuts['AH2mZR'] = 'njets >= 3 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && lepton1_charge == -lepton2_charge && M_T2ll <= 80 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+# cuts['AH0lQR'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 <= 0.8 && noB2Bleadingfjet && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')' 
+
 #Test control region for Z->2Nu in AH channel
-cuts['AH0lZR'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets == 0 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 >= 0.8 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')'
+#cuts['AH0lZR'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && nbjets == 0 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 >= 0.8 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')'
+cuts['AH0lZR'] = '(nVetoElectrons + nLooseMuons) == 0 && njets >= 3 && METcorrected_pt >= 250 && ntaus == 0 && minDeltaPhi12 >= 0.8 && ' + cuts['passMETfilters']  + ' && (' + cuts['MET'] + ')'
 
 #Test control region for 1b/2b categories of Z->2l
-cuts['AH2eZRv2'] = 'njets >= 3 && nbjets >= 1 && nTightElectrons == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && M_T2ll <= 80 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' 
-cuts['AH2mZRv2'] = 'njets >= 3 && nbjets >= 1 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && M_T2ll <= 80 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' 
-cuts['AH2lZRv2'] = '(' + cuts['AH2eZRv2'] + ') || (' + cuts['AH2mZRv2'] + ')'
-
 cuts['AH2e1bZR'] = 'njets >= 3 && nbjets == 1 && nTightElectrons == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && M_T2ll <= 80 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' 
 cuts['AH2m1bZR'] = 'njets >= 3 && nbjets == 1 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && M_T2ll <= 80 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' 
 cuts['AH2l1bZR'] = '(' + cuts['AH2e1bZR'] + ') || (' + cuts['AH2m1bZR'] + ')'
@@ -216,6 +218,15 @@ cuts['AH2l1bZR'] = '(' + cuts['AH2e1bZR'] + ') || (' + cuts['AH2m1bZR'] + ')'
 cuts['AH2e2bZR'] = 'njets >= 3 && nbjets >= 2 && nTightElectrons == 2 && nVetoElectrons == 2 && nLooseMuons == 0 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && M_T2ll <= 80 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' 
 cuts['AH2m2bZR'] = 'njets >= 3 && nbjets >= 2 && nVetoElectrons == 0 && nTightMuons == 2 && nLooseMuons == 2 && m_ll >= 60 && m_ll <= 120 && recoilPtMiss >= 250 && M_T2ll <= 80 && lepton1_charge == -lepton2_charge && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')' 
 cuts['AH2l2bZR'] = '(' + cuts['AH2e2bZR'] + ') || (' + cuts['AH2m2bZR'] + ')'
+
+#Test control regions for 1b and 2b categories of AH1lTR
+cuts['AH1e1bTR'] = 'njets >= 3 && nbjets == 1 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 250 && M_T <= 140 && minDeltaPhi12 >= 0.8 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' 
+cuts['AH1m1bTR'] = 'njets >= 3 && nbjets == 1 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && M_T <= 140 && minDeltaPhi12 >= 0.8 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+cuts['AH1e2bTR'] = 'njets >= 3 && nbjets >= 2 && nTightElectrons == 1 && nVetoElectrons == 1 && nLooseMuons == 0 && METcorrected_pt >= 250 && M_T <= 140 && minDeltaPhi12 >= 0.8 && ' + cuts['passMETfilters'] + ' && ((' + cuts['singleIsoEle'] + ') || (' + cuts['singleEle'] + '))' 
+cuts['AH1m2bTR'] = 'njets >= 3 && nbjets >= 2 && nVetoElectrons == 0 && nTightMuons == 1 && nLooseMuons == 1 && METcorrected_pt >= 250 && M_T <= 140 && minDeltaPhi12 >= 0.8 && ' + cuts['passMETfilters'] + ' && (' + cuts['singleIsoMu'] + ')'
+
+cuts['AH1l1bTR'] = '(' + cuts['AH1e1bTR'] + ') || (' + cuts['AH1m1bTR'] + ')'
+cuts['AH1l2bTR'] = '(' + cuts['AH1e2bTR'] + ') || (' + cuts['AH1m2bTR'] + ')'
 
 #Apply primary vertex selection cuts
 for cut in controlRegion_cuts:
@@ -407,9 +418,9 @@ if (condor_cut != '') and condor_plot:
         xmax = 400
         doLogPlot = False
     elif 'AH' in condor_cut:
-        nbins = 17
+        nbins = 15
         xmin = 250
-        xmax = 590
+        xmax = 550
         doLogPlot = True
 
 histoLabel = '; p_{T}^{miss} (GeV); Events'
@@ -476,10 +487,10 @@ if doBinned:
     signal = ['ttbar scalar', 'ttbar pseudoscalar', 'tbar scalar', 'tbar pseudoscalar']
 else:
     signal = ['ttbar ' + mediatorType,'tbar ' + mediatorType]
-back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
+back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','TTToHadronic','ZTo2Nu','Other']
 hists = {}
 if doSysFirstHalf or plotSys:
-    sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_e','CMS_eff_m','QCDScale_ren_TT','QCDScale_fac_TT','QCDScale_ren_VV','QCDScale_fac_VV','preFire','CMS_UncMET_'+str(year),'CMS_WewkWeight','CMS_ZewkWeight','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac']
+    sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDScale_ren_TT','QCDScale_fac_TT','QCDScale_ren_VV','QCDScale_fac_VV','preFire','CMS_UncMET_'+str(year),'CMS_WewkWeight','CMS_ZewkWeight','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac']
 else:
     sys = []
 jesUnc = ['','AbsoluteMPFBias','AbsoluteScale','AbsoluteStat','FlavorQCD','Fragmentation','PileUpDataMC','PileUpPtBB','PileUpPtEC1','PileUpPtEC2','PileUpPtHF','PileUpPtRef','RelativeFSR','RelativeJEREC1','RelativeJEREC2','RelativeJERHF','RelativePtBB','RelativePtEC1','RelativePtEC2','RelativePtHF','RelativeBal','RelativeSample','RelativeStatEC','RelativeStatFSR','RelativeStatHF','SinglePionECAL','SinglePionHCAL','TimePtEta']
@@ -1081,6 +1092,11 @@ for process in MCSamples:
                 print 'Applied ZTo2Nu qcd/ewk Weights correctly'
             else:
                 weight = weight + '*qcdZTo2NuWeight*ewkZWeight*0.934'
+                if 'AH' in cut:
+                    if year == 2017:
+                        weight = weight + '*(nbjets == 0 ? 0.801 : 1.)'
+                    elif year == 2018:
+                        weight = weight + '*(nbjets == 0 ? 0.802 : 1.)'
                 print 'Applied ZTo2Nu ewk Weights correctly'
         if (process in signal) and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
             Mchi = MCSamples[process][dataset]['mchi']
@@ -1234,16 +1250,20 @@ for name in hists:
     if name in signal:
         print '    nEvents = ', hists[name].GetEntries()/scaleFactor
         print '    integral = ', hists[name].Integral(1,nbins+1)/scaleFactor
+        print '    bin 1 integral = ', hists[name].Integral(1,2)/scaleFactor
     else:
         print '    nEvents = ', hists[name].GetEntries()
         print '    integral = ', hists[name].Integral(1,nbins+1)
+        print '    bin 1 integral = ', hists[name].Integral(1,2)
     if plotSys and (name in back + ['bkgSum'] + signal):
         print name + ' histUp info:'
         print '    nEvents = ', syshists[name + '_sysUp'].GetEntries()
         print '    integral = ', syshists[name + '_sysUp'].Integral(1,nbins+1)
+        print '    bin 1 integral = ', syshists[name + '_sysUp'].Integral(1,2)
         print name + ' histDown info:'
         print '    nEvents = ', syshists[name + '_sysDown'].GetEntries()
         print '    integral = ', syshists[name + '_sysDown'].Integral(1,nbins+1)
+        print '    bin 1 integral = ', syshists[name + '_sysDown'].Integral(1,2)
 print('Finished filling histograms')
 
 #Add overflow and underflow bins to histograms
@@ -1318,6 +1338,10 @@ if doBinned:
                     binnedHist = TH1F('TTTo2L2Nu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
                 elif name == 'TTV':
                     binnedHist = TH1F('TTV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                elif name == 'Other':
+                    binnedHist = TH1F('Other', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                elif name == 'TTToHadronic':
+                    binnedHist = TH1F('TTToHadronic', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
                 binnedHist.SetBinContent(1, binContent)
                 binnedHist.SetBinError(1, binError)
                 binnedHist.Write()
@@ -1398,6 +1422,10 @@ if doBinned:
                             binnedHist = TH1F('TTTo2L2Nu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
                         elif name == 'TTV':
                             binnedHist = TH1F('TTV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        elif name == 'Other':
+                            binnedHist = TH1F('Other', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        elif name == 'TTToHadronic':
+                            binnedHist = TH1F('TTToHadronic', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
                         binnedHist.SetBinContent(1, binContent)
                         binnedHist.SetBinError(1, binError)
                         binnedHist.Write()
@@ -1533,7 +1561,9 @@ if savePlots:
         hists['TTV'].SetFillColor(kOrange+4)
         hists['TTTo2L2Nu'].SetFillColor(kOrange-2)
         hists['TTToSemiLepton'].SetFillColor(kOrange-3)
+        hists['TTToHadronic'].SetFillColor(kOrange+10)
         hists['ZTo2Nu'].SetFillColor(kAzure-4)
+        hists['Other'].SetFillColor(kMagenta-4)
 
         hists['QCD'].SetLineWidth(0)
         hists['ZTo2L'].SetLineWidth(0)
@@ -1543,7 +1573,9 @@ if savePlots:
         hists['TTV'].SetLineWidth(0)
         hists['TTTo2L2Nu'].SetLineWidth(0)
         hists['TTToSemiLepton'].SetLineWidth(0)
+        hists['TTToHadronic'].SetLineWidth(0)
         hists['ZTo2Nu'].SetLineWidth(0)
+        hists['Other'].SetLineWidth(0)
 
     #Automatically scale y-axis based on largest histogram bins
     if auto_y:
@@ -1619,12 +1651,14 @@ if savePlots:
         legend.AddEntry(hists['ZTo2Nu'], 'Z(#nu#nu) + jets', 'f')
         legend.AddEntry(hists['TTToSemiLepton'], 't#bar{t}(1l)', 'f')
         legend.AddEntry(hists['TTTo2L2Nu'], 't#bar{t}(2l)', 'f')
+        legend.AddEntry(hists['TTToHadronic'], 't#bar{t}(0l)', 'f')
         legend.AddEntry(hists['TTV'], 't#bar{t}+V', 'f')
         legend.AddEntry(hists['WPlusJets'], 'W(l#nu) + jets', 'f')
         legend.AddEntry(hists['singleTop'], 't+X', 'f')
         legend.AddEntry(hists['VV'], 'VV,VH', 'f')
         legend.AddEntry(hists['ZTo2L'], 'Z(ll) + jets', 'f')
         legend.AddEntry(hists['QCD'], 'multijet', 'f')
+        legend.AddEntry(hists['Other'], 'other', 'f')
         legend.AddEntry(hists['bkgSum'], 'MC stat.', 'f')
         if scaleFactor != 1: 
             legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')
@@ -1727,7 +1761,7 @@ if savePlots:
         if plotSysSignal:
             c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_ttDM_scalar_Mchi'+str(mchi)+'_Mphi'+str(mphi)+'.png')
         else:
-            #c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_NLO.png')
+            #c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_LO.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
             c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')

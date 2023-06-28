@@ -487,7 +487,7 @@ if doBinned:
     signal = ['ttbar scalar', 'ttbar pseudoscalar', 'tbar scalar', 'tbar pseudoscalar']
 else:
     signal = ['ttbar ' + mediatorType,'tbar ' + mediatorType]
-back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
+back = ['QCD','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','TTToHadronic','ZTo2Nu','Other']
 hists = {}
 if doSysFirstHalf or plotSys:
     sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDScale_ren_TT','QCDScale_fac_TT','QCDScale_ren_VV','QCDScale_fac_VV','preFire','CMS_UncMET_'+str(year),'CMS_WewkWeight','CMS_ZewkWeight','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac']
@@ -1068,7 +1068,7 @@ for process in MCSamples:
                 print 'Applied WPlusJets qcd/ewk Weights correctly'
             else:
                 weight = weight + '*qcdWWeight*ewkWWeight*0.9135'
-                weight = weight + '*ewkWWeight'
+                #weight = weight + '*ewkWWeight'
                 if 'AH' in cut:
                     if year == 2017:
                         weight = weight + '*(nbjets == 0 ? 0.891 : 1.)'
@@ -1081,7 +1081,7 @@ for process in MCSamples:
                 print 'Applied ZTo2L qcd/ewk Weights correctly'
             else:
                 weight = weight + '*qcdZTo2LWeight*ewkZWeight*0.934'
-                weight = weight + '*ewkZWeight'
+                #weight = weight + '*ewkZWeight'
                 if 'AH' in cut:
                     if year == 2017:
                         weight = weight + '*(nbjets == 0 ? 0.801 : 1.)'
@@ -1094,7 +1094,7 @@ for process in MCSamples:
                 print 'Applied ZTo2Nu qcd/ewk Weights correctly'
             else:
                 weight = weight + '*qcdZTo2NuWeight*ewkZWeight*0.934'
-                weight = weight + '*ewkZWeight'
+                #weight = weight + '*ewkZWeight'
                 if 'AH' in cut:
                     if year == 2017:
                         weight = weight + '*(nbjets == 0 ? 0.801 : 1.)'
@@ -1253,16 +1253,20 @@ for name in hists:
     if name in signal:
         print '    nEvents = ', hists[name].GetEntries()/scaleFactor
         print '    integral = ', hists[name].Integral(1,nbins+1)/scaleFactor
+        print '    bin 1 integral = ', hists[name].Integral(1,2)/scaleFactor
     else:
         print '    nEvents = ', hists[name].GetEntries()
         print '    integral = ', hists[name].Integral(1,nbins+1)
+        print '    bin 1 integral = ', hists[name].Integral(1,2)
     if plotSys and (name in back + ['bkgSum'] + signal):
         print name + ' histUp info:'
         print '    nEvents = ', syshists[name + '_sysUp'].GetEntries()
         print '    integral = ', syshists[name + '_sysUp'].Integral(1,nbins+1)
+        print '    bin 1 integral = ', syshists[name + '_sysUp'].Integral(1,2)
         print name + ' histDown info:'
         print '    nEvents = ', syshists[name + '_sysDown'].GetEntries()
         print '    integral = ', syshists[name + '_sysDown'].Integral(1,nbins+1)
+        print '    bin 1 integral = ', syshists[name + '_sysDown'].Integral(1,2)
 print('Finished filling histograms')
 
 #Add overflow and underflow bins to histograms
@@ -1337,6 +1341,10 @@ if doBinned:
                     binnedHist = TH1F('TTTo2L2Nu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
                 elif name == 'TTV':
                     binnedHist = TH1F('TTV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                elif name == 'Other':
+                    binnedHist = TH1F('Other', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                elif name == 'TTToHadronic':
+                    binnedHist = TH1F('TTToHadronic', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
                 binnedHist.SetBinContent(1, binContent)
                 binnedHist.SetBinError(1, binError)
                 binnedHist.Write()
@@ -1417,6 +1425,10 @@ if doBinned:
                             binnedHist = TH1F('TTTo2L2Nu', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
                         elif name == 'TTV':
                             binnedHist = TH1F('TTV', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        elif name == 'Other':
+                            binnedHist = TH1F('Other', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
+                        elif name == 'TTToHadronic':
+                            binnedHist = TH1F('TTToHadronic', '; p_{T}^{miss} (GeV); Events', 1, leftbin, rightbin)
                         binnedHist.SetBinContent(1, binContent)
                         binnedHist.SetBinError(1, binError)
                         binnedHist.Write()
@@ -1552,7 +1564,9 @@ if savePlots:
         hists['TTV'].SetFillColor(kOrange+4)
         hists['TTTo2L2Nu'].SetFillColor(kOrange-2)
         hists['TTToSemiLepton'].SetFillColor(kOrange-3)
+        hists['TTToHadronic'].SetFillColor(kOrange+10)
         hists['ZTo2Nu'].SetFillColor(kAzure-4)
+        hists['Other'].SetFillColor(kMagenta-4)
 
         hists['QCD'].SetLineWidth(0)
         hists['ZTo2L'].SetLineWidth(0)
@@ -1562,7 +1576,9 @@ if savePlots:
         hists['TTV'].SetLineWidth(0)
         hists['TTTo2L2Nu'].SetLineWidth(0)
         hists['TTToSemiLepton'].SetLineWidth(0)
+        hists['TTToHadronic'].SetLineWidth(0)
         hists['ZTo2Nu'].SetLineWidth(0)
+        hists['Other'].SetLineWidth(0)
 
     #Automatically scale y-axis based on largest histogram bins
     if auto_y:
@@ -1638,12 +1654,14 @@ if savePlots:
         legend.AddEntry(hists['ZTo2Nu'], 'Z(#nu#nu) + jets', 'f')
         legend.AddEntry(hists['TTToSemiLepton'], 't#bar{t}(1l)', 'f')
         legend.AddEntry(hists['TTTo2L2Nu'], 't#bar{t}(2l)', 'f')
+        legend.AddEntry(hists['TTToHadronic'], 't#bar{t}(0l)', 'f')
         legend.AddEntry(hists['TTV'], 't#bar{t}+V', 'f')
         legend.AddEntry(hists['WPlusJets'], 'W(l#nu) + jets', 'f')
         legend.AddEntry(hists['singleTop'], 't+X', 'f')
         legend.AddEntry(hists['VV'], 'VV,VH', 'f')
         legend.AddEntry(hists['ZTo2L'], 'Z(ll) + jets', 'f')
         legend.AddEntry(hists['QCD'], 'multijet', 'f')
+        legend.AddEntry(hists['Other'], 'other', 'f')
         legend.AddEntry(hists['bkgSum'], 'MC stat.', 'f')
         if scaleFactor != 1: 
             legend.AddEntry(hists['ttbar '+mediatorType], '#splitline{'+mediatorType + ', t#bar{t}+DM (x'+str(scaleFactor)+')}{m_{#chi} = '+str(mchi)+', m_{#phi} = '+str(mphi)+'}', 'l')

@@ -2,14 +2,14 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- #task          = 'ModuleCommonSkim_05102023' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'ModuleCommonSkim_05102023' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'getBTagHist_02092023'
- task          = 'countEvents_05102023'
+ #task          = 'countEvents_05102023'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
  getBTagHist = False
- countNEntries = True
+ countNEntries = False
 
  #####
  ##   Helper function to set appropriate text file containing DAS file paths for input datasets
@@ -86,7 +86,7 @@ if __name__ == '__main__':
  #####
  from multiprocessing import Process
  def submitWrapper(analysis, year, isData, isSignal, run, datasetinputs):
-  for d in range(0,len(datasetinputs)):
+  for d in range(13,15):#range(0,len(datasetinputs)):
    p = Process(target=submit, args=(config, analysis, year, isData, isSignal, run, datasetinputs, d))
    p.start()
    p.join()
@@ -117,12 +117,12 @@ if __name__ == '__main__':
  
  isData = False
  run = ''
- #datasetnames = ['Other']
- datasetnames = ['ttbarPlusJets','Other']
+ datasetnames = ['Other']
+ #datasetnames = ['ttbarPlusJets','Other']
  #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD','QCDPt', 'ttH', 'VH']#,'WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
  #years = ['UL2016']
- #years = ['2017']
- years = ['2016','2017','2018']
+ years = ['2017']
+ #years = ['2016','2017','2018']
  for year in years:
   for dataset in datasetnames:
    if year == '2016' and ((dataset == 'QCDPt') or ('NLO' in dataset) or (dataset == 'ttH')):
