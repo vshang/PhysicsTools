@@ -1,6 +1,6 @@
-#Script to check and compare genEventCounts between default samples (ModuleCommonSkim) and samples used for normalization (countEvents)
+#Script to check and compare negative genWeights between default samples (ModuleCommonSkim) and samples used for normalization (countEvents)
 from ROOT import *
-from plots.MCsampleListv2 import *
+from plots.MCsampleList import *
 
 #Set year 
 year = 2018
