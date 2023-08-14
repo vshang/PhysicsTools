@@ -19,6 +19,6 @@ if [ -z "$1" ] ; then
 fi
 ID="$(printf '%05d' "${1}")"
 SEED1=`echo "72334+${1}" | bc`
-combine -M GoodnessOfFit --algo=saturated -m 100 -d combinedCards_ModuleCommonSkim_05102023_RunII/tttDM_MChi1_MPhi100_scalar1b2b_AH.root -t 20 -s ${SEED1}
+combine -M GoodnessOfFit --algo=saturated -m 100 -d combinedCards_ModuleCommonSkim_05102023_RunII/tttDM_MChi1_MPhi100_scalar1b2b_AH.root -t 20 -s ${SEED1} --toysFreq
 
 mv *.root ../
