@@ -2,9 +2,9 @@ if __name__ == '__main__':
  #####
  ##   User inputs 
  #####
- task          = 'ModuleCommonSkim_05102023' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
+ task          = 'ModuleCommonSkim_02062024' #Name of the task (e.g. Test, SignalRegion, ControlRegion, FullAnalysis, ...)
  #task          = 'getBTagHist_02092023'
- #task          = 'countEvents_05102023'
+ #task          = 'countEvents_02062024'
  unitsPerJob   = 1 #Units (usually number of root files) per job
  #unitsPerJob = 1000
  storageSite   = 'T2_US_Wisconsin'  #Site where you redirect the output
@@ -55,7 +55,7 @@ if __name__ == '__main__':
   if getBTagHist:
    config.JobType.inputFiles       = [crab_script + '.py','../scripts/haddnano.py','../python/postprocessing/analysis/keep_and_dropBTag_out.txt']
    #config.JobType.outputFiles = ['hist.root'] #Enable for making BTag histograms using getBTagHist.py
-  config.JobType.sendPythonFolder = True
+  #config.JobType.sendPythonFolder = True
   config.JobType.allowUndistributedCMSSW = True
   #config.JobType.maxJobRuntimeMin = 2630
   #config.JobType.maxMemoryMB      = 4000
@@ -86,7 +86,7 @@ if __name__ == '__main__':
  #####
  from multiprocessing import Process
  def submitWrapper(analysis, year, isData, isSignal, run, datasetinputs):
-  for d in range(13,15):#range(0,len(datasetinputs)):
+  for d in range(0,len(datasetinputs)):
    p = Process(target=submit, args=(config, analysis, year, isData, isSignal, run, datasetinputs, d))
    p.start()
    p.join()
@@ -96,7 +96,7 @@ if __name__ == '__main__':
  #####
  runs2016 = ['B','C','D','E','F','G','H']
  runs2017 = ['B','C','D','E','F']
- runs2018 = ['D']#['A','B','C','D']
+ runs2018 = ['A','B','C','D']
  isData = True
  isSignal = False
  
@@ -118,19 +118,18 @@ if __name__ == '__main__':
  isData = False
  run = ''
  datasetnames = ['Other']
- #datasetnames = ['ttbarPlusJets','Other']
- #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD','QCDPt', 'ttH', 'VH']#,'WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
+ #datasetnames = ['ttbarDM','ttbarPlusJets','singleTop','WPlusJets','ZTo2L','ZTo2Nu','WW','WZ','ZZ','TTV','QCD','QCDPt','ttH','VH','Other']#,'WPlusJetsNLO','ZTo2LNLO','ZTo2NuNLO']
  #years = ['UL2016']
- years = ['2017']
- #years = ['2016','2017','2018']
+ #years = ['2017','2018']
+ years = ['2016','2017','2018']
  for year in years:
   for dataset in datasetnames:
-   if year == '2016' and ((dataset == 'QCDPt') or ('NLO' in dataset) or (dataset == 'ttH')):
+   if year == '2016' and ((dataset == 'QCDPt') or ('NLO' in dataset) or (dataset == 'ttH')): #Exclude QCDPt, ttH, and NLO samples from 2016
     continue
-   elif ((year == '2017') or (year == '2018')) and dataset == 'QCD':
+   elif ((year == '2017') or (year == '2018')) and dataset == 'QCD': #Process QCDPt only (no HT binned QCD) for 2017 and 2018
     continue
-   elif dataset == 'ttbarDM' or dataset == 'QCDPt': # or dataset == 'ttH' or dataset == 'VH':
-    submitWrapper(dataset, year, isData, True, '', getDatasetinputs(dataset, year, run=''))
+   elif dataset == 'ttbarDM' or dataset == 'QCDPt': # or dataset == 'ttH' or dataset == 'VH': #ttbarDM signal and QCDPt samples do not have PDF or QCD ren and fac scale branches
+    submitWrapper(dataset, year, isData, True, '', getDatasetinputs(dataset, year, run='')) 
    else:
     submitWrapper(dataset, year, isData, isSignal, '', getDatasetinputs(dataset, year, run=''))
  

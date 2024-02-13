@@ -1,7 +1,7 @@
 #!/bin/sh
 rm -f filelist_signal.txt
 #Add tDM signal samples first
-for FILE in  /hdfs/store/user/vshang/tDM_Run*/*/ModuleCommonSkim_12242022/rootFiles/*Skim.root; do
+for FILE in  /hdfs/store/user/vshang/tDM_Run*/*/ModuleCommonSkim_02062024/rootFiles/*Skim.root; do
 
   # if no file matched the wildcards, do not output anything
   if ! [ -e "$FILE" ]; then continue; fi
@@ -15,7 +15,7 @@ for FILE in  /hdfs/store/user/vshang/tDM_Run*/*/ModuleCommonSkim_12242022/rootFi
   echo root://cmsxrootd.hep.wisc.edu/$FILE >> filelist_signal.txt
 done
 #Then add Mphi1_Mchi10 ttbarDM signal samples
-for FILE in  /hdfs/store/user/vshang/ttbarDM_Run*/ttbardm*/ModuleCommonSkim_12242022/rootFiles/*Skim.root; do
+for FILE in  /hdfs/store/user/vshang/ttbarDM_Run*/ttbardm*/ModuleCommonSkim_02062024/rootFiles/*Skim.root; do
 
   # if no file matched the wildcards, do not output anything
   if ! [ -e "$FILE" ]; then continue; fi
@@ -29,7 +29,7 @@ for FILE in  /hdfs/store/user/vshang/ttbarDM_Run*/ttbardm*/ModuleCommonSkim_1224
   echo root://cmsxrootd.hep.wisc.edu/$FILE >> filelist_signal.txt
 done
 #Finally add nanoAODv7 ttH 2016 signal samples
-for FILE in  /hdfs/store/user/vshang/ttH_Run2016/ttH_*nanoAODv7/ModuleCommonSkim_12242022/rootFiles/*Skim.root; do
+for FILE in  /hdfs/store/user/vshang/ttH_Run2016/ttH_*nanoAODv7/ModuleCommonSkim_02062024/rootFiles/*Skim.root; do
 
   # if no file matched the wildcards, do not output anything
   if ! [ -e "$FILE" ]; then continue; fi

@@ -5,7 +5,7 @@
 # Create the name of the rundir
 while :
 do
-    RUNDIR="ttDM_2017_ModuleCommonSkim_12242022"
+    RUNDIR="ttDM_2017_ModuleCommonSkim_02062024"
     if [ ! -d "${RUNDIR}" ]; then 
 	echo "using ${RUNDIR}"
 	break

@@ -82,14 +82,22 @@ class CommonAnalysis(Module):
             self.muSFs = MuonSFs(self.year)
             self.METSFs = METSFs(self.year)
             self.btagTool = BTagWeightTool(tagger=self.btag,wp='medium',channel='ttbar',year=self.year)
-            self.btagToolbcUpCorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='up_correlated',channel='ttbar',year=self.year)
-            self.btagToolbcDownCorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='down_correlated',channel='ttbar',year=self.year)
-            self.btagToolbcUpUncorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='up_uncorrelated',channel='ttbar',year=self.year)
-            self.btagToolbcDownUncorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='down_uncorrelated',channel='ttbar',year=self.year)
+            # self.btagToolbcUpCorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='up_correlated',channel='ttbar',year=self.year)
+            # self.btagToolbcDownCorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='down_correlated',channel='ttbar',year=self.year)
+            # self.btagToolbcUpUncorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='up_uncorrelated',channel='ttbar',year=self.year)
+            # self.btagToolbcDownUncorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='down_uncorrelated',channel='ttbar',year=self.year)
             self.btagToollightUpCorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmalight='up_correlated',channel='ttbar',year=self.year)
             self.btagToollightDownCorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmalight='down_correlated',channel='ttbar',year=self.year)
             self.btagToollightUpUncorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmalight='up_uncorrelated',channel='ttbar',year=self.year)
             self.btagToollightDownUncorrelated = BTagWeightTool(tagger=self.btag,wp='medium',sigmalight='down_uncorrelated',channel='ttbar',year=self.year)
+            self.btagToolbcUpJes = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='up_jes',channel='ttbar',year=self.year)
+            self.btagToolbcUpPileup = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='up_pileup',channel='ttbar',year=self.year)
+            self.btagToolbcUpType3 = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='up_type3',channel='ttbar',year=self.year)
+            self.btagToolbcUpStatistic = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='up_statistic',channel='ttbar',year=self.year)
+            self.btagToolbcDownJes = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='down_jes',channel='ttbar',year=self.year)
+            self.btagToolbcDownPileup = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='down_pileup',channel='ttbar',year=self.year)
+            self.btagToolbcDownType3 = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='down_type3',channel='ttbar',year=self.year)
+            self.btagToolbcDownStatistic = BTagWeightTool(tagger=self.btag,wp='medium',sigmabc='down_statistic',channel='ttbar',year=self.year)
             self.puTool = PileupWeightTool(year=self.year, UL=self.UL)
             self.puToolUp = PileupWeightTool(year=self.year,sigma='up', UL=self.UL)
             self.puToolDown = PileupWeightTool(year=self.year,sigma='down', UL=self.UL)
@@ -313,14 +321,23 @@ class CommonAnalysis(Module):
 
             self.out.branch("bjetWeight", "F")
             #Systematics - b-tagging weights
-            self.out.branch("bjetWeightbcUpCorrelated","F")
-            self.out.branch("bjetWeightbcDownCorrelated","F")
-            self.out.branch("bjetWeightbcUpUncorrelated","F")
-            self.out.branch("bjetWeightbcDownUncorrelated","F")
+            # self.out.branch("bjetWeightbcUpCorrelated","F")
+            # self.out.branch("bjetWeightbcDownCorrelated","F")
+            # self.out.branch("bjetWeightbcUpUncorrelated","F")
+            # self.out.branch("bjetWeightbcDownUncorrelated","F")
             self.out.branch("bjetWeightlightUpCorrelated","F")
             self.out.branch("bjetWeightlightDownCorrelated","F")
             self.out.branch("bjetWeightlightUpUncorrelated","F")
             self.out.branch("bjetWeightlightDownUncorrelated","F")
+            #Systematics - b-tagging weights (split by sources)
+            self.out.branch("bjetWeightbcUpJes","F")
+            self.out.branch("bjetWeightbcUpPileup","F")
+            self.out.branch("bjetWeightbcUpType3","F")
+            self.out.branch("bjetWeightbcUpStatistic","F")
+            self.out.branch("bjetWeightbcDownJes","F")
+            self.out.branch("bjetWeightbcDownPileup","F")
+            self.out.branch("bjetWeightbcDownType3","F")
+            self.out.branch("bjetWeightbcDownStatistic","F")
 
             self.out.branch("puWeight", "F")
             #Systematics - Pile-up
@@ -1758,14 +1775,23 @@ to next event)"""
 
             #Calculate b-jet scale factor weight
             bjetWeight = self.btagTool.getWeight(centralJets)
-            bjetWeightbcUpCorrelated = self.btagToolbcUpCorrelated.getWeight(centralJets)
-            bjetWeightbcDownCorrelated = self.btagToolbcDownCorrelated.getWeight(centralJets)
-            bjetWeightbcUpUncorrelated = self.btagToolbcUpUncorrelated.getWeight(centralJets)
-            bjetWeightbcDownUncorrelated = self.btagToolbcDownUncorrelated.getWeight(centralJets)
+            # bjetWeightbcUpCorrelated = self.btagToolbcUpCorrelated.getWeight(centralJets)
+            # bjetWeightbcDownCorrelated = self.btagToolbcDownCorrelated.getWeight(centralJets)
+            # bjetWeightbcUpUncorrelated = self.btagToolbcUpUncorrelated.getWeight(centralJets)
+            # bjetWeightbcDownUncorrelated = self.btagToolbcDownUncorrelated.getWeight(centralJets)
             bjetWeightlightUpCorrelated = self.btagToollightUpCorrelated.getWeight(centralJets)
             bjetWeightlightDownCorrelated = self.btagToollightDownCorrelated.getWeight(centralJets)
             bjetWeightlightUpUncorrelated = self.btagToollightUpUncorrelated.getWeight(centralJets)
             bjetWeightlightDownUncorrelated = self.btagToollightDownUncorrelated.getWeight(centralJets)
+            #Calculate b-jet scale factor weight (split by sources)
+            bjetWeightbcUpJes = self.btagToolbcUpJes.getWeight(centralJets)
+            bjetWeightbcUpPileup = self.btagToolbcUpPileup.getWeight(centralJets)
+            bjetWeightbcUpType3 = self.btagToolbcUpType3.getWeight(centralJets)
+            bjetWeightbcUpStatistic = self.btagToolbcUpStatistic.getWeight(centralJets)
+            bjetWeightbcDownJes = self.btagToolbcDownJes.getWeight(centralJets)
+            bjetWeightbcDownPileup = self.btagToolbcDownPileup.getWeight(centralJets)
+            bjetWeightbcDownType3 = self.btagToolbcDownType3.getWeight(centralJets)
+            bjetWeightbcDownStatistic = self.btagToolbcDownStatistic.getWeight(centralJets)
 
             #Calculate PU weight
             puWeight = self.puTool.getWeight(event.Pileup_nTrueInt)
@@ -2028,14 +2054,23 @@ to next event)"""
 
                 self.out.fillBranch("bjetWeight", bjetWeight)
                 #Systematics - b-tagging weights
-                self.out.fillBranch("bjetWeightbcUpCorrelated",bjetWeightbcUpCorrelated)
-                self.out.fillBranch("bjetWeightbcDownCorrelated",bjetWeightbcDownCorrelated)
-                self.out.fillBranch("bjetWeightbcUpUncorrelated",bjetWeightbcUpUncorrelated)
-                self.out.fillBranch("bjetWeightbcDownUncorrelated",bjetWeightbcDownUncorrelated)
+                # self.out.fillBranch("bjetWeightbcUpCorrelated",bjetWeightbcUpCorrelated)
+                # self.out.fillBranch("bjetWeightbcDownCorrelated",bjetWeightbcDownCorrelated)
+                # self.out.fillBranch("bjetWeightbcUpUncorrelated",bjetWeightbcUpUncorrelated)
+                # self.out.fillBranch("bjetWeightbcDownUncorrelated",bjetWeightbcDownUncorrelated)
                 self.out.fillBranch("bjetWeightlightUpCorrelated",bjetWeightlightUpCorrelated)
                 self.out.fillBranch("bjetWeightlightDownCorrelated",bjetWeightlightDownCorrelated)
                 self.out.fillBranch("bjetWeightlightUpUncorrelated",bjetWeightlightUpUncorrelated)
                 self.out.fillBranch("bjetWeightlightDownUncorrelated",bjetWeightlightDownUncorrelated)
+                #Systematics - b-tagging weights (split by source)
+                self.out.fillBranch("bjetWeightbcUpJes",bjetWeightbcUpJes)
+                self.out.fillBranch("bjetWeightbcUpPileup",bjetWeightbcUpPileup)
+                self.out.fillBranch("bjetWeightbcUpType3",bjetWeightbcUpType3)
+                self.out.fillBranch("bjetWeightbcUpStatistic",bjetWeightbcUpStatistic)
+                self.out.fillBranch("bjetWeightbcDownJes",bjetWeightbcDownJes)
+                self.out.fillBranch("bjetWeightbcDownPileup",bjetWeightbcDownPileup)
+                self.out.fillBranch("bjetWeightbcDownType3",bjetWeightbcDownType3)
+                self.out.fillBranch("bjetWeightbcDownStatistic",bjetWeightbcDownStatistic)
 
                 self.out.fillBranch("puWeight", puWeight)
                 #Systematics - Pile-up
@@ -2180,8 +2215,8 @@ countEvents = lambda : CountEvents()
 #     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
 #     #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
 #     #inputFiles=["/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tChan_Mchi1Mphi100_scalar_full.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full1.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
-#     #inputFiles=["SingleElectron_2018C_v7.root"]
-#     inputFiles=["ttbarPlusJets_Run2018_v7.root"]
+#     #inputFiles=["SingleElectron_2016C_v7.root"]
+#     inputFiles=["ttbarPlusJets_Run2016_v7.root"]
 #     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt"
 #     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
 #     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
@@ -2190,8 +2225,8 @@ countEvents = lambda : CountEvents()
 
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018MC_Skim()],postfix="_ModuleCommon",noOut=False,outputbranchsel=outputbranches)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon",noOut=False,outputbranchsel=outputbranches)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC_Skim()],postfix="_pseudo2018_tChan_Mchi1_Mphi450",noOut=False,outputbranchsel=outputbranches)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018DataC(),analyze2018Data_Skim()],postfix="_ModuleCommon09242022",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_countEvents",noOut=False,outputbranchsel=outputbranches)
 #     p.run()

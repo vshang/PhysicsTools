@@ -55,14 +55,15 @@ class BTagWeightTool:
         assert(year in [2016,2017,2018]), "You must choose a year from: 2016, 2017, or 2018."
         assert(tagger in ['CSVv2','DeepCSV']), "BTagWeightTool: You must choose a tagger from: CSVv2, DeepCSV!"
         assert(wp in ['loose','medium','tight']), "BTagWeightTool: You must choose a WP from: loose, medium, tight!"
-        assert(sigmabc in ['central','up_correlated','down_correlated','up_uncorrelated','down_uncorrelated']), "BTagWeightTool: You must choose a WP for b/c jets from: central, up_correlated, down_correlated, up_uncorrelated, down_uncorrelated!"
-        assert(sigmalight in ['central','up_correlated','down_correlated','up_uncorrelated','down_uncorrelated']), "BTagWeightTool: You must choose a WP for light jets from: central, up_correlated, down_correlated, up_uncorrelated, down_uncorrelated!"
+        # assert(sigmabc in ['central','up_correlated','down_correlated','up_uncorrelated','down_uncorrelated']), "BTagWeightTool: You must choose a WP for b/c jets from: central, up_correlated, down_correlated, up_uncorrelated, down_uncorrelated!"
+        # assert(sigmalight in ['central','up_correlated','down_correlated','up_uncorrelated','down_uncorrelated']), "BTagWeightTool: You must choose a WP for light jets from: central, up_correlated, down_correlated, up_uncorrelated, down_uncorrelated!"
         #assert(channel in ['mutau','eletau','tautau','mumu']), "BTagWeightTool: You must choose a channel from: mutau, eletau, tautau, mumu!"
         
         # FILE
         if year==2016:
           if 'deep' in tagger.lower():
-            csvnamebc = path+'DeepCSV_2016LegacySF_V1_YearCorrelation-V1.csv'
+            #csvnamebc = path+'DeepCSV_2016LegacySF_V1_YearCorrelation-V1.csv'
+            csvnamebc = path+'DeepCSV_2016LegacySF_V1_CategoryBreakdown.csv'
             csvnamelight = path+'DeepCSV_2016LegacySF_WP_V1.csv'
             effname = path+'DeepCSV_2016_Moriond17_eff.root'
           else:
@@ -71,7 +72,8 @@ class BTagWeightTool:
             effname = path+'CSVv2_2016_Moriond17_eff.root'
         elif year==2017:
           if 'deep' in tagger.lower():
-            csvnamebc = path+'DeepCSV_94XSF_V4_B_F_YearCorrelation-V1.csv'
+            #csvnamebc = path+'DeepCSV_94XSF_V4_B_F_YearCorrelation-V1.csv'
+            csvnamebc = path+'DeepCSV_94XSF_V4_B_F_CategoryBreakdown.csv'
             csvnamelight = path+'DeepCSV_94XSF_WP_V4_B_F.csv'
             effname = path+'DeepCSV_2017_Fall17_eff.root'
           else:
@@ -80,7 +82,8 @@ class BTagWeightTool:
             effname = path+'CSVv2_2017_Fall17_eff.root'
         elif year==2018:
           if 'deep' in tagger.lower():
-            csvnamebc = path+'DeepCSV_102XSF_V1_YearCorrelation-V1.csv'
+            #csvnamebc = path+'DeepCSV_102XSF_V1_YearCorrelation-V1.csv'
+            csvnamebc = path+'DeepCSV_102XSF_V1_CategoryBreakdown.csv'
             csvnamelight = path+'DeepCSV_102XSF_WP_V1.csv'
             effname = path+'DeepCSV_2018_Autumn18_eff.root'
           else:

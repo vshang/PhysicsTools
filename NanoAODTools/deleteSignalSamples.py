@@ -1,4 +1,4 @@
-#Script to check and compare list of samples processed by Condor between ModuleCommonSkim and countEvents for ttH and ttbarDM 1,100 signal samples
+#Script to check and compare list of samples processed by Condor between ModuleCommonSkim and countEvents for ttH and ttbarDM 1,10 signal samples
 from ROOT import *
 import os
 
@@ -8,7 +8,7 @@ deleteFiles = True
 print 'Date = ' + date
 print 'deleteFiles = ' + str(deleteFiles)
 
-#First check ttbarDM 1,100 signal samples
+#First check ttbarDM 1,10 signal samples
 for year in ['2016','2017','2018']:
     for mediator in ['scalar','pseudo']:
         filelist_ModuleCommonSkim = [file for file in os.listdir('/hdfs/store/user/vshang/ttbarDM_Run' + year + '/ttbardm_10GeV_' + mediator + '_incl_' + year + '_nanoaod/ModuleCommonSkim_'+date+'/rootFiles/') if file.endswith('Skim.root')]
