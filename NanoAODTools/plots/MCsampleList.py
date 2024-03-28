@@ -82,7 +82,7 @@ samples2016 = {
     'ttbarPlusJets' : {
         'TTTo2L2Nu' : { 'nevents' : 1, 'xsec' : 87310.0, 'filepaths' : ['/hdfs/store/user/vshang/ttbarPlusJets_Run2016/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/ModuleCommonSkim_12242022/tree_all.root'] },
         'TTToSemiLepton' : { 'nevents' : 1, 'xsec' : 364350.0, 'filepaths' : ['/hdfs/store/user/vshang/ttbarPlusJets_Run2016/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/ModuleCommonSkim_12242022/tree_all.root'] },
-        # 'TTToHadronic' : { 'nevents' : 1, 'xsec' : 378930.0, 'filepaths' : ['/hdfs/store/user/vshang/ttbarPlusJets_Run2016/TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8/ModuleCommonSkim_05102023/tree_all.root'] },
+        # 'TTToHadronic' : { 'nevents' : 1, 'xsec' : 378930.0, 'filepaths' : ['/hdfs/store/user/vshang/ttbarPlusJets_Run2016/TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8/ModuleCommonSkim_12242022/tree_all.root'] },
     }, 
     'singleTop' : {
         'ST_s-channel' : { 'nevents' : 1, 'xsec' : 3360.0, 'filepaths' : ['/hdfs/store/user/vshang/singleTop_Run2016/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/ModuleCommonSkim_12242022/tree_all.root'] },
@@ -258,7 +258,7 @@ samples2017 = {
     'ttbarPlusJets' : {
         'TTTo2L2Nu' : { 'nevents' : 1, 'xsec' : 87310.0, 'filepaths' : ['/hdfs/store/user/vshang/ttbarPlusJets_Run2017/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/ModuleCommonSkim_12242022/tree_all.root'] },
         'TTToSemiLepton' : { 'nevents' : 1, 'xsec' : 364350.0, 'filepaths' : ['/hdfs/store/user/vshang/ttbarPlusJets_Run2017/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/ModuleCommonSkim_12242022/tree_all.root'] },
-        # 'TTToHadronic' : { 'nevents' : 1, 'xsec' : 378930.0, 'filepaths' : ['/hdfs/store/user/vshang/ttbarPlusJets_Run2017/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/ModuleCommonSkim_05102023/tree_all.root'] },
+        # 'TTToHadronic' : { 'nevents' : 1, 'xsec' : 378930.0, 'filepaths' : ['/hdfs/store/user/vshang/ttbarPlusJets_Run2017/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/ModuleCommonSkim_12242022/tree_all.root'] },
     }, 
     'singleTop' : {
         # 'ST_s-channel' : { 'nevents' : 1, 'xsec' : 3740.0, 'filepaths' : ['/hdfs/store/user/vshang/singleTop_Run2017/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8/ModuleCommonSkim_12242022/tree_all.root'] },
@@ -490,7 +490,7 @@ samples2018 = {
     'ttbarPlusJets' : {
         'TTTo2L2Nu' : { 'nevents' : 1, 'xsec' : 87310.0, 'filepaths' : ['/hdfs/store/user/vshang/ttbarPlusJets_Run2018/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/ModuleCommonSkim_12242022/tree_all.root'] },
         'TTToSemiLepton' : { 'nevents' : 1, 'xsec' : 364350.0, 'filepaths' : ['/hdfs/store/user/vshang/ttbarPlusJets_Run2018/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/ModuleCommonSkim_12242022/tree_all.root'] },
-        # 'TTToHadronic' : { 'nevents' : 1, 'xsec' : 378930.0, 'filepaths' : ['/hdfs/store/user/vshang/ttbarPlusJets_Run2018/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/ModuleCommonSkim_05102023/tree_all.root'] },
+        # 'TTToHadronic' : { 'nevents' : 1, 'xsec' : 378930.0, 'filepaths' : ['/hdfs/store/user/vshang/ttbarPlusJets_Run2018/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/ModuleCommonSkim_12242022/tree_all.root'] },
     }, 
     'singleTop' : {
         # 'ST_s-channel' : { 'nevents' : 1, 'xsec' : 3740.0, 'filepaths' : ['/hdfs/store/user/vshang/singleTop_Run2018/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8/ModuleCommonSkim_12242022/tree_all.root'] },
@@ -513,7 +513,6 @@ samples2018 = {
         # 'HT800To1200' : { 'nevents' : 1, 'xsec' : 5366.0, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2018/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommonSkim_05102023/tree_all.root'] },
         # 'HT1200To2500' : { 'nevents' : 1, 'xsec' : 1074.0, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2018/WJetsToLNu_HT-1200To2500_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommonSkim_05102023/tree_all.root'] },
         # 'HT2500ToInf' : { 'nevents' : 1, 'xsec' : 8.001, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2018/WJetsToLNu_HT-2500ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommonSkim_05102023/tree_all.root'] },
-        
         'HT100To200' : { 'nevents' : 1, 'xsec' : 1385235, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2018/WJetsToLNu_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommonSkim_05102023/tree_all.root'] },
         'HT200To400' : { 'nevents' : 1, 'xsec' : 408715.8, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2018/WJetsToLNu_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommonSkim_05102023/tree_all.root'] },
         'HT400To600' : { 'nevents' : 1, 'xsec' : 57997.32, 'filepaths' : ['/hdfs/store/user/vshang/WPlusJets_Run2018/WJetsToLNu_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/ModuleCommonSkim_05102023/tree_all.root'] },

@@ -62,8 +62,8 @@ class BTagWeightTool:
         # FILE
         if year==2016:
           if 'deep' in tagger.lower():
-            #csvnamebc = path+'DeepCSV_2016LegacySF_V1_YearCorrelation-V1.csv'
-            csvnamebc = path+'DeepCSV_2016LegacySF_V1_CategoryBreakdown.csv'
+            csvnamebc = path+'DeepCSV_2016LegacySF_V1_YearCorrelation-V1.csv'
+            #csvnamebc = path+'DeepCSV_2016LegacySF_V1_CategoryBreakdown.csv'
             csvnamelight = path+'DeepCSV_2016LegacySF_WP_V1.csv'
             effname = path+'DeepCSV_2016_Moriond17_eff.root'
           else:
@@ -72,8 +72,8 @@ class BTagWeightTool:
             effname = path+'CSVv2_2016_Moriond17_eff.root'
         elif year==2017:
           if 'deep' in tagger.lower():
-            #csvnamebc = path+'DeepCSV_94XSF_V4_B_F_YearCorrelation-V1.csv'
-            csvnamebc = path+'DeepCSV_94XSF_V4_B_F_CategoryBreakdown.csv'
+            csvnamebc = path+'DeepCSV_94XSF_V4_B_F_YearCorrelation-V1.csv'
+            #csvnamebc = path+'DeepCSV_94XSF_V4_B_F_CategoryBreakdown.csv'
             csvnamelight = path+'DeepCSV_94XSF_WP_V4_B_F.csv'
             effname = path+'DeepCSV_2017_Fall17_eff.root'
           else:
@@ -82,8 +82,8 @@ class BTagWeightTool:
             effname = path+'CSVv2_2017_Fall17_eff.root'
         elif year==2018:
           if 'deep' in tagger.lower():
-            #csvnamebc = path+'DeepCSV_102XSF_V1_YearCorrelation-V1.csv'
-            csvnamebc = path+'DeepCSV_102XSF_V1_CategoryBreakdown.csv'
+            csvnamebc = path+'DeepCSV_102XSF_V1_YearCorrelation-V1.csv'
+            #csvnamebc = path+'DeepCSV_102XSF_V1_CategoryBreakdown.csv'
             csvnamelight = path+'DeepCSV_102XSF_WP_V1.csv'
             effname = path+'DeepCSV_2018_Autumn18_eff.root'
           else:

@@ -28,8 +28,8 @@ counter = True
 
 #Set date, year, and other global settings
 gErrorIgnoreLevel = kError
-date = '11_29_2023'
-year = 2016
+date = '03_22_2024'
+year = 2018
 useUL = False
 useCondor = False
 applyHEMfix = True
@@ -38,8 +38,8 @@ partialUnblind = False
 #Set save directory
 #saveDirectory = 'plots/systematics/CMS_eff_b_light_2018/'
 #saveDirectory = 'plots/SR_2016/METcorrected_pt/'
-saveDirectory = 'plots/2018_QCDCR_debugging/RunII_plots/fJet_pt/'
-#saveDirectory = 'plots/EEl1prefire_studies/'
+#saveDirectory = 'plots/2018_QCDCR_debugging/RunII_plots/fJet_pt/'
+saveDirectory = 'plots/AH_studies/' + date + '/bjet1_pt/'
 
 #If cut and year options are specified, use those instead
 if condor_year != 0:
@@ -62,6 +62,10 @@ else:
         dataSamples = json.load(json_data)
     with open('plots/samples'+str(year)+'v2.json') as json_mc:
         MCSamples = json.load(json_mc)
+
+# #Make sure save directory is available if not using Condor
+# if not useCondor:
+#     if not os.path.exists( saveDirectory ) : os.makedirs( saveDirectory )
 
 #Define selection cuts and filters here
 cuts = {}
@@ -149,8 +153,9 @@ cuts['SL1m2bSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 140' + ' 
 
 
 cuts['AH0l0fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets == 0 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
-cuts['AH0l1fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets >= 1 && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && noB2Bleadingfjet' 
+cuts['AH0l1fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets >= 1 && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && noB2Bleadingfjet'
 cuts['AH0l2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && jet1p_TH_T <= 0.5 && noB2Bleadingfjet'
+cuts['AH0lSR'] = '((' + cuts['AH0l0fSR'] + ') || (' + cuts['AH0l1fSR'] + ') || (' + cuts['AH0l2bSR'] + '))'
 
 cuts['SL1l0fSR'] = '(' + cuts['SL1e0fSR'] + ') || (' + cuts['SL1m0fSR'] + ')'
 cuts['SL1l1fSR'] = '(' + cuts['SL1e1fSR'] + ') || (' + cuts['SL1m1fSR'] + ')'
@@ -252,6 +257,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #cut = 'SL1m'
 #cut = 'SL'
 #cut = 'AH'
+cut = 'AH0lSR'
 
 #cut = 'AH0l0fSR' #Signal region cuts
 #cut = 'AH0l1fSR'
@@ -301,7 +307,7 @@ cuts['AH2lZR'] = '(' + cuts['AH2eZR'] + ') || (' + cuts['AH2mZR'] + ')'
 #var = 'Electron_pt[1]'
 #var = 'Muon_pt[1]'
 #var = 'Jet_pt'
-var = 'Jet_pt[index_forwardJets[0]]'
+var = 'Jet_pt[index_centralJets[2]]'
 #var = 'Jet_pt[index_centralJets[0]]/Jet_pt[index_forwardJets[0]]'
 #var = 'Jet_chEmEF[index_forwardJets[0]]'
 #var = 'min(abs(Jet_phi[index_centralJets[2]]-METcorrected_phi),2*pi-abs(Jet_phi[index_centralJets[2]]-METcorrected_phi))'
@@ -372,7 +378,7 @@ nbins = 15
 xmin = 250
 xmax = 550
 auto_y = True
-doLogPlot = False
+doLogPlot = True
 drawData = True
 mediatorType = 'scalar'
 mchi = 1
@@ -387,7 +393,7 @@ doSysSecondHalf = False
 drawOverflow = True
 drawUnderflow = False
 plotSys = False
-plotSysVar = 'CMS_eff_b_light_2018'
+plotSysVar = 'CMS_scaleRelativeSample_j'
 plotSysSignal = False
 TH1.SetDefaultSumw2()
 
@@ -421,9 +427,9 @@ if (condor_cut != '') and condor_plot:
         xmax = 400
         doLogPlot = False
     elif 'AH' in condor_cut:
-        nbins = 10
+        nbins = 30
         xmin = 0
-        xmax = 250
+        xmax = 900
         doLogPlot = False
 
 #histoLabel = '; p_{T}^{miss} (GeV); Events'
@@ -436,7 +442,7 @@ if (condor_cut != '') and condor_plot:
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = '; central jet_{3} #phi; Events'
 #histoLabel = '; central jet_{2} #eta; Events'
-histoLabel = '; forward jet_{1} p_{T}; Events'
+histoLabel = '; central jet_{3} p_{T}; Events'
 #histoLabel = '; central jet_{1} p_{T}/forward jet_{1} p_{T}; Events'
 #histoLabel = '; #Delta#phi(jet_{3},p_{T}^{miss}); Events'
 #histoLabel = '; #Delta#phi(TrkMET,p_{T}^{miss}); Events'
@@ -497,9 +503,13 @@ if doSysFirstHalf or plotSys:
 else:
     sys = []
 jesUnc = ['','AbsoluteMPFBias','AbsoluteScale','AbsoluteStat','FlavorQCD','Fragmentation','PileUpDataMC','PileUpPtBB','PileUpPtEC1','PileUpPtEC2','PileUpPtHF','PileUpPtRef','RelativeFSR','RelativeJEREC1','RelativeJEREC2','RelativeJERHF','RelativePtBB','RelativePtEC1','RelativePtEC2','RelativePtHF','RelativeBal','RelativeSample','RelativeStatEC','RelativeStatFSR','RelativeStatHF','SinglePionECAL','SinglePionHCAL','TimePtEta']
+jesUncDecorrelated = ['AbsoluteStat','RelativeJEREC1','RelativeJEREC2','RelativePtEC1','RelativePtEC2','RelativeSample','RelativeStatEC','RelativeStatFSR','RelativeStatHF','TimePtEta']
 if doSysSecondHalf or plotSys:
     for unc in jesUnc:
-        sys.append('CMS_scale'+unc+'_j')
+        if unc in jesUncDecorrelated:
+            sys.append('CMS_scale'+unc+'_j_'+str(year))
+        else:
+            sys.append('CMS_scale'+unc+'_j')
 for name in ['data','bkgSum'] + signal + back:
     hists[name] = TH1F(name, histoLabel, nbins, xmin, xmax)
 if doBinned:
@@ -541,7 +551,7 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
 
     #Systematics
     for unc in jesUnc:
-        if sysName == 'CMS_scale'+unc+'_j':
+        if 'CMS_scale'+unc+'_j' in sysName:
             if var == 'METcorrected_pt':
                 varUp = var.replace('METcorrected_pt','METcorrected_ptScale'+unc+'Up')
                 varDown = var.replace('METcorrected_pt','METcorrected_ptScale'+unc+'Down')
@@ -701,6 +711,26 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
             weightedcutUp = weightedcut + '*(nbjets >= 1 ? 1.2 : 1.)'
             weightedcutDown = weightedcut + '*(nbjets >= 1 ? 0.8 : 1.)'
 
+    elif sysName == 'CMS_HF_W_1b':
+        if ('WPlusJets' in histName):
+            weightedcutUp = weightedcut + '*(nbjets == 1 ? 1.2 : 1.)'
+            weightedcutDown = weightedcut + '*(nbjets == 1 ? 0.8 : 1.)'
+
+    elif sysName == 'CMS_HF_Z_1b':
+        if ('ZTo2L' in histName) or ('ZTo2Nu' in histName):
+            weightedcutUp = weightedcut + '*(nbjets == 1 ? 1.2 : 1.)'
+            weightedcutDown = weightedcut + '*(nbjets == 1 ? 0.8 : 1.)'
+
+    elif sysName == 'CMS_HF_W_2b':
+        if ('WPlusJets' in histName):
+            weightedcutUp = weightedcut + '*(nbjets >= 2 ? 1.2 : 1.)'
+            weightedcutDown = weightedcut + '*(nbjets >= 2 ? 0.8 : 1.)'
+
+    elif sysName == 'CMS_HF_Z_2b':
+        if ('ZTo2L' in histName) or ('ZTo2Nu' in histName):
+            weightedcutUp = weightedcut + '*(nbjets >= 2 ? 1.2 : 1.)'
+            weightedcutDown = weightedcut + '*(nbjets >= 2 ? 0.8 : 1.)'
+
     elif sysName =='CMS_eff_b_corr':
         weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightbcUpCorrelated')
         weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightbcDownCorrelated')
@@ -716,6 +746,22 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
     elif sysName == 'CMS_eff_b_light_'+str(year):
         weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightlightUpUncorrelated')
         weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightlightDownUncorrelated')
+
+    elif sysName == 'CMS_eff_b_jes':
+        weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightbcUpJes')
+        weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightbcDownJes')
+
+    elif sysName == 'CMS_eff_b_pileup':
+        weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightbcUpPileup')
+        weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightbcDownPileup')
+
+    elif sysName == 'CMS_eff_b_type3':
+        weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightbcUpType3')
+        weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightbcDownType3')
+
+    elif sysName == 'CMS_eff_b_stat_'+str(year):
+        weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightbcUpStatistic')
+        weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightbcDownStatistic')
 
     elif sysName == 'CMS_scale_pu':
         weightedcutUp = weightedcut.replace('puWeight','puWeightUp')
@@ -1797,7 +1843,7 @@ if savePlots:
             #c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_LO.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
-            c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_noB2Bleadingfjet.pdf')
-            #c.SaveAs(cut + nameYear + '_deltaPhiJet3MET_' + suffix + '.png')
+            c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
+            #c.SaveAs(saveDirectory + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
 
 print 'Plotting end time:', datetime.datetime.now()

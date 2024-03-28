@@ -1,9 +1,10 @@
 #!/bin/sh
 #Script to submit jobs to hadd all samples
-signalMC=("tChan" "tWChan" "ttDM")
+#signalMC=("tChan" "tWChan" "ttDM")
+signalMC=("ttDM")
 years=("2016" "2017" "2018")
 
-#First submit jobs for private t/ttDM signal samples
+#First submit jobs for private t+DM and ttDM_MChi1_MPhi100 signal samples
 for signal in ${signalMC[@]}; do
     echo $signal
     cd ${signal}
@@ -20,10 +21,10 @@ cd ttH
 ls
 cd ..
 
-#Finally submit jobs for rest of Data/MC samples (from CRAB)
-for year in ${years[@]}; do
-    ./submitscr${year}.sh
-    ls
-done
+# #Finally submit jobs for rest of Data/MC samples (from CRAB)
+# for year in ${years[@]}; do
+#     ./submitscr${year}.sh
+#     ls
+# done
 
 echo "Finished submitting jobs to hadd samples"

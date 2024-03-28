@@ -61,7 +61,7 @@ for dataSamples in DataSampleList:
         dataSamples[dataset]['nevents'] = nevents
         print '    total nevents in ', dataset, ': ', nevents
     print('Got data sample root files and event trees')
-    with open('data'+str(year)+'v2.json','w') as f:
+    with open('data'+str(year)+'.json','w') as f:
         json.dump(dataSamples, f)
     print('Wrote Data sample json file for ' + str(year))
     year += 1

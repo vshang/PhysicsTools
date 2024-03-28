@@ -28,7 +28,7 @@ counter = True
 
 #Set date, year, and other global settings
 gErrorIgnoreLevel = kError
-date = '08_07_2023'
+date = '03_12_2024'
 year = 2018
 useUL = False
 useCondor = True
@@ -161,7 +161,7 @@ cuts['SL1m2bSR'] = cuts['SL1m'] + ' && ' + 'nbjets >= 2' + ' && M_T >= 140' + ' 
 
 cuts['AH0l0fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets == 0 && minDeltaPhi12 >= 0.8 && M_Tb >= 140'
 cuts['AH0l1fSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets == 1') + ' && nfjets >= 1 && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && noB2Bleadingfjet' 
-cuts['AH0l2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && jet1p_TH_T <= 0.5 && noB2Bleadingfjet'
+cuts['AH0l2bSR'] = cuts['AH'].replace('nbjets >= 1', 'nbjets >= 2') + ' && nfjets == 0 && minDeltaPhi12 >= 0.8 && M_Tb >= 140 && jet1p_TH_T <= 0.5 && noB2Bleadingfjet'
 
 cuts['SL1l0fSR'] = '(' + cuts['SL1e0fSR'] + ') || (' + cuts['SL1m0fSR'] + ')'
 cuts['SL1l1fSR'] = '(' + cuts['SL1e1fSR'] + ') || (' + cuts['SL1m1fSR'] + ')'
@@ -504,13 +504,18 @@ else:
 back = ['QCD','Other','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
 if doSysFirstHalf or plotSys:
-    sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_corr_AH','CMS_eff_b_corr_SL','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDScale_ren_TT','QCDScale_fac_TT','QCDScale_ren_VV','QCDScale_fac_VV','preFire','CMS_UncMET_'+str(year),'CMS_WewkWeight','CMS_ZewkWeight','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','nbjet_SF_W','nbjet_SF_Z']
+    sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDScale_ren_TT','QCDScale_fac_TT','QCDScale_ren_VV','QCDScale_fac_VV','preFire','CMS_UncMET_'+str(year),'CMS_WewkWeight','CMS_ZewkWeight','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','nbjet_SF_W','nbjet_SF_Z','CMS_HF_W_1b','CMS_HF_W_2b','CMS_HF_Z_1b','CMS_HF_Z_2b']
+    #sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_jes','CMS_eff_b_pileup','CMS_eff_b_type3','CMS_eff_b_light_corr','CMS_eff_b_stat_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDScale_ren_TT','QCDScale_fac_TT','QCDScale_ren_VV','QCDScale_fac_VV','preFire','CMS_UncMET_'+str(year),'CMS_WewkWeight','CMS_ZewkWeight','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','nbjet_SF_W','nbjet_SF_Z']
 else:
     sys = []
 jesUnc = ['','AbsoluteMPFBias','AbsoluteScale','AbsoluteStat','FlavorQCD','Fragmentation','PileUpDataMC','PileUpPtBB','PileUpPtEC1','PileUpPtEC2','PileUpPtHF','PileUpPtRef','RelativeFSR','RelativeJEREC1','RelativeJEREC2','RelativeJERHF','RelativePtBB','RelativePtEC1','RelativePtEC2','RelativePtHF','RelativeBal','RelativeSample','RelativeStatEC','RelativeStatFSR','RelativeStatHF','SinglePionECAL','SinglePionHCAL','TimePtEta']
+jesUncDecorrelated = ['AbsoluteStat','RelativeJEREC1','RelativeJEREC2','RelativePtEC1','RelativePtEC2','RelativeSample','RelativeStatEC','RelativeStatFSR','RelativeStatHF','TimePtEta']
 if doSysSecondHalf or plotSys:
     for unc in jesUnc:
-        sys.append('CMS_scale'+unc+'_j')
+        if unc in jesUncDecorrelated:
+            sys.append('CMS_scale'+unc+'_j_'+str(year))
+        else:
+            sys.append('CMS_scale'+unc+'_j')
 for name in ['data','bkgSum'] + signal + back:
     hists[name] = TH1F(name, histoLabel, nbins, xmin, xmax)
 if doBinned:
@@ -552,7 +557,7 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
 
     #Systematics
     for unc in jesUnc:
-        if sysName == 'CMS_scale'+unc+'_j':
+        if 'CMS_scale'+unc+'_j' in sysName:
             if var == 'METcorrected_pt':
                 varUp = var.replace('METcorrected_pt','METcorrected_ptScale'+unc+'Up')
                 varDown = var.replace('METcorrected_pt','METcorrected_ptScale'+unc+'Down')
@@ -712,6 +717,26 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
             weightedcutUp = weightedcut + '*(nbjets >= 1 ? 1.2 : 1.)'
             weightedcutDown = weightedcut + '*(nbjets >= 1 ? 0.8 : 1.)'
 
+    elif sysName == 'CMS_HF_W_1b':
+        if ('WPlusJets' in histName):
+            weightedcutUp = weightedcut + '*(nbjets == 1 ? 1.5 : 1.)'
+            weightedcutDown = weightedcut + '*(nbjets == 1 ? 0.5 : 1.)'
+
+    elif sysName == 'CMS_HF_Z_1b':
+        if ('ZTo2L' in histName) or ('ZTo2Nu' in histName):
+            weightedcutUp = weightedcut + '*(nbjets == 1 ? 1.5 : 1.)'
+            weightedcutDown = weightedcut + '*(nbjets == 1 ? 0.5 : 1.)'
+
+    elif sysName == 'CMS_HF_W_2b':
+        if ('WPlusJets' in histName):
+            weightedcutUp = weightedcut + '*(nbjets >= 2 ? 1.5 : 1.)'
+            weightedcutDown = weightedcut + '*(nbjets >= 2 ? 0.5 : 1.)'
+
+    elif sysName == 'CMS_HF_Z_2b':
+        if ('ZTo2L' in histName) or ('ZTo2Nu' in histName):
+            weightedcutUp = weightedcut + '*(nbjets >= 2 ? 1.5 : 1.)'
+            weightedcutDown = weightedcut + '*(nbjets >= 2 ? 0.5 : 1.)'
+
     elif 'CMS_eff_b_corr' in sysName:
         weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightbcUpCorrelated')
         weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightbcDownCorrelated')
@@ -727,6 +752,22 @@ def addSys(histName, eventTree, var, weightedcut, sysName, addHist=True):
     elif sysName == 'CMS_eff_b_light_'+str(year):
         weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightlightUpUncorrelated')
         weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightlightDownUncorrelated')
+
+    elif sysName == 'CMS_eff_b_jes':
+        weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightbcUpJes')
+        weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightbcDownJes')
+
+    elif sysName == 'CMS_eff_b_pileup':
+        weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightbcUpPileup')
+        weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightbcDownPileup')
+
+    elif sysName == 'CMS_eff_b_type3':
+        weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightbcUpType3')
+        weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightbcDownType3')
+
+    elif sysName == 'CMS_eff_b_stat_'+str(year):
+        weightedcutUp = weightedcut.replace('bjetWeight','bjetWeightbcUpStatistic')
+        weightedcutDown = weightedcut.replace('bjetWeight','bjetWeightbcDownStatistic')
 
     elif sysName == 'CMS_scale_pu':
         weightedcutUp = weightedcut.replace('puWeight','puWeightUp')

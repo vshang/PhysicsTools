@@ -2,7 +2,7 @@
 from ROOT import *
 import os
 
-date = '12242022'
+date = '02062024'
 deleteFiles = True
 
 print 'Date = ' + date
