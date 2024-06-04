@@ -5,8 +5,8 @@ if len(sys.argv) != 2:
     print("Syntax: filterList.py filename")
 filename = sys.argv[1]
 
-f = open("filelist.txt","r")
-#f = open("countlist.txt","r")
+#f = open("filelist.txt","r")
+f = open("countlist.txt","r")
 mylines = f.readlines()
 
 for line in mylines:

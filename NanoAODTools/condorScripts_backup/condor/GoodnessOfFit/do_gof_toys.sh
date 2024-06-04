@@ -4,7 +4,7 @@ set -x
 export SCRAM_ARCH=slc7_amd64_gcc530
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 scram project CMSSW CMSSW_8_0_26_patch1
-tar -zxvf Analysis_GoF_AH.tar.gz
+tar -zxvf Analysis_GoF.tar.gz
 tar -C CMSSW_8_0_26_patch1/src -zxvf HiggsAnalysis.tar.gz
 tar -C CMSSW_8_0_26_patch1/src -zxvf CombineHarvester.tar.gz
 cd CMSSW_8_0_26_patch1/src

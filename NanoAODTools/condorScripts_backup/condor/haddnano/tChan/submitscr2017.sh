@@ -5,7 +5,7 @@
 # Create the name of the rundir
 while :
 do
-    RUNDIR="tChan_2017_ModuleCommonSkim_02062024"
+    RUNDIR="tChan_2017_countEvents_02062024"
     if [ ! -d "${RUNDIR}" ]; then 
 	echo "using ${RUNDIR}"
 	break
@@ -24,7 +24,7 @@ error = ${RUNDIR}/runhaddnano2017.stderr
 log = ${RUNDIR}/runhaddnano2017.condor_log
 requestdisk = 200G
 requestmemory = 32G
-transfer_input_files = /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/scripts/haddnano.py,/nfs_scratch/vshang/condor/haddnano/filelist_signal.txt,/nfs_scratch/vshang/condor/haddnano/filterList_signal.py
+transfer_input_files = /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/scripts/haddnano.py,/nfs_scratch/vshang/condor/haddnano/countlist_signal.txt,/nfs_scratch/vshang/condor/haddnano/filterList_signal.py
 use_x509userproxy = True
 queue
 EOF

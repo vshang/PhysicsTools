@@ -19,10 +19,11 @@ mkdir "${RUNDIR}"
 SUBMIT="${RUNDIR}/submit"
 cat > "${SUBMIT}" << EOF
 executable = ./runplot_SL1e1fT1SRv2.sh
++SingularityImage = "/cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel7"
 output = ${RUNDIR}/runplot.stdoutD
 error = ${RUNDIR}/runplot.stderr
 log = ${RUNDIR}/runplot.condor_log
-requirements = HAS_CMS_HDFS
+requirements = HAS_CMS_HDFS && HasSingularity
 requestdisk = 20G
 requestmemory = 16G
 transfer_input_files = /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/plots/plot2017.py,/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/plots/samples2017.json,/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/plots/data2017.json,/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_10_2_9/src/PhysicsTools/NanoAODTools/plots/utils.py
