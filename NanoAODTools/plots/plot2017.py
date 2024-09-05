@@ -24,11 +24,11 @@ condor_year = options.optionYear
 condor_plot = options.optionPlot
 
 global counter
-counter = True
+counter = False
 
 #Set date, year, and other global settings
 gErrorIgnoreLevel = kError
-date = '03_12_2024'
+date = '07_01_2024'
 year = 2017
 useUL = False
 useCondor = True
@@ -504,7 +504,7 @@ else:
 back = ['QCD','Other','ZTo2L','VV','singleTop','WPlusJets','TTV','TTTo2L2Nu','TTToSemiLepton','ZTo2Nu']
 hists = {}
 if doSysFirstHalf or plotSys:
-    #sys = []
+    # sys = []
     sys = ['CMS_res_j_'+str(year),'CMS_pdf','CMS_eff_b_corr','CMS_eff_b_light_corr','CMS_eff_b_'+str(year),'CMS_eff_b_light_'+str(year),'CMS_scale_pu','CMS_eff_met_trigger','CMS_eff_lep_trigger','CMS_trig_m','CMS_trig_e','CMS_eff_lep','CMS_eff_e','CMS_eff_m','QCDScale_ren_TT','QCDScale_fac_TT','QCDScale_ren_VV','QCDScale_fac_VV','preFire','CMS_UncMET_'+str(year),'CMS_WewkWeight','CMS_ZewkWeight','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','nbjet_SF_W','nbjet_SF_Z','CMS_HF_W_1b','CMS_HF_W_2b','CMS_HF_Z_1b','CMS_HF_Z_2b']
     # if year == 2016:
     #     sys.extend(['CMS_HF_W_1b_2016','CMS_HF_W_2b_2016','CMS_HF_Z_1b_2016','CMS_HF_Z_2b_2016'])
@@ -1129,67 +1129,67 @@ for process in MCSamples:
     print '  Process = ', process
     for dataset in MCSamples[process]:
         print '      Dataset = ', dataset, ' ||   nEvents = ', MCSamples[process][dataset]['nevents']
-        weight = "1"  #UNDO edit
-        # weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign'  #Start of edit
-        # if datasetNames == ['MET']:
-        #     weight = weight + '*METTriggerWeight'
-        # #Apply appropriate NLO k-factors
-        # if process == 'WPlusJets':
-        #     if year == 2016:
-        #         weight = weight + '*qcdWWeight*ewkWWeight'
-        #         print 'Applied WPlusJets qcd/ewk Weights correctly'
-        #     else:
-        #         weight = weight + '*qcdWWeight*ewkWWeight*0.9135'
-        #         # if 'AH' in cut:
-        #         #     if year == 2017:
-        #         #         weight = weight + '*(nbjets == 0 ? 0.891 : 1.)'
-        #         #     elif year == 2018:
-        #         #         weight = weight + '*(nbjets == 0 ? 0.870 : 1.)'
-        #         if 'AH' in cut:
-        #             if year == 2017:
-        #                 weight = weight + '*(nbjets == 0 ? 0.874 : 1.)'
-        #             elif year == 2018:
-        #                 weight = weight + '*(nbjets == 0 ? 0.854 : 1.)'
-        #         elif 'SL' in cut:
-        #             if year == 2017:
-        #                 weight = weight + '*(nbjets == 0 ? 0.905 : 1.)'
-        #             elif year == 2018:
-        #                 weight = weight + '*(nbjets == 0 ? 0.881 : 1.)'
-        #         print 'Applied WPlusJets ewk Weights correctly'
-        # elif process == 'ZTo2L':
-        #     if year == 2016:
-        #         weight = weight + '*qcdZTo2LWeight*ewkZWeight'
-        #         print 'Applied ZTo2L qcd/ewk Weights correctly'
-        #     else:
-        #         weight = weight + '*qcdZTo2LWeight*ewkZWeight*0.934'
-        #         # if 'AH' in cut:
-        #         #     if year == 2017:
-        #         #         weight = weight + '*(nbjets == 0 ? 0.801 : 1.)'
-        #         #     elif year == 2018:
-        #         #         weight = weight + '*(nbjets == 0 ? 0.802 : 1.)'
-        #         if 'AH' in cut:
-        #             if year == 2017:
-        #                 weight = weight + '*(nbjets == 0 ? 0.811 : 1.)'
-        #             elif year == 2018:
-        #                 weight = weight + '*(nbjets == 0 ? 0.812 : 1.)'
-        #         print 'Applied ZTo2L ewk Weights correctly'
-        # elif process == 'ZTo2Nu':
-        #     if year == 2016:
-        #         weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
-        #         print 'Applied ZTo2Nu qcd/ewk Weights correctly'
-        #     else:
-        #         weight = weight + '*qcdZTo2NuWeight*ewkZWeight*0.934'
-        #         # if 'AH' in cut:
-        #         #     if year == 2017:
-        #         #         weight = weight + '*(nbjets == 0 ? 0.801 : 1.)'
-        #         #     elif year == 2018:
-        #         #         weight = weight + '*(nbjets == 0 ? 0.802 : 1.)'
-        #         if 'AH' in cut:
-        #             if year == 2017:
-        #                 weight = weight + '*(nbjets == 0 ? 0.811 : 1.)'
-        #             elif year == 2018:
-        #                 weight = weight + '*(nbjets == 0 ? 0.812 : 1.)'
-        #         print 'Applied ZTo2Nu ewk Weights correctly'                #End of edit
+        # weight = "1"  #UNDO edit
+        weight = str(MCSamples[process][dataset]['xsec']*lumi/MCSamples[process][dataset]['nevents']) + '*leptonWeight*bjetWeight*puWeight*muonTriggerWeight*EE_L1_prefire_Weight*electronTriggerWeight*genWeightSign'  #Start of edit
+        if datasetNames == ['MET']:
+            weight = weight + '*METTriggerWeight'
+        #Apply appropriate NLO k-factors
+        if process == 'WPlusJets':
+            if year == 2016:
+                weight = weight + '*qcdWWeight*ewkWWeight'
+                print 'Applied WPlusJets qcd/ewk Weights correctly'
+            else:
+                weight = weight + '*qcdWWeight*ewkWWeight*0.9135'
+                # if 'AH' in cut:
+                #     if year == 2017:
+                #         weight = weight + '*(nbjets == 0 ? 0.891 : 1.)'
+                #     elif year == 2018:
+                #         weight = weight + '*(nbjets == 0 ? 0.870 : 1.)'
+                if 'AH' in cut:
+                    if year == 2017:
+                        weight = weight + '*(nbjets == 0 ? 0.874 : 1.)'
+                    elif year == 2018:
+                        weight = weight + '*(nbjets == 0 ? 0.854 : 1.)'
+                elif 'SL' in cut:
+                    if year == 2017:
+                        weight = weight + '*(nbjets == 0 ? 0.905 : 1.)'
+                    elif year == 2018:
+                        weight = weight + '*(nbjets == 0 ? 0.881 : 1.)'
+                print 'Applied WPlusJets ewk Weights correctly'
+        elif process == 'ZTo2L':
+            if year == 2016:
+                weight = weight + '*qcdZTo2LWeight*ewkZWeight'
+                print 'Applied ZTo2L qcd/ewk Weights correctly'
+            else:
+                weight = weight + '*qcdZTo2LWeight*ewkZWeight*0.934'
+                # if 'AH' in cut:
+                #     if year == 2017:
+                #         weight = weight + '*(nbjets == 0 ? 0.801 : 1.)'
+                #     elif year == 2018:
+                #         weight = weight + '*(nbjets == 0 ? 0.802 : 1.)'
+                if 'AH' in cut:
+                    if year == 2017:
+                        weight = weight + '*(nbjets == 0 ? 0.811 : 1.)'
+                    elif year == 2018:
+                        weight = weight + '*(nbjets == 0 ? 0.812 : 1.)'
+                print 'Applied ZTo2L ewk Weights correctly'
+        elif process == 'ZTo2Nu':
+            if year == 2016:
+                weight = weight + '*qcdZTo2NuWeight*ewkZWeight'
+                print 'Applied ZTo2Nu qcd/ewk Weights correctly'
+            else:
+                weight = weight + '*qcdZTo2NuWeight*ewkZWeight*0.934'
+                # if 'AH' in cut:
+                #     if year == 2017:
+                #         weight = weight + '*(nbjets == 0 ? 0.801 : 1.)'
+                #     elif year == 2018:
+                #         weight = weight + '*(nbjets == 0 ? 0.802 : 1.)'
+                if 'AH' in cut:
+                    if year == 2017:
+                        weight = weight + '*(nbjets == 0 ? 0.811 : 1.)'
+                    elif year == 2018:
+                        weight = weight + '*(nbjets == 0 ? 0.812 : 1.)'
+                print 'Applied ZTo2Nu ewk Weights correctly'                #End of edit
         if (process in signal) and ('ttbar' in process) and ('MPhi125_scalar' not in dataset) and ('MPhi10_' not in dataset):
             Mchi = MCSamples[process][dataset]['mchi']
             Mphi = MCSamples[process][dataset]['mphi']
@@ -1287,9 +1287,9 @@ print '-----------------------------'
 print 'Total MC background nEvents = ', hists['bkgSum'].GetEntries()
 print 'Total MC background integral = ', hists['bkgSum'].Integral(1,nbins+1)
 print '-----------------------------'
-print 'Total tt+DM signal nEvents = ', hists['ttbar ' + mediatorType].GetEntries()/scaleFactor
+print 'Total tt+DM signal nEvents = ', hists['ttbar ' + mediatorType].GetEntries()
 print 'Total tt+DM signal integral = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
-print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()/scaleFactor
+print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()
 print 'Total t+DM signal integral = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
 print '-----------------------------'
 print 'FOM for tt+DM signal = ', (hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor)/((hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor)+math.sqrt(hists['bkgSum'].Integral(1,nbins+1)))
@@ -1340,7 +1340,7 @@ print '-----------------------------'
 for name in hists:
     print name + ' hist info:'
     if name in signal:
-        print '    nEvents = ', hists[name].GetEntries()/scaleFactor
+        print '    nEvents = ', hists[name].GetEntries()
         print '    integral = ', hists[name].Integral(1,nbins+1)/scaleFactor
         print '    bin 1 integral = ', hists[name].Integral(1,2)/scaleFactor
     else:

@@ -7,6 +7,7 @@ import json
 MCsampleList = [samples2016, samples2017, samples2018]
 DataSampleList = []#[data2016, data2017, data2018]
 sampleDate = '12242022'
+#sampleDate = '02062024'
 
 #Get MC background root files and event trees
 signal = ['ttbar scalar', 'ttbar pseudoscalar', 'tbar scalar', 'tbar pseudoscalar']
@@ -36,7 +37,7 @@ for MCSamples in MCsampleList:
                         runsTree.GetEntry(i)
                         nevents += runsTree.genEventCount
                 else:
-                    skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_'+sampleDate, 'countEvents_'+sampleDate).replace('ModuleCommonSkim_05102023','countEvents_05102023'),'')
+                    skimFile = TFile.Open(filepath.replace('ModuleCommonSkim_'+sampleDate, 'countEvents_'+sampleDate).replace('ModuleCommonSkim_05102023','countEvents_05102023').replace('ModuleCommonSkim_07012024','countEvents_07012024'),'')
                     nevents += skimFile.Get('Events').GetEntries('genWeight>0') - skimFile.Get('Events').GetEntries('genWeight<0')
             MCSamples[process][dataset]['nevents'] = nevents
             print '    nevents in ', process, ' ', dataset, ': ', nevents

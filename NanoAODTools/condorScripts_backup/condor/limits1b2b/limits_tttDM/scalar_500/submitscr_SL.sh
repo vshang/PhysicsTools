@@ -22,11 +22,11 @@ executable = ./runcombine_SL.sh
 output = ${RUNDIR}/runcombine_SL.stdoutD
 error = ${RUNDIR}/runcombine_SL.stderr
 log = ${RUNDIR}/runcombine_SL.condor_log
-requestdisk = 20G
-requestmemory = 16G
+requestdisk = 40G
+requestmemory = 32G
 transfer_input_files = /afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_8_0_26_patch1/src/HiggsAnalysis.tar.gz,/afs/hep.wisc.edu/home/vshang/public/tDM_nanoAOD/CMSSW_8_0_26_patch1/src/Analysis_tttDM.tar.gz
-requirements = OpSysAndVer == "CentOS7"
-use_x509userproxy = True
+container_image = /cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel7
+Use_x509userproxy = True
 queue
 EOF
 

@@ -19,7 +19,7 @@ mkdir "${RUNDIR}"
 SUBMIT="${RUNDIR}/submit"
 cat > "${SUBMIT}" << EOF
 executable = ./runplot_SL1e2bT2SRv2.sh
-+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel7"
+container_image = /cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel7
 output = ${RUNDIR}/runplot.stdoutD
 error = ${RUNDIR}/runplot.stderr
 log = ${RUNDIR}/runplot.condor_log

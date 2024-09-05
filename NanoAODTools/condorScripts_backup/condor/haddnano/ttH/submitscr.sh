@@ -19,7 +19,8 @@ mkdir "${RUNDIR}"
 SUBMIT="${RUNDIR}/submit"
 cat > "${SUBMIT}" << EOF
 executable = ./runhaddnano.sh
-output = ${RUNDIR}/runhaddnano.stdoutD
+container_image = /cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel7
+Output = ${RUNDIR}/runhaddnano.stdoutD
 error = ${RUNDIR}/runhaddnano.stderr
 log = ${RUNDIR}/runhaddnano.condor_log
 requestdisk = 50G

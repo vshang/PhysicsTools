@@ -2210,23 +2210,28 @@ countEvents = lambda : CountEvents()
 #     selection=None
 #     #outputDir = "outDir2016AnalysisSR/ttbarDM/"
 #     #outputDir = "testSamples/"
-#     outputDir = "."
+#     outputDir = "output_pseudo/countEvents_12242022/2016/"
 #     #inputbranches="python/postprocessing/analysis/keep_and_dropSR_in.txt"
-#     outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
-#     #outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
+#     #outputbranches="python/postprocessing/analysis/keep_and_dropSR_out.txt"
+#     outputbranches="python/postprocessing/analysis/keep_and_dropCount_out.txt"
 #     #inputFiles=["/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tChan_Mchi1Mphi100_scalar_full.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/tDM_tWChan_Mchi1Mphi100_scalar_full.root"]#,"/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full1.root","/hdfs/store/user/vshang/testSamples/privateSignalMC/2016/ttbarDM_Mchi1Mphi100_scalar_full2.root"]
 #     #inputFiles=["SingleElectron_2016C_v7.root"]
-#     inputFiles=["ttbarPlusJets_Run2016_v7.root"]
+#     #inputFiles=["ttbarPlusJets_Run2016_v7.root"]
+#     listOfFiles = os.listdir("input_pseudo/2016/")
+#     inputFiles=["input_pseudo/2016/" + file for file in listOfFiles]
+#     print("List of files to process:")
+#     for file in inputFiles:
+#         print(file)
 #     #jsonFile = "python/postprocessing/data/json/Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt"
 #     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
 #     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 #     #jsonFile = "python/postprocessing/data/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt"
 #     #jsonFile = "python/postprocessing/data/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[analyze2016SignalMC()],postfix="_ModuleCommon_2016MC_noJME",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC_Skim()],postfix="",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC()],postfix="_ModuleCommon_2016MC_onlyJME_Allsys",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon",noOut=False,outputbranchsel=outputbranches)
+#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016MC(),analyze2016MC_Skim()],postfix="_ModuleCommon",noOut=False,outputbranchsel=outputbranches)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2018MC(),analyze2018SignalMC_Skim()],postfix="_pseudo2018_tChan_Mchi1_Mphi450",noOut=False,outputbranchsel=outputbranches)
 #     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=None,modules=[jetmetCorrector2016DataC(),analyze2016Data_Skim()],postfix="_ModuleCommon",noOut=False,outputbranchsel=outputbranches)#,jsonInput=jsonFile)
-#     #p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="_countEvents",noOut=False,outputbranchsel=outputbranches)
+#     p=PostProcessor(outputDir,inputFiles,cut=selection,branchsel=outputbranches,modules=[countEvents()],postfix="",noOut=False,outputbranchsel=outputbranches)
 #     p.run()

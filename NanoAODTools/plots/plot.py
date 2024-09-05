@@ -24,11 +24,11 @@ condor_year = options.optionYear
 condor_plot = options.optionPlot
 
 global counter
-counter = True
+counter = False
 
 #Set date, year, and other global settings
 gErrorIgnoreLevel = kError
-date = '03_22_2024'
+date = '07_01_2024'
 year = 2018
 useUL = False
 useCondor = False
@@ -37,9 +37,9 @@ partialUnblind = False
 
 #Set save directory
 #saveDirectory = 'plots/systematics/CMS_eff_b_light_2018/'
-#saveDirectory = 'plots/SR_2016/METcorrected_pt/'
+saveDirectory = 'plots/SR_2016/METcorrected_pt/'
 #saveDirectory = 'plots/2018_QCDCR_debugging/RunII_plots/fJet_pt/'
-saveDirectory = 'plots/AH_studies/' + date + '/bjet1_pt/'
+#saveDirectory = 'plots/AH_studies/' + date + '/bjet1_pt/'
 
 #If cut and year options are specified, use those instead
 if condor_year != 0:
@@ -60,7 +60,7 @@ if useCondor:
 else:
     with open('plots/data'+str(year)+'v2.json') as json_data:
         dataSamples = json.load(json_data)
-    with open('plots/samples'+str(year)+'v2.json') as json_mc:
+    with open('plots/samples'+str(year)+'v5.json') as json_mc:
         MCSamples = json.load(json_mc)
 
 # #Make sure save directory is available if not using Condor
@@ -294,7 +294,7 @@ cut = 'AH0lSR'
 # cuts['AH0l1fSR'] = cuts['AH0l1fSR'] + ' && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 # cuts['AH0l2bSR'] = cuts['AH0l2bSR'] + ' && nfjets >= 1'# && ((Jet_pt[index_forwardJets[0]] < Jet_pt[index_centralJets[0]]) || min(abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi),2*pi-abs(Jet_phi[index_forwardJets[0]]-METcorrected_phi)) < 2.8)'
 
-#var = 'METcorrected_pt'
+var = 'METcorrected_pt'
 #var = 'recoilPtMiss'
 #var = 'METcorrected_phi'
 #var = 'M_T'
@@ -307,7 +307,7 @@ cut = 'AH0lSR'
 #var = 'Electron_pt[1]'
 #var = 'Muon_pt[1]'
 #var = 'Jet_pt'
-var = 'Jet_pt[index_centralJets[2]]'
+#var = 'Jet_pt[index_centralJets[2]]'
 #var = 'Jet_pt[index_centralJets[0]]/Jet_pt[index_forwardJets[0]]'
 #var = 'Jet_chEmEF[index_forwardJets[0]]'
 #var = 'min(abs(Jet_phi[index_centralJets[2]]-METcorrected_phi),2*pi-abs(Jet_phi[index_centralJets[2]]-METcorrected_phi))'
@@ -350,13 +350,13 @@ elif year == 2018:
 if partialUnblind:
     lumi = lumi/5.0
 if 'SR' in cut:
-    scaleFactor = 1
+    scaleFactor = 100
 else:
     scaleFactor = 1
 
 ##Create histograms
 ##-----------------------------------------------------------------------------------------------
-
+print 'Script start time:', datetime.datetime.now()
 print 'Cut name = ', cut
 print 'MC Selection Cuts = ', cuts[cut]
 print 'Data Selection Cuts = ', cuts[cut] + ' && Flag_eeBadScFilter'
@@ -380,9 +380,9 @@ xmax = 550
 auto_y = True
 doLogPlot = True
 drawData = True
-mediatorType = 'scalar'
+mediatorType = 'pseudoscalar'
 mchi = 1
-mphi = 100
+mphi = 10
 normalizePlots = False
 doBinned = False
 savePlots = True
@@ -427,12 +427,12 @@ if (condor_cut != '') and condor_plot:
         xmax = 400
         doLogPlot = False
     elif 'AH' in condor_cut:
-        nbins = 30
-        xmin = 0
-        xmax = 900
-        doLogPlot = False
+        nbins = 15
+        xmin = 250
+        xmax = 550
+        doLogPlot = True
 
-#histoLabel = '; p_{T}^{miss} (GeV); Events'
+histoLabel = '; p_{T}^{miss} (GeV); Events'
 #histoLabel = '; Hadronic recoil (GeV); Events'
 #histoLabel = '; #phi^{miss}; Events'
 #histoLabel = '; M_{T} (GeV); Events'
@@ -442,7 +442,7 @@ if (condor_cut != '') and condor_plot:
 #histoLabel = '; jet_{1} p_{T}/H_{T}; Events'
 #histoLabel = '; central jet_{3} #phi; Events'
 #histoLabel = '; central jet_{2} #eta; Events'
-histoLabel = '; central jet_{3} p_{T}; Events'
+#histoLabel = '; central jet_{3} p_{T}; Events'
 #histoLabel = '; central jet_{1} p_{T}/forward jet_{1} p_{T}; Events'
 #histoLabel = '; #Delta#phi(jet_{3},p_{T}^{miss}); Events'
 #histoLabel = '; #Delta#phi(TrkMET,p_{T}^{miss}); Events'
@@ -1274,9 +1274,9 @@ print '-----------------------------'
 print 'Total MC background nEvents = ', hists['bkgSum'].GetEntries()
 print 'Total MC background integral = ', hists['bkgSum'].Integral(1,nbins+1)
 print '-----------------------------'
-print 'Total tt+DM signal nEvents = ', hists['ttbar ' + mediatorType].GetEntries()/scaleFactor
+print 'Total tt+DM signal nEvents = ', hists['ttbar ' + mediatorType].GetEntries()
 print 'Total tt+DM signal integral = ', hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
-print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()/scaleFactor
+print 'Total t+DM signal nEvents = ', hists['tbar ' + mediatorType].GetEntries()
 print 'Total t+DM signal integral = ', hists['tbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor
 print '-----------------------------'
 print 'FOM for tt+DM signal = ', (hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor)/((hists['ttbar ' + mediatorType].Integral(1,nbins+1)/scaleFactor)+math.sqrt(hists['bkgSum'].Integral(1,nbins+1)))
@@ -1327,7 +1327,7 @@ print '-----------------------------'
 for name in hists:
     print name + ' hist info:'
     if name in signal:
-        print '    nEvents = ', hists[name].GetEntries()/scaleFactor
+        print '    nEvents = ', hists[name].GetEntries()
         print '    integral = ', hists[name].Integral(1,nbins+1)/scaleFactor
         print '    bin 1 integral = ', hists[name].Integral(1,2)/scaleFactor
     else:
@@ -1843,7 +1843,7 @@ if savePlots:
             #c.SaveAs(saveDirectory + date + '/' + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_LO.png')
             #c.SaveAs(saveDirectory + date + '/' + cut + str(year) + '_' + var + '_' + date + '.png')
             #c.SaveAs(saveDirectory + cut + str(year) + '_' + var + '_' + date + '_withHEMfixv5_postHEM.png')
-            c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
+            c.SaveAs(cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '_new.png')
             #c.SaveAs(saveDirectory + cut + nameYear + '_' + var.replace('/','over') + '_' + suffix + '.png')
 
 print 'Plotting end time:', datetime.datetime.now()

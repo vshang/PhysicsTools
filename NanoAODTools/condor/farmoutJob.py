@@ -74,6 +74,7 @@ farmout_call += ' --job-generates-output-name'
 farmout_call += ' --memory-requirements=16000'
 farmout_call += ' --disk-requirements=50000'
 farmout_call += ' --extra-inputs='+input_files
+farmout_call += ' --use-singularity=CentOS7'
 if not os.path.exists('/hdfs/store/user/vshang/ttH_Run2016/ttH_HToInvisible_M125_TuneCUETP8M1_13TeV_powheg_pythia8_nanoAODv7/'+analysis+'/rootFiles/'):
     os.makedirs('/hdfs/store/user/vshang/ttH_Run2016/ttH_HToInvisible_M125_TuneCUETP8M1_13TeV_powheg_pythia8_nanoAODv7/'+analysis+'/rootFiles/')
 subprocess.call(farmout_call,shell=True)

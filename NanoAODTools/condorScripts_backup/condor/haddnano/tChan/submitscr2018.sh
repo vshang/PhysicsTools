@@ -19,6 +19,7 @@ mkdir "${RUNDIR}"
 SUBMIT="${RUNDIR}/submit"
 cat > "${SUBMIT}" << EOF
 executable = ./runhaddnano2018.sh
+container_image = /cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel7
 output = ${RUNDIR}/runhaddnano2018.stdoutD
 error = ${RUNDIR}/runhaddnano2018.stderr
 log = ${RUNDIR}/runhaddnano2018.condor_log
